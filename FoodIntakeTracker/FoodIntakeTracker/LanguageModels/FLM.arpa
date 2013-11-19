@@ -1,0 +1,200 @@
+#############################################################################
+## Copyright (c) 1996, Carnegie Mellon University, Cambridge University,
+## Ronald Rosenfeld and Philip Clarkson
+## Version 3, Copyright (c) 2006, Carnegie Mellon University 
+## Contributors includes Wen Xu, Ananlada Chotimongkol, 
+## David Huggins-Daines, Arthur Chan and Alan Black 
+#############################################################################
+=============================================================================
+===============  This file was produced by the CMU-Cambridge  ===============
+===============     Statistical Language Modeling Toolkit     ===============
+=============================================================================
+This is a 3-gram language model, based on a vocabulary of 38 words,
+  which begins "</s>", "<s>", "ALMOND"...
+This is a CLOSED-vocabulary model
+  (OOVs eliminated from training data and are forbidden in test data)
+Witten Bell discounting was applied.
+This file is in the ARPA-standard format introduced by Doug Paul.
+
+p(wd3|wd1,wd2)= if(trigram exists)           p_3(wd1,wd2,wd3)
+                else if(bigram w1,w2 exists) bo_wt_2(w1,w2)*p(wd3|wd2)
+                else                         p(wd3|w2)
+
+p(wd2|wd1)= if(bigram exists) p_2(wd1,wd2)
+            else              bo_wt_1(wd1)*p_1(wd2)
+
+All probs and back-off weights (bo_wt) are given in log10 form.
+
+Data formats:
+
+Beginning of data mark: \data\
+ngram 1=nr            # number of 1-grams
+ngram 2=nr            # number of 2-grams
+ngram 3=nr            # number of 3-grams
+
+\1-grams:
+p_1     wd_1 bo_wt_1
+\2-grams:
+p_2     wd_1 wd_2 bo_wt_2
+\3-grams:
+p_3     wd_1 wd_2 wd_3 
+
+end of data mark: \end\
+
+\data\
+ngram 1=38
+ngram 2=62
+ngram 3=45
+
+\1-grams:
+-0.6295 </s>	-1.2582
+-0.6110 <s>	-0.2204
+-1.9912 ALMOND	-0.2736
+-1.9912 ALMONDS	-0.1849
+-1.5141 AND	-0.5746
+-1.9912 APPLE	-0.2966
+-1.9912 ARTIFICIAL	-0.2966
+-1.9912 BAR	-0.1849
+-1.9912 BRAN	-0.2966
+-1.9912 BROWNIE	-0.1849
+-1.6902 BUTTER	-0.2875
+-1.9912 CHEX	-0.1849
+-1.9912 CIDER	-0.1849
+-1.9912 COFFEE	-0.2966
+-1.6902 COOKIES	-0.3610
+-1.9912 CORNFLAKES	-0.1849
+-1.9912 CRACKERS	-0.1849
+-1.9912 DECAFF	-0.1849
+-1.9912 DRINK	-0.1849
+-1.5141 GRANOLA	-0.1671
+-1.9912 KRISPIES	-0.1849
+-1.6902 LEMONADE	-0.1731
+-1.2131 M	-0.5746
+-1.9912 ORANGE	-0.2966
+-1.9912 PEANUT	-0.2736
+-1.9912 PEANUTS	-0.1849
+-1.9912 PLAIN	-0.2736
+-1.9912 PUNCH	-0.1849
+-1.9912 RAISINS	-0.1849
+-1.9912 RICE	-0.2966
+-1.5141 S	-0.4859
+-1.9912 SALMON	-0.1849
+-1.9912 SHORTBREAD	-0.2921
+-1.9912 SWEETENER	-0.1849
+-1.9912 TEA	-0.1849
+-1.9912 TROPICAL	-0.2966
+-1.9912 TUNA	-0.1849
+-1.6902 WITH	-0.2921
+
+\2-grams:
+-1.6435 <s> ALMOND 0.0000
+-1.6435 <s> ALMONDS 0.0000
+-1.6435 <s> APPLE 0.0000
+-1.6435 <s> BRAN 0.0000
+-1.6435 <s> BROWNIE 0.0000
+-1.3424 <s> BUTTER 0.0000
+-1.6435 <s> COFFEE 0.0000
+-1.6435 <s> CORNFLAKES 0.0000
+-1.1663 <s> GRANOLA 0.0000
+-1.3424 <s> LEMONADE 0.0000
+-1.6435 <s> ORANGE 0.0000
+-1.6435 <s> PEANUT 0.0000
+-1.6435 <s> PEANUTS 0.0000
+-1.6435 <s> PLAIN 0.0000
+-1.6435 <s> RICE 0.0000
+-1.6435 <s> SALMON 0.0000
+-1.6435 <s> SHORTBREAD 0.0000
+-1.6435 <s> TEA 0.0000
+-1.6435 <s> TROPICAL 0.0000
+-1.6435 <s> TUNA 0.0000
+-0.3010 ALMOND M -0.0969
+-0.3010 ALMONDS </s> 1.0792
+-0.1249 AND M -0.3979
+-0.3010 APPLE CIDER 0.0000
+-0.3010 ARTIFICIAL SWEETENER 0.0000
+-0.3010 BAR </s> 1.0792
+-0.3010 BRAN CHEX 0.0000
+-0.3010 BROWNIE </s> 1.0792
+-0.6021 BUTTER COOKIES 0.1761
+-0.6021 BUTTER CRACKERS 0.0000
+-0.3010 CHEX </s> 1.0792
+-0.3010 CIDER </s> 1.0792
+-0.3010 COFFEE DECAFF 0.0000
+-0.1761 COOKIES </s> 0.9031
+-0.3010 CORNFLAKES </s> 1.0792
+-0.3010 CRACKERS </s> 1.0792
+-0.3010 DECAFF </s> 1.0792
+-0.3010 DRINK </s> 1.0792
+-0.7782 GRANOLA </s> 1.0792
+-0.7782 GRANOLA BAR 0.0000
+-0.7782 GRANOLA WITH -0.1761
+-0.3010 KRISPIES </s> 1.0792
+-0.6021 LEMONADE </s> 1.0792
+-0.6021 LEMONADE WITH -0.1761
+-0.4260 M AND 0.0000
+-0.4260 M S 0.0000
+-0.3010 ORANGE DRINK 0.0000
+-0.3010 PEANUT M -0.0969
+-0.3010 PEANUTS </s> 1.0792
+-0.3010 PLAIN M -0.0969
+-0.3010 PUNCH </s> 1.0792
+-0.3010 RAISINS </s> 1.0792
+-0.3010 RICE KRISPIES 0.0000
+-0.1249 S </s> 0.7782
+-0.3010 SALMON </s> 1.0792
+-0.3010 SHORTBREAD COOKIES 0.1761
+-0.3010 SWEETENER </s> 1.0792
+-0.3010 TEA </s> 1.0792
+-0.3010 TROPICAL PUNCH 0.0000
+-0.3010 TUNA </s> 1.0792
+-0.6021 WITH ARTIFICIAL 0.0000
+-0.6021 WITH RAISINS 0.0000
+
+\3-grams:
+-0.3010 <s> ALMOND M 
+-0.3010 <s> ALMONDS </s> 
+-0.3010 <s> APPLE CIDER 
+-0.3010 <s> BRAN CHEX 
+-0.3010 <s> BROWNIE </s> 
+-0.6021 <s> BUTTER COOKIES 
+-0.6021 <s> BUTTER CRACKERS 
+-0.3010 <s> COFFEE DECAFF 
+-0.3010 <s> CORNFLAKES </s> 
+-0.7782 <s> GRANOLA </s> 
+-0.7782 <s> GRANOLA BAR 
+-0.7782 <s> GRANOLA WITH 
+-0.6021 <s> LEMONADE </s> 
+-0.6021 <s> LEMONADE WITH 
+-0.3010 <s> ORANGE DRINK 
+-0.3010 <s> PEANUT M 
+-0.3010 <s> PEANUTS </s> 
+-0.3010 <s> PLAIN M 
+-0.3010 <s> RICE KRISPIES 
+-0.3010 <s> SALMON </s> 
+-0.3010 <s> SHORTBREAD COOKIES 
+-0.3010 <s> TEA </s> 
+-0.3010 <s> TROPICAL PUNCH 
+-0.3010 <s> TUNA </s> 
+-0.3010 ALMOND M AND 
+-0.1249 AND M S 
+-0.3010 APPLE CIDER </s> 
+-0.3010 ARTIFICIAL SWEETENER </s> 
+-0.3010 BRAN CHEX </s> 
+-0.3010 BUTTER COOKIES </s> 
+-0.3010 BUTTER CRACKERS </s> 
+-0.3010 COFFEE DECAFF </s> 
+-0.3010 GRANOLA BAR </s> 
+-0.3010 GRANOLA WITH RAISINS 
+-0.3010 LEMONADE WITH ARTIFICIAL 
+-0.1249 M AND M 
+-0.1249 M S </s> 
+-0.3010 ORANGE DRINK </s> 
+-0.3010 PEANUT M AND 
+-0.3010 PLAIN M AND 
+-0.3010 RICE KRISPIES </s> 
+-0.3010 SHORTBREAD COOKIES </s> 
+-0.3010 TROPICAL PUNCH </s> 
+-0.3010 WITH ARTIFICIAL SWEETENER 
+-0.3010 WITH RAISINS </s> 
+
+\end\
