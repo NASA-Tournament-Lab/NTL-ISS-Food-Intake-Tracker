@@ -18,6 +18,9 @@
 //
 //  Created by lofzcx 06/12/2013
 //
+//  Updated by pvmagacho on 04/19/2013
+//  F2Finish - NASA iPad App Updates
+//
 
 #import "AppDelegate.h"
 #import "LockServiceImpl.h"
@@ -130,6 +133,9 @@
                                        selector:@selector(doSyncUpdate)
                                        userInfo:nil
                                         repeats:YES];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doSyncUpdate)
+                                                     name:@"DataSyncUpdateInterval" object:nil];        
         return YES;
     } else {
         return NO;
@@ -327,6 +333,15 @@
 #pragma mark - Test Code
 // Check if the app is started for the first time. If so, do some initializations.
 - (void) initialLoad {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"HasLaunchedOnce"]) {
+        loadingFinished = YES;
+        NSDictionary *loadingEndParam = @{@"success": [NSNumber numberWithBool:YES]};
+        [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
+                                                            object:loadingEndParam];
+        
+        return;
+    }
+    
     loadingFinished = NO;
     __block BOOL syncSuccessful = YES;
     [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingBeginEvent object:nil];
@@ -340,6 +355,11 @@
             if (syncSuccessful) {
                 syncSuccessful = [self.synchronizationService synchronize:&error];
                 [LoggingHelper logError:@"initialLoad" error:error];
+                
+                if (syncSuccessful) {
+                    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasLaunchedOnce"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                }
             }
             NSLog(@"Finish loading with %@", (syncSuccessful ? @"YES" : @"NO"));
             

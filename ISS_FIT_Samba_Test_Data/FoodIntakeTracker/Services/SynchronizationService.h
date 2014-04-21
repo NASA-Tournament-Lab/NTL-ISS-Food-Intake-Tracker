@@ -18,6 +18,9 @@
 //
 //  Created by LokiYang on 2013-07-27.
 //
+//  Updated by pvmagacho on 04/19/2013
+//  F2Finish - NASA iPad App Updates
+//
 
 #import <Foundation/Foundation.h>
 
@@ -33,10 +36,19 @@
 @protocol SynchronizationService <NSObject>
 
 /*!
+ @discussion This method will be used to backup the data. If the iPad device is currently not connected
+ to Wi-Fi network, then this method will do nothing.
+ @parame error The NSError object if any error occurred during the operation
+ @return YES if the operation succceeds, otherwise NO.
+ */
+-(BOOL)backup:(NSError **)error;
+
+/*!
  @discussion This method will be used to synchronize the data. If the iPad device is currently not connected to Wi-Fi
     network, then this method will do nothing.
  @parame error The NSError object if any error occurred during the operation
  @return YES if the operation succceeds, otherwise NO.
  */
 -(BOOL)synchronize:(NSError **)error;
+
 @end

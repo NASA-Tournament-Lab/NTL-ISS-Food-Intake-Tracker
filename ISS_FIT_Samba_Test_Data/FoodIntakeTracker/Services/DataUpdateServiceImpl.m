@@ -18,6 +18,9 @@
 //
 //  Created by LokiYang on 2013-07-27.
 //
+//  Updated by pvmagacho on 04/19/2013
+//  F2Finish - NASA iPad App Updates
+//
 
 #import "DataUpdateServiceImpl.h"
 #import "FoodProductServiceImpl.h"
@@ -30,13 +33,14 @@
 
 @implementation DataUpdateServiceImpl
 
+@synthesize cancelUpdate = _cancelUpdate;
 @synthesize localFileSystemDirectory = _localFileSystemDirectory;
 @synthesize imageFileNameSuffix = _imageFileNameSuffix;
 @synthesize voiceRecordingFileNameSuffix = _voiceRecordingFileNameSuffix;
 
 #define CHECK_ERROR_AND_RETURN(error, return_error, error_msg, error_code, unlock_context, undo_context) \
-    if (error) {\
-        if (return_error) {\
+    if (error || self.cancelUpdate) {\
+        if (error && return_error) {\
             *return_error = [NSError errorWithDomain:@"DataUpdateService" code:error_code\
                                             userInfo:@{NSUnderlyingErrorKey:error_msg}];\
         }\
@@ -73,6 +77,15 @@
  @return YES if the operation succceeds, otherwise NO.
  */
 -(BOOL)update:(NSError **)error {
+    return [self update:error force:NO];
+}
+
+/*!
+ @discussion This method will be used to apply data changes (control files) pushed from Earth Laboratory.
+ @parame error The NSError object if any error occurred during the operation
+ @return YES if the operation succceeds, otherwise NO.
+ */
+-(BOOL)update:(NSError **)error force:(BOOL)force {
     NSString *methodName = [NSString stringWithFormat:@"%@.update:error:", NSStringFromClass(self.class)];
     [LoggingHelper logMethodEntrance:methodName paramNames:nil params:nil];
     // Create SMBClient and connect to the shared file server
@@ -82,7 +95,6 @@
     
     // Lock on the managedObjectContext
     [[self managedObjectContext] lock];
-    
     
     NSString* deviceID = [DataHelper getDeviceIdentifier];
     e = nil;
@@ -96,8 +108,8 @@
         NSArray* ackFiles = [smbClient listFiles:@"control_files/food_product_inventory/ack" error:&e];
         CHECK_ERROR_AND_RETURN(e, error, @"Cannot list 'control_files/food_product_inventory/ack' directory.",
                                DataUpdateErrorCode, YES, NO);
-
-        if (![ackFiles containsObject:deviceID]) {
+        
+        if (![ackFiles containsObject:deviceID] || force) {
             
             NSArray* foodDataFolder = [smbClient listFiles:@"control_files/food_product_inventory/data" error:&e];
             CHECK_ERROR_AND_RETURN(e, error, @"Cannot read food data folder.", DataUpdateErrorCode, YES, NO);
@@ -216,11 +228,12 @@
                     }
                 }
                 
-                // Write acknowledgement file
-                [smbClient writeFile:[NSString stringWithFormat:@"control_files/food_product_inventory/ack/%@", deviceID]
-                                data:[NSData data] error:&e];
-                CHECK_ERROR_AND_RETURN(e, error, @"Cannot write acknowledgement file.", DataUpdateErrorCode, YES, NO);
-                
+                if (![ackFiles containsObject:deviceID]) {
+                    // Write acknowledgement file
+                    [smbClient writeFile:[NSString stringWithFormat:@"control_files/food_product_inventory/ack/%@", deviceID]
+                                    data:[NSData data] error:&e];
+                    CHECK_ERROR_AND_RETURN(e, error, @"Cannot write acknowledgement file.", DataUpdateErrorCode, YES, NO);
+                }
                 
                 /* Do not delete the files now ISSFIT-44
                  
@@ -255,7 +268,8 @@
         ackFiles = [smbClient listFiles:@"control_files/user_management/ack/" error:&e];
         CHECK_ERROR_AND_RETURN(e, error, @"Cannot list 'control_files/user_management/ack/' directory.",
                                DataUpdateErrorCode, YES, NO);
-        if (![ackFiles containsObject:deviceID]) {
+
+        if (![ackFiles containsObject:deviceID] || force) {
             
             NSArray* userDataFolder = [smbClient listFiles:@"control_files/user_management/data" error:&e];
             CHECK_ERROR_AND_RETURN(e, error, @"Cannot read user data folder.", DataUpdateErrorCode, YES, NO);
@@ -324,10 +338,12 @@
                     }
                 }
                 
-                // Write acknowledgement file
-                [smbClient writeFile:[NSString stringWithFormat:@"control_files/user_management/ack/%@", deviceID]
-                                data:[NSData data] error:&e];
-                CHECK_ERROR_AND_RETURN(e, error, @"Cannot write ack file.", DataUpdateErrorCode, YES, NO);
+                if (![ackFiles containsObject:deviceID]) {
+                    // Write acknowledgement file
+                    [smbClient writeFile:[NSString stringWithFormat:@"control_files/user_management/ack/%@", deviceID]
+                                    data:[NSData data] error:&e];
+                    CHECK_ERROR_AND_RETURN(e, error, @"Cannot write ack file.", DataUpdateErrorCode, YES, NO);
+                }
                 
                 /* Do not delete the files now ISSFIT-44
                 
@@ -367,11 +383,11 @@
     // Unlock the managedObjectContext
     [[self managedObjectContext] unlock];
     
-    
     // Finally disconnect from shared file server
     [smbClient disconnect:&e];
     CHECK_ERROR_AND_RETURN(e, error, @"Cannot disconnect.", DataUpdateErrorCode, NO, NO);
     [LoggingHelper logMethodExit:methodName returnValue:@YES];
     return YES;
 }
+
 @end

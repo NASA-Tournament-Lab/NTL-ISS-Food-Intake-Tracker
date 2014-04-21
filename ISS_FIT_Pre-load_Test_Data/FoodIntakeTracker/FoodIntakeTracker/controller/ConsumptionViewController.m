@@ -18,6 +18,9 @@
 //
 //  Created by lofzcx 06/12/2013
 //
+//  Updated by pvmagacho on 04/19/2013
+//  F2Finish - NASA iPad App Updates
+//
 
 #import "ConsumptionViewController.h"
 #import "CustomTabBarViewController.h"
@@ -930,6 +933,9 @@
         [recordService deleteFoodConsumptionRecord:record error:&error];
         if ([Helper displayError:error]) return;
     }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:nil];
+    
     [self.foodTableView reloadData];
     [self updateProgress];
     [self hideDeletePop:nil];
@@ -1183,6 +1189,9 @@
                 if ([Helper displayError:error]) return;
                 [self.foodConsumptionRecords addObject:record];
             }
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:nil];
+            
             [selectConsumption.selectFoods removeAllObjects];
             [self.foodTableView reloadData];
             [self updateProgress];
@@ -1465,10 +1474,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
  * @param scrollView The scroll-view object in which the scrolling occurred.
  */
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    FoodConsumptionRecord *item = [self.foodConsumptionRecords objectAtIndex:scrollView.tag];
-    CGPoint point = scrollView.contentOffset;
-    NSValue *value = [NSValue valueWithCGPoint:point];
-    [contentOffset setObject:value forKey:item.objectID];
+    if (![scrollView isEqual:self.foodTableView]) {
+        FoodConsumptionRecord *item = [self.foodConsumptionRecords objectAtIndex:scrollView.tag];
+        CGPoint point = scrollView.contentOffset;
+        NSValue *value = [NSValue valueWithCGPoint:point];
+        [contentOffset setObject:value forKey:item.objectID];
+    }
 }
 
 @end

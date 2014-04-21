@@ -18,6 +18,9 @@
 //
 //  Created by duxiaoyang on 2013-07-13.
 //
+//  Updated by pvmagacho on 04/19/2013
+//  F2Finish - NASA iPad App Updates
+//
 
 #import "FoodProductServiceImpl.h"
 #import "LoggingHelper.h"
@@ -273,17 +276,18 @@
             description = [NSEntityDescription  entityForName:@"FoodConsumptionRecord"
                                        inManagedObjectContext:[self managedObjectContext]];
             predicate = [NSPredicate predicateWithFormat:@"(foodProduct == %@) AND (timestamp >= %@)",
-                                        item, [[NSDate date] dateByAddingTimeInterval:
-                                               -60 * 60 * 24 * filter.favoriteWithinTimePeriod.intValue]];
+                                        item, [NSDate dateWithTimeIntervalSinceNow:-(24 * 3600 * filter.favoriteWithinTimePeriod.intValue)]];
             [request setEntity:description];
             [request setPredicate:predicate];
-            unsigned int count = [[self managedObjectContext] countForFetchRequest:request error:error];
+            //unsigned int count = [[self managedObjectContext] countForFetchRequest:request error:error];
+            NSArray *tmp = [[self managedObjectContext] executeFetchRequest:request error:error];
+            unsigned int count = tmp.count;
             [LoggingHelper logError:methodName error:*error];
             if (*error) {
                 [LoggingHelper logMethodExit:methodName returnValue:nil];
                 return nil;
             }
-            if (count < 2) {
+            if (count == 0) {
                 [toRemove addObject:item];
             }
         }
@@ -352,8 +356,8 @@
     [self.managedObjectContext lock];
     //Fetch food product by bar code
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(barcode == %@) AND (deleted == NO)",
-                                            barcode];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(barcode beginswith[cd] %@) AND (deleted == NO)",
+                                            [barcode substringToIndex:4]];
     NSEntityDescription *description = [NSEntityDescription  entityForName:@"FoodProduct"
                                                     inManagedObjectContext:self.managedObjectContext];
     [request setEntity:description];
@@ -451,7 +455,7 @@
     [self.managedObjectContext lock];
     //Fetch categories
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"category != '' AND deleted == NO"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"category != '' AND category != 'Vitamins / Supplements' AND deleted == NO"];
     NSEntityDescription *description = [NSEntityDescription  entityForName:@"FoodProduct"
                                                     inManagedObjectContext:self.managedObjectContext];
     NSExpression *categoryExpression = [NSExpression expressionForKeyPath:@"category"];

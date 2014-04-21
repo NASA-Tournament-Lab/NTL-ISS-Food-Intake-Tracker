@@ -120,6 +120,7 @@
         [Helper showAlert:@"Error" message:@"Please login to perform this functionality."];
         return;
     }
+    appDelegate.tabBarViewController = self;
     
     self.activeTab = 1;
     

@@ -18,6 +18,9 @@
 //
 //  Created by namanhams on 3/9/13.
 //
+//  Updated by pvmagacho on 04/19/2013
+//  F2Finish - NASA iPad App Updates
+//
 
 #import "DBHelper.h"
 #import "DataHelper.h"
@@ -33,12 +36,15 @@ static NSMutableDictionary *mocThreads = nil;
 static int counter;
 static dispatch_queue_t serialQueue;
 
+static dispatch_once_t onceToken = 0;
+
+
 + (void) initialize {
     
     serialQueue = dispatch_queue_create("SerialQueue", DISPATCH_QUEUE_SERIAL);
 
-    mocs = [[NSMutableDictionary alloc] init];
-    mocThreads = [[NSMutableDictionary alloc] init];
+    mocs = [NSMutableDictionary dictionary];
+    mocThreads = [NSMutableDictionary dictionary];
     counter = 0;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -56,9 +62,18 @@ static dispatch_queue_t serialQueue;
     static NSString *key = @"Moc";
     NSThread *currentThread = [NSThread currentThread];
     NSMutableDictionary *threadDictionary = [currentThread threadDictionary];
-    if(! [threadDictionary valueForKey:key]) {
+    
+    NSManagedObjectContext *existMoc = [threadDictionary valueForKey:key];
+    if(! existMoc) {
         NSManagedObjectContext *moc = [self createNewMoc];
         [threadDictionary setValue:moc forKey:key];
+    } else {
+        if (existMoc.persistentStoreCoordinator != [self persistentStoreCoordinator]) {
+            NSLog(@"Recreate");            
+            NSManagedObjectContext *moc = [self createNewMoc];
+            [threadDictionary setValue:moc forKey:key];
+            existMoc = nil;
+        }
     }
     
     return [threadDictionary valueForKey:key];
@@ -73,7 +88,7 @@ static dispatch_queue_t serialQueue;
         
         NSThread *currentThread = [NSThread currentThread];
         __block NSString *name = [currentThread name];
-        if([name length] == 0) {
+        if(!name || [name length] == 0) {
             dispatch_async(serialQueue, ^{
                 name = [NSString stringWithFormat:@"%d", ++counter];
                 [mocs setValue:newManagedObjectContext forKey:name];
@@ -87,9 +102,6 @@ static dispatch_queue_t serialQueue;
                 [mocThreads setValue:currentThread forKey:name];
             });
         }
-        
-        
-//        NSLog(@"Create new moc on thread %@", name);
 		return newManagedObjectContext;
     }
 	return nil;
@@ -156,8 +168,6 @@ static dispatch_queue_t serialQueue;
  */
 + (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
     
-    static dispatch_once_t onceToken;
-    
     dispatch_once(&onceToken, ^{
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths lastObject];
@@ -221,6 +231,44 @@ static dispatch_queue_t serialQueue;
     });
 	
     return persistentStoreCoordinator;
+}
+
+/**
+ Reset the persistence store.
+ */
++ (void)resetPersistentStore {
+    NSError *error = nil;
+    
+    NSPersistentStoreCoordinator *persistentStoreCoordinator_ = [DBHelper persistentStoreCoordinator];
+    
+    if ([persistentStoreCoordinator_ persistentStores] == nil) {
+        return;
+    }
+    
+    dispatch_async(serialQueue, ^{
+        for (NSString *name in [mocs allKeys]) {
+            [mocs removeObjectForKey:name];
+            [mocThreads removeObjectForKey:name];
+        }
+    });
+    
+    // FIXME: dirty. If there are many stores...
+    NSPersistentStore *store = [[persistentStoreCoordinator_ persistentStores] lastObject];
+    
+    if (![persistentStoreCoordinator_ removePersistentStore:store error:&error]) {
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    // Delete file
+    if ([[NSFileManager defaultManager] fileExistsAtPath:store.URL.path]) {
+        if (![[NSFileManager defaultManager] removeItemAtPath:store.URL.path error:&error]) {
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+    }
+    
+    onceToken = 0;
 }
 
 @end

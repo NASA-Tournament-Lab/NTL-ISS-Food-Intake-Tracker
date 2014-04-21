@@ -18,6 +18,9 @@
 //
 //  Created by lofzcx 06/12/2013
 //
+//  Updated by pvmagacho on 04/19/2013
+//  F2Finish - NASA iPad App Updates
+//
 
 #import "SelectConsumptionViewController.h"
 #import "Helper.h"
@@ -273,29 +276,31 @@
     [foodDict removeAllObjects];
     [foodList removeAllObjects];
     
-    for(int i = 0; i < 26; i++){
-        NSString *key = [NSString stringWithFormat:@"%c", (char)(65 + i)];
-        [foodKeys addObject:key];
-        NSMutableArray *foodProducts = [[NSMutableArray alloc] init];
-        [foodDict setValue:foodProducts forKey:key];
-    }
-    
-    for(FoodProduct *foodProduct in result) {
-        NSString *key = [foodProduct.name substringToIndex:1];
-        if (key && ![key isEqualToString:@""]) {
-            key = [key uppercaseString];
-            [foodList addObject:foodProduct];
-            NSMutableArray *foodProducts = foodDict[key];
-            [foodProducts addObject:foodProduct];
+    if (selectCategoryIndex[4] == -1) {
+        for(int i = 0; i < 26; i++){
+            NSString *key = [NSString stringWithFormat:@"%c", (char)(65 + i)];
+            [foodKeys addObject:key];
+            NSMutableArray *foodProducts = [[NSMutableArray alloc] init];
+            [foodDict setValue:foodProducts forKey:key];
         }
-    }
-    
-    for(int i = [foodKeys count] - 1; i >= 0; i--){
-        NSString *key = foodKeys[i];
-        NSMutableArray *foodProducts = foodDict[key];
-        if (foodProducts.count == 0) {
-            [foodDict removeObjectForKey:key];
-            [foodKeys removeObject:key];
+        
+        for(FoodProduct *foodProduct in result) {
+            NSString *key = [foodProduct.name substringToIndex:1];
+            if (key && ![key isEqualToString:@""]) {
+                key = [key uppercaseString];
+                [foodList addObject:foodProduct];
+                NSMutableArray *foodProducts = foodDict[key];
+                [foodProducts addObject:foodProduct];
+            }
+        }
+        
+        for(int i = [foodKeys count] - 1; i >= 0; i--){
+            NSString *key = foodKeys[i];
+            NSMutableArray *foodProducts = foodDict[key];
+            if (foodProducts.count == 0) {
+                [foodDict removeObjectForKey:key];
+                [foodKeys removeObject:key];
+            }
         }
     }
     
@@ -1212,7 +1217,7 @@
             }
         }
         else {
-            if (selectCategoryIndex[indexPath.section] == indexPath.row) {
+            /*if (selectCategoryIndex[indexPath.section] == indexPath.row) {
                 selectCategoryIndex[indexPath.section] = -1;
             }
             else {
@@ -1230,7 +1235,12 @@
             }
             else {
                 selectCategoryIndex[0] = 0;
+            }*/
+            
+            for (int i = 0; i < 5; i++) {
+                selectCategoryIndex[i] = -1;
             }
+            selectCategoryIndex[indexPath.section] = indexPath.row;
         }
 
         [tableView reloadData];

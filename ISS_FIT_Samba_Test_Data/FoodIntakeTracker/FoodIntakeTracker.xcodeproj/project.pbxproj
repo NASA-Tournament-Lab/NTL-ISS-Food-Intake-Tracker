@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B26DC4A18FE3BAC001BE1B1 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4B26DC4918FE3BAC001BE1B1 /* Settings.bundle */; };
 		4D0F2D8717BD23A000B86759 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4D0F2D8517BD23A000B86759 /* InfoPlist.strings */; };
 		4D0F2DBE17BD257700B86759 /* test_data in Resources */ = {isa = PBXBuildFile; fileRef = 4D0F2DBD17BD257700B86759 /* test_data */; };
 		4D0F2DEE17BD2CAC00B86759 /* ISSFoodIntakeTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167B417BD20E100D3633F /* ISSFoodIntakeTracker.xcdatamodeld */; };
@@ -457,6 +458,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4B26DC4918FE3BAC001BE1B1 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = SOURCE_ROOT; };
 		4D0F2D7D17BD23A000B86759 /* FoodIntakeTrackerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodIntakeTrackerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D0F2D8417BD23A000B86759 /* FoodIntakeTrackerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FoodIntakeTrackerTests-Info.plist"; sourceTree = "<group>"; };
 		4D0F2D8617BD23A000B86759 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -1809,6 +1811,7 @@
 				E7C40736175FFA1F00C3649E /* Default.png */,
 				E7C40738175FFA1F00C3649E /* Default@2x.png */,
 				E7C4073A175FFA1F00C3649E /* Default-568h@2x.png */,
+				4B26DC4918FE3BAC001BE1B1 /* Settings.bundle */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -2343,6 +2346,7 @@
 				4DAB06B117C04317009F8E91 /* bg_carb.png in Resources */,
 				4DAB06B217C04317009F8E91 /* bg_fat.png in Resources */,
 				4DAB06B317C04317009F8E91 /* bg_protein.png in Resources */,
+				4B26DC4A18FE3BAC001BE1B1 /* Settings.bundle in Resources */,
 				4DAB06B417C04317009F8E91 /* icon_carb.png in Resources */,
 				4DAB06B517C04317009F8E91 /* icon_fat.png in Resources */,
 				4DAB06B617C04317009F8E91 /* icon_protein.png in Resources */,

@@ -259,6 +259,12 @@
             filter.favoriteWithinTimePeriod = @30;
         }
     }
+    if (selectCategoryIndex[4] != -1) {
+        filter.categories = [DataHelper convertNSStringToNSSet:@"Vitamins / Supplements" withEntityDescription:
+                             [NSEntityDescription entityForName:@"StringWrapper"
+                                         inManagedObjectContext:[DBHelper currentThreadMoc]]
+                                        inManagedObjectContext:context withSeparator:@";"];
+    }
     
     // Save last used food product filter
     if (appDelegate.loggedInUser.useLastUsedFoodProductFilter && appDelegate.loggedInUser.lastUsedFoodProductFilter) {
@@ -739,7 +745,7 @@
  * @param sender the button.
  */
 - (IBAction)addToConsumption:(id)sender {
-    [self.btnBack sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [self.btnBack sendActionsForControlEvents:UIControlEventTouchUpInside];    
 }
 
 /**
@@ -1212,7 +1218,7 @@
             }
         }
         else {
-            if (selectCategoryIndex[indexPath.section] == indexPath.row) {
+            /*if (selectCategoryIndex[indexPath.section] == indexPath.row) {
                 selectCategoryIndex[indexPath.section] = -1;
             }
             else {
@@ -1230,7 +1236,12 @@
             }
             else {
                 selectCategoryIndex[0] = 0;
+            }*/
+            
+            for (int i = 0; i < 5; i++) {
+                selectCategoryIndex[i] = -1;
             }
+            selectCategoryIndex[indexPath.section] = indexPath.row;
         }
 
         [tableView reloadData];

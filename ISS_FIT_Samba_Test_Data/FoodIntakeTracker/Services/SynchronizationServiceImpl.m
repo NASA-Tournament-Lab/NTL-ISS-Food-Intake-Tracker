@@ -18,6 +18,9 @@
 //
 //  Created by LokiYang,supercharger on 2013-07-27.
 //
+//  Updated by pvmagacho on 04/19/2013
+//  F2Finish - NASA iPad App Updates
+//
 
 #import "SynchronizationServiceImpl.h"
 #import "SMBClientImpl.h"
@@ -88,6 +91,23 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:syncTime forKey:@"LastSynchronizedTime"];
     return;
+}
+/*!
+ @discussion This method will get all entity objects.
+ @param entityName The object's entity name.
+ @param error The error.
+ @return A NSArray contains objects.
+ */
+- (NSArray *)getAllObjects:(NSString *)entityName error:(NSError **)error {
+    [self.managedObjectContext lock];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSEntityDescription *description = [NSEntityDescription  entityForName:entityName
+                                                    inManagedObjectContext:[self managedObjectContext]];
+    [request setEntity:description];
+    [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"lastModifiedDate" ascending:YES]]];
+    NSArray *results = [[self managedObjectContext] executeFetchRequest:request error:error];
+    [self.managedObjectContext unlock];
+    return results;
 }
 
 /*!
@@ -426,11 +446,14 @@
 
     for (NSString *timestampDir in dataSyncSubDirectories) {
         long long timeStampFromDir = [timestampDir longLongValue];
-        if(timeStampFromDir > lastSyncedTimeinMillis &&
-           timeStampFromDir != currentSyncTimeinMillis) {
+        if (timeStampFromDir > lastSyncedTimeinMillis &&
+            timeStampFromDir != currentSyncTimeinMillis) {
             
             [subDirectoriesToSync addObject:timestampDir];
             count++;
+        } else {
+            [smbClient deleteDirectory:[NSString stringWithFormat:@"data_sync/%@", timestampDir] error:&e];
+            CHECK_ERROR_AND_RETURN(e, error, @"Cannot delete folder.", SynchronizationErrorCode, YES, NO);
         }
     }
     if (count > 0) {
@@ -828,6 +851,322 @@
         [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
     }
 
+    // Save changes in the managedObjectContext
+    [[self managedObjectContext] save:&e];
+    CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", SynchronizationErrorCode, YES, NO);
+    
+    // Unlock the managedObjectContext
+    [[self managedObjectContext] unlock];
+    
+    // Finally disconnect from shared file server
+    [smbClient disconnect:&e];
+    CHECK_ERROR_AND_RETURN(e, error, @"Cannot disconnect.", SynchronizationErrorCode, NO, NO);
+    
+    // Update progress
+    [self updateProgress:@1.0];
+    
+    [LoggingHelper logMethodExit:methodName returnValue:@YES];
+    return YES;
+}
+
+/*!
+ @discussion This method will be used to backup the data. If the iPad device is currently not connected
+ to Wi-Fi network, then this method will do nothing.
+ @parame error The NSError object if any error occurred during the operation
+ @return YES if the operation succceeds, otherwise NO.
+ */
+-(BOOL)backup:(NSError **)error{
+    NSString *methodName = [NSString stringWithFormat:@"%@.backup:", NSStringFromClass(self.class)];
+    
+    [LoggingHelper logMethodEntrance:methodName paramNames:@[@"backup:"] params:nil];
+    // Update progress
+    [self updateProgress:@0.0];
+    
+    // Create SMBClient and connect to the shared file server
+    NSError *e = nil;
+    id<SMBClient> smbClient = [self createSMBClient:&e];
+    CHECK_ERROR_AND_RETURN(e, error, @"Cannot create SMBClient.", ConnectionErrorCode, YES, NO);
+    
+    // Lock on the managedObjectContext
+    [[self managedObjectContext] lock];
+    
+    // Update progress
+    [self updateProgress:@0.15];
+    
+    
+    // ARS 1.1.3 #1.Create an NSMutableArray to store the image/voice recording file paths to transfer
+    // to Shared File Server.
+    [self startUndoActions];
+    NSMutableArray *additionalFiles = [NSMutableArray array];
+    NSMutableData *userCSVData = [NSMutableData data];
+    
+    
+    // ARS 1.1.3 #3 5.Query any local Core Data User objects with isSynchronized == NO, and for each of the User objects
+    //  o   Write a line for the object according to the file format specified in /data_sync_files/User.csv
+    //  o   Add all relevant file paths to the NSMutableArray created in step 2.
+    //  o   If deleted property of the object is YES, then physically delete the object from local Core Data
+    //      managed object context, otherwise change its isSynchronized property to YES.
+    NSArray *usersToPush = [self getAllObjects:@"User" error:&e];
+    CHECK_ERROR_AND_RETURN(e, error, @"Cannot fetch users to be pushed.", EntityNotFoundErrorCode, YES, YES);
+    
+    NSArray *foodProductsToPush = [self getAllObjects:@"AdhocFoodProduct" error:&e];
+    CHECK_ERROR_AND_RETURN(e, error, @"Cannot fetch AdhocFoodProducts to be pushed.",
+                           EntityNotFoundErrorCode, YES, YES);
+    
+    NSArray *foodConsumptionRecordsToPush = [self getAllObjects:@"FoodConsumptionRecord" error:&e];
+    CHECK_ERROR_AND_RETURN(e, error, @"Cannot fetch FoodConsumptionRecords to be pushed.",
+                           EntityNotFoundErrorCode, YES, YES);
+    
+    long long currentSyncTimeinMillis = 0;
+    if([usersToPush count] != 0 || [foodConsumptionRecordsToPush count] != 0
+       || [foodConsumptionRecordsToPush count] != 0) {
+        
+        NSTimeInterval currentTimeInterval = [[NSDate date] timeIntervalSince1970];
+        currentSyncTimeinMillis =  (long long)(currentTimeInterval * 1000.0);
+        NSString* timestamp = [NSString stringWithFormat:@"%llu",currentSyncTimeinMillis];
+        [smbClient createDirectory:[NSString stringWithFormat:@"data_sync/%@",timestamp]
+                             error:&e];
+        
+        CHECK_ERROR_AND_RETURN(e, error, @"Cannot create directory with the current timestamp as a name in 'data_sync' directory.",
+                               SynchronizationErrorCode, YES, YES);
+        
+        [smbClient createDirectory:[NSString stringWithFormat:@"data_sync/%@/data",timestamp]
+                             error:&e];
+        
+        CHECK_ERROR_AND_RETURN(e, error, @"Cannot create data directory.",
+                               SynchronizationErrorCode, YES, YES);
+        
+        
+        for (User* userToPush in usersToPush) {
+            // Write a comma-separated line of the User to userCSVData, refer to ADS 1.1.3
+            // and data_sync_files/User.csv for detailed format
+            
+            NSString *csvLine = [NSString stringWithFormat:@"\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\","
+                                 "\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%.0f\",\"%.0f\"\r\n",
+                                 [userToPush.admin boolValue] == YES ? @"YES":@"NO",
+                                 userToPush.fullName,
+                                 [DataHelper convertStringWrapperNSSetToNSString:userToPush.faceImages withSeparator:@";"],
+                                 userToPush.lastUsedFoodProductFilter == nil ? @"":
+                                 (userToPush.lastUsedFoodProductFilter.name == nil ? @"" :
+                                  userToPush.lastUsedFoodProductFilter.name),
+                                 userToPush.lastUsedFoodProductFilter == nil ? @"":
+                                 [DataHelper
+                                  convertStringWrapperNSSetToNSString:userToPush.lastUsedFoodProductFilter.origins
+                                  withSeparator:@";"],
+                                 userToPush.lastUsedFoodProductFilter == nil ? @"":
+                                 [DataHelper
+                                  convertStringWrapperNSSetToNSString:userToPush.lastUsedFoodProductFilter.categories
+                                  withSeparator:@";"],
+                                 userToPush.lastUsedFoodProductFilter == nil ? @"":
+                                 userToPush.lastUsedFoodProductFilter.favoriteWithinTimePeriod,
+                                 userToPush.lastUsedFoodProductFilter == nil ? @"":
+                                 [DataHelper formatFoodProductSortOptionToString:
+                                  userToPush.lastUsedFoodProductFilter.sortOption],
+                                 [userToPush.useLastUsedFoodProductFilter boolValue] == YES ? @"YES" :@"NO",
+                                 userToPush.dailyTargetFluid,
+                                 userToPush.dailyTargetEnergy,
+                                 userToPush.dailyTargetSodium,
+                                 userToPush.dailyTargetProtein,
+                                 userToPush.dailyTargetCarb,
+                                 userToPush.dailyTargetFat,
+                                 userToPush.maxPacketsPerFoodProductDaily,
+                                 userToPush.profileImage,
+                                 [userToPush.deleted boolValue] == YES ? @"YES":@"NO",
+                                 [userToPush.lastModifiedDate timeIntervalSince1970],
+                                 [userToPush.createdDate timeIntervalSince1970]];
+            NSData *csvLineByte = [csvLine dataUsingEncoding:NSUTF8StringEncoding];
+            [userCSVData appendData:csvLineByte];
+            
+            if ([userToPush.deleted boolValue] == YES) {
+                [[self managedObjectContext] deleteObject:userToPush];
+            } else {
+                userToPush.synchronized = @YES;
+            }
+            // Add image file paths of the user to additionalFiles array
+            for (StringWrapper *path in userToPush.faceImages) {
+                if(path.value != nil && path.value.length != 0) {
+                    [additionalFiles addObject:[path.value copy]];
+                }
+            }
+            [additionalFiles addObject:userToPush.profileImage];
+        }
+        
+        // Update progress
+        [self updateProgress:@0.45];
+        
+        // ARS 1.1.3 #5.Similarly, query and process local non-synchronized AdhocFoodProduct,
+        // FoodConsumptionRecord and SummaryGenerationHistory objects
+        NSMutableData *adhocFoodProductCSVData = [NSMutableData data];
+        
+        for (AdhocFoodProduct* foodProductToPush in foodProductsToPush) {
+            // Write a comma-separated line of the User to adhocFoodProductCSVData, refer to ADS 1.1.3
+            // and data_sync_files/AdhocFoodProduct.csv for detailed format
+            
+            NSString *csvLine = [NSString stringWithFormat:@"\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\","
+                                 "\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%.0f\",\"%.0f\"\r\n",
+                                 foodProductToPush.name,
+                                 foodProductToPush.barcode == nil? @"" : foodProductToPush.barcode,
+                                 [DataHelper convertStringWrapperNSSetToNSString:foodProductToPush.images
+                                                                   withSeparator:@";"],
+                                 foodProductToPush.origin,
+                                 foodProductToPush.category, foodProductToPush.fluid,
+                                 foodProductToPush.energy,
+                                 foodProductToPush.sodium,
+                                 foodProductToPush.protein,
+                                 foodProductToPush.carb,
+                                 foodProductToPush.fat,
+                                 foodProductToPush.productProfileImage,
+                                 foodProductToPush.user.fullName,
+                                 [foodProductToPush.deleted boolValue] == YES ? @"YES" : @"NO",
+                                 [foodProductToPush.lastModifiedDate timeIntervalSince1970],
+                                 [foodProductToPush.createdDate timeIntervalSince1970]];
+            NSData *csvLineByte = [csvLine dataUsingEncoding:NSUTF8StringEncoding];
+            [adhocFoodProductCSVData appendData:csvLineByte];
+            
+            if ([foodProductToPush.deleted boolValue] == YES) {
+                [[self managedObjectContext] deleteObject:foodProductToPush];
+            } else {
+                foodProductToPush.synchronized = @YES;
+            }
+            // Add image file paths of the food product to additionalFiles array
+            for (StringWrapper *path in foodProductToPush.images) {
+                if(path.value != nil && path.value.length != 0) {
+                    [additionalFiles addObject:[path.value copy]];
+                }
+            }
+            if (foodProductToPush.productProfileImage && foodProductToPush.productProfileImage.length != 0) {
+                [additionalFiles addObject:foodProductToPush.productProfileImage];
+            }
+        }
+        
+        // process FoodConsumptionRecord
+        NSMutableData *foodConsumptionRecordCSVData = [NSMutableData data];
+        
+        for (FoodConsumptionRecord* foodConsumptionRecordToPush in foodConsumptionRecordsToPush) {
+            // Write a comma-separated line of the User to foodConsumptionRecordCSVData, refer to ADS 1.1.3
+            // and data_sync_files/FoodConsumptionRecord.csv for detailed format
+            
+            NSString *csvLine = [NSString stringWithFormat:@"\"%@\",\"%@\",\"%.0f\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\","
+                                 "\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%.0f\",\"%.0f\"\r\n",
+                                 foodConsumptionRecordToPush.foodProduct.name, foodConsumptionRecordToPush.user.fullName,
+                                 [foodConsumptionRecordToPush.timestamp timeIntervalSince1970],
+                                 foodConsumptionRecordToPush.quantity,
+                                 foodConsumptionRecordToPush.comment == nil ?@"":foodConsumptionRecordToPush.comment,
+                                 [DataHelper convertStringWrapperNSSetToNSString:foodConsumptionRecordToPush.images
+                                                                   withSeparator:@";"],
+                                 [DataHelper convertStringWrapperNSSetToNSString:foodConsumptionRecordToPush.voiceRecordings
+                                                                   withSeparator:@";"],
+                                 foodConsumptionRecordToPush.fluid,
+                                 foodConsumptionRecordToPush.energy,
+                                 foodConsumptionRecordToPush.sodium,
+                                 foodConsumptionRecordToPush.protein,
+                                 foodConsumptionRecordToPush.carb,
+                                 foodConsumptionRecordToPush.fat,
+                                 [foodConsumptionRecordToPush.deleted boolValue] == YES ? @"YES" :@"NO",
+                                 [foodConsumptionRecordToPush.lastModifiedDate timeIntervalSince1970],
+                                 [foodConsumptionRecordToPush.createdDate timeIntervalSince1970]];
+            NSData *csvLineByte = [csvLine dataUsingEncoding:NSUTF8StringEncoding];
+            [foodConsumptionRecordCSVData appendData:csvLineByte];
+            
+            if ([foodConsumptionRecordToPush.deleted boolValue] == YES) {
+                [[self managedObjectContext] deleteObject:foodConsumptionRecordToPush];
+            } else {
+                foodConsumptionRecordToPush.synchronized = @YES;
+            }
+            // Add image file paths of the food consumption record to additionalFiles array
+            for (StringWrapper *path in foodConsumptionRecordToPush.images) {
+                if(path.value != nil && path.value.length != 0) {
+                    [additionalFiles addObject:[path.value copy]];
+                }
+            }
+            // Add voice recording file paths of food consumption record .
+            for (StringWrapper *path in foodConsumptionRecordToPush.voiceRecordings) {
+                if(path.value != nil && path.value.length != 0) {
+                    [additionalFiles addObject:[path.value copy]];
+                }
+            }
+        }
+        
+        // Update progress
+        [self updateProgress:@0.75];
+        
+        // process SummaryGenerationHistory
+        NSMutableData *summaryGenerationHistoryCSVData = [NSMutableData data];
+        NSArray *summaryGenerationHistoriesToPush = [self getNonSynchronizedObject:@"SummaryGenerationHistory" error:&e];
+        CHECK_ERROR_AND_RETURN(e, error, @"Cannot fetch SummaryGenerationHistory to be pushed.",
+                               EntityNotFoundErrorCode, YES, YES);
+        
+        for (SummaryGenerationHistory* summaryGenerationHistoryToPush in summaryGenerationHistoriesToPush) {
+            // Write a comma-separated line of the User to summaryGenerationHistoryCSVData, refer to ADS 1.1.3
+            // and data_sync_files/SummaryGenerationHistory.csv for detailed format
+            
+            NSString *csvLine = [NSString stringWithFormat:@"\"%@\",\"%.0f\",\"%.0f\",\"%@\",\"%.0f\",\"%.0f\"\r\n",
+                                 summaryGenerationHistoryToPush.user.fullName,
+                                 [summaryGenerationHistoryToPush.startDate timeIntervalSince1970],
+                                 [summaryGenerationHistoryToPush.endDate timeIntervalSince1970],
+                                 [summaryGenerationHistoryToPush.deleted boolValue] == YES ? @"YES" : @"NO",
+                                 [summaryGenerationHistoryToPush.lastModifiedDate timeIntervalSince1970],
+                                 [summaryGenerationHistoryToPush.createdDate timeIntervalSince1970]];
+            NSData *csvLineByte = [csvLine dataUsingEncoding:NSUTF8StringEncoding];
+            [summaryGenerationHistoryCSVData appendData:csvLineByte];
+            
+            if ([summaryGenerationHistoryToPush.deleted boolValue] == YES) {
+                [[self managedObjectContext] deleteObject:summaryGenerationHistoryToPush];
+            } else {
+                summaryGenerationHistoryToPush.synchronized = @YES;
+            }
+        }
+        
+        // Transfer CSV files and additional files to Shared File Server
+        // ARS 1.1.3 #4.reate a CSV file named "User.csv"
+        [smbClient writeFile:[NSString stringWithFormat:@"data_sync/%@/data/User.csv", timestamp]
+                        data:userCSVData error:&e];
+        CHECK_ERROR_AND_RETURN(e, error, @"Cannot write User.csv to shared file server.",
+                               SynchronizationErrorCode, YES, YES);
+        [smbClient writeFile:[NSString stringWithFormat:@"data_sync/%@/data/AdhocFoodProduct.csv", timestamp]
+                        data:adhocFoodProductCSVData error:&e];
+        CHECK_ERROR_AND_RETURN(e, error, @"Cannot write AdhocFoodProduct.csv to shared file server.",
+                               SynchronizationErrorCode, YES, YES);
+        [smbClient writeFile:[NSString stringWithFormat:@"data_sync/%@/data/FoodConsumptionRecord.csv",
+                              timestamp] data:foodConsumptionRecordCSVData error:&e];
+        CHECK_ERROR_AND_RETURN(e, error, @"Cannot write FoodConsumptionRecord.csv to shared file server.",
+                               SynchronizationErrorCode, YES, YES);
+        [smbClient writeFile:[NSString stringWithFormat:@"data_sync/%@/data/SummaryGenerationHistory.csv",
+                              timestamp] data:summaryGenerationHistoryCSVData error:&e];
+        CHECK_ERROR_AND_RETURN(e, error, @"Cannot write SummaryGenerationHistory.csv to shared file server.",
+                               SynchronizationErrorCode, YES, YES);
+        // transfer additional files
+        for (NSString* path in additionalFiles) {
+            NSString *localPath = [[DataHelper getAbsoulteLocalDirectory:self.localFileSystemDirectory]
+                                   stringByAppendingPathComponent:path];
+            NSString *smbPath = [NSString stringWithFormat:@"data_sync/%@/data/%@", timestamp, path];
+            NSData *data = [NSData dataWithContentsOfFile:localPath];
+            [smbClient writeFile:smbPath data:data error:&e];
+            CHECK_ERROR_AND_RETURN(e, error, @"Cannot copy local file to shared file server.",
+                                   SynchronizationErrorCode,YES, YES);
+        }
+        
+        // NOTE if any error occurred during steps 2 – 8, local data changes in Core Data should be reverted.
+        [self endUndoActions];
+        [self updateSyncTime:currentSyncTimeinMillis];
+        
+    }
+    // Update progress
+    [self updateProgress:@0.9];
+    
+    // ARS 1.1.3 #9.Scan data changes from other iPad devices, for each /data_sync/<TIMESTAMP>/data
+    // directory
+    NSArray* dataSyncSubDirectories = [smbClient listDirectories:@"data_sync" error:&e];
+    CHECK_ERROR_AND_RETURN(e, error, @"Cannot list 'data_sync' directory.", SynchronizationErrorCode, YES, NO);
+    
+    for (NSString *timestampDir in dataSyncSubDirectories) {
+        long long timeStampFromDir = [timestampDir longLongValue];
+        if (timeStampFromDir != currentSyncTimeinMillis) {
+            [smbClient deleteDirectory:[NSString stringWithFormat:@"data_sync/%@", timestampDir] error:&e];
+            CHECK_ERROR_AND_RETURN(e, error, @"Cannot delete folder.", SynchronizationErrorCode, YES, NO);
+        }
+    }
+    
     // Save changes in the managedObjectContext
     [[self managedObjectContext] save:&e];
     CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", SynchronizationErrorCode, YES, NO);

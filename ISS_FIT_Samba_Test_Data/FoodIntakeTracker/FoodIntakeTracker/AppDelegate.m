@@ -18,6 +18,9 @@
 //
 //  Created by lofzcx 06/12/2013
 //
+//  Updated by pvmagacho on 04/19/2013
+//  F2Finish - NASA iPad App Updates
+//
 
 #import "AppDelegate.h"
 #import "LockServiceImpl.h"
@@ -28,6 +31,7 @@
 #import "SynchronizationServiceImpl.h"
 #import "DataUpdateServiceImpl.h"
 #import "DataHelper.h"
+#import "DBHelper.h"
 #import "Settings.h"
 #import "Helper.h"
 #import "LoggingHelper.h"
@@ -41,7 +45,13 @@
 @implementation AppDelegate {
     /*! Indicates whether the data loading is done. */
     BOOL loadingFinished;
+    /*! Indicates if there was a server change. */
+    BOOL changed;
+    /*! Lock for change */
+    NSLock *lock;
 }
+
+@synthesize tabBarViewController;
 
 - (TouchWindow *)window
 {
@@ -74,33 +84,42 @@
  */
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    lock = [[NSLock alloc] init];
+    [lock setName:@"UpdateLock"];
     
     //http://stackoverflow.com/questions/17678881/how-to-change-status-bar-text-color-in-ios-7
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
     
+    NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    if (![standardUserDefaults objectForKey:@"address_preference"] ||
+        ![standardUserDefaults objectForKey:@"user_preference"] ||
+        ![standardUserDefaults objectForKey:@"password_preference"]) {
+        [self registerDefaultsFromSettingsBundle];
+    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSettingsChange:)
+                                                 name:NSUserDefaultsDidChangeNotification object:nil];
+    
     // Load configurations and create services
     NSString *configBundle = [[NSBundle mainBundle] pathForResource:@"Configuration" ofType:@"plist"];
     if (configBundle) {
-        self.configuration = [NSDictionary dictionaryWithContentsOfFile:configBundle];
-        
+        self.configuration = [NSMutableDictionary dictionaryWithDictionary:[NSDictionary dictionaryWithContentsOfFile:configBundle]];
+        [self.configuration setObject:[standardUserDefaults objectForKey:@"address_preference"] forKey:@"SharedFileServerPath"];
+        [self.configuration setObject:[standardUserDefaults objectForKey:@"user_preference"] forKey:@"SharedFileServerUsername"];
+        [self.configuration setObject:[standardUserDefaults objectForKey:@"password_preference"] forKey:@"SharedFileServerPassword"];
         
         self.shouldAutoLogout = NO;
         loadingFinished = NO;
-        
-        
         
         self.lockService = [[LockServiceImpl alloc] initWithConfiguration:self.configuration];
         self.userService = [[UserServiceImpl alloc] initWithConfiguration:self.configuration
                                                               lockService:self.lockService];
         self.foodProductService = [[FoodProductServiceImpl alloc] init];
-        self.speechRecognitionService =
-        [[SpeechRecognitionServiceImpl alloc] initWithConfiguration:self.configuration];
-        self.foodConsumptionRecordService =
-        [[FoodConsumptionRecordServiceImpl alloc] initWithConfiguration:self.configuration];
-        self.synchronizationService =
-        [[SynchronizationServiceImpl alloc] initWithConfiguration:self.configuration];
-        self.dataUpdateService =
-        [[DataUpdateServiceImpl alloc] initWithConfiguration:self.configuration];
+        self.speechRecognitionService = [[SpeechRecognitionServiceImpl alloc] initWithConfiguration:self.configuration];
+        self.foodConsumptionRecordService = [[FoodConsumptionRecordServiceImpl alloc] initWithConfiguration:self.configuration];
+        self.synchronizationService = [[SynchronizationServiceImpl alloc] initWithConfiguration:self.configuration];
+        self.dataUpdateService = [[DataUpdateServiceImpl alloc] initWithConfiguration:self.configuration];
+        
         self.additionalFilesDirectory = [self.configuration valueForKey:@"LocalFileSystemDirectory"];
         self.tesseractDataPath = [self.configuration valueForKey:@"TesseractDataPath"];
         self.helpData = [self.configuration objectForKey:@"HelpData"];
@@ -123,13 +142,15 @@
                                        selector:@selector(generateSummary)
                                        userInfo:nil
                                         repeats:NO];
-        self.dataSyncUpdateTimer =
+        /*self.dataSyncUpdateTimer =
         [NSTimer scheduledTimerWithTimeInterval:
          [[self.configuration valueForKey:@"DataSyncUpdateInterval"] intValue]
                                          target:self
                                        selector:@selector(doSyncUpdate)
                                        userInfo:nil
-                                        repeats:YES];
+                                        repeats:YES];*/
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doSyncUpdate)
+                                                     name:@"DataSyncUpdateInterval" object:nil];
         return YES;
     } else {
         return NO;
@@ -327,30 +348,147 @@
 #pragma mark - Test Code
 // Check if the app is started for the first time. If so, do some initializations.
 - (void) initialLoad {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"HasLaunchedOnce"]) {
+        loadingFinished = YES;
+        NSDictionary *loadingEndParam = @{@"success": [NSNumber numberWithBool:YES]};
+        [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
+                                                            object:loadingEndParam];
+        return;
+    }
+    
     loadingFinished = NO;
     __block BOOL syncSuccessful = YES;
-    [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingBeginEvent object:nil];
+    
+    if (changed) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:LoadingNewBeginEvent object:nil];
+    } else {
+        [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingBeginEvent object:nil];
+    }
     
     dispatch_queue_t initialLoadQ = dispatch_queue_create("InitialLoad", NULL);
     dispatch_async(initialLoadQ, ^{
         @autoreleasepool {
+            
+            NSLog(@"Lock before update");
+            [lock lock];
+            
             NSError *error = nil;
-            syncSuccessful = [self.dataUpdateService update:&error];
+            syncSuccessful = [self.dataUpdateService update:&error force:YES];
             [LoggingHelper logError:@"initialLoad" error:error];
             if (syncSuccessful) {
                 syncSuccessful = [self.synchronizationService synchronize:&error];
                 [LoggingHelper logError:@"initialLoad" error:error];
+                
+                if (syncSuccessful) {
+                    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasLaunchedOnce"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                }
             }
             
-            dispatch_async(dispatch_get_main_queue(), ^{
-                loadingFinished = YES;
-                NSDictionary *loadingEndParam = @{@"success": [NSNumber numberWithBool:syncSuccessful]};
-                [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
-                                                                    object:loadingEndParam];
-            });
+            if ([self.dataUpdateService cancelUpdate]) {
+                [self.dataUpdateService setCancelUpdate:NO];
+            } else {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    loadingFinished = YES;
+                    NSDictionary *loadingEndParam = @{@"success": [NSNumber numberWithBool:syncSuccessful]};
+                    [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
+                                                                            object:loadingEndParam];
+                });
+            }
+            
+            NSLog(@"Unlock after update");
+            [lock unlock];
         }
     });
     dispatch_release(initialLoadQ);
+}
+
+#pragma mark - NSUserDefaults
+
+- (void)registerDefaultsFromSettingsBundle {
+    // this function writes default settings as settings
+    NSString *settingsBundle = [[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"bundle"];
+    if(!settingsBundle) {
+        NSLog(@"Could not find Settings.bundle");
+        return;
+    }
+    
+    NSDictionary *settings = [NSDictionary dictionaryWithContentsOfFile:[settingsBundle stringByAppendingPathComponent:@"Root.plist"]];
+    NSArray *preferences = [settings objectForKey:@"PreferenceSpecifiers"];
+    
+    NSMutableDictionary *defaultsToRegister = [[NSMutableDictionary alloc] initWithCapacity:[preferences count]];
+    for(NSDictionary *prefSpecification in preferences) {
+        NSString *key = [prefSpecification objectForKey:@"Key"];
+        if(key) {
+            [defaultsToRegister setObject:[prefSpecification objectForKey:@"DefaultValue"] forKey:key];
+            NSLog(@"writing as default %@ to the key %@",[prefSpecification objectForKey:@"DefaultValue"],key);
+        }
+    }
+    
+    [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsToRegister];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)handleSettingsChange:(NSNotification *) notif {
+    if (changed) {
+        return;
+    }
+    
+    NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    if (![self.configuration[@"SharedFileServerPath"] isEqualToString:[standardUserDefaults objectForKey:@"address_preference"]] ||
+        ![self.configuration[@"SharedFileServerUsername"] isEqualToString:[standardUserDefaults objectForKey:@"user_preference"]] ||
+        ![self.configuration[@"SharedFileServerPassword"] isEqualToString:[standardUserDefaults objectForKey:@"password_preference"]]) {
+        changed = YES;
+        
+        [self.dataUpdateService setCancelUpdate:YES];
+        
+        [self.tabBarViewController logout];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:BackupBeginEvent object:nil];
+        
+        [self performSelectorInBackground:@selector(resetData) withObject:nil];
+    }
+}
+
+- (void)resetData {
+    NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    NSError *error = nil;
+    if (loadingFinished) {
+        [NSThread sleepForTimeInterval:1];
+        
+        [self.synchronizationService backup:&error];
+    }
+    
+    if (error) {
+        return;
+    }
+    
+    NSLog(@"Lock before reset");
+    [lock lock];
+    [DBHelper resetPersistentStore];
+    NSLog(@"UnLock after reset");
+    [lock unlock];
+    
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"HasLaunchedOnce"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LastSynchronizedTime"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [self.configuration setObject:[standardUserDefaults objectForKey:@"address_preference"] forKey:@"SharedFileServerPath"];
+    [self.configuration setObject:[standardUserDefaults objectForKey:@"user_preference"] forKey:@"SharedFileServerUsername"];
+    [self.configuration setObject:[standardUserDefaults objectForKey:@"password_preference"] forKey:@"SharedFileServerPassword"];
+    
+    self.lockService = [[LockServiceImpl alloc] initWithConfiguration:self.configuration];
+    self.userService = [[UserServiceImpl alloc] initWithConfiguration:self.configuration
+                                                          lockService:self.lockService];
+    self.foodProductService = [[FoodProductServiceImpl alloc] init];
+    self.speechRecognitionService = [[SpeechRecognitionServiceImpl alloc] initWithConfiguration:self.configuration];
+    self.foodConsumptionRecordService = [[FoodConsumptionRecordServiceImpl alloc] initWithConfiguration:self.configuration];
+    self.synchronizationService = [[SynchronizationServiceImpl alloc] initWithConfiguration:self.configuration];
+    self.dataUpdateService = [[DataUpdateServiceImpl alloc] initWithConfiguration:self.configuration];
+    
+    [self initialLoad];
+    
+    changed = NO;
 }
 
 @end

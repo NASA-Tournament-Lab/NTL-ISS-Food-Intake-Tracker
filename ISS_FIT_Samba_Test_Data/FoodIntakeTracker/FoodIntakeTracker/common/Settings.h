@@ -18,6 +18,9 @@
 //
 //  Created by subchap on 06/12/2013
 //
+//  Updated by pvmagacho on 04/19/2013
+//  F2Finish - NASA iPad App Updates
+//
 
 /*! Define events */
 #define ConsumptionUpdatedEvent @"ConsumptionUpdatedEvent"
@@ -27,3 +30,6 @@
 #define InitialLoadingBeginEvent @"InitialLoadingBeginEvent"
 #define InitialLoadingEndEvent @"InitialLoadingEndEvent"
 #define InitialLoadingProgressEvent @"InitialLoadingProgressEvent"
+
+#define BackupBeginEvent @"BackupBeginEvent"
+#define LoadingNewBeginEvent @"LoadingNewBeginEvent"
