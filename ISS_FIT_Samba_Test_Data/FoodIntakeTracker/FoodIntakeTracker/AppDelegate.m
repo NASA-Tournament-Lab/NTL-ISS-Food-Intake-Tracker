@@ -389,7 +389,7 @@
                 [self.dataUpdateService setCancelUpdate:NO];
             } else {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    loadingFinished = YES;
+                    loadingFinished = syncSuccessful;
                     NSDictionary *loadingEndParam = @{@"success": [NSNumber numberWithBool:syncSuccessful]};
                     [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
                                                                             object:loadingEndParam];

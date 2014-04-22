@@ -18,7 +18,7 @@
 //
 //  Created by duxiaoyang on 2013-07-13.
 //
-//  Updated by pvmagacho on 04/19/2013
+//  Updated by pvmagacho on 04/19/2014
 //  F2Finish - NASA iPad App Updates
 //
 
@@ -453,7 +453,7 @@
     [self.managedObjectContext lock];
     //Fetch categories
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"category != '' AND deleted == NO"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"category != '' AND category != 'Vitamins / Supplements' AND deleted == NO"];
     NSEntityDescription *description = [NSEntityDescription  entityForName:@"FoodProduct"
                                                     inManagedObjectContext:self.managedObjectContext];
     NSExpression *categoryExpression = [NSExpression expressionForKeyPath:@"category"];
