@@ -37,7 +37,6 @@
 @dynamic maxPacketsPerFoodProductDaily;
 @dynamic profileImage;
 @dynamic useLastUsedFoodProductFilter;
-@dynamic faceImages;
 @dynamic lastUsedFoodProductFilter;
 @dynamic adhocFoodProduct;
 @dynamic consumptionRecord;

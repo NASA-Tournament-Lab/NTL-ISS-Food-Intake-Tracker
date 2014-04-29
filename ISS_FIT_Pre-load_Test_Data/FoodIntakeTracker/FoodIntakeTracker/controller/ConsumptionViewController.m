@@ -42,7 +42,7 @@
 
 #define MAX_CALORIES 2800
 #define MAX_SODIUM 160
-#define MAX_FLUID 3
+#define MAX_FLUID 3000
 
 #define PROTEIN_CALORIES_FACTOR 4.0
 #define CARB_CALORIES_FACTOR 4.0
@@ -303,12 +303,12 @@
         self.sodiumProgress.lblTotal.text =
         [NSString stringWithFormat:@"/ %@ mg", appDelegate.loggedInUser.dailyTargetSodium];
         self.fluidProgress.lblTotal.text =
-        [NSString stringWithFormat:@"/ %@ liters", appDelegate.loggedInUser.dailyTargetFluid];
+        [NSString stringWithFormat:@"/ %@ mL", appDelegate.loggedInUser.dailyTargetFluid];
     }
     else {
         self.caloriesProgess.lblTotal.text = [NSString stringWithFormat:@"/ %d kcal", MAX_CALORIES];
         self.sodiumProgress.lblTotal.text = [NSString stringWithFormat:@"/ %d mg", MAX_SODIUM];
-        self.fluidProgress.lblTotal.text = [NSString stringWithFormat:@"/ %d liters", MAX_FLUID];
+        self.fluidProgress.lblTotal.text = [NSString stringWithFormat:@"/ %d mL", MAX_FLUID];
     }
     
     listening = NO;

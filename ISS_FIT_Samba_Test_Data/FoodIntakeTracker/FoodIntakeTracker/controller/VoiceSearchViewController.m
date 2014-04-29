@@ -62,6 +62,12 @@
     self.topDivider.hidden = YES;
     
     NSError *error;
+    /* Uncomment to regenarte language models. */
+    /*
+    if ([srService updateFoodProductLanguageModel:&error]) {
+        NSLog(@"Updated successfully");
+    }
+    */
     NSDictionary *dict = [srService getFoodProductLanguageModelPaths:&error];
     // start listening for speech
     [pocketsphinxController startListeningWithLanguageModelAtPath:[dict valueForKey:@"LMPath"]

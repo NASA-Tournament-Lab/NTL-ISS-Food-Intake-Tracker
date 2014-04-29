@@ -31,5 +31,7 @@
 #define InitialLoadingEndEvent @"InitialLoadingEndEvent"
 #define InitialLoadingProgressEvent @"InitialLoadingProgressEvent"
 
+#define UpdateLastSync @"UpdateLastSync"
+
 #define BackupBeginEvent @"BackupBeginEvent"
 #define LoadingNewBeginEvent @"LoadingNewBeginEvent"

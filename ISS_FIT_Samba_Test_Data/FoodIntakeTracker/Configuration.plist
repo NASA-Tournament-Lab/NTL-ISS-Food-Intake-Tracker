@@ -23,14 +23,8 @@
 	<string>OTHER_DEVICE_ID</string>
 	<key>CreatePreloadApplicationData</key>
 	<false/>
-	<key>SharedFileServerPath</key>
-	<string>smb://192.168.56.104/NASA</string>
 	<key>SharedFileServerWorkgroup</key>
 	<string>WORKGROUP</string>
-	<key>SharedFileServerUsername</key>
-	<string>NASA</string>
-	<key>SharedFileServerPassword</key>
-	<string>12345</string>
 	<key>FoodConsumptionRecordModifiablePeroidInDays</key>
 	<integer>10</integer>
 	<key>FoodConsumptionRecordKeptPeriodInDays</key>
@@ -85,21 +79,21 @@
 		<string>2-0-Admin-Functions</string>
 	</dict>
 	<key>SummaryGenerationFrequency</key>
-	<string>Weekly</string>
+	<string>Daily</string>
 	<key>HeartbeatInterval</key>
 	<integer>180</integer>
 	<key>SummaryGenerationInterval</key>
-	<integer>1000</integer>
+	<integer>1200</integer>
 	<key>DataSyncUpdateInterval</key>
-	<integer>300</integer>
+	<integer>600</integer>
 	<key>DailyTargetCalories</key>
-	<integer>2800</integer>
+	<real>2800</real>
 	<key>DailyTargetSodium</key>
 	<integer>160</integer>
 	<key>DailyTargetFluid</key>
-	<integer>10</integer>
+	<integer>10000</integer>
 	<key>DailyTargetProtein</key>
-	<integer>2000</integer>
+	<real>2000</real>
 	<key>DailyTargetCarbs</key>
 	<integer>2100</integer>
 	<key>DailyTargetFats</key>

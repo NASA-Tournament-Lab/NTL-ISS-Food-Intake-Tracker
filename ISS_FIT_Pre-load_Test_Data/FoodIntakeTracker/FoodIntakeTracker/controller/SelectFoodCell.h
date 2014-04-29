@@ -19,7 +19,7 @@
 //
 
 #import <UIKit/UIKit.h>
-@class Food;
+@class FoodProduct;
 
 /**
  * @class SelectFoodCell

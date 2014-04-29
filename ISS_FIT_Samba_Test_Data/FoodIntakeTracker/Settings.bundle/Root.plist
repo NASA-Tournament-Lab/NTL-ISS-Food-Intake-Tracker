@@ -16,7 +16,7 @@
 			<key>AutocorrectionType</key>
 			<string>No</string>
 			<key>DefaultValue</key>
-			<string>smb://192.168.56.104/NASA</string>
+			<string>smb://192.168.0.51/ISS-FIT-DATA</string>
 			<key>IsSecure</key>
 			<false/>
 			<key>Key</key>
@@ -36,7 +36,7 @@
 			<key>AutocorrectionType</key>
 			<string>No</string>
 			<key>DefaultValue</key>
-			<string>NASA</string>
+			<string>FIT-User</string>
 			<key>IsSecure</key>
 			<false/>
 			<key>Key</key>
@@ -54,7 +54,7 @@
 			<key>AutocorrectionType</key>
 			<string>No</string>
 			<key>DefaultValue</key>
-			<string>12345</string>
+			<string>F1TD@t@Srvr!</string>
 			<key>IsSecure</key>
 			<true/>
 			<key>Key</key>

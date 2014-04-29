@@ -217,11 +217,13 @@ static dispatch_once_t onceToken = 0;
         persistentStoreCoordinator =
         [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[NSManagedObjectModel mergedModelFromBundles:nil]];
         
+        NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption:@YES, NSInferMappingModelAutomaticallyOption:@YES};
+        
         NSPersistentStore *persistentStore =
         [persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
                                                  configuration:nil
                                                            URL:storeUrl
-                                                       options:nil
+                                                       options:options
                                                          error:&error];
         if (persistentStore == nil) {
             NSLog(@"Store Configuration Failure\n%@",

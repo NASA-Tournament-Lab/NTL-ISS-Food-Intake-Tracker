@@ -18,9 +18,6 @@
 //
 //  Created by lofzcx 06/12/2013
 //
-//  Updated by pvmagacho on 04/19/2014
-//  F2Finish - NASA iPad App Updates
-//
 
 #import "SelectConsumptionViewController.h"
 #import "Helper.h"
@@ -35,7 +32,7 @@
 #import "DBHelper.h"
 
 @interface SelectConsumptionViewController ()<SettingListViewDelegate, CustomIndexBarDelegate,
-    UISearchBarDelegate>{
+UISearchBarDelegate>{
     /* categories dictionary */
     NSDictionary *categories;
     /* categories keys */
@@ -58,7 +55,7 @@
     
     /* sort option array */
     NSMutableArray *sortByOptionArray;
-        
+    
     /* is only view calories */
     BOOL viewCaloriesOnly;
     /* is only view sodium */
@@ -104,6 +101,8 @@
     self.lblTitle.font = [UIFont fontWithName:@"Bebas" size:24];
     self.lblSubTitle.font = [UIFont fontWithName:@"Bebas" size:17];
     self.lblInfoTitle.font = [UIFont fontWithName:@"Bebas" size:20];
+    
+    self.btnChange.hidden = YES;
     
     foodKeys = [NSMutableArray array];
     foodList = [NSMutableArray array];
@@ -198,7 +197,7 @@
     else {
         selectCategoryIndex[0] = 0;
     }
-
+    
     [self loadFoods];
     [self listviewDidSelect:self.optionListView.selectIndex];
     [[NSNotificationCenter defaultCenter] postNotificationName:AutoLogoutRenewEvent object:nil];
@@ -243,17 +242,17 @@
         NSString *foodProductCategory = [(NSArray *)[categories objectForKey:@"Food by Category"]
                                          objectAtIndex:selectCategoryIndex[1]];
         filter.categories = [DataHelper convertNSStringToNSSet:foodProductCategory withEntityDescription:
-                              [NSEntityDescription entityForName:@"StringWrapper"
-                                          inManagedObjectContext:[DBHelper currentThreadMoc]]
-                                         inManagedObjectContext:context withSeparator:@";"];
+                             [NSEntityDescription entityForName:@"StringWrapper"
+                                         inManagedObjectContext:[DBHelper currentThreadMoc]]
+                                        inManagedObjectContext:context withSeparator:@";"];
     }
     if (selectCategoryIndex[2] != -1) {
         NSString *foodOrigin = [(NSArray *)[categories objectForKey:@"Food by Country"]
                                 objectAtIndex:selectCategoryIndex[2]];
         filter.origins = [DataHelper convertNSStringToNSSet:foodOrigin withEntityDescription:
-        [NSEntityDescription entityForName:@"StringWrapper"
-                     inManagedObjectContext:[DBHelper currentThreadMoc]]
-                    inManagedObjectContext:context withSeparator:@";"];
+                          [NSEntityDescription entityForName:@"StringWrapper"
+                                      inManagedObjectContext:[DBHelper currentThreadMoc]]
+                                     inManagedObjectContext:context withSeparator:@";"];
     }
     if (selectCategoryIndex[3] != -1) {
         if (selectCategoryIndex[3] == 1) {
@@ -261,6 +260,12 @@
         } else if (selectCategoryIndex[3] == 2) {
             filter.favoriteWithinTimePeriod = @30;
         }
+    }
+    if (selectCategoryIndex[4] != -1) {
+        filter.categories = [DataHelper convertNSStringToNSSet:@"Vitamins / Supplements" withEntityDescription:
+                             [NSEntityDescription entityForName:@"StringWrapper"
+                                         inManagedObjectContext:[DBHelper currentThreadMoc]]
+                                        inManagedObjectContext:context withSeparator:@";"];
     }
     
     // Save last used food product filter
@@ -276,31 +281,29 @@
     [foodDict removeAllObjects];
     [foodList removeAllObjects];
     
-    if (selectCategoryIndex[4] == -1) {
-        for(int i = 0; i < 26; i++){
-            NSString *key = [NSString stringWithFormat:@"%c", (char)(65 + i)];
-            [foodKeys addObject:key];
-            NSMutableArray *foodProducts = [[NSMutableArray alloc] init];
-            [foodDict setValue:foodProducts forKey:key];
-        }
-        
-        for(FoodProduct *foodProduct in result) {
-            NSString *key = [foodProduct.name substringToIndex:1];
-            if (key && ![key isEqualToString:@""]) {
-                key = [key uppercaseString];
-                [foodList addObject:foodProduct];
-                NSMutableArray *foodProducts = foodDict[key];
-                [foodProducts addObject:foodProduct];
-            }
-        }
-        
-        for(int i = [foodKeys count] - 1; i >= 0; i--){
-            NSString *key = foodKeys[i];
+    for(int i = 0; i < 26; i++){
+        NSString *key = [NSString stringWithFormat:@"%c", (char)(65 + i)];
+        [foodKeys addObject:key];
+        NSMutableArray *foodProducts = [[NSMutableArray alloc] init];
+        [foodDict setValue:foodProducts forKey:key];
+    }
+    
+    for(FoodProduct *foodProduct in result) {
+        NSString *key = [foodProduct.name substringToIndex:1];
+        if (key && ![key isEqualToString:@""]) {
+            key = [key uppercaseString];
+            [foodList addObject:foodProduct];
             NSMutableArray *foodProducts = foodDict[key];
-            if (foodProducts.count == 0) {
-                [foodDict removeObjectForKey:key];
-                [foodKeys removeObject:key];
-            }
+            [foodProducts addObject:foodProduct];
+        }
+    }
+    
+    for(int i = [foodKeys count] - 1; i >= 0; i--){
+        NSString *key = foodKeys[i];
+        NSMutableArray *foodProducts = foodDict[key];
+        if (foodProducts.count == 0) {
+            [foodDict removeObjectForKey:key];
+            [foodKeys removeObject:key];
         }
     }
     
@@ -489,6 +492,24 @@
 }
 
 /**
+ * Change from sort/filter.
+ * @param sender the button.
+ */
+- (IBAction)changeList:(id)sender {
+    UIButton *btn = (UIButton *) sender;
+    btn.selected = !btn.selected;
+    self.lblSortTitle.text = btn.selected ? @"Filter By:" : @"Sort By:";
+    
+    NSArray *array = [[NSArray arrayWithObject:@"None"] arrayByAddingObjectsFromArray:[categories objectForKey:@"Food by Category"]];
+    
+    self.optionListView.delegate = self;
+    self.optionListView.selectIndex = 0;
+    self.optionListView.options = btn.selected ? [NSMutableArray arrayWithArray:array] : sortByOptionArray;
+    self.lblSortBy.text = [self.optionListView.options objectAtIndex:0];
+    [self.optionListView.listTable reloadData];
+}
+
+/**
  * hide sort by option list.
  */
 - (void)hideSortByOption{
@@ -502,12 +523,22 @@
  * @param index the selected index.
  */
 - (void)listviewDidSelect:(int)index{
+    if (self.btnChange.selected) {
+        self.lblSortBy.text = [self.optionListView.options objectAtIndex:index];
+        [self hideSortByOption];
+        
+        selectCategoryIndex[1] = index > 0 ? index - 1 : -1;
+        [self loadFoods];
+        
+        return;
+    }
+    
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     appDelegate.loggedInUser.lastUsedFoodProductFilter.sortOption = [self getSortOptionFromListView:index];
-
-    self.lblSortBy.text = [sortByOptionArray objectAtIndex:index];
+    
+    self.lblSortBy.text = [self.optionListView.options objectAtIndex:index];
     [self hideSortByOption];
-
+    
     selectIndex = index;
     if(index == 2){
         viewCaloriesOnly = YES;
@@ -912,7 +943,7 @@
                      permittedArrowDirections:UIPopoverArrowDirectionAny
                                      animated:YES];
     }
-
+    
     FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
     NSError *error = nil;
     FoodProductFilter *filter = [foodProductService buildFoodProductFilter:&error];
@@ -1218,31 +1249,41 @@
         }
         else {
             /*if (selectCategoryIndex[indexPath.section] == indexPath.row) {
-                selectCategoryIndex[indexPath.section] = -1;
-            }
-            else {
-                selectCategoryIndex[indexPath.section] = indexPath.row;
-            }
-            
-            bool hasSelection = NO;
-            for (int i = 1; i < 5; i++) {
-                if (selectCategoryIndex[i] != -1) {
-                    hasSelection = YES;
-                }
-            }
-            if (hasSelection) {
-                selectCategoryIndex[0] = -1;
-            }
-            else {
-                selectCategoryIndex[0] = 0;
-            }*/
+             selectCategoryIndex[indexPath.section] = -1;
+             }
+             else {
+             selectCategoryIndex[indexPath.section] = indexPath.row;
+             }
+             
+             bool hasSelection = NO;
+             for (int i = 1; i < 5; i++) {
+             if (selectCategoryIndex[i] != -1) {
+             hasSelection = YES;
+             }
+             }
+             if (hasSelection) {
+             selectCategoryIndex[0] = -1;
+             }
+             else {
+             selectCategoryIndex[0] = 0;
+             }*/
             
             for (int i = 0; i < 5; i++) {
                 selectCategoryIndex[i] = -1;
             }
             selectCategoryIndex[indexPath.section] = indexPath.row;
+            
+            self.btnChange.hidden = (indexPath.section != 2);
+            
+            self.btnChange.selected = NO;
+            self.lblSortTitle.text = @"Sort By:";
+            self.optionListView.delegate = self;
+            self.optionListView.selectIndex = 0;
+            self.optionListView.options = sortByOptionArray;
+            self.lblSortBy.text = [self.optionListView.options objectAtIndex:0];
+            [self.optionListView.listTable reloadData];
         }
-
+        
         [tableView reloadData];
         [self loadFoods];
     }

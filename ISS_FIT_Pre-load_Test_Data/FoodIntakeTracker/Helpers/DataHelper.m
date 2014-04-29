@@ -157,31 +157,27 @@
     
     user.admin = [data[0] isEqualToString:@"YES"]?@YES:@NO;
     user.fullName = data[1];
-    user.faceImages = [DataHelper convertNSStringToNSSet:data[2]
-                                   withEntityDescription:[NSEntityDescription entityForName:@"StringWrapper"
-                                                                     inManagedObjectContext:context]
-                                  inManagedObjectContext:nil withSeparator:@";"];
-    
+
     // build filter
     FoodProductFilter *filter = nil;
     
-    if([data[3] isEqualToString:@""])
+    if([data[2] isEqualToString:@""])
     {
         filter = nil;
     }
     else {
         filter = [foodProdcutService buildFoodProductFilter:&error];
-        filter.name = data[3];
-        filter.origins = [DataHelper convertNSStringToNSSet:data[4]
+        filter.name = data[2];
+        filter.origins = [DataHelper convertNSStringToNSSet:data[3]
                                       withEntityDescription:[NSEntityDescription entityForName:@"StringWrapper"
                                                                         inManagedObjectContext:context]
                                      inManagedObjectContext:nil withSeparator:@";"];
-        filter.categories = [DataHelper convertNSStringToNSSet:data[5]
+        filter.categories = [DataHelper convertNSStringToNSSet:data[4]
                                          withEntityDescription:[NSEntityDescription entityForName:@"StringWrapper"
                                                                            inManagedObjectContext:context]
                                         inManagedObjectContext:nil withSeparator:@";"];
-        filter.favoriteWithinTimePeriod = @([data[6] intValue]);
-        filter.sortOption = @([DataHelper buildFoodProductSortOptionFromString:data[7]]);
+        filter.favoriteWithinTimePeriod = @([data[5] intValue]);
+        filter.sortOption = @([DataHelper buildFoodProductSortOptionFromString:data[6]]);
         if(filter.sortOption.intValue == -1) {
             error = [NSError errorWithDomain:@"DataHelper" code:IllegalArgumentErrorCode
                                     userInfo:@{NSUnderlyingErrorKey: @"Can't build user. FoodProductSortOption is not right."}];
@@ -197,19 +193,19 @@
     
     
     user.lastUsedFoodProductFilter = filter;
-    user.useLastUsedFoodProductFilter = [data[8] isEqualToString:@"YES"]?@YES:@NO;
-    user.dailyTargetFluid = @([data[9] intValue]);
-    user.dailyTargetEnergy = @([data[10] intValue]);
-    user.dailyTargetSodium = @([data[11] intValue]);
-    user.dailyTargetProtein = @([data[12] intValue]);
-    user.dailyTargetCarb = @([data[13] intValue]);
-    user.dailyTargetFat = @([data[14] intValue]);
-    user.maxPacketsPerFoodProductDaily = @([data[15] intValue]);
-    user.profileImage = data[16];
-    user.deleted = [data[17] isEqualToString:@"YES"]?@YES:@NO;
+    user.useLastUsedFoodProductFilter = [data[7] isEqualToString:@"YES"]?@YES:@NO;
+    user.dailyTargetFluid = @([data[8] intValue]);
+    user.dailyTargetEnergy = @([data[9] intValue]);
+    user.dailyTargetSodium = @([data[10] intValue]);
+    user.dailyTargetProtein = @([data[11] intValue]);
+    user.dailyTargetCarb = @([data[12] intValue]);
+    user.dailyTargetFat = @([data[13] intValue]);
+    user.maxPacketsPerFoodProductDaily = @([data[14] intValue]);
+    user.profileImage = data[15];
+    user.deleted = [data[16] isEqualToString:@"YES"]?@YES:@NO;
 
-    user.lastModifiedDate = [NSDate dateWithTimeIntervalSince1970:[data[18] doubleValue]];
-    user.createdDate = [NSDate dateWithTimeIntervalSince1970:[data[19] doubleValue]];
+    user.lastModifiedDate = [NSDate dateWithTimeIntervalSince1970:[data[17] doubleValue]];
+    user.createdDate = [NSDate dateWithTimeIntervalSince1970:[data[18] doubleValue]];
     [LoggingHelper logMethodExit:methodName returnValue:user];
     return user;
 }

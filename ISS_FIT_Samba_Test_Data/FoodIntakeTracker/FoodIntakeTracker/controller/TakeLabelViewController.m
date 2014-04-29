@@ -101,7 +101,7 @@
     picker.allowsEditing = YES;
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+        picker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
         picker.cameraViewTransform = CGAffineTransformScale(picker.cameraViewTransform, -1, 1);
     }
     else {

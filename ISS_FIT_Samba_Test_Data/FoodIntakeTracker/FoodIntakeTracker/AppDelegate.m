@@ -142,13 +142,14 @@
                                        selector:@selector(generateSummary)
                                        userInfo:nil
                                         repeats:NO];
-        /*self.dataSyncUpdateTimer =
+        self.dataSyncUpdateTimer =
         [NSTimer scheduledTimerWithTimeInterval:
          [[self.configuration valueForKey:@"DataSyncUpdateInterval"] intValue]
                                          target:self
                                        selector:@selector(doSyncUpdate)
                                        userInfo:nil
-                                        repeats:YES];*/
+                                        repeats:YES];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doSyncUpdate)
                                                      name:@"DataSyncUpdateInterval" object:nil];
         return YES;
@@ -269,6 +270,22 @@
                 startDate = [calendar dateFromComponents:components];
                 components.weekday = 7;
                 endDate = [calendar dateFromComponents:components];
+            } else if ([self.summaryGenerationFrequency isEqualToString:@"Daily"]) {
+                NSDateComponents *comps = [NSDateComponents new];
+                comps.day = -1;
+                NSDate *date = [calendar dateByAddingComponents:comps toDate:[NSDate date] options:0];
+                NSDateComponents *components = [calendar components:NSYearCalendarUnit|
+                                                NSDayCalendarUnit
+                                                           fromDate:date];
+                components.hour = 0;
+                components.minute = 0;
+                components.second = 0;
+                startDate = [calendar dateFromComponents:components];
+                
+                components.hour = 23;
+                components.minute = 59;
+                components.second = 59;
+                endDate = [calendar dateFromComponents:components];
             } else {
                 // Monthly
                 // Similarly, start date should be first day of last month, end date should be last day of last month
@@ -313,30 +330,8 @@
             @autoreleasepool {
                 NSError *error = nil;
                 [self.dataUpdateService update:&error];
-                if(error) {
-                    // https://apps.topcoder.com/bugs/browse/ISSFIT-15
-                    // hides the error messsage
-                    /*dispatch_async(dispatch_get_main_queue(), ^{
-                     [Helper showAlert:@"Error"
-                     message:@"We are unable to sync this iPad with the central food repository.\n "
-                     "Don’t worry! You can still use the ISS FIT app and we will attempt to sync"
-                     " with the central food repository when it is available."];
-                     });
-                     */
-                    
-                }
-                else {
+                if (!error) {
                     [self.synchronizationService synchronize:&error];
-                    // https://apps.topcoder.com/bugs/browse/ISSFIT-15
-                    // hides the error messsage
-                    /*if(error) {
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                     [Helper showAlert:@"Error"
-                     message:@"We are unable to update this iPad with the central food repository. \n"
-                     "Don’t worry! You can still use the ISS FIT app and we will attempt to update"
-                     " with the central food repository when it is available."];
-                     });
-                     }*/
                 }
             }
         });

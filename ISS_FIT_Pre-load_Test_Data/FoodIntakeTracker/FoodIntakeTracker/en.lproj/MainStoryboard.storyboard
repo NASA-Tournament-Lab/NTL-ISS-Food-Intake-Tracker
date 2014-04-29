@@ -430,7 +430,7 @@
                                         <color key="color" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </activityIndicatorView>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Loading..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="5Vr-PM-4PX">
-                                        <rect key="frame" x="284" y="786" width="200" height="40"/>
+                                        <rect key="frame" x="184" y="786" width="400" height="40"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="23"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
@@ -700,6 +700,22 @@
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     </view>
+                                    <view tag="104" contentMode="scaleToFill" id="Qac-5x-Xyh">
+                                        <rect key="frame" x="635" y="36" width="128" height="36"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES"/>
+                                        <subviews>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="uMs-85-jKk" userLabel="Label - Last Synced in: Sun,  21st April 2014">
+                                                <rect key="frame" x="0.0" y="0.0" width="128" height="36"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <string key="text">Last Synced in:
+Sun,  21st April 2014</string>
+                                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="8"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    </view>
                                 </subviews>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
                             </view>
@@ -718,6 +734,7 @@
                         <outlet property="imgData" destination="Xg5-sZ-PAJ" id="8uX-bY-yKI"/>
                         <outlet property="imgHelp" destination="ApI-gZ-m6V" id="HZy-qh-6bU"/>
                         <outlet property="imgProfile" destination="jq6-pK-ALN" id="OQp-q3-3Qh"/>
+                        <outlet property="lastSyncLabel" destination="uMs-85-jKk" id="Jvj-af-px0"/>
                         <outlet property="lblLogout" destination="SqY-H6-xCh" id="EyP-as-5sN"/>
                         <outlet property="tabView" destination="fXC-fX-wtd" id="cxX-4g-ssc"/>
                     </connections>
@@ -902,7 +919,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OKs-e1-CAw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1870" y="-4694"/>
+            <point key="canvasLocation" x="354" y="-4944"/>
         </scene>
         <!--Consumption View Controller-->
         <scene sceneID="h8Z-l8-RJB">
@@ -1482,7 +1499,7 @@
                                                                             <rect key="frame" x="184" y="7" width="80" height="41"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                         </imageView>
-                                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="liter" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="g0K-4q-GQr">
+                                                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="mL" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="g0K-4q-GQr">
                                                                             <rect key="frame" x="230" y="22" width="26" height="21"/>
                                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1563,7 +1580,7 @@
                                                                 </view>
                                                             </subviews>
                                                             <connections>
-                                                                <outlet property="delegate" destination="o9g-Oy-ZKb" id="8bH-Uy-RW1"/>
+                                                                <outlet property="delegate" destination="o9g-Oy-ZKb" id="0VH-QL-ajc"/>
                                                             </connections>
                                                         </scrollView>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="F0t-0j-u4d" userLabel="Image View - line">
@@ -2600,7 +2617,7 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="ISS FIT Users" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="NV0-YS-Ccr">
-                                        <rect key="frame" x="11" y="147" width="141" height="21"/>
+                                        <rect key="frame" x="11" y="148" width="141" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="12"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -3101,7 +3118,7 @@
                                                 <rect key="frame" x="184" y="7" width="80" height="41"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             </imageView>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="liter" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="fDr-oE-4xU">
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="mL" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="fDr-oE-4xU">
                                                 <rect key="frame" x="230" y="22" width="26" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -4251,7 +4268,7 @@ the nutritional value (kcal / sodium / fluids).</string>
                                                                                     <rect key="frame" x="6" y="1" width="80" height="41"/>
                                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                                 </imageView>
-                                                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="liter" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="4Xj-jQ-lmd">
+                                                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="mL" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="4Xj-jQ-lmd">
                                                                                     <rect key="frame" x="52" y="16" width="26" height="21"/>
                                                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -4392,7 +4409,7 @@ the nutritional value (kcal / sodium / fluids).</string>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="xA8-n0-0bV">
-                                                <rect key="frame" x="98" y="9" width="222" height="29"/>
+                                                <rect key="frame" x="129" y="9" width="222" height="29"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                 <state key="normal" backgroundImage="icon-dropdown-select.png">
@@ -4407,7 +4424,7 @@ the nutritional value (kcal / sodium / fluids).</string>
                                                 </connections>
                                             </button>
                                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Alphabetically (A to Z)" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="e8e-lJ-siz">
-                                                <rect key="frame" x="109" y="13" width="185" height="21"/>
+                                                <rect key="frame" x="136" y="13" width="185" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
                                                 <nil key="highlightedColor"/>
@@ -4428,12 +4445,23 @@ the nutritional value (kcal / sodium / fluids).</string>
                                                 </connections>
                                             </button>
                                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Sort By:" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="CQd-sP-2Q2">
-                                                <rect key="frame" x="11" y="13" width="78" height="21"/>
+                                                <rect key="frame" x="57" y="13" width="64" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="14"/>
                                                 <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="bO2-wM-7IK">
+                                                <rect key="frame" x="15" y="9" width="32" height="32"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                <state key="normal" image="btn-change.png">
+                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="changeList:" destination="xHP-MG-95p" eventType="touchUpInside" id="ONz-Ac-iKf"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     </view>
@@ -4446,6 +4474,7 @@ the nutritional value (kcal / sodium / fluids).</string>
                     <connections>
                         <outlet property="btnAdd" destination="EKG-O1-juu" id="gCD-Gx-w44"/>
                         <outlet property="btnBack" destination="nJw-Zo-uJq" id="B0L-3T-X1v"/>
+                        <outlet property="btnChange" destination="bO2-wM-7IK" id="lsB-QM-QfT"/>
                         <outlet property="gridView" destination="mPt-nM-vxQ" id="ZOx-YO-jkS"/>
                         <outlet property="infoView" destination="dD8-uF-Qmg" id="uZb-UQ-130"/>
                         <outlet property="lblInfoTitle" destination="YIY-8S-e5H" id="4Cq-Rk-Whn"/>
@@ -5313,7 +5342,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                                                 <rect key="frame" x="191" y="7" width="80" height="41"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                             </imageView>
-                                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="liter" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Jtk-f8-lIX">
+                                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="mL" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Jtk-f8-lIX">
                                                                 <rect key="frame" x="237" y="22" width="26" height="21"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -5380,7 +5409,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                                                 <rect key="frame" x="191" y="7" width="80" height="41"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                             </imageView>
-                                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="liter" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="scI-Yn-lBs">
+                                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="mL" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="scI-Yn-lBs">
                                                                 <rect key="frame" x="237" y="22" width="26" height="21"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -6090,7 +6119,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                                                 <rect key="frame" x="191" y="7" width="80" height="41"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                             </imageView>
-                                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="liter" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="rKo-tG-S7w">
+                                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="mL" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="rKo-tG-S7w">
                                                                 <rect key="frame" x="237" y="22" width="26" height="21"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -6507,6 +6536,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
         <image name="btn-blue3.png" width="87" height="29"/>
         <image name="btn-blue4.png" width="336" height="33"/>
         <image name="btn-capture.png" width="28" height="29"/>
+        <image name="btn-change.png" width="96" height="96"/>
         <image name="btn-checkbox-check.png" width="16" height="16"/>
         <image name="btn-checkbox.png" width="16" height="16"/>
         <image name="btn-comment.png" width="28" height="20"/>

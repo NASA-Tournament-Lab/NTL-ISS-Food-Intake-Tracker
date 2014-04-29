@@ -83,7 +83,7 @@
  @discussion Test buildUserFromData method.
  */
 - (void)testBuildUserFromData {
-    NSArray *data = @[@"NO",@"Kevin Lee",@"kl1.png;kl2.png",@"Chicken",@"USA",@"Food",@"7",
+    NSArray *data = @[@"NO",@"Kevin Lee",@"Chicken",@"USA",@"Food",@"7",
                       @"Z_TO_A",@"NO",@"30",@"20",@"20",@"30",@"20",@"20",@"5",@"kl1.png",@"YES",@"224555476",@"224555476"];
     NSError *error = nil;
     User *user = [DataHelper buildUserFromData:data inManagedObjectContext:self.managedObjectContext error:&error];

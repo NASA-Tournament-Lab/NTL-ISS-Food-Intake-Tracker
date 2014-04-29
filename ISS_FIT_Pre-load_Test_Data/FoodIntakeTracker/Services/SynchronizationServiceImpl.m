@@ -78,6 +78,9 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSNumber *lastSyncTime = [defaults objectForKey:@"LastSynchronizedTime"];
     if(lastSyncTime != nil) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:UpdateLastSync
+                                                            object:[NSDate dateWithTimeIntervalSince1970:[lastSyncTime
+                                                                                                          longLongValue]/1000]];
         return [lastSyncTime longLongValue];    
     }
     return 0;
@@ -87,6 +90,9 @@
     NSNumber *syncTime = [NSNumber numberWithLongLong:timestamp];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:syncTime forKey:@"LastSynchronizedTime"];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:UpdateLastSync
+                                                        object:[NSDate dateWithTimeIntervalSince1970:timestamp/1000]];
     return;
 }
 
@@ -205,11 +211,10 @@
             // Write a comma-separated line of the User to userCSVData, refer to ADS 1.1.3
             // and data_sync_files/User.csv for detailed format
             
-            NSString *csvLine = [NSString stringWithFormat:@"\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\","
+            NSString *csvLine = [NSString stringWithFormat:@"\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\","
                                  "\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%.0f\",\"%.0f\"\r\n",
                                  [userToPush.admin boolValue] == YES ? @"YES":@"NO",
                                  userToPush.fullName,
-                                 [DataHelper convertStringWrapperNSSetToNSString:userToPush.faceImages withSeparator:@";"],
                                  userToPush.lastUsedFoodProductFilter == nil ? @"":
                                  (userToPush.lastUsedFoodProductFilter.name == nil ? @"" :
                                   userToPush.lastUsedFoodProductFilter.name),
@@ -246,12 +251,7 @@
             } else {
                 userToPush.synchronized = @YES;
             }
-            // Add image file paths of the user to additionalFiles array
-            for (StringWrapper *path in userToPush.faceImages) {
-                if(path.value != nil && path.value.length != 0) {
-                    [additionalFiles addObject:[path.value copy]];
-                }
-            }
+            
             [additionalFiles addObject:userToPush.profileImage];
         }
         
@@ -522,7 +522,7 @@
             id<UserService> userService = [[UserServiceImpl alloc] init];
             if ([localUsers count] > 0) {
                 User *localUser = localUsers[0];
-                BOOL deleted = [userData[17] boolValue];
+                BOOL deleted = [userData[16] boolValue];
                 if (deleted) {
                     [[self managedObjectContext] deleteObject:localUser];
                 } else {

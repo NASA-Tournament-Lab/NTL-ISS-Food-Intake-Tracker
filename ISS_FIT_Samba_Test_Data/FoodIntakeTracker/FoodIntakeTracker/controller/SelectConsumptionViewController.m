@@ -102,6 +102,8 @@
     self.lblSubTitle.font = [UIFont fontWithName:@"Bebas" size:17];
     self.lblInfoTitle.font = [UIFont fontWithName:@"Bebas" size:20];
     
+    self.btnChange.hidden = YES;
+    
     foodKeys = [NSMutableArray array];
     foodList = [NSMutableArray array];
     foodDict = [NSMutableDictionary dictionary];
@@ -490,6 +492,24 @@
 }
 
 /**
+ * Change from sort/filter.
+ * @param sender the button.
+ */
+- (IBAction)changeList:(id)sender {
+    UIButton *btn = (UIButton *) sender;
+    btn.selected = !btn.selected;
+    self.lblSortTitle.text = btn.selected ? @"Filter By:" : @"Sort By:";
+    
+    NSArray *array = [[NSArray arrayWithObject:@"None"] arrayByAddingObjectsFromArray:[categories objectForKey:@"Food by Category"]];
+    
+    self.optionListView.delegate = self;
+    self.optionListView.selectIndex = 0;
+    self.optionListView.options = btn.selected ? [NSMutableArray arrayWithArray:array] : sortByOptionArray;
+    self.lblSortBy.text = [self.optionListView.options objectAtIndex:0];
+    [self.optionListView.listTable reloadData];
+}
+
+/**
  * hide sort by option list.
  */
 - (void)hideSortByOption{
@@ -503,10 +523,20 @@
  * @param index the selected index.
  */
 - (void)listviewDidSelect:(int)index{
+    if (self.btnChange.selected) {
+        self.lblSortBy.text = [self.optionListView.options objectAtIndex:index];
+        [self hideSortByOption];
+        
+        selectCategoryIndex[1] = index > 0 ? index - 1 : -1;
+        [self loadFoods];
+        
+        return;
+    }
+    
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     appDelegate.loggedInUser.lastUsedFoodProductFilter.sortOption = [self getSortOptionFromListView:index];
 
-    self.lblSortBy.text = [sortByOptionArray objectAtIndex:index];
+    self.lblSortBy.text = [self.optionListView.options objectAtIndex:index];
     [self hideSortByOption];
 
     selectIndex = index;
@@ -1242,6 +1272,16 @@
                 selectCategoryIndex[i] = -1;
             }
             selectCategoryIndex[indexPath.section] = indexPath.row;
+            
+            self.btnChange.hidden = (indexPath.section != 2);
+            
+            self.btnChange.selected = NO;
+            self.lblSortTitle.text = @"Sort By:";
+            self.optionListView.delegate = self;
+            self.optionListView.selectIndex = 0;
+            self.optionListView.options = sortByOptionArray;
+            self.lblSortBy.text = [self.optionListView.options objectAtIndex:0];
+            [self.optionListView.listTable reloadData];
         }
 
         [tableView reloadData];
