@@ -221,3 +221,12 @@ static NSArray *monthNameArray = nil;
     return [components date];
 }
 @end
+
+@implementation NSString (CustomFunction)
+
+- (NSString *)trimString {
+    return [[self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+            stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
+}
+
+@end

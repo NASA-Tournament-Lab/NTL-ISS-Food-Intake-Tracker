@@ -214,11 +214,10 @@ static dispatch_once_t onceToken = 0;
         }
         
         NSURL *storeUrl = [NSURL fileURLWithPath:persistentStorePath];
-        persistentStoreCoordinator =
-        [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[NSManagedObjectModel mergedModelFromBundles:nil]];
+        persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[NSManagedObjectModel
+                                                                                                       mergedModelFromBundles:nil]];
         
-        NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption:@YES, NSInferMappingModelAutomaticallyOption:@YES};
-        
+        NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption:@YES, NSInferMappingModelAutomaticallyOption:@NO};
         NSPersistentStore *persistentStore =
         [persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
                                                  configuration:nil
