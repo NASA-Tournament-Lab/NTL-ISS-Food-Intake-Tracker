@@ -503,10 +503,15 @@
     NSArray *array = [[NSArray arrayWithObject:@"None"] arrayByAddingObjectsFromArray:[categories objectForKey:@"Food by Category"]];
     
     self.optionListView.delegate = self;
-    self.optionListView.selectIndex = 0;
+    self.optionListView.selectIndex = btn.selected ? 0 : selectIndex;
     self.optionListView.options = btn.selected ? [NSMutableArray arrayWithArray:array] : sortByOptionArray;
-    self.lblSortBy.text = [self.optionListView.options objectAtIndex:0];
+    self.lblSortBy.text = [self.optionListView.options objectAtIndex:self.optionListView.selectIndex];
     [self.optionListView.listTable reloadData];
+    
+    if (!btn.selected) {
+        selectCategoryIndex[1] = -1;
+        [self loadFoods];
+    }
 }
 
 /**
@@ -522,7 +527,8 @@
  * called when value is selected in sort by option list.
  * @param index the selected index.
  */
-- (void)listviewDidSelect:(int)index{
+- (void)listviewDidSelect:(int)aIndex{
+    int index = aIndex;
     if (self.btnChange.selected) {
         self.lblSortBy.text = [self.optionListView.options objectAtIndex:index];
         [self hideSortByOption];
@@ -530,14 +536,18 @@
         selectCategoryIndex[1] = index > 0 ? index - 1 : -1;
         [self loadFoods];
         
-        return;
-    }
-    
-    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-    appDelegate.loggedInUser.lastUsedFoodProductFilter.sortOption = [self getSortOptionFromListView:index];
+        index = 0;
+    } else {
+        AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        appDelegate.loggedInUser.lastUsedFoodProductFilter.sortOption = [self getSortOptionFromListView:index];
 
-    self.lblSortBy.text = [self.optionListView.options objectAtIndex:index];
-    [self hideSortByOption];
+        self.lblSortBy.text = [self.optionListView.options objectAtIndex:index];
+        [self hideSortByOption];
+        if (selectCategoryIndex[1] >= 0) {
+            selectCategoryIndex[1] = -1;
+            [self loadFoods];
+        }
+    }
 
     selectIndex = index;
     if(index == 2){
@@ -1272,17 +1282,17 @@
                 selectCategoryIndex[i] = -1;
             }
             selectCategoryIndex[indexPath.section] = indexPath.row;
-            
-            self.btnChange.hidden = (indexPath.section != 2);
-            
-            self.btnChange.selected = NO;
-            self.lblSortTitle.text = @"Sort By:";
-            self.optionListView.delegate = self;
-            self.optionListView.selectIndex = 0;
-            self.optionListView.options = sortByOptionArray;
-            self.lblSortBy.text = [self.optionListView.options objectAtIndex:0];
-            [self.optionListView.listTable reloadData];
         }
+        
+        self.btnChange.hidden = (indexPath.section != 2);
+        
+        self.btnChange.selected = NO;
+        self.lblSortTitle.text = @"Sort By:";
+        self.optionListView.delegate = self;
+        self.optionListView.selectIndex = 0;
+        self.optionListView.options = sortByOptionArray;
+        self.lblSortBy.text = [self.optionListView.options objectAtIndex:0];
+        [self.optionListView.listTable reloadData];
 
         [tableView reloadData];
         [self loadFoods];
