@@ -556,7 +556,9 @@
         NSMutableArray *adhocFoodProductDataArray = [parser parseData:data];
         for (NSMutableArray* adhocFoodProductData in adhocFoodProductDataArray) {
             NSString *username = adhocFoodProductData[12];
-            NSString *foodProductName = adhocFoodProductData[0];
+            NSString *foodProductName = [[adhocFoodProductData[0]
+                                          stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                                         stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
             NSFetchRequest *request = [[NSFetchRequest alloc] init];
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(fullName == %@)", username];
             NSEntityDescription *description = [NSEntityDescription entityForName:@"User"

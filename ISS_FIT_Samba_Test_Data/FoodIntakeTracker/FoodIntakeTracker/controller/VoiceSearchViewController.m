@@ -236,12 +236,21 @@
         if ([recognizedSet containsObject:hypo]) {
             continue;
         }
-        FoodProduct *foodProduct = [foodProductService getFoodProductByName:appDelegate.loggedInUser
+        /*FoodProduct *foodProduct = [foodProductService getFoodProductByName:appDelegate.loggedInUser
                                                                        name:hypo
-                                                                      error:&error];
-        if (foodProduct) {
-            [recognizedSet addObject:hypo];
-            [self.searchResult addObject:foodProduct];
+                                                                      error:&error];*/
+        FoodProductFilter *filter = [foodProductService buildFoodProductFilter:&error];
+        filter.name = hypo;
+        NSArray * results = [foodProductService filterFoodProducts:appDelegate.loggedInUser filter:filter error:&error];
+        
+        if (results && results.count > 0) {
+            for (FoodProduct *product in results) {
+                if (![recognizedSet containsObject:product]) {
+                    [recognizedSet addObject:product];
+                    [self.searchResult addObject:product];
+                }
+            }
+            break;
         }
     }
     [self showResult];

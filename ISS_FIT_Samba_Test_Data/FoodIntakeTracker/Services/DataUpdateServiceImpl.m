@@ -129,8 +129,9 @@
                         headerFind = YES;
                         continue;
                     }
-                    NSString *foodProductName = [foodProductData[0]
-                                                 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                    NSString *foodProductName = [[foodProductData[0]
+                                                 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                                                 stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
                     [foodProductNames addObject:foodProductName];
                     // Try to fetch existing FoodProduct with the foodProductName from Core Data managedObjectContext
                     NSFetchRequest *request = [[NSFetchRequest alloc] init];
