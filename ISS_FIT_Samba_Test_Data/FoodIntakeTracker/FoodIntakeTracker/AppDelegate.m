@@ -142,13 +142,13 @@
                                        selector:@selector(generateSummary)
                                        userInfo:nil
                                         repeats:NO];
-        self.dataSyncUpdateTimer =
+        /*self.dataSyncUpdateTimer =
         [NSTimer scheduledTimerWithTimeInterval:
          [[self.configuration valueForKey:@"DataSyncUpdateInterval"] intValue]
                                          target:self
                                        selector:@selector(doSyncUpdate)
                                        userInfo:nil
-                                        repeats:YES];
+                                        repeats:YES];*/
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doSyncUpdate)
                                                      name:@"DataSyncUpdateInterval" object:nil];
@@ -332,6 +332,8 @@
                 [self.dataUpdateService update:&error];
                 if (!error) {
                     [self.synchronizationService synchronize:&error];
+                    
+                    [self generateSummary];
                 }
             }
         });
