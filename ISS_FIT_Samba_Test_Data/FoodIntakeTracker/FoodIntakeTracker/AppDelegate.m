@@ -354,6 +354,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                                                            endDate:[NSDate date]
                                                              error:&error];
                 if (error) {
+                    [LoggingHelper logError:@"generateFullSummary" error:error];
                     return;
                 }
             }
