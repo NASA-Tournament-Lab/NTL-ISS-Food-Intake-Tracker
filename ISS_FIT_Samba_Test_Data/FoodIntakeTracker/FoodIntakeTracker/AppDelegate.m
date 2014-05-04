@@ -36,6 +36,14 @@
 #import "Helper.h"
 #import "LoggingHelper.h"
 
+typedef NS_ENUM(NSInteger, SyncStatus) {
+    SyncStatusNone,
+    
+    SyncStatusStarted,
+    SyncStatusFinished,
+    SyncStatusError
+} NS_ENUM_AVAILABLE_IOS(7_0);
+
 /**
  * the application delegate
  *
@@ -49,6 +57,8 @@
     BOOL changed;
     /*! Lock for change */
     NSLock *lock;
+    /*! Synchronization status */
+    SyncStatus status;
 }
 
 @synthesize tabBarViewController;
@@ -84,6 +94,8 @@
  */
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    status = SyncStatusNone;
+    
     lock = [[NSLock alloc] init];
     [lock setName:@"UpdateLock"];
     
@@ -188,6 +200,9 @@
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive.
     // If the application was previously in the background, optionally refresh the user interface.
+    if (status == SyncStatusError && !loadingFinished) {
+        [self initialLoad];
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -320,6 +335,37 @@
 }
 
 /*!
+ * This method will generate a full food consumption summary.
+ */
+- (void) generateFullSummary {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"FullSummaryReady"]) {
+        return;
+    }
+    
+    dispatch_queue_t generateSummaryQ = dispatch_queue_create("Generate Full Summary", NULL);
+    dispatch_async(generateSummaryQ, ^{
+        @autoreleasepool {
+            NSError *error = nil;
+            NSArray *users = [self.userService filterUsers:@"" error:&error];
+            
+            for (User *user in users) {
+                [self.foodConsumptionRecordService generateSummary:user
+                                                         startDate:[NSDate dateWithTimeIntervalSince1970:0]
+                                                           endDate:[NSDate date]
+                                                             error:&error];
+                if (error) {
+                    return;
+                }
+            }
+            
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FullSummaryReady"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+    });
+    dispatch_release(generateSummaryQ);
+}
+
+/*!
  * This method will do data sync/update.
  */
 - (void) doSyncUpdate {
@@ -332,7 +378,6 @@
                 [self.dataUpdateService update:&error];
                 if (!error) {
                     [self.synchronizationService synchronize:&error];
-                    
                     [self generateSummary];
                 }
             }
@@ -341,15 +386,22 @@
     }
 }
 
-
 #pragma mark - Test Code
+
 // Check if the app is started for the first time. If so, do some initializations.
 - (void) initialLoad {
+    status = SyncStatusStarted;
+    
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"HasLaunchedOnce"]) {
         loadingFinished = YES;
         NSDictionary *loadingEndParam = @{@"success": [NSNumber numberWithBool:YES]};
         [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
                                                             object:loadingEndParam];
+        
+        status = SyncStatusFinished;
+        
+        [self generateFullSummary];
+        
         return;
     }
     
@@ -379,6 +431,8 @@
                 if (syncSuccessful) {
                     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasLaunchedOnce"];
                     [[NSUserDefaults standardUserDefaults] synchronize];
+                    
+                    [self generateFullSummary];
                 }
             }
             
@@ -390,6 +444,8 @@
                     NSDictionary *loadingEndParam = @{@"success": [NSNumber numberWithBool:syncSuccessful]};
                     [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
                                                                             object:loadingEndParam];
+                    
+                    status = syncSuccessful ? SyncStatusFinished : SyncStatusError;
                 });
             }
             
@@ -426,6 +482,9 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+/*!
+ * Handle change in ISS Fit settings.
+ */
 - (void)handleSettingsChange:(NSNotification *) notif {
     if (changed) {
         return;
@@ -447,6 +506,9 @@
     }
 }
 
+/*!
+ * Reset stored data in application.
+ */
 - (void)resetData {
     NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
     NSError *error = nil;
