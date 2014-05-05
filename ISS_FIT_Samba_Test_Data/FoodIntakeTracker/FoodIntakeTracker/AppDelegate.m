@@ -272,9 +272,9 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
             NSDate *endDate;
             if ([self.summaryGenerationFrequency isEqualToString:@"Weekly"]) {
                 // Start date should be first day of last week, end date should be last day of last week.
-                NSDateComponents *comps = [NSDateComponents new];
-                comps.week = -1;
-                NSDate *date = [calendar dateByAddingComponents:comps toDate:[NSDate date] options:0];
+                //NSDateComponents *comps = [NSDateComponents new];
+                //comps.week = -1;
+                NSDate *date = [NSDate date];
                 NSDateComponents *components = [calendar components:NSYearCalendarUnit|
                                                 NSWeekCalendarUnit
                                                            fromDate:date];
@@ -286,9 +286,9 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                 components.weekday = 7;
                 endDate = [calendar dateFromComponents:components];
             } else if ([self.summaryGenerationFrequency isEqualToString:@"Daily"]) {
-                NSDateComponents *comps = [NSDateComponents new];
-                comps.day = -1;
-                NSDate *date = [calendar dateByAddingComponents:comps toDate:[NSDate date] options:0];
+                //NSDateComponents *comps = [NSDateComponents new];
+                //comps.day = -1;
+                NSDate *date = [NSDate date];
                 NSDateComponents *components = [calendar components:NSYearCalendarUnit|
                                                 NSDayCalendarUnit
                                                            fromDate:date];
@@ -304,9 +304,9 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
             } else {
                 // Monthly
                 // Similarly, start date should be first day of last month, end date should be last day of last month
-                NSDateComponents *comps = [NSDateComponents new];
-                comps.month = -1;
-                NSDate *date = [calendar dateByAddingComponents:comps toDate:[NSDate date] options:0];
+                //NSDateComponents *comps = [NSDateComponents new];
+                //comps.month = -1;
+                NSDate *date = [NSDate date];
                 NSDateComponents *components = [calendar components:NSYearCalendarUnit|
                                                 NSMonthCalendarUnit
                                                            fromDate:date];
