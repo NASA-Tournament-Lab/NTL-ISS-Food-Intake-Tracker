@@ -379,6 +379,8 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                 [self.dataUpdateService update:&error];
                 if (!error) {
                     [self.synchronizationService synchronize:&error];
+                    
+                    [NSThread sleepForTimeInterval:0.5];
                     [self generateSummary];
                 }
             }

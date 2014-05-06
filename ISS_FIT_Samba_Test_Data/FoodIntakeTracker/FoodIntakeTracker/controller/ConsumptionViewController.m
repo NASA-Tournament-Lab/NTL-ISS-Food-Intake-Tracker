@@ -1187,11 +1187,11 @@
                 [self.foodConsumptionRecords addObject:record];
             }
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:nil];
-            
             [selectConsumption.selectFoods removeAllObjects];
             [self.foodTableView reloadData];
             [self updateProgress];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:nil];            
         }
         [self.navigationController popViewControllerAnimated:YES];
         [self.customTabBarController setConsumptionActive];
