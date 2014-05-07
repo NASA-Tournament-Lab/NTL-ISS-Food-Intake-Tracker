@@ -157,11 +157,11 @@
 /*
  * This method will generate food consumption summary.
  */
-- (void) generateSummary;
+//- (void) generateSummary;
 
 /*
  * This method will do data sync/update.
  */
-- (void) doSyncUpdate;
+//- (void) doSyncUpdate;
 
 @end

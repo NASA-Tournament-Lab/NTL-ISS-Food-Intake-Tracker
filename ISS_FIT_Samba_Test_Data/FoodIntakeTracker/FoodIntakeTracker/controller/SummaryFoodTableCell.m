@@ -18,6 +18,9 @@
 //
 //  Created by lofzcx 06/12/2013
 //
+//  Updated by pvmagacho on 05/07/2014
+//  F2Finish - NASA iPad App Updates
+//
 
 #import "SummaryFoodTableCell.h"
 #import "CustomPickerViewController.h"
@@ -66,6 +69,8 @@
     NSError *error = nil;
     [recordService saveFoodConsumptionRecord:self.foodConsumptionRecord error:&error];
     if ([Helper displayError:error]) return;
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.foodConsumptionRecord.timestamp];    
 }
 
 /**
@@ -76,6 +81,9 @@
     // fixme:
     // currently disable modifying timestamp
     return;
+    if ([self.foodConsumptionRecord.foodProduct.deleted boolValue]) {
+        return;
+    }
     UIButton *btn = (UIButton *)sender;
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
     HourPickerView *timePicker = [sb instantiateViewControllerWithIdentifier:@"HourPickerView"];
@@ -97,6 +105,9 @@
  * @param sender the button.
  */
 - (IBAction)showQuantityPicker:(id)sender{
+    if ([self.foodConsumptionRecord.foodProduct.deleted boolValue]) {
+        return;
+    }
     UIButton *btn = (UIButton *)sender;
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
     QuantityPickerView *picker = [sb instantiateViewControllerWithIdentifier:@"QuantityPickerView"];

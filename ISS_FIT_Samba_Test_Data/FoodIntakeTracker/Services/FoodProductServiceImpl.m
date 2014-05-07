@@ -448,6 +448,59 @@
     return ret;
 }
 
+-(FoodProduct *)getAllFoodProductByName:(User *)user name:(NSString *)name error:(NSError **)error {
+    NSString *methodName = [NSString stringWithFormat:@"%@.getFoodProductByName:name:error:", NSStringFromClass(self.class)];
+    
+    //Check name == nil?
+    if(name == nil){
+        *error = [NSError errorWithDomain:@"FoodProductServiceImpl" code:IllegalArgumentErrorCode
+                                 userInfo:[NSDictionary dictionaryWithObject:@"name should not be nil" forKey:NSUnderlyingErrorKey]];
+        [LoggingHelper logError:methodName error:*error];
+        return nil;
+    }
+    
+    if (user == nil) {
+        [LoggingHelper logMethodEntrance:methodName paramNames:@[@"name"] params:@[name]];
+    }else{
+        [LoggingHelper logMethodEntrance:methodName paramNames:@[@"user", @"name"] params:@[user, name]];
+    }
+    
+    //Fetch food product
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(name == %@)", name];
+    NSEntityDescription *description = [NSEntityDescription  entityForName:@"FoodProduct" inManagedObjectContext:self.managedObjectContext];
+    [request setEntity:description];
+    [request setPredicate:predicate];
+    NSArray *result = [self.managedObjectContext executeFetchRequest:request error:error];
+    [LoggingHelper logError:methodName error:*error];
+    
+    //return food product if user is nil and name matches; or return adhoc food product if user is not nil and name matches
+    FoodProduct *ret = nil;
+    if (result.count > 0) {
+        for (FoodProduct *p in result) {
+            if ([p isKindOfClass:[AdhocFoodProduct class]]) {
+                if (user != nil && [((AdhocFoodProduct *)p).user isEqual:user]) {
+                    ret = p;
+                    break;
+                }
+            }
+            else {
+                ret = p;
+                break;
+            }
+        }
+        [LoggingHelper logMethodExit:methodName returnValue:ret];
+        return ret;
+    } else {
+        *error = [[NSError alloc] initWithDomain:@"FoodProductService" code:EntityNotFoundErrorCode userInfo:[NSDictionary dictionaryWithObject:@"No such food product." forKey:NSLocalizedDescriptionKey]];
+        [LoggingHelper logMethodExit:methodName returnValue:nil];
+        return nil;
+    }
+    
+    //return products
+    return ret;
+}
+
 -(NSArray *)getAllProductCategories:(NSError **)error {
     NSString *methodName = [NSString stringWithFormat:@"%@.getAllProductCategories:", NSStringFromClass(self.class)];
     [LoggingHelper logMethodEntrance:methodName paramNames:nil params:nil];

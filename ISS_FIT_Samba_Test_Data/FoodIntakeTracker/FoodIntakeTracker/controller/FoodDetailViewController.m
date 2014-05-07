@@ -17,6 +17,9 @@
 //
 //  Created by lofzcx 06/12/2013
 //
+//  Updated by pvmagacho on 05/07/2014
+//  F2Finish - NASA iPad App Updates
+//
 
 #import "FoodDetailViewController.h"
 #import <QuartzCore/QuartzCore.h>
@@ -133,6 +136,9 @@
  * @param sender the + or - button.
  */
 - (IBAction)changeQuantity:(id)sender{
+    if ([self.foodConsumptionRecord.foodProduct.deleted boolValue]) {
+        return;
+    }
     UIButton *btn = (UIButton *)sender;
     float quantity = self.txtQuantity.text.floatValue;
     if(btn.tag == 0){

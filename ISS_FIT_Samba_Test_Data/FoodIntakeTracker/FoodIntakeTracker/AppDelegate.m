@@ -18,7 +18,7 @@
 //
 //  Created by lofzcx 06/12/2013
 //
-//  Updated by pvmagacho on 04/19/2014
+//  Updated by pvmagacho on 05/07/2014
 //  F2Finish - NASA iPad App Updates
 //
 
@@ -147,14 +147,14 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                                        selector:@selector(sendHeartbeat)
                                        userInfo:nil
                                         repeats:YES];
-        self.summaryGenerationTimer =
+        /*self.summaryGenerationTimer =
         [NSTimer scheduledTimerWithTimeInterval:
          [[self.configuration valueForKey:@"SummaryGenerationInterval"] intValue]
                                          target:self
                                        selector:@selector(generateSummary)
                                        userInfo:nil
                                         repeats:NO];
-        /*self.dataSyncUpdateTimer =
+        self.dataSyncUpdateTimer =
         [NSTimer scheduledTimerWithTimeInterval:
          [[self.configuration valueForKey:@"DataSyncUpdateInterval"] intValue]
                                          target:self
@@ -162,7 +162,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                                        userInfo:nil
                                         repeats:YES];*/
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doSyncUpdate)
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doSyncUpdate:)
                                                      name:@"DataSyncUpdateInterval" object:nil];
         return YES;
     } else {
@@ -260,21 +260,18 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
 /*!
  * This method will generate food consumption summary.
  */
-- (void) generateSummary {
+- (void) generateSummary:(NSDate *) date {
     dispatch_queue_t generateSummaryQ = dispatch_queue_create("Generate Summary", NULL);
     dispatch_async(generateSummaryQ, ^{
         @autoreleasepool {
             NSError *error = nil;
-            NSArray *users = [self.userService filterUsers:@"" error:&error];
-            
             NSCalendar *calendar = [NSCalendar currentCalendar];
+            [calendar setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+            
             NSDate *startDate;
             NSDate *endDate;
             if ([self.summaryGenerationFrequency isEqualToString:@"Weekly"]) {
                 // Start date should be first day of last week, end date should be last day of last week.
-                //NSDateComponents *comps = [NSDateComponents new];
-                //comps.week = -1;
-                NSDate *date = [NSDate date];
                 NSDateComponents *components = [calendar components:NSYearCalendarUnit|
                                                 NSWeekCalendarUnit
                                                            fromDate:date];
@@ -283,12 +280,13 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                 components.minute = 0;
                 components.second = 0;
                 startDate = [calendar dateFromComponents:components];
+                
                 components.weekday = 7;
+                components.hour = 23;
+                components.minute = 59;
+                components.second = 59;
                 endDate = [calendar dateFromComponents:components];
             } else if ([self.summaryGenerationFrequency isEqualToString:@"Daily"]) {
-                //NSDateComponents *comps = [NSDateComponents new];
-                //comps.day = -1;
-                NSDate *date = [NSDate date];
                 NSDateComponents *components = [calendar components:NSYearCalendarUnit|
                                                 NSDayCalendarUnit
                                                            fromDate:date];
@@ -304,9 +302,6 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
             } else {
                 // Monthly
                 // Similarly, start date should be first day of last month, end date should be last day of last month
-                //NSDateComponents *comps = [NSDateComponents new];
-                //comps.month = -1;
-                NSDate *date = [NSDate date];
                 NSDateComponents *components = [calendar components:NSYearCalendarUnit|
                                                 NSMonthCalendarUnit
                                                            fromDate:date];
@@ -320,15 +315,16 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                                               inUnit:NSMonthCalendarUnit
                                              forDate:date];
                 components.day = days.length;
+                components.hour = 23;
+                components.minute = 59;
+                components.second = 59;
                 endDate = [calendar dateFromComponents:components];
             }
             
-            for (User *user in users) {
-                [self.foodConsumptionRecordService generateSummary:user
-                                                         startDate:startDate
-                                                           endDate:endDate
-                                                             error:&error];
-            }
+            [self.foodConsumptionRecordService generateSummary:self.loggedInUser
+                                                     startDate:startDate
+                                                       endDate:endDate
+                                                         error:&error];
         }
     });
     dispatch_release(generateSummaryQ);
@@ -369,7 +365,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
 /*!
  * This method will do data sync/update.
  */
-- (void) doSyncUpdate {
+- (void) doSyncUpdate:(NSNotification *) notif {
     // Skip the sync/update if the initial load is still in progress.
     if (loadingFinished) {
         dispatch_queue_t dataSyncUpdateQ = dispatch_queue_create("Data Sync Update", NULL);
@@ -380,8 +376,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                 if (!error) {
                     [self.synchronizationService synchronize:&error];
                     
-                    [NSThread sleepForTimeInterval:0.5];
-                    [self generateSummary];
+                    [self generateSummary:notif.object];
                 }
             }
         });

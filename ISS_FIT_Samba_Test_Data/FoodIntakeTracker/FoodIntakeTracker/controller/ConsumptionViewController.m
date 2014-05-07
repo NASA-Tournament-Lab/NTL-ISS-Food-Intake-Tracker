@@ -18,6 +18,9 @@
 //
 //  Created by lofzcx 06/12/2013
 //
+//  Updated by pvmagacho on 05/07/2014
+//  F2Finish - NASA iPad App Updates
+//
 
 #import "ConsumptionViewController.h"
 #import "CustomTabBarViewController.h"
@@ -506,12 +509,15 @@
         [selectedItems addObject:item];
         [btn setSelected:YES];
     }
-    if(selectedItems.count == 0){
+    BOOL canCopy = YES;
+    for (FoodConsumptionRecord *record in selectedItems) {
+        canCopy &= ![record.foodProduct.deleted boolValue];
+    }
+    if (selectedItems.count == 0){
         [self.btnCopy setEnabled:NO];
         [self.btnDelete setEnabled:NO];
-    }
-    else{
-        [self.btnCopy setEnabled:YES];
+    } else {
+        [self.btnCopy setEnabled:canCopy];
         [self.btnDelete setEnabled:YES];
     }
 }
@@ -762,6 +768,8 @@
     [foodDetail.view removeFromSuperview];
     foodDetail = nil;
     [self stopCommentDictation];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
 }
 
 /**
@@ -782,6 +790,8 @@
                              action:@selector(hideFoodDetail)
                    forControlEvents:UIControlEventTouchUpInside];
     
+    [foodDetail.btnSave setHidden:[record.foodProduct.deleted boolValue]];
+    [foodDetail.txtQuantity setUserInteractionEnabled:![record.foodProduct.deleted boolValue]];
     [foodDetail.btnSave addTarget:self
                            action:@selector(saveFoodDetail)
                  forControlEvents:UIControlEventTouchUpInside];
@@ -931,7 +941,9 @@
         if ([Helper displayError:error]) return;
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:nil];
+    if (selectedItems.count > 0) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
+    }
     
     [self.foodTableView reloadData];
     [self updateProgress];
@@ -1018,6 +1030,8 @@
         [self.foodConsumptionRecords removeObjectAtIndex:row];
         [recordService deleteFoodConsumptionRecord:cell.foodConsumptionRecord error:&error];
         if ([Helper displayError:error]) return;
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
     }
     [self.foodTableView reloadData];
     [self updateProgress];
@@ -1116,7 +1130,6 @@
                                                                  NSMinuteCalendarUnit)
                                                        fromDate:self.dateListView.currentDate];
             [components setCalendar:calendar];
-            
             NSDateComponents *currentDateComponents = [calendar components:(NSHourCalendarUnit |
                                                                             NSMinuteCalendarUnit)
                                                                   fromDate:record.timestamp];
@@ -1131,6 +1144,11 @@
             if ([Helper displayError:error]) return;
             [self.foodConsumptionRecords addObject:record];
         }
+        
+        if (voiceSearch.selectedFoodProducts.count > 0) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
+        }
+        
         [voiceSearch.selectedFoodProducts removeAllObjects];
         [self.foodTableView reloadData];
         [self updateProgress];
@@ -1187,11 +1205,13 @@
                 [self.foodConsumptionRecords addObject:record];
             }
             
+            if (selectConsumption.selectFoods.count > 0) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
+            }
+            
             [selectConsumption.selectFoods removeAllObjects];
             [self.foodTableView reloadData];
             [self updateProgress];
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:nil];            
         }
         [self.navigationController popViewControllerAnimated:YES];
         [self.customTabBarController setConsumptionActive];
@@ -1373,6 +1393,9 @@
     
     cell.lblTime.text = [NSString stringWithFormat:@"%.2d:%.2d", hour, minute];
     cell.lblName.text = item.foodProduct.name;
+    if ([item.foodProduct.deleted boolValue]) {
+        cell.lblName.textColor = [UIColor colorWithRed:192 green:0 blue:0 alpha:1];
+    }
     if(item.foodProduct.energy.intValue == 0 && item.foodProduct.sodium.intValue == 0 &&
        item.foodProduct.fluid.intValue == 0){
         cell.btnNonNutrient.hidden = NO;

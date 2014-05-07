@@ -153,7 +153,7 @@
   
     [LoggingHelper logMethodEntrance:methodName paramNames:@[@"synchronize:"] params:nil];
     // Update progress
-    [self updateProgress:@0.0];
+    [self updateProgress:@0.5];
     
     // Create SMBClient and connect to the shared file server
     NSError *e = nil;
@@ -165,7 +165,7 @@
     
      
     // Update progress
-    [self updateProgress:@0.05];
+    [self updateProgress:@0.55];
     
     
     // ARS 1.1.3 #1.Create an NSMutableArray to store the image/voice recording file paths to transfer
@@ -262,7 +262,7 @@
         
         
         // Update progress
-        [self updateProgress:@0.15];
+        [self updateProgress:@0.6];
         
         // ARS 1.1.3 #5.Similarly, query and process local non-synchronized AdhocFoodProduct,
         // FoodConsumptionRecord and SummaryGenerationHistory objects
@@ -360,7 +360,7 @@
         }
         
         // Update progress
-        [self updateProgress:@0.20];
+        [self updateProgress:@0.65];
         
         // process SummaryGenerationHistory
         NSMutableData *summaryGenerationHistoryCSVData = [NSMutableData data];
@@ -424,11 +424,9 @@
         [self updateSyncTime:currentSyncTimeinMillis];
         
     }
+    
     // Update progress
-    [self updateProgress:@0.25];
-    
-    
-    
+    [self updateProgress:@0.75];
 
     // ARS 1.1.3 #9.Scan data changes from other iPad devices, for each /data_sync/<TIMESTAMP>/data
     // directory
@@ -440,8 +438,8 @@
     NSEntityDescription *description = nil;
     
     // Calculate the the delta progress
-    float currentProgress = 0.25;
-    float progressDelta = 0.75;
+    float currentProgress = 0.75;
+    float progressDelta = 0.25;
     int count = 0;
     NSMutableArray *subDirectoriesToSync = [NSMutableArray array];
 
@@ -455,18 +453,17 @@
         }
     }
     if (count > 0) {
-        progressDelta /= count;
+        progressDelta /= (count * 2);
     }
 
     for (NSString *subDirectory in subDirectoriesToSync) {
         
-        float progressDeltaInner = progressDelta; //TODO: remove
         // Not applied this sync yet
         // Pull and parse User.csv
         NSData *data = [smbClient readFile:[NSString stringWithFormat:@"data_sync/%@/data/User.csv",
                                              subDirectory] error:&e];
         CHECK_ERROR_AND_RETURN(e, error, @"Cannot read 'User.csv'.", SynchronizationErrorCode, YES, NO);
-        CSVParser *parser = [[CSVParser alloc] init];
+        CSVParser *parser = [CSVParser new];
         NSMutableArray *userDataArray = [parser parseData:data];
         for (NSMutableArray* userData in userDataArray) {
             NSString *username = userData[1];
@@ -483,7 +480,8 @@
             id<UserService> userService = [[UserServiceImpl alloc] init];
             if ([localUsers count] > 0) {
                 User *localUser = localUsers[0];
-                BOOL deleted = [userData[16] boolValue];
+                int index = userData.count > 19 ? 17 : 16;
+                BOOL deleted = [userData[index] boolValue];
                 if (deleted) {
                     [[self managedObjectContext] deleteObject:localUser];
                 } else {
@@ -545,14 +543,18 @@
         }
         
         // Update progress
-        [self updateProgress:[NSNumber numberWithFloat:currentProgress + progressDeltaInner / 4]];
-        
+        currentProgress += progressDelta;
+        [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
+    }
+    
+    for (NSString *subDirectory in subDirectoriesToSync) {
         // Similarly, pull and process AdhocFoodProduct.csv, FoodConsumptionRecord.csv,
         // SummaryGenerationHistory.csv files
         
         // process AdhocFoodProduct.csv
-        data = [smbClient readFile:[NSString stringWithFormat:@"data_sync/%@/data/AdhocFoodProduct.csv",
-                                    subDirectory] error:&e];
+        NSData *data = [smbClient readFile:[NSString stringWithFormat:@"data_sync/%@/data/AdhocFoodProduct.csv",
+                                            subDirectory] error:&e];
+        CSVParser *parser = [CSVParser new];
         NSMutableArray *adhocFoodProductDataArray = [parser parseData:data];
         for (NSMutableArray* adhocFoodProductData in adhocFoodProductDataArray) {
             NSString *username = adhocFoodProductData[12];
@@ -636,8 +638,9 @@
         }
         
         // Update progress
-        [self updateProgress:[NSNumber numberWithFloat:currentProgress + progressDeltaInner / 2]];
-
+        currentProgress += (progressDelta / 3);
+        [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
+        
         // Process FoodConsumptionRecord.csv
         data = [smbClient
                 readFile:[NSString stringWithFormat:@"data_sync/%@/data/FoodConsumptionRecord.csv",
@@ -647,7 +650,9 @@
         NSMutableArray *foodConsumptionRecordDataArray = [parser parseData:data];
         for (NSMutableArray* foodRecordData in foodConsumptionRecordDataArray) {
             NSString *username = foodRecordData[1];
-            NSString *productName = foodRecordData[0];
+            NSString *productName = [[foodRecordData[0]
+                                      stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                                     stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
             NSDate *timestamp = [NSDate
                                  dateWithTimeIntervalSince1970:[foodRecordData[2]
                                                                 doubleValue]];
@@ -668,16 +673,18 @@
                 CHECK_ERROR_AND_RETURN(e, error, @"Cannot find user for FoodConsumptionRecord.",
                                        EntityNotFoundErrorCode, YES, NO);
             }
-            id<FoodProductService> foodProdcutService = [[FoodProductServiceImpl alloc] init];
-            FoodProduct *product = [foodProdcutService getFoodProductByName:localUsers[0]
-                                                                       name:productName error:&e];
+            id<FoodProductService> foodProductService = [[FoodProductServiceImpl alloc] init];
+            FoodProduct *product = [foodProductService getAllFoodProductByName:localUsers[0]
+                                                                          name:productName error:&e];
             if (product == nil) {
-                e = [NSError errorWithDomain:@"SychronizationService"
+                /*e = [NSError errorWithDomain:@"SychronizationService"
                                         code: EntityNotFoundErrorCode
                                     userInfo:@{NSLocalizedDescriptionKey:
                                                    @"Cannot find food product for food consumption record."}];
                 CHECK_ERROR_AND_RETURN(e, error, @"Cannot find food product for food consumption record.",
-                                       EntityNotFoundErrorCode, YES, NO);
+                                       EntityNotFoundErrorCode, YES, NO);*/
+                e = nil;
+                continue; // ignore
             }
             // Try to fetch existing FoodConsumptionRecord with the username, product name and
             // timestamp from Core Data managedObjectContext
@@ -748,7 +755,8 @@
         }
         
         // Update progress
-        [self updateProgress:[NSNumber numberWithFloat:currentProgress + 3 * progressDeltaInner / 4]];
+        currentProgress += (progressDelta / 3);
+        [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
 
         // Process SummaryGenerationHistory.csv
         data = [smbClient
@@ -825,9 +833,7 @@
                 history.deleted = @NO;
             }
         }
-        
       
-
         // Read image/voice recording files in /data and save in local file system
         NSArray* dataFiles = [smbClient listFiles:[NSString stringWithFormat:@"data_sync/%@/data/",
                                                    subDirectory] error:&e];
@@ -847,7 +853,7 @@
             }
         }
         // Update progress
-        currentProgress += progressDeltaInner;
+        currentProgress += (progressDelta / 3);
         [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
     }
 

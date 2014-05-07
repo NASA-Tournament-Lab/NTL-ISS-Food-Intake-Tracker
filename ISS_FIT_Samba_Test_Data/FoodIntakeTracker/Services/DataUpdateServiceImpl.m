@@ -88,6 +88,7 @@
 -(BOOL)update:(NSError **)error force:(BOOL)force {
     NSString *methodName = [NSString stringWithFormat:@"%@.update:error:", NSStringFromClass(self.class)];
     [LoggingHelper logMethodEntrance:methodName paramNames:nil params:nil];
+    
     // Create SMBClient and connect to the shared file server
     NSError *e = nil;
     id<SMBClient> smbClient = [self createSMBClient:&e];
@@ -102,6 +103,13 @@
     NSArray* deviceRegistry = [smbClient listFiles:@"device_registry" error:&e];
     CHECK_ERROR_AND_RETURN(e, error, @"Cannot list 'device_registry' directory.", DataUpdateErrorCode, YES, NO);
      */
+    
+    // Update progress
+    [self updateProgress:@0.01];
+    
+    // Calculate the the delta progress
+    float currentProgress, progressDelta, count;
+    
     if (!e) {
     
         // Scan /control_files/food_product_inventory for changes that have not been applied yet
@@ -123,15 +131,26 @@
                 
                 NSMutableArray *foodProductNames = [NSMutableArray array];
                 BOOL headerFind = NO;
+                
+                // Calculate the the delta progress
+                currentProgress = 0.01;
+                progressDelta = 0.04;
+                count = foodProductDataArray.count;
+                int fileDataVersion = 0;
+                
                 for (NSMutableArray* foodProductData in foodProductDataArray) {
                     // skip header
                     if(!headerFind) {
                         headerFind = YES;
+                        fileDataVersion = [[foodProductData lastObject] integerValue];
                         continue;
                     }
                     NSString *foodProductName = [[foodProductData[0]
                                                  stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
                                                  stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
+                    if (foodProductName == nil || foodProductName.length == 0) {
+                        continue;
+                    }
                     [foodProductNames addObject:foodProductName];
                     // Try to fetch existing FoodProduct with the foodProductName from Core Data managedObjectContext
                     NSFetchRequest *request = [[NSFetchRequest alloc] init];
@@ -164,6 +183,11 @@
                         foodProduct.carb = @([foodProductData[8] intValue]);
                         foodProduct.fat = @([foodProductData[9] intValue]);
                         foodProduct.productProfileImage = foodProductData[10];
+                        if (fileDataVersion == 0) {
+                            foodProduct.deleted = @NO;
+                        } else {
+                            foodProduct.deleted = [foodProductData[11] isEqualToString:@"YES"]?@YES:@NO;
+                        }
                     } else {
                         // Create a new FoodProduct in Core Data managedObjectContext
                         // Extract other properties from foodProductData array, and set the properties to the foodProduct
@@ -191,9 +215,21 @@
                         foodProduct.fat = @([foodProductData[9] intValue]);
                         foodProduct.active = @YES;
                         foodProduct.productProfileImage = foodProductData[10];
-                        foodProduct.deleted = @NO;
+                        if (fileDataVersion == 0) {
+                            foodProduct.deleted = @NO;
+                        } else {
+                            foodProduct.deleted = [foodProductData[11] isEqualToString:@"YES"]?@YES:@NO;
+                        }
                     }
+                    
+                    // Update progress
+                    currentProgress += progressDelta/count;
+                    [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
                 }
+                
+                // Update progress
+                [self updateProgress:@0.05];
+                
                 // Query Core Data to fetch the existing FoodProduct records with active == YES and name
                 // is NOT IN foodProductNames array
                 
@@ -215,6 +251,12 @@
                 NSArray* dataFiles = [smbClient listFiles:@"control_files/food_product_inventory/data" error:&e];
                 CHECK_ERROR_AND_RETURN(e, error, @"Cannot list 'control_files/food_product_inventory/data' directory.",
                                        DataUpdateErrorCode, YES, NO);
+                
+                // Calculate the the delta progress
+                currentProgress = 0.05;
+                progressDelta = 0.2;
+                count = dataFiles.count;
+                
                 for (NSString *dataFile in dataFiles) {
                     if([dataFile hasSuffix:self.imageFileNameSuffix]
                        || [dataFile hasSuffix:self.voiceRecordingFileNameSuffix]) {
@@ -227,7 +269,14 @@
                                                DataUpdateErrorCode, YES, NO);
                         [data writeToFile:localDataFile atomically:YES];
                     }
+                    
+                    // Update progress
+                    currentProgress += progressDelta/count;
+                    [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
                 }
+                
+                // Update progress
+                [self updateProgress:@0.25];
                 
                 if (![ackFiles containsObject:deviceID]) {
                     // Write acknowledgement file
@@ -283,10 +332,18 @@
                 NSMutableArray *userProfileDataArray = [parser parseData:data];
                 NSMutableArray *userProfileNames = [NSMutableArray array];
                 BOOL headerFind = NO;
+                
+                // Calculate the the delta progress
+                currentProgress = 0.25;
+                progressDelta = 0.05;
+                count = userProfileDataArray.count;
+                int fileDataVersion = 0;
+                
                 for (NSMutableArray* userProfileData in userProfileDataArray) {
                     // skip header
                     if (!headerFind) {
                         headerFind = YES;
+                        fileDataVersion = [[userProfileData lastObject] integerValue];
                         continue;
                     }
                     NSString *userFullName = userProfileData[0];
@@ -308,17 +365,31 @@
                     user.dailyTargetFat = @([userProfileData[7] intValue]);
                     user.maxPacketsPerFoodProductDaily = @([userProfileData[8] intValue]);
                     user.profileImage = userProfileData[9];
-                    user.useLastUsedFoodProductFilter = [userProfileData[10] isEqualToString:@"YES"]?@YES:@NO;
+                    user.useLastUsedFoodProductFilter = [userProfileData[(fileDataVersion == 0 ? 11 : 10)]
+                                                         isEqualToString:@"YES"]?@YES:@NO;
                     
                     // saveUser will update existing user or save new user.
                     [userService saveUser:user error:&e];
                     
                     CHECK_ERROR_AND_RETURN(e, error, @"Cannot save user.", DataUpdateErrorCode, YES, NO);
+                    
+                    // Update progress
+                    currentProgress += progressDelta/count;
+                    [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
                 }
-
+                
+                // Update progress
+                [self updateProgress:@0.3];
+                
                 // Read image recording files in control_files/user_management/data and save in local file system
                 NSArray* dataFiles = [smbClient listFiles:@"control_files/user_management/data/" error:&e];
                 CHECK_ERROR_AND_RETURN(e, error, @"Cannot list 'data' directory.", DataUpdateErrorCode, YES, NO);
+                
+                // Calculate the the delta progress
+                currentProgress = 0.3;
+                progressDelta = 0.2;
+                count = dataFiles.count;
+                
                 for (NSString *dataFile in dataFiles) {
                     if([dataFile hasSuffix:self.imageFileNameSuffix]
                        || [dataFile hasSuffix:self.voiceRecordingFileNameSuffix]) {
@@ -330,6 +401,10 @@
                                                DataUpdateErrorCode, YES, NO);
                         [data writeToFile:localDataFile atomically:YES];
                     }
+                    
+                    // Update progress
+                    currentProgress += progressDelta/count;
+                    [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
                 }
                 
                 if (![ackFiles containsObject:deviceID]) {
@@ -374,6 +449,9 @@
         CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
     }
     
+    // Update progress
+    [self updateProgress:@0.5];
+    
     // Unlock the managedObjectContext
     [[self managedObjectContext] unlock];
     
@@ -383,5 +461,11 @@
     [LoggingHelper logMethodExit:methodName returnValue:@YES];
     return YES;
 }
+
+- (void) updateProgress:(NSNumber *)progress {
+    NSDictionary *progressParam = @{@"progress": progress};
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"InitialLoadingProgressEvent" object:progressParam];
+}
+
 
 @end
