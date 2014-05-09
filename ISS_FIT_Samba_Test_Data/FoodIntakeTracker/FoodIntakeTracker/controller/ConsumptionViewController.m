@@ -1145,9 +1145,7 @@
             [self.foodConsumptionRecords addObject:record];
         }
         
-        if (voiceSearch.selectedFoodProducts.count > 0) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
-        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
         
         [voiceSearch.selectedFoodProducts removeAllObjects];
         [self.foodTableView reloadData];
@@ -1205,9 +1203,7 @@
                 [self.foodConsumptionRecords addObject:record];
             }
             
-            if (selectConsumption.selectFoods.count > 0) {
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
-            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
             
             [selectConsumption.selectFoods removeAllObjects];
             [self.foodTableView reloadData];

@@ -225,7 +225,7 @@
         if ([Helper displayError:error]) return;
         [consumptionViewController.foodConsumptionRecords addObject:record];
     }
-    if (selectFoods.count) {
+    if (selectFoods.count > 0) {
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:selectedDate];
     }
     
