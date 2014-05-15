@@ -20,6 +20,9 @@
 //  Updated by pvmagacho on 05/07/2014
 //  F2Finish - NASA iPad App Updates
 //
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
 
 #import "FoodDetailViewController.h"
 #import <QuartzCore/QuartzCore.h>
@@ -46,9 +49,9 @@
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     [numberFormatter setPositiveFormat:@"#.##"];
-    
-    
+        
     self.txtQuantity.text = [numberFormatter stringFromNumber:self.foodConsumptionRecord.quantity];
+    self.txtQuantity.userInteractionEnabled = NO;
     
     self.lblCalories.text = [NSString stringWithFormat:@"%@", self.foodConsumptionRecord.foodProduct.energy];
     self.lblSodium.text = [NSString stringWithFormat:@"%@", self.foodConsumptionRecord.foodProduct.sodium];
@@ -103,9 +106,9 @@
  * @param sender the button.
  */
 - (IBAction)showHourPicker:(id)sender{
-    // fixme:
-    // currently disable modifying timestamp
-    return;
+    if ([self.foodConsumptionRecord.foodProduct.deleted boolValue]) {
+        return;
+    }
     UIButton *btn = (UIButton *)sender;
     HourPickerView *timePicker = [self.storyboard instantiateViewControllerWithIdentifier:@"HourPickerView"];
     timePicker.delegate = self;
@@ -122,13 +125,41 @@
 }
 
 /**
+ * show quantity pikcer when clicking at quantity.
+ * @param sender the button.
+ */
+- (IBAction)showQuantityPicker:(id)sender{
+    if ([self.foodConsumptionRecord.foodProduct.deleted boolValue]) {
+        return;
+    }
+    UIButton *btn = (UIButton *)sender;
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+    QuantityPickerView *picker = [sb instantiateViewControllerWithIdentifier:@"QuantityPickerView"];
+    picker.delegate = self;
+    UIPopoverController *popController = [[UIPopoverController alloc] initWithContentViewController:picker];
+    popController.popoverBackgroundViewClass = [PopoverBackgroundView class];
+    popController.popoverContentSize = CGSizeMake(240, 267);
+    picker.popController = popController;
+    [picker setSelectedVal:[NSString stringWithFormat:@"%.2f", self.txtQuantity.text.floatValue]];
+    CGRect popoverRect = CGRectMake(btn.bounds.origin.x, btn.bounds.origin.y, 1, 30);
+    [popController presentPopoverFromRect:popoverRect
+                                   inView:btn
+                 permittedArrowDirections:UIPopoverArrowDirectionUp
+                                 animated:NO];
+}
+
+/**
  * custom picker deletegate method.
  * change the text label for time if value changed.
  * @param picker the picker view.
  * @param value the selected value.
  */
-- (void)Picker:(BaseCustomPickerView *)picker DidSelectedValue:(NSString *)val{    
-    self.lblTime.text = val;
+- (void)Picker:(BaseCustomPickerView *)picker DidSelectedValue:(NSString *)val{
+    if([picker isKindOfClass:[HourPickerView class]]){
+        self.lblTime.text = val;
+    } else {
+        self.txtQuantity.text = val;
+    }
 }
 
 /**
@@ -157,4 +188,5 @@
     [numberFormatter setPositiveFormat:@"#.##"];
     self.txtQuantity.text = [numberFormatter stringFromNumber:[NSNumber numberWithFloat:quantity]];
 }
+
 @end

@@ -21,6 +21,9 @@
 //  Updated by pvmagacho on 05/07/2014
 //  F2Finish - NASA iPad App Updates
 //
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
 
 #import "SummaryFoodTableCell.h"
 #import "CustomPickerViewController.h"
@@ -78,9 +81,6 @@
  * @param sender the button.
  */
 - (IBAction)showDropDown:(id)sender {
-    // fixme:
-    // currently disable modifying timestamp
-    return;
     if ([self.foodConsumptionRecord.foodProduct.deleted boolValue]) {
         return;
     }
@@ -132,12 +132,12 @@
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     [numberFormatter setPositiveFormat:@"#.##"];
     self.lblQuantity.text = [numberFormatter stringFromNumber:self.foodConsumptionRecord.quantity];
-    CGSize size2 = self.lblQuantityUnit.frame.size;
+    /*CGSize size2 = self.lblQuantityUnit.frame.size;
     CGSize size1 = [self.lblQuantity.text sizeWithFont:self.lblQuantity.font];
     float centerX = 140;
     float startX = centerX - (size1.width + size2.width) / 2;
     self.lblQuantity.frame = CGRectMake(startX, 17, size1.width, size2.height);
-    self.lblQuantityUnit.frame = CGRectMake(startX + size1.width, 17, size2.width, size2.height);
+    self.lblQuantityUnit.frame = CGRectMake(startX + size1.width, 17, size2.width, size2.height);*/
     self.nutrientScrollView.contentSize = CGSizeMake(self.nutrientView.frame.size.width,
                                                      self.nutrientScrollView.frame.size.height);
 }

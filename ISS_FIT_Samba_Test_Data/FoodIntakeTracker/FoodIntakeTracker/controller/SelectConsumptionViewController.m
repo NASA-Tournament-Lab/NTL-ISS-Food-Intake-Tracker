@@ -18,6 +18,9 @@
 //
 //  Created by lofzcx 06/12/2013
 //
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
 
 #import "SelectConsumptionViewController.h"
 #import "Helper.h"
@@ -785,7 +788,7 @@
  * @param sender the button.
  */
 - (IBAction)addToConsumption:(id)sender {
-    [self.btnBack sendActionsForControlEvents:UIControlEventTouchUpInside];    
+    [self.btnBack sendActionsForControlEvents:UIControlEventApplicationReserved];    
 }
 
 /**
@@ -967,7 +970,7 @@
         for (int i = 0; i < result.count; i++) {
             AdhocFoodProduct *product = result[i];
             NSString *productName = [product.name uppercaseString];
-            if ([searchText isEqualToString:@""] || [productName rangeOfString:[searchText uppercaseString]].location == 0) {
+            if ([searchText isEqualToString:@""] || [productName rangeOfString:[searchText uppercaseString]].location != NSNotFound) {
                 [suggestions addObject:product.name];
             }
         }

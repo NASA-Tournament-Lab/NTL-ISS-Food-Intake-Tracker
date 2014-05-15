@@ -21,6 +21,9 @@
 //  Updated by pvmagacho on 05/07/2014
 //  F2Finish - NASA iPad App Updates
 //
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
 
 #import "ConsumptionViewController.h"
 #import "CustomTabBarViewController.h"
@@ -400,9 +403,9 @@
     [numberFormatter setPositiveFormat:@"#.##"];
     self.fluidProgress.lblCurrent.text = [numberFormatter stringFromNumber:[NSNumber numberWithFloat:fluidTotal]];
     
-    self.proteinProgess.lblCurrent.text = [NSString stringWithFormat:@"%d grams eaten", proteinTotal];
-    self.carbProgress.lblCurrent.text = [NSString stringWithFormat:@"%d grams eaten", carbTotal];
-    self.fatProgress.lblCurrent.text = [NSString stringWithFormat:@"%d grams eaten", fatTotal];
+    self.proteinProgess.lblCurrent.text = [NSString stringWithFormat:@"%d kCal", (int) (proteinTotal * PROTEIN_CALORIES_FACTOR)];
+    self.carbProgress.lblCurrent.text = [NSString stringWithFormat:@"%d kCal", (int) (carbTotal * CARB_CALORIES_FACTOR)];
+    self.fatProgress.lblCurrent.text = [NSString stringWithFormat:@"%d kCal", (int) (fatTotal * FAT_CALORIES_FACTOR)];
 
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     
@@ -414,13 +417,13 @@
     self.sodiumProgress.currentProgress = sodiumProgressPercentage;
     self.fluidProgress.currentProgress = fluidProgressPercentage;
     
-    int maxConsumption = proteinTotal;
-    if (carbTotal > maxConsumption) {
+    int maxConsumption = [appDelegate.loggedInUser.dailyTargetEnergy intValue];
+    /*if (carbTotal > maxConsumption) {
         maxConsumption = carbTotal;
     }
     if (fatTotal > maxConsumption) {
         maxConsumption = fatTotal;
-    }
+    }*/
     
     self.proteinProgess.currentProgress = 1.0;
     self.carbProgress.currentProgress =  1.0;
@@ -431,15 +434,19 @@
     CGRect fatProgressFrame = self.fatProgress.progressView.frame;
     
     if (maxConsumption > 0) {
-        proteinProgressFrame.size.width = (int)(proteinTotal * 1.0f / maxConsumption * PROGRESSBAR_WIDTH);
-        carbProgressFrame.size.width = (int)(carbTotal * 1.0f / maxConsumption * PROGRESSBAR_WIDTH);
-        fatProgressFrame.size.width = (int)(fatTotal * 1.0f / maxConsumption * PROGRESSBAR_WIDTH);
+        proteinProgressFrame.size.width = (int)(proteinTotal * PROTEIN_CALORIES_FACTOR / maxConsumption * PROGRESSBAR_WIDTH);
+        carbProgressFrame.size.width = (int)(carbTotal * CARB_CALORIES_FACTOR / maxConsumption * PROGRESSBAR_WIDTH);
+        fatProgressFrame.size.width = (int)(fatTotal * FAT_CALORIES_FACTOR / maxConsumption * PROGRESSBAR_WIDTH);
     }
     else {
         proteinProgressFrame.size.width = 0;
         carbProgressFrame.size.width = 0;
         fatProgressFrame.size.width = 0;
     }
+    
+    [self.proteinProgess.progressView setBackgroundColor:[UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1.0]];
+    [self.carbProgress.progressView setBackgroundColor:[UIColor colorWithRed:0.66 green:0.36 blue:0.0 alpha:1.0]];
+    [self.fatProgress.progressView setBackgroundColor:[UIColor colorWithRed:0.882 green:0.757 blue:0.384 alpha:1.0]];
     
     self.proteinProgess.progressView.frame = proteinProgressFrame;
     self.carbProgress.progressView.frame = carbProgressFrame;
@@ -1174,6 +1181,21 @@
 }
 
 /**
+ * hide the select consumption view and cancel food add to consumption action.
+ * @param sender the button or nil.
+ */
+- (void)cancelSelectConsumption:(id)sender {
+    if(selectConsumption != nil){
+        [selectConsumption.selectFoods removeAllObjects];
+        [self.foodTableView reloadData];
+        [self updateProgress];
+        
+        [self.navigationController popViewControllerAnimated:YES];
+        [self.customTabBarController setConsumptionActive];
+    }
+}
+
+/**
  * hide the select consumption view.
  * @param sender the button or nil.
  */
@@ -1309,8 +1331,12 @@
 
 - (void) bindSelectionConsumptionBackButton {
     [selectConsumption.btnBack addTarget:self
-                                  action:@selector(hideSelectConsumption:)
+                                  action:@selector(cancelSelectConsumption:)
                         forControlEvents:UIControlEventTouchUpInside];
+    
+    [selectConsumption.btnBack addTarget:self
+                                  action:@selector(hideSelectConsumption:)
+                        forControlEvents:UIControlEventApplicationReserved];
 }
 
 #pragma mark - UIPopover Delegate Methods
