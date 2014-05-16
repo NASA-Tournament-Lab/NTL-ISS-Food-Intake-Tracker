@@ -82,11 +82,12 @@
     
     [self.btnLogout addTarget:self action:@selector(logout) forControlEvents:UIControlEventTouchUpInside];
     [self setAdmin:admin];
-
+    
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSNumber *lastSyncTime = [defaults objectForKey:@"LastSynchronizedTime"];
     if(lastSyncTime != nil) {
-        [self updateLastSyncLabel:[NSDate dateWithTimeIntervalSince1970:[lastSyncTime longLongValue]/1000]];
+        [self updateLastSyncLabel:[NSDate
+                                   dateWithTimeIntervalSince1970:[lastSyncTime longLongValue]/1000]];
     }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(renewAutoLogout)
@@ -128,6 +129,7 @@
         [Helper showAlert:@"Error" message:@"Please login to perform this functionality."];
         return;
     }
+    appDelegate.tabBarViewController = self;
     
     self.activeTab = 1;
     
@@ -386,7 +388,7 @@
         @synchronized(self) {
             unichar chr[1] = {'\n'};
             NSString *singleCR = [NSString stringWithCharacters:(const unichar *)chr length:1];
-            NSString *text = [NSString stringWithFormat:@"Last synced in:%@%@", singleCR,
+            NSString *text = [NSString stringWithFormat:@"Last Sync:%@%@", singleCR,
                               [f stringFromDate:date]];
             [self.lastSyncLabel performSelectorOnMainThread:@selector(setText:)
                                                  withObject:text waitUntilDone:YES];

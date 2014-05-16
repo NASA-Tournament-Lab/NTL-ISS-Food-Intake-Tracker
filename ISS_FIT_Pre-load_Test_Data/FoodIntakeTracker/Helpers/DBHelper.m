@@ -14,7 +14,7 @@
 //
 //
 //  DBHelper.m
-//  Hercules Personal Content DVR
+//  ISSFoodIntakeTracker
 //
 //  Created by namanhams on 3/9/13.
 //

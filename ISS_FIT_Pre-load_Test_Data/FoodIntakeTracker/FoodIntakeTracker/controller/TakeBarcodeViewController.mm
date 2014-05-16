@@ -190,6 +190,8 @@
     FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
     NSError *error;
     
+    NSLog(@"Barcode scan results: %@", result);
+    
     FoodProduct* foodProduct = [foodProductService getFoodProductByBarcode:appDelegate.loggedInUser
                                                                    barcode:result
                                                                      error:&error];
@@ -208,6 +210,7 @@
         self.resultView.hidden = NO;
         self.imgFood.image = [UIImage imageNamed:foodProduct.productProfileImage];
         self.lblFoodName.text = foodProduct.name;
+        self.lblFoodCategory.text = foodProduct.category;
         self.lblCalories.text = [NSString stringWithFormat:@"%@",foodProduct.energy];
         self.lblSodium.text = [NSString stringWithFormat:@"%@",foodProduct.sodium];
         self.lblFluid.text = [NSString stringWithFormat:@"%@",foodProduct.fluid];

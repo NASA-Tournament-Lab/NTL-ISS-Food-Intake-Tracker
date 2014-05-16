@@ -79,8 +79,9 @@
     NSNumber *lastSyncTime = [defaults objectForKey:@"LastSynchronizedTime"];
     if(lastSyncTime != nil) {
         [[NSNotificationCenter defaultCenter] postNotificationName:UpdateLastSync
-                                                            object:[NSDate dateWithTimeIntervalSince1970:[lastSyncTime
-                                                                                                          longLongValue]/1000]];
+                                                            object:[NSDate
+                                                                    dateWithTimeIntervalSince1970:[lastSyncTime longLongValue]/1000]];
+        
         return [lastSyncTime longLongValue];    
     }
     return 0;
@@ -493,8 +494,6 @@
     }
 
     for (NSString *subDirectory in subDirectoriesToSync) {
-        
-        float progressDeltaInner = progressDelta; //TODO: remove
         // Not applied this sync yet
         // Pull and parse User.csv
 #ifndef USE_TEST_DATA
@@ -505,7 +504,7 @@
         NSData *data = [[NSFileManager defaultManager] contentsAtPath:path];
 #endif
         CHECK_ERROR_AND_RETURN(e, error, @"Cannot read 'User.csv'.", SynchronizationErrorCode, YES, NO);
-        CSVParser *parser = [[CSVParser alloc] init];
+        CSVParser *parser = [CSVParser new];
         NSMutableArray *userDataArray = [parser parseData:data];
         for (NSMutableArray* userData in userDataArray) {
             NSString *username = userData[1];
@@ -522,7 +521,8 @@
             id<UserService> userService = [[UserServiceImpl alloc] init];
             if ([localUsers count] > 0) {
                 User *localUser = localUsers[0];
-                BOOL deleted = [userData[16] boolValue];
+                int index = userData.count > 19 ? 17 : 16;
+                BOOL deleted = [userData[index] boolValue];
                 if (deleted) {
                     [[self managedObjectContext] deleteObject:localUser];
                 } else {
@@ -584,23 +584,29 @@
         }
         
         // Update progress
-        [self updateProgress:[NSNumber numberWithFloat:currentProgress + progressDeltaInner / 4]];
-        
+        currentProgress += progressDelta;
+        [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
+    }
+    
+    for (NSString *subDirectory in subDirectoriesToSync) {
         // Similarly, pull and process AdhocFoodProduct.csv, FoodConsumptionRecord.csv,
         // SummaryGenerationHistory.csv files
         
         // process AdhocFoodProduct.csv
 #ifndef USE_TEST_DATA
-        data = [smbClient readFile:[NSString stringWithFormat:@"data_sync/%@/data/AdhocFoodProduct.csv",
-                                    subDirectory] error:&e];
+        NSData *data = [smbClient readFile:[NSString stringWithFormat:@"data_sync/%@/data/AdhocFoodProduct.csv",
+                                            subDirectory] error:&e];
 #else
         path = [NSString stringWithFormat:@"%@/data_sync/%@/data/AdhocFoodProduct.csv", resourcePath, subDirectory];
-        data = [[NSFileManager defaultManager] contentsAtPath:path];
+        NSData *data = [[NSFileManager defaultManager] contentsAtPath:path];
 #endif
+        CSVParser *parser = [CSVParser new];
         NSMutableArray *adhocFoodProductDataArray = [parser parseData:data];
         for (NSMutableArray* adhocFoodProductData in adhocFoodProductDataArray) {
             NSString *username = adhocFoodProductData[12];
-            NSString *foodProductName = adhocFoodProductData[0];
+            NSString *foodProductName = [[adhocFoodProductData[0]
+                                          stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                                         stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
             NSFetchRequest *request = [[NSFetchRequest alloc] init];
             NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(fullName == %@)", username];
             NSEntityDescription *description = [NSEntityDescription entityForName:@"User"
@@ -678,8 +684,9 @@
         }
         
         // Update progress
-        [self updateProgress:[NSNumber numberWithFloat:currentProgress + progressDeltaInner / 2]];
-
+        currentProgress += (progressDelta / 3);
+        [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
+        
         // Process FoodConsumptionRecord.csv
 #ifndef USE_TEST_DATA
         data = [smbClient
@@ -694,7 +701,9 @@
         NSMutableArray *foodConsumptionRecordDataArray = [parser parseData:data];
         for (NSMutableArray* foodRecordData in foodConsumptionRecordDataArray) {
             NSString *username = foodRecordData[1];
-            NSString *productName = foodRecordData[0];
+            NSString *productName = [[foodRecordData[0]
+                                      stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                                     stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
             NSDate *timestamp = [NSDate
                                  dateWithTimeIntervalSince1970:[foodRecordData[2]
                                                                 doubleValue]];
@@ -715,16 +724,18 @@
                 CHECK_ERROR_AND_RETURN(e, error, @"Cannot find user for FoodConsumptionRecord.",
                                        EntityNotFoundErrorCode, YES, NO);
             }
-            id<FoodProductService> foodProdcutService = [[FoodProductServiceImpl alloc] init];
-            FoodProduct *product = [foodProdcutService getFoodProductByName:localUsers[0]
-                                                                       name:productName error:&e];
+            id<FoodProductService> foodProductService = [[FoodProductServiceImpl alloc] init];
+            FoodProduct *product = [foodProductService getAllFoodProductByName:localUsers[0]
+                                                                          name:productName error:&e];
             if (product == nil) {
-                e = [NSError errorWithDomain:@"SychronizationService"
+                /*e = [NSError errorWithDomain:@"SychronizationService"
                                         code: EntityNotFoundErrorCode
                                     userInfo:@{NSLocalizedDescriptionKey:
                                                    @"Cannot find food product for food consumption record."}];
                 CHECK_ERROR_AND_RETURN(e, error, @"Cannot find food product for food consumption record.",
-                                       EntityNotFoundErrorCode, YES, NO);
+                                       EntityNotFoundErrorCode, YES, NO);*/
+                e = nil;
+                continue; // ignore
             }
             // Try to fetch existing FoodConsumptionRecord with the username, product name and
             // timestamp from Core Data managedObjectContext
@@ -795,7 +806,8 @@
         }
         
         // Update progress
-        [self updateProgress:[NSNumber numberWithFloat:currentProgress + 3 * progressDeltaInner / 4]];
+        currentProgress += (progressDelta / 3);
+        [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
 
         // Process SummaryGenerationHistory.csv
 #ifndef USE_TEST_DATA
@@ -916,7 +928,7 @@
             }
         }
         // Update progress
-        currentProgress += progressDeltaInner;
+        currentProgress += (progressDelta / 3);
         [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
     }
 

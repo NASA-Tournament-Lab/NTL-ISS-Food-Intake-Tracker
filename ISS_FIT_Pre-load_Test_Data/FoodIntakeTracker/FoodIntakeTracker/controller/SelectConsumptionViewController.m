@@ -18,6 +18,9 @@
 //
 //  Created by lofzcx 06/12/2013
 //
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
 
 #import "SelectConsumptionViewController.h"
 #import "Helper.h"
@@ -32,7 +35,7 @@
 #import "DBHelper.h"
 
 @interface SelectConsumptionViewController ()<SettingListViewDelegate, CustomIndexBarDelegate,
-UISearchBarDelegate>{
+    UISearchBarDelegate>{
     /* categories dictionary */
     NSDictionary *categories;
     /* categories keys */
@@ -55,7 +58,7 @@ UISearchBarDelegate>{
     
     /* sort option array */
     NSMutableArray *sortByOptionArray;
-    
+        
     /* is only view calories */
     BOOL viewCaloriesOnly;
     /* is only view sodium */
@@ -197,7 +200,7 @@ UISearchBarDelegate>{
     else {
         selectCategoryIndex[0] = 0;
     }
-    
+
     [self loadFoods];
     [self listviewDidSelect:self.optionListView.selectIndex];
     [[NSNotificationCenter defaultCenter] postNotificationName:AutoLogoutRenewEvent object:nil];
@@ -242,17 +245,17 @@ UISearchBarDelegate>{
         NSString *foodProductCategory = [(NSArray *)[categories objectForKey:@"Food by Category"]
                                          objectAtIndex:selectCategoryIndex[1]];
         filter.categories = [DataHelper convertNSStringToNSSet:foodProductCategory withEntityDescription:
-                             [NSEntityDescription entityForName:@"StringWrapper"
-                                         inManagedObjectContext:[DBHelper currentThreadMoc]]
-                                        inManagedObjectContext:context withSeparator:@";"];
+                              [NSEntityDescription entityForName:@"StringWrapper"
+                                          inManagedObjectContext:[DBHelper currentThreadMoc]]
+                                         inManagedObjectContext:context withSeparator:@";"];
     }
     if (selectCategoryIndex[2] != -1) {
         NSString *foodOrigin = [(NSArray *)[categories objectForKey:@"Food by Country"]
                                 objectAtIndex:selectCategoryIndex[2]];
         filter.origins = [DataHelper convertNSStringToNSSet:foodOrigin withEntityDescription:
-                          [NSEntityDescription entityForName:@"StringWrapper"
-                                      inManagedObjectContext:[DBHelper currentThreadMoc]]
-                                     inManagedObjectContext:context withSeparator:@";"];
+        [NSEntityDescription entityForName:@"StringWrapper"
+                     inManagedObjectContext:[DBHelper currentThreadMoc]]
+                    inManagedObjectContext:context withSeparator:@";"];
     }
     if (selectCategoryIndex[3] != -1) {
         if (selectCategoryIndex[3] == 1) {
@@ -503,10 +506,15 @@ UISearchBarDelegate>{
     NSArray *array = [[NSArray arrayWithObject:@"None"] arrayByAddingObjectsFromArray:[categories objectForKey:@"Food by Category"]];
     
     self.optionListView.delegate = self;
-    self.optionListView.selectIndex = 0;
+    self.optionListView.selectIndex = btn.selected ? 0 : selectIndex;
     self.optionListView.options = btn.selected ? [NSMutableArray arrayWithArray:array] : sortByOptionArray;
-    self.lblSortBy.text = [self.optionListView.options objectAtIndex:0];
+    self.lblSortBy.text = [self.optionListView.options objectAtIndex:self.optionListView.selectIndex];
     [self.optionListView.listTable reloadData];
+    
+    if (!btn.selected) {
+        selectCategoryIndex[1] = -1;
+        [self loadFoods];
+    }
 }
 
 /**
@@ -522,7 +530,8 @@ UISearchBarDelegate>{
  * called when value is selected in sort by option list.
  * @param index the selected index.
  */
-- (void)listviewDidSelect:(int)index{
+- (void)listviewDidSelect:(int)aIndex{
+    int index = aIndex;
     if (self.btnChange.selected) {
         self.lblSortBy.text = [self.optionListView.options objectAtIndex:index];
         [self hideSortByOption];
@@ -530,15 +539,19 @@ UISearchBarDelegate>{
         selectCategoryIndex[1] = index > 0 ? index - 1 : -1;
         [self loadFoods];
         
-        return;
+        index = 0;
+    } else {
+        AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        appDelegate.loggedInUser.lastUsedFoodProductFilter.sortOption = [self getSortOptionFromListView:index];
+
+        self.lblSortBy.text = [self.optionListView.options objectAtIndex:index];
+        [self hideSortByOption];
+        if (selectCategoryIndex[1] >= 0) {
+            selectCategoryIndex[1] = -1;
+            [self loadFoods];
+        }
     }
-    
-    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-    appDelegate.loggedInUser.lastUsedFoodProductFilter.sortOption = [self getSortOptionFromListView:index];
-    
-    self.lblSortBy.text = [self.optionListView.options objectAtIndex:index];
-    [self hideSortByOption];
-    
+
     selectIndex = index;
     if(index == 2){
         viewCaloriesOnly = YES;
@@ -775,7 +788,7 @@ UISearchBarDelegate>{
  * @param sender the button.
  */
 - (IBAction)addToConsumption:(id)sender {
-    [self.btnBack sendActionsForControlEvents:UIControlEventTouchUpInside];
+    [self.btnBack sendActionsForControlEvents:UIControlEventApplicationReserved];    
 }
 
 /**
@@ -943,7 +956,7 @@ UISearchBarDelegate>{
                      permittedArrowDirections:UIPopoverArrowDirectionAny
                                      animated:YES];
     }
-    
+
     FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
     NSError *error = nil;
     FoodProductFilter *filter = [foodProductService buildFoodProductFilter:&error];
@@ -957,7 +970,7 @@ UISearchBarDelegate>{
         for (int i = 0; i < result.count; i++) {
             AdhocFoodProduct *product = result[i];
             NSString *productName = [product.name uppercaseString];
-            if ([searchText isEqualToString:@""] || [productName rangeOfString:[searchText uppercaseString]].location == 0) {
+            if ([searchText isEqualToString:@""] || [productName rangeOfString:[searchText uppercaseString]].location != NSNotFound) {
                 [suggestions addObject:product.name];
             }
         }
@@ -1249,41 +1262,41 @@ UISearchBarDelegate>{
         }
         else {
             /*if (selectCategoryIndex[indexPath.section] == indexPath.row) {
-             selectCategoryIndex[indexPath.section] = -1;
-             }
-             else {
-             selectCategoryIndex[indexPath.section] = indexPath.row;
-             }
-             
-             bool hasSelection = NO;
-             for (int i = 1; i < 5; i++) {
-             if (selectCategoryIndex[i] != -1) {
-             hasSelection = YES;
-             }
-             }
-             if (hasSelection) {
-             selectCategoryIndex[0] = -1;
-             }
-             else {
-             selectCategoryIndex[0] = 0;
-             }*/
+                selectCategoryIndex[indexPath.section] = -1;
+            }
+            else {
+                selectCategoryIndex[indexPath.section] = indexPath.row;
+            }
+            
+            bool hasSelection = NO;
+            for (int i = 1; i < 5; i++) {
+                if (selectCategoryIndex[i] != -1) {
+                    hasSelection = YES;
+                }
+            }
+            if (hasSelection) {
+                selectCategoryIndex[0] = -1;
+            }
+            else {
+                selectCategoryIndex[0] = 0;
+            }*/
             
             for (int i = 0; i < 5; i++) {
                 selectCategoryIndex[i] = -1;
             }
             selectCategoryIndex[indexPath.section] = indexPath.row;
-            
-            self.btnChange.hidden = (indexPath.section != 2);
-            
-            self.btnChange.selected = NO;
-            self.lblSortTitle.text = @"Sort By:";
-            self.optionListView.delegate = self;
-            self.optionListView.selectIndex = 0;
-            self.optionListView.options = sortByOptionArray;
-            self.lblSortBy.text = [self.optionListView.options objectAtIndex:0];
-            [self.optionListView.listTable reloadData];
         }
         
+        self.btnChange.hidden = (indexPath.section != 2);
+        
+        self.btnChange.selected = NO;
+        self.lblSortTitle.text = @"Sort By:";
+        self.optionListView.delegate = self;
+        self.optionListView.selectIndex = 0;
+        self.optionListView.options = sortByOptionArray;
+        self.lblSortBy.text = [self.optionListView.options objectAtIndex:0];
+        [self.optionListView.listTable reloadData];
+
         [tableView reloadData];
         [self loadFoods];
     }

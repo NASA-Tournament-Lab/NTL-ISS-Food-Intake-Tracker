@@ -102,11 +102,6 @@
     user1.dailyTargetEnergy = @1000;
     user1.dailyTargetSodium = @20;
     user1.synchronized = @NO;
-    NSString *faceImages = @"user1.png";
-    user1.faceImages = [DataHelper convertNSStringToNSSet:faceImages withEntityDescription:
-                        [NSEntityDescription entityForName:@"StringWrapper"
-                                    inManagedObjectContext:self.managedObjectContext]
-                                   inManagedObjectContext:self.managedObjectContext withSeparator:@";"];
     user1.lastUsedFoodProductFilter = nil;
     user1.useLastUsedFoodProductFilter = @NO;
     user1.maxPacketsPerFoodProductDaily = @2;
@@ -240,11 +235,6 @@
     STAssertEquals(user.dailyTargetEnergy.intValue, 20, @"returned user should have proper value set");
     STAssertEquals(user.dailyTargetSodium.intValue, 20, @"returned user should have proper value set");
     
-    STAssertTrue(user.faceImages.count == 2, @"returned user should have proper value set.");
-    NSArray *components = [@"joe1.png;joe2.png" componentsSeparatedByString:@";"];
-    for (StringWrapper *c in user.faceImages) {
-        STAssertTrue([components containsObject:c.value], @"The string array should contain the object.");
-    }
     STAssertTrue([user.createdDate timeIntervalSince1970] == 224555466, @"create date is not right.");
     STAssertTrue([user.lastModifiedDate timeIntervalSince1970] == 224555466, @"last modified date is not right.");
     

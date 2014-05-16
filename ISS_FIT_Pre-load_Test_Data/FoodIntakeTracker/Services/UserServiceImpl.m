@@ -119,9 +119,8 @@
                 existingUser.lastModifiedDate = currentDate;
                 existingUser.deleted = user.deleted;
                 // Save changes in the managedObjectContext
-                [self.managedObjectContext save:error];                
+                [self.managedObjectContext save:error];
             }
-            [self.managedObjectContext save:error];
         }
         
         [LoggingHelper logError:methodName error:*error];

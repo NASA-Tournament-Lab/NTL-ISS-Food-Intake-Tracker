@@ -7,11 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B1A0F56192690EB00D9786B /* ISSFoodIntakeTracker.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4B1A0F55192690EB00D9786B /* ISSFoodIntakeTracker.xcmappingmodel */; };
+		4B1A0F5B1926910000D9786B /* ISSFoodIntakeTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4B1A0F581926910000D9786B /* ISSFoodIntakeTracker.xcdatamodeld */; };
 		4B7D48A418D9655700F04223 /* samba in Resources */ = {isa = PBXBuildFile; fileRef = 4B7D48A318D9655700F04223 /* samba */; };
 		4BE31E43190FBC4000402D94 /* btn-change.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BE31E42190FBC4000402D94 /* btn-change.png */; };
 		4D0F2D8717BD23A000B86759 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4D0F2D8517BD23A000B86759 /* InfoPlist.strings */; };
 		4D0F2DBE17BD257700B86759 /* test_data in Resources */ = {isa = PBXBuildFile; fileRef = 4D0F2DBD17BD257700B86759 /* test_data */; };
-		4D0F2DEE17BD2CAC00B86759 /* ISSFoodIntakeTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167B417BD20E100D3633F /* ISSFoodIntakeTracker.xcdatamodeld */; };
 		4D0F2DEF17BD2CC300B86759 /* BaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D0F2D9217BD247D00B86759 /* BaseTests.m */; };
 		4D0F2DF017BD2CCB00B86759 /* BaseCommunicationDataServiceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D0F2D9017BD247D00B86759 /* BaseCommunicationDataServiceTests.m */; };
 		4D0F2DF117BD2D0600B86759 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DF167F517BD216000D3633F /* CoreData.framework */; };
@@ -459,9 +460,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4B1A0F55192690EB00D9786B /* ISSFoodIntakeTracker.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = ISSFoodIntakeTracker.xcmappingmodel; sourceTree = "<group>"; };
+		4B1A0F591926910000D9786B /* ISSFoodIntakeTracker 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ISSFoodIntakeTracker 2.xcdatamodel"; sourceTree = "<group>"; };
+		4B1A0F5A1926910000D9786B /* ISSFoodIntakeTracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ISSFoodIntakeTracker.xcdatamodel; sourceTree = "<group>"; };
 		4B7D48A318D9655700F04223 /* samba */ = {isa = PBXFileReference; lastKnownFileType = folder; name = samba; path = ../../samba/samba; sourceTree = "<group>"; };
 		4BE31E42190FBC4000402D94 /* btn-change.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-change.png"; sourceTree = "<group>"; };
-		4BE31E45190FBC6E00402D94 /* ISSFoodIntakeTracker 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ISSFoodIntakeTracker 2.xcdatamodel"; sourceTree = "<group>"; };
 		4D0F2D7D17BD23A000B86759 /* FoodIntakeTrackerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodIntakeTrackerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D0F2D8417BD23A000B86759 /* FoodIntakeTrackerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FoodIntakeTrackerTests-Info.plist"; sourceTree = "<group>"; };
 		4D0F2D8617BD23A000B86759 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -839,7 +842,6 @@
 		4DF167B117BD20E100D3633F /* FoodProduct.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoodProduct.m; sourceTree = "<group>"; };
 		4DF167B217BD20E100D3633F /* FoodProductFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoodProductFilter.h; sourceTree = "<group>"; };
 		4DF167B317BD20E100D3633F /* FoodProductFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoodProductFilter.m; sourceTree = "<group>"; };
-		4DF167B517BD20E100D3633F /* ISSFoodIntakeTracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ISSFoodIntakeTracker.xcdatamodel; sourceTree = "<group>"; };
 		4DF167B617BD20E100D3633F /* Models.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Models.h; sourceTree = "<group>"; };
 		4DF167B717BD20E100D3633F /* StringWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringWrapper.h; sourceTree = "<group>"; };
 		4DF167B817BD20E100D3633F /* StringWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StringWrapper.m; sourceTree = "<group>"; };
@@ -1644,7 +1646,8 @@
 				4DF167B117BD20E100D3633F /* FoodProduct.m */,
 				4DF167B217BD20E100D3633F /* FoodProductFilter.h */,
 				4DF167B317BD20E100D3633F /* FoodProductFilter.m */,
-				4DF167B417BD20E100D3633F /* ISSFoodIntakeTracker.xcdatamodeld */,
+				4B1A0F581926910000D9786B /* ISSFoodIntakeTracker.xcdatamodeld */,
+				4B1A0F55192690EB00D9786B /* ISSFoodIntakeTracker.xcmappingmodel */,
 				4DF167B617BD20E100D3633F /* Models.h */,
 				4DF167B717BD20E100D3633F /* StringWrapper.h */,
 				4DF167B817BD20E100D3633F /* StringWrapper.m */,
@@ -2531,6 +2534,8 @@
 				E70A6FED176839B200712B47 /* ConsumptionViewController.m in Sources */,
 				E70A700E1768B24600712B47 /* CustomPickerViewController.m in Sources */,
 				E70A702617695F0200712B47 /* PopoverBackgroundView.m in Sources */,
+				4B1A0F5B1926910000D9786B /* ISSFoodIntakeTracker.xcdatamodeld in Sources */,
+				4B1A0F56192690EB00D9786B /* ISSFoodIntakeTracker.xcmappingmodel in Sources */,
 				E70A70391769779400712B47 /* SummaryFoodTableCell.m in Sources */,
 				E70A70521769EBB100712B47 /* AddFoodViewController.m in Sources */,
 				E70A705A176A18A100712B47 /* CalendarViewController.m in Sources */,
@@ -2570,7 +2575,6 @@
 				4DF167EE17BD20E100D3633F /* SpeechRecognitionServiceImpl.m in Sources */,
 				4DF167EF17BD20E100D3633F /* SynchronizationServiceImpl.m in Sources */,
 				4DF167F017BD20E100D3633F /* UserServiceImpl.m in Sources */,
-				4D0F2DEE17BD2CAC00B86759 /* ISSFoodIntakeTracker.xcdatamodeld in Sources */,
 				4D9FEA8417C002FF001F92B5 /* Tesseract.mm in Sources */,
 				4D4884B317C3CC7C006851A9 /* CustomTableViewController.m in Sources */,
 				4D64994717CD13DC00C15B72 /* BNAppStats.m in Sources */,
@@ -2834,13 +2838,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		4DF167B417BD20E100D3633F /* ISSFoodIntakeTracker.xcdatamodeld */ = {
+		4B1A0F581926910000D9786B /* ISSFoodIntakeTracker.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				4BE31E45190FBC6E00402D94 /* ISSFoodIntakeTracker 2.xcdatamodel */,
-				4DF167B517BD20E100D3633F /* ISSFoodIntakeTracker.xcdatamodel */,
+				4B1A0F591926910000D9786B /* ISSFoodIntakeTracker 2.xcdatamodel */,
+				4B1A0F5A1926910000D9786B /* ISSFoodIntakeTracker.xcdatamodel */,
 			);
-			currentVersion = 4BE31E45190FBC6E00402D94 /* ISSFoodIntakeTracker 2.xcdatamodel */;
+			currentVersion = 4B1A0F591926910000D9786B /* ISSFoodIntakeTracker 2.xcdatamodel */;
 			path = ISSFoodIntakeTracker.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

@@ -89,7 +89,7 @@
     // Lock on the managedObjectContext
     [[self managedObjectContext] lock];
     
-    
+    int fileDataVersion = 0;
     NSString* deviceID = [DataHelper getDeviceIdentifier];
     e = nil;
     /* Do not delete the files now ISSFIT-44
@@ -151,10 +151,15 @@
                     // skip header
                     if(!headerFind) {
                         headerFind = YES;
+                        fileDataVersion = [[foodProductData lastObject] integerValue];
                         continue;
                     }
-                    NSString *foodProductName = [foodProductData[0]
-                                                 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                    NSString *foodProductName = [[foodProductData[0]
+                                                 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                                                 stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
+                    if (foodProductName == nil || foodProductName.length == 0) {
+                        continue;
+                    }
                     [foodProductNames addObject:foodProductName];
                     // Try to fetch existing FoodProduct with the foodProductName from Core Data managedObjectContext
                     NSFetchRequest *request = [[NSFetchRequest alloc] init];
@@ -187,6 +192,11 @@
                         foodProduct.carb = @([foodProductData[8] intValue]);
                         foodProduct.fat = @([foodProductData[9] intValue]);
                         foodProduct.productProfileImage = foodProductData[10];
+                        if (fileDataVersion == 0) {
+                            foodProduct.deleted = @NO;
+                        } else {
+                            foodProduct.deleted = [foodProductData[11] isEqualToString:@"YES"]?@YES:@NO;
+                        }
                     } else {
                         // Create a new FoodProduct in Core Data managedObjectContext
                         // Extract other properties from foodProductData array, and set the properties to the foodProduct
@@ -214,7 +224,11 @@
                         foodProduct.fat = @([foodProductData[9] intValue]);
                         foodProduct.active = @YES;
                         foodProduct.productProfileImage = foodProductData[10];
-                        foodProduct.deleted = @NO;
+                        if (fileDataVersion == 0) {
+                            foodProduct.deleted = @NO;
+                        } else {
+                            foodProduct.deleted = [foodProductData[11] isEqualToString:@"YES"]?@YES:@NO;
+                        }
                     }
                 }
                 // Query Core Data to fetch the existing FoodProduct records with active == YES and name
@@ -363,6 +377,7 @@
                     // skip header
                     if (!headerFind) {
                         headerFind = YES;
+                        fileDataVersion = [[userProfileData lastObject] integerValue];
                         continue;
                     }
                     NSString *userFullName = userProfileData[0];
@@ -384,7 +399,8 @@
                     user.dailyTargetFat = @([userProfileData[7] intValue]);
                     user.maxPacketsPerFoodProductDaily = @([userProfileData[8] intValue]);
                     user.profileImage = userProfileData[9];
-                    user.useLastUsedFoodProductFilter = [userProfileData[10] isEqualToString:@"YES"]?@YES:@NO;
+                    user.useLastUsedFoodProductFilter = [userProfileData[(fileDataVersion == 0 ? 11 : 10)]
+                                                         isEqualToString:@"YES"]?@YES:@NO;
                     
                     // saveUser will update existing user or save new user.
                     [userService saveUser:user error:&e];

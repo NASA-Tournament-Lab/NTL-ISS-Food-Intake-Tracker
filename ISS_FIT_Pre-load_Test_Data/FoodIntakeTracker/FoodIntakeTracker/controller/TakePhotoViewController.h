@@ -18,6 +18,9 @@
 //
 //  Created by lofzcx 06/25/2013
 //
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
 
 #import <UIKit/UIKit.h>
 #import "CustomTabBarViewController.h"
@@ -33,7 +36,7 @@
  * @version 1.1
  * @since 1.0
  */
-@interface TakePhotoViewController : TakeBaseViewController <UIPickerViewDataSource, UIPickerViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIPopoverControllerDelegate>{
+@interface TakePhotoViewController : TakeBaseViewController <UIPickerViewDataSource, UIPickerViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIPopoverControllerDelegate, UIAlertViewDelegate>{
     NSMutableArray *categories;
 }
 
