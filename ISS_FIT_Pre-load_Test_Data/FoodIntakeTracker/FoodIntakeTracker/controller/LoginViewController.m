@@ -318,6 +318,8 @@
     if ([Helper displayError:error]) return;
     appDelegate.loggedInUser = loggedInUser;
     [self performSegueWithIdentifier:@"Login" sender:self];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:[NSDate date]];
 }
 
 /**

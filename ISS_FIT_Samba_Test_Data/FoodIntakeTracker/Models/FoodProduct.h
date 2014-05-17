@@ -38,7 +38,7 @@
 //Represents the total kcal of energy contained in the food product per packet.
 @property (nonatomic, strong) NSNumber * energy;
 
-//Represents the total liters of fluid contained in the food product per packet.
+//Represents the total mili-liters of fluid contained in the food product per packet.
 @property (nonatomic, strong) NSNumber * fluid;
 
 //Represents the name of the food product.

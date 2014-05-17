@@ -149,12 +149,6 @@
     STAssertEquals(user.dailyTargetEnergy.intValue, 20, @"returned user should have proper value set");
     STAssertEquals(user.dailyTargetSodium.intValue, 20, @"returned user should have proper value set");
     
-    STAssertTrue(user.faceImages.count == 2, @"returned user should have proper value set.");
-    NSArray *components = [@"joe1.png;joe2.png" componentsSeparatedByString:@";"];
-    for (StringWrapper *c in user.faceImages) {
-        STAssertTrue([components containsObject:c.value], @"The string array should contain the object.");
-    }
-    
     // check fetched food product
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(name == %@)", @"Black Coffee"];

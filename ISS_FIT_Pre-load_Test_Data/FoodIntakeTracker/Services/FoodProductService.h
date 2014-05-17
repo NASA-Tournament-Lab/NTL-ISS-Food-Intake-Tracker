@@ -18,6 +18,9 @@
 //
 //  Created by duxiaoyang on 2013-07-13.
 //
+//  Updated by pvmagacho on 05/07/2014
+//  F2Finish - NASA iPad App Updates
+//
 
 #import <Foundation/Foundation.h>
 #import "Models.h"
@@ -97,6 +100,15 @@
  @return The FoodProduct with given name; or nil if no such record can be found.
  */
 -(FoodProduct *)getFoodProductByName:(User *)user name:(NSString *)name error:(NSError **)error;
+
+/*!
+ @discussion Retrieve the food product with given name (including deleted). Nil will be returned if there's no matching food product.
+ @param user The user to search.
+ @param name The name to search.
+ @param error The reference to an NSError object which will be filled if any error occurs.
+ @return The FoodProduct with given name; or nil if no such record can be found.
+ */
+-(FoodProduct *)getAllFoodProductByName:(User *)user name:(NSString *)name error:(NSError **)error;
 
 /*!
  @discussion Retrieve all available product categories.

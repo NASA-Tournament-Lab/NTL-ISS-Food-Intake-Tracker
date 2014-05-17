@@ -18,6 +18,12 @@
 //
 //  Created by lofzcx 06/12/2013
 //
+//  Updated by pvmagacho on 05/07/2014
+//  F2Finish - NASA iPad App Updates
+//
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
 
 #import "ConsumptionViewController.h"
 #import "CustomTabBarViewController.h"
@@ -39,7 +45,7 @@
 
 #define MAX_CALORIES 2800
 #define MAX_SODIUM 160
-#define MAX_FLUID 3
+#define MAX_FLUID 3000
 
 #define PROTEIN_CALORIES_FACTOR 4.0
 #define CARB_CALORIES_FACTOR 4.0
@@ -300,12 +306,12 @@
         self.sodiumProgress.lblTotal.text =
         [NSString stringWithFormat:@"/ %@ mg", appDelegate.loggedInUser.dailyTargetSodium];
         self.fluidProgress.lblTotal.text =
-        [NSString stringWithFormat:@"/ %@ liters", appDelegate.loggedInUser.dailyTargetFluid];
+        [NSString stringWithFormat:@"/ %@ mL", appDelegate.loggedInUser.dailyTargetFluid];
     }
     else {
         self.caloriesProgess.lblTotal.text = [NSString stringWithFormat:@"/ %d kcal", MAX_CALORIES];
         self.sodiumProgress.lblTotal.text = [NSString stringWithFormat:@"/ %d mg", MAX_SODIUM];
-        self.fluidProgress.lblTotal.text = [NSString stringWithFormat:@"/ %d liters", MAX_FLUID];
+        self.fluidProgress.lblTotal.text = [NSString stringWithFormat:@"/ %d mL", MAX_FLUID];
     }
     
     listening = NO;
@@ -397,9 +403,9 @@
     [numberFormatter setPositiveFormat:@"#.##"];
     self.fluidProgress.lblCurrent.text = [numberFormatter stringFromNumber:[NSNumber numberWithFloat:fluidTotal]];
     
-    self.proteinProgess.lblCurrent.text = [NSString stringWithFormat:@"%d grams eaten", proteinTotal];
-    self.carbProgress.lblCurrent.text = [NSString stringWithFormat:@"%d grams eaten", carbTotal];
-    self.fatProgress.lblCurrent.text = [NSString stringWithFormat:@"%d grams eaten", fatTotal];
+    self.proteinProgess.lblCurrent.text = [NSString stringWithFormat:@"%d kCal", (int) (proteinTotal * PROTEIN_CALORIES_FACTOR)];
+    self.carbProgress.lblCurrent.text = [NSString stringWithFormat:@"%d kCal", (int) (carbTotal * CARB_CALORIES_FACTOR)];
+    self.fatProgress.lblCurrent.text = [NSString stringWithFormat:@"%d kCal", (int) (fatTotal * FAT_CALORIES_FACTOR)];
 
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     
@@ -411,13 +417,13 @@
     self.sodiumProgress.currentProgress = sodiumProgressPercentage;
     self.fluidProgress.currentProgress = fluidProgressPercentage;
     
-    int maxConsumption = proteinTotal;
-    if (carbTotal > maxConsumption) {
+    int maxConsumption = [appDelegate.loggedInUser.dailyTargetEnergy intValue];
+    /*if (carbTotal > maxConsumption) {
         maxConsumption = carbTotal;
     }
     if (fatTotal > maxConsumption) {
         maxConsumption = fatTotal;
-    }
+    }*/
     
     self.proteinProgess.currentProgress = 1.0;
     self.carbProgress.currentProgress =  1.0;
@@ -428,15 +434,19 @@
     CGRect fatProgressFrame = self.fatProgress.progressView.frame;
     
     if (maxConsumption > 0) {
-        proteinProgressFrame.size.width = (int)(proteinTotal * 1.0f / maxConsumption * PROGRESSBAR_WIDTH);
-        carbProgressFrame.size.width = (int)(carbTotal * 1.0f / maxConsumption * PROGRESSBAR_WIDTH);
-        fatProgressFrame.size.width = (int)(fatTotal * 1.0f / maxConsumption * PROGRESSBAR_WIDTH);
+        proteinProgressFrame.size.width = (int)(proteinTotal * PROTEIN_CALORIES_FACTOR / maxConsumption * PROGRESSBAR_WIDTH);
+        carbProgressFrame.size.width = (int)(carbTotal * CARB_CALORIES_FACTOR / maxConsumption * PROGRESSBAR_WIDTH);
+        fatProgressFrame.size.width = (int)(fatTotal * FAT_CALORIES_FACTOR / maxConsumption * PROGRESSBAR_WIDTH);
     }
     else {
         proteinProgressFrame.size.width = 0;
         carbProgressFrame.size.width = 0;
         fatProgressFrame.size.width = 0;
     }
+    
+    [self.proteinProgess.progressView setBackgroundColor:[UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1.0]];
+    [self.carbProgress.progressView setBackgroundColor:[UIColor colorWithRed:0.66 green:0.36 blue:0.0 alpha:1.0]];
+    [self.fatProgress.progressView setBackgroundColor:[UIColor colorWithRed:0.882 green:0.757 blue:0.384 alpha:1.0]];
     
     self.proteinProgess.progressView.frame = proteinProgressFrame;
     self.carbProgress.progressView.frame = carbProgressFrame;
@@ -506,12 +516,15 @@
         [selectedItems addObject:item];
         [btn setSelected:YES];
     }
-    if(selectedItems.count == 0){
+    BOOL canCopy = YES;
+    for (FoodConsumptionRecord *record in selectedItems) {
+        canCopy &= ![record.foodProduct.deleted boolValue];
+    }
+    if (selectedItems.count == 0){
         [self.btnCopy setEnabled:NO];
         [self.btnDelete setEnabled:NO];
-    }
-    else{
-        [self.btnCopy setEnabled:YES];
+    } else {
+        [self.btnCopy setEnabled:canCopy];
         [self.btnDelete setEnabled:YES];
     }
 }
@@ -762,6 +775,8 @@
     [foodDetail.view removeFromSuperview];
     foodDetail = nil;
     [self stopCommentDictation];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
 }
 
 /**
@@ -782,6 +797,8 @@
                              action:@selector(hideFoodDetail)
                    forControlEvents:UIControlEventTouchUpInside];
     
+    [foodDetail.btnSave setHidden:[record.foodProduct.deleted boolValue]];
+    [foodDetail.txtQuantity setUserInteractionEnabled:![record.foodProduct.deleted boolValue]];
     [foodDetail.btnSave addTarget:self
                            action:@selector(saveFoodDetail)
                  forControlEvents:UIControlEventTouchUpInside];
@@ -930,6 +947,11 @@
         [recordService deleteFoodConsumptionRecord:record error:&error];
         if ([Helper displayError:error]) return;
     }
+    
+    if (selectedItems.count > 0) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
+    }
+    
     [self.foodTableView reloadData];
     [self updateProgress];
     [self hideDeletePop:nil];
@@ -1008,13 +1030,15 @@
                                                           [NSIndexPath indexPathForRow:row
                                                                              inSection:0]];
     [cell setEditing:NO animated:YES];
-    if (cell.btnDone == btn) {
+    if(cell.btnDone == btn){
         // F2Finish change
         [contentOffset removeObjectForKey:cell.foodConsumptionRecord.objectID];
         
         [self.foodConsumptionRecords removeObjectAtIndex:row];
         [recordService deleteFoodConsumptionRecord:cell.foodConsumptionRecord error:&error];
         if ([Helper displayError:error]) return;
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
     }
     [self.foodTableView reloadData];
     [self updateProgress];
@@ -1113,7 +1137,6 @@
                                                                  NSMinuteCalendarUnit)
                                                        fromDate:self.dateListView.currentDate];
             [components setCalendar:calendar];
-            
             NSDateComponents *currentDateComponents = [calendar components:(NSHourCalendarUnit |
                                                                             NSMinuteCalendarUnit)
                                                                   fromDate:record.timestamp];
@@ -1128,6 +1151,9 @@
             if ([Helper displayError:error]) return;
             [self.foodConsumptionRecords addObject:record];
         }
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
+        
         [voiceSearch.selectedFoodProducts removeAllObjects];
         [self.foodTableView reloadData];
         [self updateProgress];
@@ -1151,6 +1177,21 @@
     if([animationID isEqualToString:@"hideSelectConsumption"]){
         [selectConsumption.view removeFromSuperview];
         selectConsumption = nil;
+    }
+}
+
+/**
+ * hide the select consumption view and cancel food add to consumption action.
+ * @param sender the button or nil.
+ */
+- (void)cancelSelectConsumption:(id)sender {
+    if(selectConsumption != nil){
+        [selectConsumption.selectFoods removeAllObjects];
+        [self.foodTableView reloadData];
+        [self updateProgress];
+        
+        [self.navigationController popViewControllerAnimated:YES];
+        [self.customTabBarController setConsumptionActive];
     }
 }
 
@@ -1183,6 +1224,9 @@
                 if ([Helper displayError:error]) return;
                 [self.foodConsumptionRecords addObject:record];
             }
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
+            
             [selectConsumption.selectFoods removeAllObjects];
             [self.foodTableView reloadData];
             [self updateProgress];
@@ -1287,8 +1331,12 @@
 
 - (void) bindSelectionConsumptionBackButton {
     [selectConsumption.btnBack addTarget:self
-                                  action:@selector(hideSelectConsumption:)
+                                  action:@selector(cancelSelectConsumption:)
                         forControlEvents:UIControlEventTouchUpInside];
+    
+    [selectConsumption.btnBack addTarget:self
+                                  action:@selector(hideSelectConsumption:)
+                        forControlEvents:UIControlEventApplicationReserved];
 }
 
 #pragma mark - UIPopover Delegate Methods
@@ -1367,6 +1415,9 @@
     
     cell.lblTime.text = [NSString stringWithFormat:@"%.2d:%.2d", hour, minute];
     cell.lblName.text = item.foodProduct.name;
+    if ([item.foodProduct.deleted boolValue]) {
+        cell.lblName.textColor = [UIColor colorWithRed:192 green:0 blue:0 alpha:1];
+    }
     if(item.foodProduct.energy.intValue == 0 && item.foodProduct.sodium.intValue == 0 &&
        item.foodProduct.fluid.intValue == 0){
         cell.btnNonNutrient.hidden = NO;
@@ -1465,10 +1516,12 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
  * @param scrollView The scroll-view object in which the scrolling occurred.
  */
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    FoodConsumptionRecord *item = [self.foodConsumptionRecords objectAtIndex:scrollView.tag];
-    CGPoint point = scrollView.contentOffset;
-    NSValue *value = [NSValue valueWithCGPoint:point];
-    [contentOffset setObject:value forKey:item.objectID];
+    if (![scrollView isEqual:self.foodTableView]) {
+        FoodConsumptionRecord *item = [self.foodConsumptionRecords objectAtIndex:scrollView.tag];
+        CGPoint point = scrollView.contentOffset;
+        NSValue *value = [NSValue valueWithCGPoint:point];
+        [contentOffset setObject:value forKey:item.objectID];
+    }
 }
 
 @end

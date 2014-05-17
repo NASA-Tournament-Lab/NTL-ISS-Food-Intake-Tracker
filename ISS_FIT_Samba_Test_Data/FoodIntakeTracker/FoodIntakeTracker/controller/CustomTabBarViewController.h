@@ -71,6 +71,10 @@
 /* the consumption logout label */
 @property (weak, nonatomic) IBOutlet UILabel *lblLogout;
 
+/* login user first name */
+@property (strong, nonatomic) IBOutlet UILabel *lastSyncLabel;
+
+
 /**
  * add control for show and hide data and profile tab by user's role (Admin or not)
  */

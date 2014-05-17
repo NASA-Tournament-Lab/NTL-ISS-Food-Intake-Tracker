@@ -46,7 +46,6 @@
     User *user = [[User alloc] initWithEntity:entity insertIntoManagedObjectContext:nil];
     user.admin = @NO;
     user.fullName = @"";
-    user.faceImages = [NSMutableSet set];
     user.lastUsedFoodProductFilter = nil;
     user.useLastUsedFoodProductFilter = @NO;
     user.dailyTargetFluid = @0;
@@ -94,16 +93,7 @@
             user.synchronized = @NO;
             user.lastModifiedDate = currentDate;
             user.createdDate = currentDate;
-            NSSet *faceImages = user.faceImages;
-            user.faceImages = nil;
             [self.managedObjectContext insertObject:user];
-            // Save changes in the managedObjectContext
-            [self.managedObjectContext save:error];
-            
-            for (StringWrapper *s in faceImages) {
-                [self.managedObjectContext insertObject:s];
-            }
-            user.faceImages = faceImages;
             // Save changes in the managedObjectContext
             [self.managedObjectContext save:error];
         } else {
@@ -116,7 +106,6 @@
                 // copy fields from user to existingUser
                 existingUser.admin = user.admin;
                 existingUser.fullName = user.fullName;
-                existingUser.faceImages = nil;
                 existingUser.useLastUsedFoodProductFilter = user.useLastUsedFoodProductFilter;
                 if(user.lastUsedFoodProductFilter != nil) {
                     existingUser.lastUsedFoodProductFilter = user.lastUsedFoodProductFilter;
@@ -131,13 +120,7 @@
                 existingUser.deleted = user.deleted;
                 // Save changes in the managedObjectContext
                 [self.managedObjectContext save:error];
-                
-                for (StringWrapper *s in user.faceImages) {
-                    [self.managedObjectContext insertObject:s];
-                }
-                existingUser.faceImages = user.faceImages;
             }
-            [self.managedObjectContext save:error];
         }
         
         [LoggingHelper logError:methodName error:*error];

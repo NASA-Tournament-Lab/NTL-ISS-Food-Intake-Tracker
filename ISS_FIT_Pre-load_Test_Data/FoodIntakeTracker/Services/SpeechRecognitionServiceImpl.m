@@ -68,7 +68,14 @@
     //Upper case of names
     NSMutableArray *names = [NSMutableArray array];
     for (NSDictionary *item in result) {
-        [names addObject:[item[@"name"] uppercaseString]];
+        NSString *value = [item[@"name"] uppercaseString];
+        NSArray *values = [value componentsSeparatedByCharactersInSet:[NSCharacterSet
+                                                                       characterSetWithCharactersInString:@" ,"]];
+        for (NSString *name in values) {
+            if (![names containsObject:name] && name.length > 0) {
+                [names addObject:name];
+            }
+        }
     }
     
     //Generate language model

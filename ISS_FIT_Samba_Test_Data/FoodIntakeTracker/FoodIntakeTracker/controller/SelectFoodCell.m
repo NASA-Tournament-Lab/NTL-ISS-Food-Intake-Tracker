@@ -18,6 +18,9 @@
 //
 //  Created by lofzcx 06/12/2013
 //
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
 
 #import "SelectFoodCell.h"
 
@@ -54,9 +57,13 @@
     [self.scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     CGRect nutrientFrame;
     
+    CGRect frame = self.lblName.frame;
+    frame.size.width = 340 - frame.origin.x;
+    self.lblName.frame = frame;
+    
     // update nutrient view size and position in different mode.
     if(self.viewCaloriesOnly && rect.size.width == 454){
-        nutrientFrame = CGRectMake(240, 0, 285, 54);
+        nutrientFrame = CGRectMake(340, 0, 285, 54);
         self.viewFluid.hidden = YES;
         self.viewSodium.hidden = YES;
         self.viewCalories.hidden = NO;
@@ -65,7 +72,7 @@
         self.viewFat.hidden = YES;
     }
     else if(self.viewSodiumOnly && rect.size.width == 454){
-        nutrientFrame = CGRectMake(240 - 96, 0, 285, 54);
+        nutrientFrame = CGRectMake(340 - 96, 0, 285, 54);
         self.viewFluid.hidden = YES;
         self.viewSodium.hidden = NO;
         self.viewCalories.hidden = YES;
@@ -74,7 +81,7 @@
         self.viewFat.hidden = YES;
     }
     else if(self.viewFluidOnly && rect.size.width == 454){
-        nutrientFrame = CGRectMake(240 - 96 * 2, 0, 285, 54);
+        nutrientFrame = CGRectMake(340 - 96 * 2, 0, 285, 54);
         self.viewFluid.hidden = NO;
         self.viewSodium.hidden = YES;
         self.viewCalories.hidden = YES;
@@ -84,7 +91,7 @@
     }
     else if(self.viewProteinOnly && rect.size.width == 454){
         [self.scrollView scrollRectToVisible:CGRectMake(569, 0, 1, 1) animated:NO];
-        nutrientFrame = CGRectMake(240, 0, 285, 54);
+        nutrientFrame = CGRectMake(340, 0, 285, 54);
         self.viewFluid.hidden = YES;
         self.viewSodium.hidden = YES;
         self.viewCalories.hidden = YES;
@@ -94,7 +101,7 @@
     }
     else if(self.viewCarbOnly && rect.size.width == 454){
         [self.scrollView scrollRectToVisible:CGRectMake(569, 0, 1, 1) animated:NO];
-        nutrientFrame = CGRectMake(240 - 96, 0, 285, 54);
+        nutrientFrame = CGRectMake(340 - 96, 0, 285, 54);
         self.viewFluid.hidden = YES;
         self.viewSodium.hidden = YES;
         self.viewCalories.hidden = YES;
@@ -104,7 +111,7 @@
     }
     else if(self.viewFatOnly && rect.size.width == 454){
         [self.scrollView scrollRectToVisible:CGRectMake(569, 0, 1, 1) animated:NO];
-        nutrientFrame = CGRectMake(240 - 96 * 2, 0, 285, 54);
+        nutrientFrame = CGRectMake(340 - 96 * 2, 0, 285, 54);
         self.viewFluid.hidden = YES;
         self.viewSodium.hidden = YES;
         self.viewCalories.hidden = YES;
@@ -120,6 +127,8 @@
         self.viewProtein.hidden = NO;
         self.viewCarb.hidden = NO;
         self.viewFat.hidden = NO;
+        
+        [self.lblName sizeToFit];
     };
     
     if(rect.size.width > 454){

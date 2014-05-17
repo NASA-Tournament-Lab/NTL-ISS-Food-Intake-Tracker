@@ -18,6 +18,9 @@
 //
 //  Created by lofzcx 06/25/2013
 //
+//  Updated by pvmagacho on 05/07/2014
+//  F2Finish - NASA iPad App Updates
+//
 
 #import "TakeBaseViewController.h"
 #import "Helper.h"
@@ -222,6 +225,10 @@
         if ([Helper displayError:error]) return;
         [consumptionViewController.foodConsumptionRecords addObject:record];
     }
+    if (selectFoods.count > 0) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:selectedDate];
+    }
+    
     [selectFoods removeAllObjects];
     [consumptionViewController updateProgress];
 }

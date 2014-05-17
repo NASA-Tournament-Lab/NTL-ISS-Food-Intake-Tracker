@@ -18,6 +18,9 @@
 //
 //  Created by LokiYang on 2013-07-27.
 //
+//  Updated by pvmagacho on 04/19/2014
+//  F2Finish - NASA iPad App Updates
+//
 
 #import <Foundation/Foundation.h>
 
@@ -36,4 +39,23 @@
  @return YES if the operation succceeds, otherwise NO.
  */
 -(BOOL)update:(NSError **)error;
+
+/*!
+ @discussion This method will be used to apply data changes (control files) pushed from Earth Laboratory.
+ @parame error The NSError object if any error occurred during the operation
+ @return YES if the operation succceeds, otherwise NO.
+ */
+-(BOOL)update:(NSError **)error force:(BOOL) force;
+
+/*!
+ @discussion Set cancel update.
+ @param the value to set.
+ */
+-(void)setCancelUpdate:(BOOL) value;
+
+/*!
+ @discussion Check if update was cancelled.
+ */
+-(BOOL)cancelUpdate;
+
 @end

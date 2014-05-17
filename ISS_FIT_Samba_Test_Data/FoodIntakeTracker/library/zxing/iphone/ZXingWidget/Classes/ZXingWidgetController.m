@@ -329,7 +329,7 @@ static bool isIPad() {
     NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
     for (AVCaptureDevice *device in videoDevices)
     {
-        if (device.position == AVCaptureDevicePositionFront)
+        if (device.position == AVCaptureDevicePositionBack)
         {
             inputDevice = device;
             break;

@@ -18,6 +18,9 @@
 //
 //  Created by lofzcx 06/25/2013
 //
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
 
 #import "TakePhotoViewController.h"
 #import <QuartzCore/QuartzCore.h>
@@ -56,7 +59,7 @@
  */
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    [self take:self.takeButton];
+    // [self take:self.takeButton];
 }
 
 /**
@@ -107,12 +110,14 @@
     picker.allowsEditing = YES;
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
-        picker.cameraViewTransform = CGAffineTransformScale(picker.cameraViewTransform, -1, 1);
+        picker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+        //picker.cameraViewTransform = CGAffineTransformScale(picker.cameraViewTransform, -1, 1);
     }
     else {
         picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     }
+    self.takeButton.hidden = YES;
+    self.lblTakeButtonTitle.hidden = YES;
     self.popover = [[UIPopoverController alloc] initWithContentViewController:picker];
     self.popover.delegate = self;
     [self.popover presentPopoverFromRect:button.frame
@@ -215,17 +220,9 @@
  * @param sender the button.
  */
 - (IBAction)cancelTake:(id)sender{
-    self.imgCenter.hidden = NO;
-    self.lblTakeButtonTitle.text = @"Take Photo";
-    [self.txtFoodName resignFirstResponder];
-    
-    [clearCover removeFromSuperview];
-    clearCover = nil;
-    self.resultView.hidden = YES;
-    self.foodAddedPopup.hidden = YES;
-    self.btnAdd.hidden = YES;
-    self.resultsView.hidden = YES;
-    [self.btnResults setSelected:NO];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Cancel" message:@"Would like to cancel photo?" delegate:self
+                                              cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil];
+    [alertView show];
 }
 
 #pragma mark - Picker delegate
@@ -304,6 +301,37 @@
  */
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
     [self.popover dismissPopoverAnimated:YES];
+}
+
+#pragma mark - PopoverControllerDelegate
+
+- (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
+    return YES;
+}
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    self.takeButton.hidden = NO;
+    self.lblTakeButtonTitle.hidden = NO;
+}
+
+#pragma mark - AlertView delegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        self.imgCenter.hidden = NO;
+        self.takeButton.hidden = NO;
+        self.lblTakeButtonTitle.hidden = NO;
+        self.lblTakeButtonTitle.text = @"Take Photo";
+        [self.txtFoodName resignFirstResponder];
+        
+        [clearCover removeFromSuperview];
+        clearCover = nil;
+        self.resultView.hidden = YES;
+        self.foodAddedPopup.hidden = YES;
+        self.btnAdd.hidden = YES;
+        self.resultsView.hidden = YES;
+        [self.btnResults setSelected:NO];
+    }
 }
 
 @end

@@ -17,6 +17,9 @@
 //
 //  Created by lofzcx 05/03/2013
 //
+//  Updated by pvmagacho on 05/07/2014
+//  F2Finish - NASA iPad App Updates
+//
 
 #import "LoginViewController.h"
 #import "CustomTabBarViewController.h"
@@ -143,7 +146,13 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(finishLoading:)
                                                  name:InitialLoadingEndEvent object:nil];
-
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backup)
+                                                 name:BackupBeginEvent object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadingNew)
+                                                 name:LoadingNewBeginEvent object:nil];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProgress:)
                                                  name:InitialLoadingProgressEvent object:nil];
 }
@@ -318,6 +327,8 @@
     if ([Helper displayError:error]) return;
     appDelegate.loggedInUser = loggedInUser;
     [self performSegueWithIdentifier:@"Login" sender:self];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:[NSDate date]];
 }
 
 /**
@@ -345,6 +356,7 @@
  */
 - (void)startLoading {
     self.loadingLabel.hidden = NO;
+    self.loadingLabel.text = @"Loading";
     self.loadingPanel.hidden = NO;
     self.progressView.hidden = YES;
 }
@@ -353,8 +365,11 @@
  @discussion Called when the app finishes loading process.
  */
 - (void)finishLoading:(NSNotification *)notification {
+    self.loadingLabel.text = @"Loading";
+    
     [self showLoginPanel:nil];
     [self getSavedUsers];
+    
     self.loadingPanel.hidden = YES;
     self.loadingLabel.hidden = NO;
     self.progressView.hidden = YES;
@@ -366,6 +381,36 @@
          "Don’t worry! You can still use the ISS FIT app and we will attempt to sync with the central food repository"
          " when it is available."];
     }
+}
+
+/*!
+ @discussion Called when the app starts loading process.
+ */
+- (void)backup {
+    self.progressView.backgoundImage = [UIImage imageNamed:@"bg-progress.png"];
+    self.progressView.fullColor = [UIColor greenColor];
+    self.progressView.progressImage = [UIImage imageNamed:@"bg-progress-red.png"];
+    self.progressView.currentProgress = 0.0f;
+    
+    self.loadingLabel.text = @"Saving data to old Samba server";
+    self.loadingLabel.hidden = NO;
+    self.loadingPanel.hidden = NO;
+    self.progressView.hidden = NO;
+}
+
+/*!
+ @discussion Called when the app starts loading process.
+ */
+- (void)loadingNew {
+    self.progressView.backgoundImage = [UIImage imageNamed:@"bg-progress.png"];
+    self.progressView.fullColor = [UIColor greenColor];
+    self.progressView.progressImage = [UIImage imageNamed:@"bg-progress-red.png"];
+    self.progressView.currentProgress = 0.0f;
+    
+    self.loadingLabel.text = @"Loading data from new Samba server";
+    self.loadingLabel.hidden = NO;
+    self.loadingPanel.hidden = NO;
+    self.progressView.hidden = NO;
 }
 
 /*!

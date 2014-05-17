@@ -97,9 +97,9 @@
 	<key>DailyTargetSodium</key>
 	<integer>160</integer>
 	<key>DailyTargetFluid</key>
-	<integer>10</integer>
+	<integer>10000</integer>
 	<key>DailyTargetProtein</key>
-	<integer>2000</integer>
+	<real>2000</real>
 	<key>DailyTargetCarbs</key>
 	<integer>2100</integer>
 	<key>DailyTargetFats</key>

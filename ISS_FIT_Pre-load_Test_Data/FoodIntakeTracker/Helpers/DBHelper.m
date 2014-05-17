@@ -14,7 +14,7 @@
 //
 //
 //  DBHelper.m
-//  Hercules Personal Content DVR
+//  ISSFoodIntakeTracker
 //
 //  Created by namanhams on 3/9/13.
 //
@@ -207,11 +207,13 @@ static dispatch_queue_t serialQueue;
         persistentStoreCoordinator =
         [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[NSManagedObjectModel mergedModelFromBundles:nil]];
         
+        NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption:@YES, NSInferMappingModelAutomaticallyOption:@YES};
+        
         NSPersistentStore *persistentStore =
         [persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
                                                  configuration:nil
                                                            URL:storeUrl
-                                                       options:nil
+                                                       options:options
                                                          error:&error];
         if (persistentStore == nil) {
             NSLog(@"Store Configuration Failure\n%@",
