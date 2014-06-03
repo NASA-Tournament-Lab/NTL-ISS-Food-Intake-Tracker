@@ -7,10 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B1A0F56192690EB00D9786B /* ISSFoodIntakeTracker.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4B1A0F55192690EB00D9786B /* ISSFoodIntakeTracker.xcmappingmodel */; };
+		4B3F034219362F74006CC5C0 /* LocalClientImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3F034119362F74006CC5C0 /* LocalClientImpl.m */; };
 		4B7D48A418D9655700F04223 /* samba in Resources */ = {isa = PBXBuildFile; fileRef = 4B7D48A318D9655700F04223 /* samba */; };
+		4BE31E43190FBC4000402D94 /* btn-change.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BE31E42190FBC4000402D94 /* btn-change.png */; };
+		4BE34ECB192BB1750051F2E4 /* ISSFoodIntakeTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4BE34EC6192BB1750051F2E4 /* ISSFoodIntakeTracker.xcdatamodeld */; };
+		4BE34ECC192BB1750051F2E4 /* ISSFoodIntakeTracker23.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4BE34ECA192BB1750051F2E4 /* ISSFoodIntakeTracker23.xcmappingmodel */; };
 		4D0F2D8717BD23A000B86759 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4D0F2D8517BD23A000B86759 /* InfoPlist.strings */; };
 		4D0F2DBE17BD257700B86759 /* test_data in Resources */ = {isa = PBXBuildFile; fileRef = 4D0F2DBD17BD257700B86759 /* test_data */; };
-		4D0F2DEE17BD2CAC00B86759 /* ISSFoodIntakeTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167B417BD20E100D3633F /* ISSFoodIntakeTracker.xcdatamodeld */; };
 		4D0F2DEF17BD2CC300B86759 /* BaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D0F2D9217BD247D00B86759 /* BaseTests.m */; };
 		4D0F2DF017BD2CCB00B86759 /* BaseCommunicationDataServiceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D0F2D9017BD247D00B86759 /* BaseCommunicationDataServiceTests.m */; };
 		4D0F2DF117BD2D0600B86759 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DF167F517BD216000D3633F /* CoreData.framework */; };
@@ -458,7 +462,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4B1A0F55192690EB00D9786B /* ISSFoodIntakeTracker.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = ISSFoodIntakeTracker.xcmappingmodel; sourceTree = "<group>"; };
+		4B3F033B19362BA9006CC5C0 /* LocalClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalClient.h; sourceTree = "<group>"; };
+		4B3F034019362F74006CC5C0 /* LocalClientImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalClientImpl.h; sourceTree = "<group>"; };
+		4B3F034119362F74006CC5C0 /* LocalClientImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalClientImpl.m; sourceTree = "<group>"; };
 		4B7D48A318D9655700F04223 /* samba */ = {isa = PBXFileReference; lastKnownFileType = folder; name = samba; path = ../../samba/samba; sourceTree = "<group>"; };
+		4BE31E42190FBC4000402D94 /* btn-change.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-change.png"; sourceTree = "<group>"; };
+		4BE34EC7192BB1750051F2E4 /* ISSFoodIntakeTracker 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ISSFoodIntakeTracker 2.xcdatamodel"; sourceTree = "<group>"; };
+		4BE34EC8192BB1750051F2E4 /* ISSFoodIntakeTracker 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ISSFoodIntakeTracker 3.xcdatamodel"; sourceTree = "<group>"; };
+		4BE34EC9192BB1750051F2E4 /* ISSFoodIntakeTracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ISSFoodIntakeTracker.xcdatamodel; sourceTree = "<group>"; };
+		4BE34ECA192BB1750051F2E4 /* ISSFoodIntakeTracker23.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = ISSFoodIntakeTracker23.xcmappingmodel; sourceTree = "<group>"; };
 		4D0F2D7D17BD23A000B86759 /* FoodIntakeTrackerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodIntakeTrackerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D0F2D8417BD23A000B86759 /* FoodIntakeTrackerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FoodIntakeTrackerTests-Info.plist"; sourceTree = "<group>"; };
 		4D0F2D8617BD23A000B86759 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -836,7 +849,6 @@
 		4DF167B117BD20E100D3633F /* FoodProduct.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoodProduct.m; sourceTree = "<group>"; };
 		4DF167B217BD20E100D3633F /* FoodProductFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoodProductFilter.h; sourceTree = "<group>"; };
 		4DF167B317BD20E100D3633F /* FoodProductFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoodProductFilter.m; sourceTree = "<group>"; };
-		4DF167B517BD20E100D3633F /* ISSFoodIntakeTracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ISSFoodIntakeTracker.xcdatamodel; sourceTree = "<group>"; };
 		4DF167B617BD20E100D3633F /* Models.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Models.h; sourceTree = "<group>"; };
 		4DF167B717BD20E100D3633F /* StringWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringWrapper.h; sourceTree = "<group>"; };
 		4DF167B817BD20E100D3633F /* StringWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StringWrapper.m; sourceTree = "<group>"; };
@@ -1633,6 +1645,9 @@
 		4DF167AB17BD20E100D3633F /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				4B1A0F55192690EB00D9786B /* ISSFoodIntakeTracker.xcmappingmodel */,
+				4BE34EC6192BB1750051F2E4 /* ISSFoodIntakeTracker.xcdatamodeld */,
+				4BE34ECA192BB1750051F2E4 /* ISSFoodIntakeTracker23.xcmappingmodel */,
 				4DF167AC17BD20E100D3633F /* AdhocFoodProduct.h */,
 				4DF167AD17BD20E100D3633F /* AdhocFoodProduct.m */,
 				4DF167AE17BD20E100D3633F /* FoodConsumptionRecord.h */,
@@ -1641,7 +1656,6 @@
 				4DF167B117BD20E100D3633F /* FoodProduct.m */,
 				4DF167B217BD20E100D3633F /* FoodProductFilter.h */,
 				4DF167B317BD20E100D3633F /* FoodProductFilter.m */,
-				4DF167B417BD20E100D3633F /* ISSFoodIntakeTracker.xcdatamodeld */,
 				4DF167B617BD20E100D3633F /* Models.h */,
 				4DF167B717BD20E100D3633F /* StringWrapper.h */,
 				4DF167B817BD20E100D3633F /* StringWrapper.m */,
@@ -1675,8 +1689,11 @@
 				4DF167CE17BD20E100D3633F /* LockServiceImpl.h */,
 				4DF167CF17BD20E100D3633F /* LockServiceImpl.m */,
 				4DF167D017BD20E100D3633F /* SMBClient.h */,
+				4B3F033B19362BA9006CC5C0 /* LocalClient.h */,
 				4DF167D117BD20E100D3633F /* SMBClientImpl.h */,
 				4DF167D217BD20E100D3633F /* SMBClientImpl.m */,
+				4B3F034019362F74006CC5C0 /* LocalClientImpl.h */,
+				4B3F034119362F74006CC5C0 /* LocalClientImpl.m */,
 				4DF167D317BD20E100D3633F /* SpeechRecognitionService.h */,
 				4DF167D417BD20E100D3633F /* SpeechRecognitionServiceImpl.h */,
 				4DF167D517BD20E100D3633F /* SpeechRecognitionServiceImpl.m */,
@@ -1819,172 +1836,173 @@
 		E7C4074917600F1700C3649E /* images */ = {
 			isa = PBXGroup;
 			children = (
-				E764ECAA1788708700E7A98E /* foods */,
-				E764ECB71788708700E7A98E /* user */,
-				4DAB06AB17C04317009F8E91 /* bg_carb.png */,
-				4DAB06AC17C04317009F8E91 /* bg_fat.png */,
-				4DAA8A1B17D833BD005FFF93 /* icon_help_list.png */,
-				4DAA8A1C17D833BD005FFF93 /* icon_all_food.png */,
-				4DAA8A1D17D833BD005FFF93 /* icon_fruit.png */,
-				4DAA8A1E17D833BD005FFF93 /* icon_vegetable.png */,
-				4DAA8A1F17D833BD005FFF93 /* icon_drink.png */,
-				4DAA8A2017D833BD005FFF93 /* icon_meat.png */,
-				4DAA8A2117D833BD005FFF93 /* icon_dessert.png */,
-				4DAA8A2217D833BD005FFF93 /* icon_breakfast.png */,
-				4DAA8A2317D833BD005FFF93 /* icon_nasa.png */,
-				4DAA8A2417D833BD005FFF93 /* icon_russian.png */,
-				4DAA8A2517D833BD005FFF93 /* icon_csa.png */,
-				4DAA8A2617D833BD005FFF93 /* icon_esa.png */,
-				4DAA8A2717D833BD005FFF93 /* icon_jaxa.png */,
-				4DAA8A2817D833BD005FFF93 /* icon_fav_all.png */,
-				4DAA8A2917D833BD005FFF93 /* icon_fav_week.png */,
-				4DAA8A2A17D833BD005FFF93 /* icon_fav_month.png */,
-				4DAA8A2B17D833BD005FFF93 /* icon_vitamins.png */,
-				4DAB06AD17C04317009F8E91 /* bg_protein.png */,
-				4DAB06AE17C04317009F8E91 /* icon_carb.png */,
-				4DAB06AF17C04317009F8E91 /* icon_fat.png */,
-				4DAB06B017C04317009F8E91 /* icon_protein.png */,
-				E7D664B017804B320092C03F /* bg-white-cover.png */,
-				E76D500B1777E8FD000EFFBB /* bg-seg-left@425.png */,
-				4D4884B717C3F4CB006851A9 /* pie_placeholder.png */,
-				E76D500C1777E8FD000EFFBB /* bg-seg-right@425.png */,
-				E76D50091777E2C1000EFFBB /* bg-comment.png */,
-				E76D4FF817773117000EFFBB /* btn-take-barcode-disable.png */,
-				E76D4FF917773117000EFFBB /* btn-take-barcode.png */,
-				E76D4FFA17773117000EFFBB /* icon-barcode-a.png */,
-				E76D4FFB17773117000EFFBB /* icon-barcode-b.png */,
-				E7804E151776FA050099555C /* btn-take-label-disable.png */,
-				E7804E161776FA050099555C /* btn-take-label.png */,
-				E7804E0B1776F7640099555C /* bg-take-label.png */,
-				E7804E0C1776F7640099555C /* icon-bracket-blue.png */,
-				E7804E0D1776F7640099555C /* icon-bracket-orange.png */,
-				E7804E0E1776F7640099555C /* icon-label-a.png */,
-				E7804E0F1776F7640099555C /* icon-label-b.png */,
-				E7804E07177689CB0099555C /* icon-dropdown-left.png */,
-				E7804E08177689CB0099555C /* icon-dropdown-right.png */,
-				E7804E02177675290099555C /* btn-photo-result-dropdown.png */,
-				E78D4EB5177580A70026D29D /* bg-results-arrow.png */,
-				E78D4EB31775780C0026D29D /* btn-blue-active.png */,
-				E78D4DBE177552C60026D29D /* item-orange.png */,
-				E78D4DBC1775503E0026D29D /* bg-result-panel.png */,
 				E78D4DBA17754A4C0026D29D /* bg-blue-panel.png */,
-				E78D4DB8177549110026D29D /* btn-take-photo-disable.png */,
-				E78D4DB3177544470026D29D /* bg-take-photo-footer.png */,
-				E78D4DAD177542030026D29D /* bg-results.png */,
-				E78D4DAE177542030026D29D /* btn-take-photo-enable.png */,
-				E78D4DAF177542030026D29D /* icon-centering.png */,
-				E788604017743C6A0035E475 /* icon-data-active.png */,
-				E788604117743C6A0035E475 /* icon-data.png */,
-				E788604217743C6A0035E475 /* icon-profile-active.png */,
-				E788604317743C6A0035E475 /* icon-profile.png */,
-				E71B9AA3176D715400CFEE35 /* bg-gray-header.png */,
-				E71B9A9D176D6B5A00CFEE35 /* icon-consumption-active.png */,
-				E71B9A9E176D6B5A00CFEE35 /* icon-help-setting-active.png */,
-				E71B9A9F176D6B5A00CFEE35 /* icon-help-setting.png */,
-				E78EA6AE176D44F400F7BAAC /* bg-select-note.png */,
-				E78EA6AC176D3E7A00F7BAAC /* bg-sortby-option.png */,
+				E72BD14D176AD29300B459FC /* bg-calendar-vertical.png */,
+				E70A705B176A196400712B47 /* bg-calendar.png */,
+				E70A70291769729500712B47 /* bg-calories.png */,
+				E76D50091777E2C1000EFFBB /* bg-comment.png */,
+				E75A69DF176AEFD9003062B3 /* bg-details.png */,
 				E78EA692176C6A6900F7BAAC /* bg-div-line.png */,
+				E70A702A1769729500712B47 /* bg-fluid.png */,
+				E71B9AA3176D715400CFEE35 /* bg-gray-header.png */,
 				E78EA693176C6A6900F7BAAC /* bg-green-header.png */,
-				E78EA694176C6A6900F7BAAC /* bg-search-input.png */,
-				E78EA695176C6A6900F7BAAC /* btn-back.png */,
-				E78EA696176C6A6900F7BAAC /* btn-icon.png */,
-				E78EA697176C6A6900F7BAAC /* btn-info.png */,
-				E78EA698176C6A6900F7BAAC /* icon-dropdown-select.png */,
-				E78EA699176C6A6900F7BAAC /* seg-grid-active.png */,
-				E78EA69A176C6A6900F7BAAC /* seg-list-active.png */,
-				E722C0ED176B65B000FD5CB8 /* btn-checkmark.png */,
-				E722C0EE176B65B000FD5CB8 /* btn-disabled.png */,
-				E722C0EF176B65B000FD5CB8 /* empty.png */,
-				E75A69FE176B560F003062B3 /* bg-voice-search.png */,
-				E75A69FF176B560F003062B3 /* btn-analyzing.png */,
-				E75A6A00176B560F003062B3 /* btn-speak.png */,
+				E70A6FD11768115700712B47 /* bg-header.png */,
+				E70A704E1769EA3900712B47 /* bg-input.png */,
+				E7C4074C1760100400C3649E /* bg-login.png */,
+				E7C4074E1760129F00C3649E /* bg-loginPanel.png */,
+				E7C407651760243400C3649E /* bg-loginTitlePanel.png */,
+				E72BD14B176AD26000B459FC /* bg-month-list.png */,
 				E75A69F1176B2D7A003062B3 /* bg-photo-option-active.png */,
 				E75A69F2176B2D7A003062B3 /* bg-photo-option.png */,
-				E75A69F3176B2D7A003062B3 /* btn-capture.png */,
-				E75A69F4176B2D7A003062B3 /* btn-photo-active.png */,
-				E75A69F5176B2D7A003062B3 /* btn-scan.png */,
-				E75A69F6176B2D7A003062B3 /* btn-snap.png */,
 				E75A69EF176AFE18003062B3 /* bg-popup.png */,
-				E75A69ED176AFD61003062B3 /* btn-red.png */,
-				E75A69E5176AFADB003062B3 /* btn-copy-active.png */,
-				E75A69E6176AFADB003062B3 /* btn-delete-active.png */,
-				E75A69E7176AFADB003062B3 /* btn-paste-active.png */,
-				E75A69E8176AFADB003062B3 /* btn-paste-enable.png */,
-				E75A69E1176AF331003062B3 /* btn-.png */,
-				E75A69E2176AF331003062B3 /* btn+.png */,
-				E75A69DF176AEFD9003062B3 /* bg-details.png */,
-				E75A69DA176AE998003062B3 /* btn-add-active.png */,
-				E72BD151176AD34A00B459FC /* btn-day-active.png */,
-				E72BD14D176AD29300B459FC /* bg-calendar-vertical.png */,
-				E72BD14E176AD29300B459FC /* btn-month-active.png */,
-				E72BD14B176AD26000B459FC /* bg-month-list.png */,
-				E70A7061176A1B2400712B47 /* btn-blue4.png */,
-				E70A705D176A1A4800712B47 /* btn-next-month.png */,
-				E70A705E176A1A4800712B47 /* btn-prev-month.png */,
-				E70A705B176A196400712B47 /* bg-calendar.png */,
-				E70A7055176A145800712B47 /* btn-non-nutrient.png */,
-				E70A7053176A06A100712B47 /* btn-blue3.png */,
-				E70A704E1769EA3900712B47 /* bg-input.png */,
-				E70A70461769C4E900712B47 /* icon-calories.png */,
-				E70A70471769C4E900712B47 /* icon-fluid.png */,
-				E70A70481769C4E900712B47 /* icon-sodium.png */,
 				E70A70401769C4BF00712B47 /* bg-progress-green.png */,
 				E70A70411769C4BF00712B47 /* bg-progress-red.png */,
 				E70A70421769C4BF00712B47 /* bg-progress.png */,
-				E70A703A1769787400712B47 /* btn-comment.png */,
-				E70A70291769729500712B47 /* bg-calories.png */,
-				E70A702A1769729500712B47 /* bg-fluid.png */,
+				E78D4DBC1775503E0026D29D /* bg-result-panel.png */,
+				E78D4EB5177580A70026D29D /* bg-results-arrow.png */,
+				E78D4DAD177542030026D29D /* bg-results.png */,
+				E78EA694176C6A6900F7BAAC /* bg-search-input.png */,
+				E70A6FF21768430A00712B47 /* bg-seg-left.png */,
+				E76D500B1777E8FD000EFFBB /* bg-seg-left@425.png */,
+				E70A6FF31768430A00712B47 /* bg-seg-right.png */,
+				E76D500C1777E8FD000EFFBB /* bg-seg-right@425.png */,
+				E78EA6AE176D44F400F7BAAC /* bg-select-note.png */,
 				E70A702B1769729500712B47 /* bg-sodium.png */,
+				E78EA6AC176D3E7A00F7BAAC /* bg-sortby-option.png */,
+				E70A6FD21768115700712B47 /* bg-subHeader.png */,
+				E70A7012176943AA00712B47 /* bg-summary-sub-header2.png */,
+				E70A6FD31768115700712B47 /* bg-tab.png */,
+				E70A70221769467E00712B47 /* bg-table-header.png */,
+				E7804E0B1776F7640099555C /* bg-take-label.png */,
+				E78D4DB3177544470026D29D /* bg-take-photo-footer.png */,
+				E70A70271769629100712B47 /* bg-time-picker-arrow.png */,
+				E70A700A1768B17A00712B47 /* bg-time-picker.png */,
+				E75A69FE176B560F003062B3 /* bg-voice-search.png */,
+				E7D664B017804B320092C03F /* bg-white-cover.png */,
+				4DAB06AB17C04317009F8E91 /* bg_carb.png */,
+				4DAB06AC17C04317009F8E91 /* bg_fat.png */,
+				4DAB06AD17C04317009F8E91 /* bg_protein.png */,
+				E75A69E2176AF331003062B3 /* btn+.png */,
+				E75A69E1176AF331003062B3 /* btn-.png */,
+				E75A69DA176AE998003062B3 /* btn-add-active.png */,
+				E70A7014176944A400712B47 /* btn-add.png */,
+				E75A69FF176B560F003062B3 /* btn-analyzing.png */,
+				E78EA695176C6A6900F7BAAC /* btn-back.png */,
+				E78D4EB31775780C0026D29D /* btn-blue-active.png */,
+				E7C4075D17601F6700C3649E /* btn-blue.png */,
+				E7C4076D17603F6400C3649E /* btn-blue2.png */,
+				E70A7053176A06A100712B47 /* btn-blue3.png */,
+				E70A7061176A1B2400712B47 /* btn-blue4.png */,
+				E75A69F3176B2D7A003062B3 /* btn-capture.png */,
+				4BE31E42190FBC4000402D94 /* btn-change.png */,
 				E70A702C1769729500712B47 /* btn-checkbox-check.png */,
 				E70A702D1769729500712B47 /* btn-checkbox.png */,
+				E722C0ED176B65B000FD5CB8 /* btn-checkmark.png */,
+				E70A703A1769787400712B47 /* btn-comment.png */,
+				E75A69E5176AFADB003062B3 /* btn-copy-active.png */,
 				E70A702E1769729500712B47 /* btn-copy-enable.png */,
-				E70A702F1769729500712B47 /* btn-delete-enable.png */,
-				E70A70271769629100712B47 /* bg-time-picker-arrow.png */,
-				E70A70221769467E00712B47 /* bg-table-header.png */,
-				E70A7014176944A400712B47 /* btn-add.png */,
 				E70A7015176944A400712B47 /* btn-copy.png */,
+				E72BD151176AD34A00B459FC /* btn-day-active.png */,
+				E75A69E6176AFADB003062B3 /* btn-delete-active.png */,
+				E70A702F1769729500712B47 /* btn-delete-enable.png */,
 				E70A7016176944A400712B47 /* btn-delete.png */,
-				E70A7017176944A400712B47 /* btn-paste.png */,
-				E70A7018176944A500712B47 /* btn-photo.png */,
-				E70A7019176944A500712B47 /* btn-select.png */,
-				E70A701A176944A500712B47 /* btn-voice.png */,
-				E70A7012176943AA00712B47 /* bg-summary-sub-header2.png */,
-				E70A70101769385A00712B47 /* icon-summary-logo.png */,
-				E70A700A1768B17A00712B47 /* bg-time-picker.png */,
+				E722C0EE176B65B000FD5CB8 /* btn-disabled.png */,
 				E70A70061768AE7D00712B47 /* btn-dropdown.png */,
+				E7C4075E17601F6700C3649E /* btn-help-setting.png */,
+				E78EA696176C6A6900F7BAAC /* btn-icon.png */,
+				E78EA697176C6A6900F7BAAC /* btn-info.png */,
+				E7C407631760212D00C3649E /* btn-login.png */,
+				E72BD14E176AD29300B459FC /* btn-month-active.png */,
+				E70A705D176A1A4800712B47 /* btn-next-month.png */,
+				E70A7055176A145800712B47 /* btn-non-nutrient.png */,
+				E75A69E7176AFADB003062B3 /* btn-paste-active.png */,
+				E75A69E8176AFADB003062B3 /* btn-paste-enable.png */,
+				E70A7017176944A400712B47 /* btn-paste.png */,
+				E75A69F4176B2D7A003062B3 /* btn-photo-active.png */,
+				E7804E02177675290099555C /* btn-photo-result-dropdown.png */,
+				E70A7018176944A500712B47 /* btn-photo.png */,
+				E70A705E176A1A4800712B47 /* btn-prev-month.png */,
+				E75A69ED176AFD61003062B3 /* btn-red.png */,
+				E7C4075F17601F6700C3649E /* btn-register.png */,
+				E75A69F5176B2D7A003062B3 /* btn-scan.png */,
+				E70A7019176944A500712B47 /* btn-select.png */,
+				E75A69F6176B2D7A003062B3 /* btn-snap.png */,
+				E75A6A00176B560F003062B3 /* btn-speak.png */,
+				E76D4FF817773117000EFFBB /* btn-take-barcode-disable.png */,
+				E76D4FF917773117000EFFBB /* btn-take-barcode.png */,
+				E7804E151776FA050099555C /* btn-take-label-disable.png */,
+				E7804E161776FA050099555C /* btn-take-label.png */,
+				E78D4DB8177549110026D29D /* btn-take-photo-disable.png */,
+				E78D4DAE177542030026D29D /* btn-take-photo-enable.png */,
+				E70A701A176944A500712B47 /* btn-voice.png */,
+				E722C0EF176B65B000FD5CB8 /* empty.png */,
+				E70A6FF617684E0500712B47 /* icon-arrow.png */,
+				E76D4FFA17773117000EFFBB /* icon-barcode-a.png */,
+				E76D4FFB17773117000EFFBB /* icon-barcode-b.png */,
+				E7804E0C1776F7640099555C /* icon-bracket-blue.png */,
+				E7804E0D1776F7640099555C /* icon-bracket-orange.png */,
+				E70A70461769C4E900712B47 /* icon-calories.png */,
+				E78D4DAF177542030026D29D /* icon-centering.png */,
 				E70A70041768A3D100712B47 /* icon-check.png */,
+				E71B9A9D176D6B5A00CFEE35 /* icon-consumption-active.png */,
+				E70A6FDD17681F8100712B47 /* icon-consumption.png */,
+				E788604017743C6A0035E475 /* icon-data-active.png */,
+				E788604117743C6A0035E475 /* icon-data.png */,
+				E7804E07177689CB0099555C /* icon-dropdown-left.png */,
+				E7804E08177689CB0099555C /* icon-dropdown-right.png */,
+				E78EA698176C6A6900F7BAAC /* icon-dropdown-select.png */,
+				E70A70471769C4E900712B47 /* icon-fluid.png */,
+				E71B9A9E176D6B5A00CFEE35 /* icon-help-setting-active.png */,
+				E71B9A9F176D6B5A00CFEE35 /* icon-help-setting.png */,
+				E7804E0E1776F7640099555C /* icon-label-a.png */,
+				E7804E0F1776F7640099555C /* icon-label-b.png */,
+				E70A6FCB1767E4A000712B47 /* icon-logo.png */,
+				E70A6FDF17681F8100712B47 /* icon-logout.png */,
+				E70A6FCD1767F7EF00712B47 /* icon-photo-list-active.png */,
+				E7C40754176014AF00C3649E /* icon-photo-list.png */,
+				E7C4076917603A2A00C3649E /* icon-photo-take.png */,
+				E7C407501760130900C3649E /* icon-photo.png */,
+				E788604217743C6A0035E475 /* icon-profile-active.png */,
+				E788604317743C6A0035E475 /* icon-profile.png */,
+				E7C4076B17603E9D00C3649E /* icon-register-complete.png */,
+				E7C407661760243400C3649E /* icon-register.png */,
 				E70A6FF8176891DA00712B47 /* icon-setting-data.png */,
 				E70A6FF9176891DA00712B47 /* icon-setting-filter.png */,
 				E70A6FFA176891DA00712B47 /* icon-setting-login.png */,
 				E70A6FFB176891DA00712B47 /* icon-setting-user.png */,
 				E70A6FFC176891DA00712B47 /* icon-setting-voice.png */,
-				E70A6FF617684E0500712B47 /* icon-arrow.png */,
-				E70A6FF21768430A00712B47 /* bg-seg-left.png */,
-				E70A6FF31768430A00712B47 /* bg-seg-right.png */,
+				E70A70481769C4E900712B47 /* icon-sodium.png */,
+				E70A70101769385A00712B47 /* icon-summary-logo.png */,
 				E70A6FE31768211C00712B47 /* icon-tab-active.png */,
-				E70A6FDD17681F8100712B47 /* icon-consumption.png */,
-				E70A6FDF17681F8100712B47 /* icon-logout.png */,
-				E70A6FD11768115700712B47 /* bg-header.png */,
-				E70A6FD21768115700712B47 /* bg-subHeader.png */,
-				E70A6FD31768115700712B47 /* bg-tab.png */,
+				4DAA8A1C17D833BD005FFF93 /* icon_all_food.png */,
+				4DAA8A2217D833BD005FFF93 /* icon_breakfast.png */,
+				4DAB06AE17C04317009F8E91 /* icon_carb.png */,
+				4DAA8A2517D833BD005FFF93 /* icon_csa.png */,
+				4DAA8A2117D833BD005FFF93 /* icon_dessert.png */,
+				4DAA8A1F17D833BD005FFF93 /* icon_drink.png */,
+				4DAA8A2617D833BD005FFF93 /* icon_esa.png */,
+				4DAB06AF17C04317009F8E91 /* icon_fat.png */,
+				4DAA8A2817D833BD005FFF93 /* icon_fav_all.png */,
+				4DAA8A2A17D833BD005FFF93 /* icon_fav_month.png */,
+				4DAA8A2917D833BD005FFF93 /* icon_fav_week.png */,
+				4DAA8A1D17D833BD005FFF93 /* icon_fruit.png */,
+				4DAA8A1B17D833BD005FFF93 /* icon_help_list.png */,
+				4DAA8A2717D833BD005FFF93 /* icon_jaxa.png */,
+				4DAA8A2017D833BD005FFF93 /* icon_meat.png */,
+				4DAA8A2317D833BD005FFF93 /* icon_nasa.png */,
+				4DAB06B017C04317009F8E91 /* icon_protein.png */,
+				4DAA8A2417D833BD005FFF93 /* icon_russian.png */,
+				4DAA8A1E17D833BD005FFF93 /* icon_vegetable.png */,
+				4DAA8A2B17D833BD005FFF93 /* icon_vitamins.png */,
 				E70A6FCF17680CA300712B47 /* img-Help-Detail.png */,
-				E70A6FCD1767F7EF00712B47 /* icon-photo-list-active.png */,
-				E70A6FCB1767E4A000712B47 /* icon-logo.png */,
-				E7C4076D17603F6400C3649E /* btn-blue2.png */,
-				E7C4076B17603E9D00C3649E /* icon-register-complete.png */,
-				E7C4076917603A2A00C3649E /* icon-photo-take.png */,
-				E7C407651760243400C3649E /* bg-loginTitlePanel.png */,
-				E7C407661760243400C3649E /* icon-register.png */,
-				E7C407631760212D00C3649E /* btn-login.png */,
-				E7C4075D17601F6700C3649E /* btn-blue.png */,
-				E7C4075E17601F6700C3649E /* btn-help-setting.png */,
-				E7C4075F17601F6700C3649E /* btn-register.png */,
-				E7C40754176014AF00C3649E /* icon-photo-list.png */,
-				E7C407521760139C00C3649E /* text-photo.png */,
-				E7C407501760130900C3649E /* icon-photo.png */,
-				E7C4074E1760129F00C3649E /* bg-loginPanel.png */,
-				E7C4074C1760100400C3649E /* bg-login.png */,
+				E78D4DBE177552C60026D29D /* item-orange.png */,
 				E7C4074A17600F1700C3649E /* logo.png */,
+				4D4884B717C3F4CB006851A9 /* pie_placeholder.png */,
+				E78EA699176C6A6900F7BAAC /* seg-grid-active.png */,
+				E78EA69A176C6A6900F7BAAC /* seg-list-active.png */,
+				E7C407521760139C00C3649E /* text-photo.png */,
+				E764ECAA1788708700E7A98E /* foods */,
+				E764ECB71788708700E7A98E /* user */,
 			);
 			path = images;
 			sourceTree = "<group>";
@@ -2453,6 +2471,7 @@
 				4D98579117DDACBD008B868C /* image053.jpg in Resources */,
 				4D98579217DDACBD008B868C /* image054.jpg in Resources */,
 				4D98579317DDACBD008B868C /* image055.png in Resources */,
+				4BE31E43190FBC4000402D94 /* btn-change.png in Resources */,
 				4D98579417DDACBD008B868C /* image056.jpg in Resources */,
 				4D98579517DDACBD008B868C /* image057.png in Resources */,
 				4D98579617DDACBD008B868C /* image058.png in Resources */,
@@ -2525,9 +2544,13 @@
 				E70A6FEA1768371B00712B47 /* CustomTabBarViewController.m in Sources */,
 				E70A6FED176839B200712B47 /* ConsumptionViewController.m in Sources */,
 				E70A700E1768B24600712B47 /* CustomPickerViewController.m in Sources */,
+				4BE34ECC192BB1750051F2E4 /* ISSFoodIntakeTracker23.xcmappingmodel in Sources */,
 				E70A702617695F0200712B47 /* PopoverBackgroundView.m in Sources */,
+				4BE34ECB192BB1750051F2E4 /* ISSFoodIntakeTracker.xcdatamodeld in Sources */,
+				4B1A0F56192690EB00D9786B /* ISSFoodIntakeTracker.xcmappingmodel in Sources */,
 				E70A70391769779400712B47 /* SummaryFoodTableCell.m in Sources */,
 				E70A70521769EBB100712B47 /* AddFoodViewController.m in Sources */,
+				4B3F034219362F74006CC5C0 /* LocalClientImpl.m in Sources */,
 				E70A705A176A18A100712B47 /* CalendarViewController.m in Sources */,
 				E75A69DE176AEC23003062B3 /* FoodDetailViewController.m in Sources */,
 				E75A6A06176B5A3D003062B3 /* VoiceSearchViewController.m in Sources */,
@@ -2565,7 +2588,6 @@
 				4DF167EE17BD20E100D3633F /* SpeechRecognitionServiceImpl.m in Sources */,
 				4DF167EF17BD20E100D3633F /* SynchronizationServiceImpl.m in Sources */,
 				4DF167F017BD20E100D3633F /* UserServiceImpl.m in Sources */,
-				4D0F2DEE17BD2CAC00B86759 /* ISSFoodIntakeTracker.xcdatamodeld in Sources */,
 				4D9FEA8417C002FF001F92B5 /* Tesseract.mm in Sources */,
 				4D4884B317C3CC7C006851A9 /* CustomTableViewController.m in Sources */,
 				4D64994717CD13DC00C15B72 /* BNAppStats.m in Sources */,
@@ -2742,6 +2764,7 @@
 		E7C40745175FFA1F00C3649E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/library/OpenEars\"",
@@ -2761,6 +2784,7 @@
 				);
 				OTHER_CFLAGS = "-DUSE_TEST_DATA";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2768,6 +2792,7 @@
 		E7C40746175FFA1F00C3649E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/library/OpenEars\"",
@@ -2790,6 +2815,7 @@
 					"-DUSE_TEST_DATA",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -2827,12 +2853,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		4DF167B417BD20E100D3633F /* ISSFoodIntakeTracker.xcdatamodeld */ = {
+		4BE34EC6192BB1750051F2E4 /* ISSFoodIntakeTracker.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				4DF167B517BD20E100D3633F /* ISSFoodIntakeTracker.xcdatamodel */,
+				4BE34EC7192BB1750051F2E4 /* ISSFoodIntakeTracker 2.xcdatamodel */,
+				4BE34EC8192BB1750051F2E4 /* ISSFoodIntakeTracker 3.xcdatamodel */,
+				4BE34EC9192BB1750051F2E4 /* ISSFoodIntakeTracker.xcdatamodel */,
 			);
-			currentVersion = 4DF167B517BD20E100D3633F /* ISSFoodIntakeTracker.xcdatamodel */;
+			currentVersion = 4BE34EC8192BB1750051F2E4 /* ISSFoodIntakeTracker 3.xcdatamodel */;
 			path = ISSFoodIntakeTracker.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

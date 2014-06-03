@@ -101,7 +101,7 @@
     picker.allowsEditing = YES;
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
+        picker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
         picker.cameraViewTransform = CGAffineTransformScale(picker.cameraViewTransform, -1, 1);
     }
     else {
@@ -153,7 +153,7 @@
     self.resultView.hidden = NO;
     self.imgFood.image = [UIImage imageNamed:foodProduct.productProfileImage];
     self.lblFoodName.text = foodProduct.name;
-    self.lblFoodCategory.text = foodProduct.category;
+    // self.lblFoodCategory.text = [[foodProduct.categories allObjects] objectAtIndex:0]; 
     self.lblCalories.text = [NSString stringWithFormat:@"%@",foodProduct.energy];
     self.lblSodium.text = [NSString stringWithFormat:@"%@",foodProduct.sodium];
     self.lblFluid.text = [NSString stringWithFormat:@"%@",foodProduct.fluid];

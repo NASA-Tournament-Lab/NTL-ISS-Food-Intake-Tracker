@@ -22,6 +22,7 @@
 #import "BaseCommunicationDataService.h"
 #import "Reachability.h"
 #import "SMBClientImpl.h"
+#import "LocalClientImpl.h"
 #import "LoggingHelper.h"
 
 @implementation BaseCommunicationDataService
@@ -46,6 +47,16 @@
         _sharedFileServerPassword = configuration[@"SharedFileServerPassword"];
     }
     return self;
+}
+
+/*!
+ @discussion Create an SMBClient.
+ Note that if WiFi network isn't available, SMBClient won't be created.
+ @param error The reference to an NSError object which will be filled if any error occurs.
+ @return The created SMBClient.
+ */
+-(id<LocalClient>)createLocalClient {
+    return [LocalClientImpl new];
 }
 
 /*!

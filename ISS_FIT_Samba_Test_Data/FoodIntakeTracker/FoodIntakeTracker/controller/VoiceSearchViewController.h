@@ -20,8 +20,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <AVFoundation/AVFoundation.h>
+
 #import <OpenEars/PocketsphinxController.h>
 #import <OpenEars/OpenEarsEventsObserver.h>
+
+#import "ConsumptionViewController.h"
 
 /**
  * @class VoiceSearchViewController
@@ -42,6 +46,8 @@
     PocketsphinxController *pocketsphinxController;
 }
 
+/* sub title label */
+@property (weak, nonatomic) ConsumptionViewController *consumptionViewController;
 /* sub title label */
 @property (weak, nonatomic) IBOutlet UILabel *lblSubTitle;
 /* title label */

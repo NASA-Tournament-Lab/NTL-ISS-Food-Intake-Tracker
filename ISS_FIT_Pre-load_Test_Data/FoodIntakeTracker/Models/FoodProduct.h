@@ -38,7 +38,7 @@
 //Represents the total kcal of energy contained in the food product per packet.
 @property (nonatomic, strong) NSNumber * energy;
 
-//Represents the total liters of fluid contained in the food product per packet.
+//Represents the total mili-liters of fluid contained in the food product per packet.
 @property (nonatomic, strong) NSNumber * fluid;
 
 //Represents the name of the food product.
@@ -59,8 +59,8 @@
 //Represents the total grams of fat contained in the food product per packet.
 @property (nonatomic, strong) NSNumber * fat;
 
-//Represents the category of the food product.
-@property (nonatomic, strong) NSString * category;
+//Represents the categories of the food product.
+@property (nonatomic, strong) NSSet * categories;
 
 //Represents the origin of the food product.
 @property (nonatomic, strong) NSString * origin;
@@ -88,6 +88,11 @@
 
 //Remove image file names
 - (void)removeImages:(NSSet *)values;
+
+- (void)addCategoriesObject:(StringWrapper *)value;
+- (void)removeCategoriesObject:(StringWrapper *)value;
+- (void)addCategories:(NSSet *)values;
+- (void)removeCategories:(NSSet *)values;
 
 - (void)addConsumptionRecordObject:(FoodConsumptionRecord *)value;
 - (void)removeConsumptionRecordObject:(FoodConsumptionRecord *)value;

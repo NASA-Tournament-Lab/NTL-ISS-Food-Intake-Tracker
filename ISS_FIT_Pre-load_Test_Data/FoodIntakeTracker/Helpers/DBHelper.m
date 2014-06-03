@@ -14,7 +14,7 @@
 //
 //
 //  DBHelper.m
-//  Hercules Personal Content DVR
+//  ISSFoodIntakeTracker
 //
 //  Created by namanhams on 3/9/13.
 //
@@ -37,8 +37,8 @@ static dispatch_queue_t serialQueue;
     
     serialQueue = dispatch_queue_create("SerialQueue", DISPATCH_QUEUE_SERIAL);
 
-    mocs = [[NSMutableDictionary alloc] init];
-    mocThreads = [[NSMutableDictionary alloc] init];
+    mocs = [NSMutableDictionary dictionary];
+    mocThreads = [NSMutableDictionary dictionary];
     counter = 0;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -131,9 +131,9 @@ static dispatch_queue_t serialQueue;
     }
     
     dispatch_async(dispatch_get_main_queue(), ^{
-        
+#ifdef INFO_LOGON
         NSLog(@"Merge changes back to main thread");
-        
+#endif
         @try {
             [mainThreadMoc mergeChangesFromContextDidSaveNotification:notif];
         }
@@ -207,11 +207,13 @@ static dispatch_queue_t serialQueue;
         persistentStoreCoordinator =
         [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[NSManagedObjectModel mergedModelFromBundles:nil]];
         
+        NSDictionary *options = @{NSMigratePersistentStoresAutomaticallyOption:@YES, NSInferMappingModelAutomaticallyOption:@YES};
+        
         NSPersistentStore *persistentStore =
         [persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
                                                  configuration:nil
                                                            URL:storeUrl
-                                                       options:nil
+                                                       options:options
                                                          error:&error];
         if (persistentStore == nil) {
             NSLog(@"Store Configuration Failure\n%@",

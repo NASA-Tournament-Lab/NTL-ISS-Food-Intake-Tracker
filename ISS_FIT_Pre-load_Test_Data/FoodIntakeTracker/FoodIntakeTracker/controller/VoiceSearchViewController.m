@@ -27,14 +27,20 @@
 #import "Helper.h"
 #import "Settings.h"
 
+#define DOCUMENTS_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
+
 @interface VoiceSearchViewController (){
     /* the select photo count */
     int selectPhotos;
+    /* Audio record objects */
+    AVAudioRecorder *recorder;
 }
 
 @end
 
 @implementation VoiceSearchViewController
+
+@synthesize consumptionViewController;
 
 /**
  * set the title font here.
@@ -50,8 +56,8 @@
     openEarsEventsObserver = [[OpenEarsEventsObserver alloc] init];
     [openEarsEventsObserver setDelegate:self];
     // Retrieve language model paths
-    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-    SpeechRecognitionServiceImpl *srService = appDelegate.speechRecognitionService;
+    //AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    //SpeechRecognitionServiceImpl *srService = appDelegate.speechRecognitionService;
     self.searchResult = [NSMutableArray array];
     self.selectedFoodProducts = [NSMutableArray array];
     self.btnSpeak.enabled = NO;
@@ -61,12 +67,18 @@
     self.noResultsMessageLabel.hidden = YES;
     self.topDivider.hidden = YES;
     
-    NSError *error;
-    NSDictionary *dict = [srService getFoodProductLanguageModelPaths:&error];
+    //record sound test code -  END
+    /* Uncomment to regenarte language models. */
+    /*
+    if ([srService updateFoodProductLanguageModel:&error]) {
+        NSLog(@"Updated successfully");
+    }
+    */
+    //NSDictionary *dict = [srService getFoodProductLanguageModelPaths:&error];
     // start listening for speech
-    [pocketsphinxController startListeningWithLanguageModelAtPath:[dict valueForKey:@"LMPath"]
-                                                 dictionaryAtPath:[dict valueForKey:@"DictionaryPath"]
-                                              languageModelIsJSGF:FALSE];
+    //[pocketsphinxController startListeningWithLanguageModelAtPath:[dict valueForKey:@"LMPath"]
+    //                                             dictionaryAtPath:[dict valueForKey:@"DictionaryPath"]
+    //                                          languageModelIsJSGF:FALSE];
     [[NSNotificationCenter defaultCenter] postNotificationName:AutoLogoutRenewEvent object:nil];
 }
 
@@ -84,6 +96,38 @@
     [self setScrollView:nil];
     [self setBtnSpeak:nil];
     [super viewDidUnload];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    NSDictionary *recordSetting = @{AVFormatIDKey: @(kAudioFormatMPEG4AAC),
+                                    AVEncoderAudioQualityKey: @(AVAudioQualityMedium),
+                                    AVNumberOfChannelsKey: @2};
+    NSString *recorderFilePath = [NSString stringWithFormat:@"%@/tmp.aac", DOCUMENTS_FOLDER];
+    
+    NSURL *url = [NSURL fileURLWithPath:recorderFilePath];
+    NSError *err = nil;
+    recorder = [[ AVAudioRecorder alloc] initWithURL:url settings:recordSetting error:&err];
+    if(!recorder){
+        NSLog(@"recorder: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
+        UIAlertView *alert =
+        [[UIAlertView alloc] initWithTitle: @"Warning"
+                                   message: [err localizedDescription]
+                                  delegate: nil
+                         cancelButtonTitle:@"OK"
+                         otherButtonTitles:nil];
+        [alert show];
+        return;
+    }
+    
+    //prepare to record
+    [recorder setDelegate:self.consumptionViewController];
+    [recorder prepareToRecord];
+    
+    //start recording
+    [recorder recordForDuration:600];
+    
+    [self.lblSubTitle setTextColor:[UIColor redColor]];
+    self.lblSubTitle.text = @"Speak Now";
 }
 
 /**
@@ -155,7 +199,6 @@
     self.scrollView = scroll;
     self.resultView.hidden = NO;
     self.btnCancel.hidden = YES;
-    self.btnDone.hidden = NO;
     self.btnSearchAgain.hidden = NO;
 }
 
@@ -163,8 +206,9 @@
  * handle action for redo button.
  * @param sender the button.
  */
-- (IBAction)cancelSearch:(id)sender {
-    [pocketsphinxController stopListening];
+- (IBAction)doneButton:(id)sender {
+    //[pocketsphinxController stopListening];
+    [recorder stop];
 }
 
 /**
@@ -175,7 +219,6 @@
     [self.lblSubTitle setTextColor:[UIColor blackColor]];
     self.lblSubTitle.text = @"Initializing...";
     self.btnSearchAgain.hidden = YES;
-    self.btnDone.hidden = YES;
     self.btnCancel.hidden = NO;
     self.resultView.hidden = YES;
     self.resultsLabel.hidden = YES;
@@ -230,12 +273,21 @@
         if ([recognizedSet containsObject:hypo]) {
             continue;
         }
-        FoodProduct *foodProduct = [foodProductService getFoodProductByName:appDelegate.loggedInUser
+        /*FoodProduct *foodProduct = [foodProductService getFoodProductByName:appDelegate.loggedInUser
                                                                        name:hypo
-                                                                      error:&error];
-        if (foodProduct) {
-            [recognizedSet addObject:hypo];
-            [self.searchResult addObject:foodProduct];
+                                                                      error:&error];*/
+        FoodProductFilter *filter = [foodProductService buildFoodProductFilter:&error];
+        filter.name = hypo;
+        NSArray * results = [foodProductService filterFoodProducts:appDelegate.loggedInUser filter:filter error:&error];
+        
+        if (results && results.count > 0) {
+            for (FoodProduct *product in results) {
+                if (![recognizedSet containsObject:product]) {
+                    [recognizedSet addObject:product];
+                    [self.searchResult addObject:product];
+                }
+            }
+            break;
         }
     }
     [self showResult];
@@ -249,4 +301,5 @@
     [self.lblSubTitle setTextColor:[UIColor redColor]];
     self.lblSubTitle.text = @"Speak Now";
 }
+
 @end

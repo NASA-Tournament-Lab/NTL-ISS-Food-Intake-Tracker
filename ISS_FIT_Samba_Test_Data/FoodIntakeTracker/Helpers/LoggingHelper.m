@@ -18,6 +18,9 @@
 //
 //  Created by duxiaoyang on 2013-07-11.
 //
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
 
 #import "LoggingHelper.h"
 
@@ -55,6 +58,14 @@
     if (ERROR_LOGON) {
         if (error) {
             NSLog(@"[Error in method %@: Details %@]", methodName, error.userInfo);
+        }
+    }
+}
+
++(void)logException:(NSString *)methodName error:(NSException *)exception {
+    if (ERROR_LOGON) {
+        if (exception) {
+            NSLog(@"[Error in method %@: Details %@]", methodName, exception.reason);
         }
     }
 }

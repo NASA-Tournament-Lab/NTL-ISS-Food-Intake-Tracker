@@ -1,86 +1,86 @@
-Food Product Name,Category,Origin,Barcode,Fluid,Energy,Sodium,Protein,Carb,Fat,Profile Image,Images
-Almond M&Ms,Vegetables / Sides,NASA Foods,11456588,1.005,217,20,3.428,25.619,11.644,Almond M&Ms.jpg,Almond M&Ms_01.jpg;Almond M&Ms_02.jpg
-Apple Cider,Drink,NASA Foods,11456589,224.853,144,10,0.262,36.427,0.241,Apple Cider.jpg,Apple Cider_01.jpg;Apple Cider_02.jpg
-Brownie,Dessert & Snacks,NASA Foods,11456590,7.933,191,12,2.537,24.221,10.6,Brownie.jpg,Brownie_01.jpg;Brownie_02.jpg
-Butter Cookies,Dessert & Snacks,NASA Foods,11456591,7.476,273,195,2.545,38.798,12.341,Butter Cookies.jpg,Butter Cookies_01.jpg;Butter Cookies_02.jpg
-Coffee Decaf,Drink,NASA Foods,11456592,250.27,6,11,0.309,1.912,0.013,Coffee Decaf.jpg,Coffee Decaf_01.jpg;Coffee Decaf_02.jpg
-Granola Bars,Breakfast,NASA Foods,11456593,2.914,136,101,3.003,23.158,4.007,Granola Bars.jpg,Granola Bars_01.jpg;Granola Bars_02.jpg
-Granola Cereal,Breakfast,Russian Foods,11456594,0.9,173,111,3.508,36.747,2.249,Granola Cereal.jpg,Granola Cereal_01.jpg;Granola Cereal_02.jpg
-Lemonade,Drink,NASA Foods,11456595,234.156,105,10,0.183,27.307,0.105,Lemonade.jpg,Lemonade_01.jpg;Lemonade_02.jpg
-Peanut M&Ms,Dessert & Snacks,NASA Foods,11456596,1.223,254,25,4.718,29.817,12.882,Peanut M&Ms.jpg,Peanut M&Ms_01.jpg;Peanut M&Ms_02.jpg
-Salmon,Meat / Fish,NASA Foods,11456597,102.058,166,1111,25.911,0,6.123,Salmon.jpg,Salmon_01.jpg;Salmon_02.jpg
-Tang,Drink,NASA Foods,11456598,225.95,106,14,0,27.183,0,Tang.jpg,Tang_01.jpg;Tang_02.jpg
-Tuna,Meat / Fish,NASA Foods,11456599,94.415,165,486,30.47,0,3.831,Tuna.jpg,Tuna_01.jpg;Tuna_02.jpg
-Orange Juice,Drink,NASA Foods,,229.496,129,5,1.789,30.364,0.316,Orange Juice.jpg,Orange Juice.jpg
-Grape  Juice,Drink,NASA Foods,,225.937,160,13,0.989,39.488,0.348,Grape Juice.jpg,Grape Juice.jpg
-"Tea, Unsweetened",Drink,NASA Foods,,250.229,2,11,0.149,0.434,0,Tea.jpg,Tea.jpg
-Cappuccino,Drink,NASA Foods,,210.391,180,67,4.687,34.781,2.767,Cappuccino.jpg,Cappuccino.jpg
-Instant Breakfast Drink,Drink,NASA Foods,,3.321,461,417,17.421,94.339,3.553,Carnation Instant Breakfast.jpg,Carnation Instant Breakfast.jpg
-Cocoa,Drink,NASA Foods,,252.11,147,250,1.429,32.457,2.857,Cocoa.jpg,Cocoa.jpg
-Milk,Drink,NASA Foods,,230.018,129,121,8.509,12.376,5.105,Milk.jpg,Milk.jpg
-Bran Chex,Breakfast,NASA Foods,,0.617,107,227,3.334,25.333,0.667,Bran Chex.jpg,Bran Chex.jpg
-Cornflakes,Breakfast,NASA Foods,,0.526,51,101,0.925,12.195,0.083,Cornflakes.jpg,Cornflakes.jpg
-Oatmeal,Breakfast,NASA Foods,,160.875,157,267,3.84,32.37,2.077,Oatmeal.jpg,Oatmeal.jpg
-Oatmeal with Apples,Breakfast,Russian Foods,,179.824,124,304,3.52,25.982,1.211,Oatmeal with Apples.jpg,Oatmeal with Apples.jpg
-French Toast,Breakfast,NASA Foods,,44.96,184,425,6.128,28.114,5.109,French Toast.jpg,French Toast.jpg
-Muffin,Breakfast,NASA Foods,,60.987,337,327,6.8,49.745,12.544,Muffin.jpg,Muffin.jpg
-Pop-Tarts,Breakfast,NASA Foods,,15.584,422,361,5.044,74.768,11.405,Poptart.jpg,Poptart.jpg
-Waffle,Breakfast,NASA Foods,,31.465,213,484,5.132,32.019,7.192,Waffle.jpg,Waffle.jpg
-French Muesli,Breakfast,ESA Foods,,1.14,233,30,5.7,44.28,3.78,Muesli.jpg,Muesli.jpg
-Japanese Ramen Noodles,Vegetables / Sides,JAXA Foods,,477.773,377,1598,9.991,51.68,14.09,Japanese Ramen Noodles.jpg,Japanese Ramen Noodles.jpg
-Japanese Rice with Vegetables,Vegetables / Sides,JAXA Foods,,258.299,305,644,7.404,44.645,10.516,Japanese Rice with Veg.jpg,Japanese Rice with Veg.jpg
-Eggs,Breakfast,NASA Foods,,64.966,139,88,8.599,1.361,10.692,Egg.jpg,Egg.jpg
-Omelet with Chicken,Breakfast,Russian Foods,,65.198,181,242,11.097,1.241,14.423,Omelet.jpg,Omelet.jpg
-Rye Bread,Vegetables / Sides,Russian Foods,,11.936,83,211,2.72,15.456,1.056,Rye Bread.jpg,Rye Bread.jpg
-Tortillas,Vegetables / Sides,NASA Foods,,27.802,287,585,7.627,47.242,7.13,Tortillas.jpg,Tortillas.jpg
-Japanese Space Bread,Vegetables / Sides,JAXA Foods,,21.184,101,69,2.06,18.743,2.117,Japanese Space Bread.jpg,Japanese Space Bread.jpg
-Crackers,Dessert & Snacks,NASA Foods,,0.303,65,107,1.138,7.777,3.253,Crackers.jpg,Crackers.jpg
-Triscuits,Dessert & Snacks,NASA Foods,,6.306,289,424,7.754,42.243,11.617,Triscuit.jpg,Triscuit.jpg
-Clif Bar,Dessert & Snacks,NASA Foods,,6.051,249,150,10.305,44.845,5.029,Clif Bar.jpg,Clif Bar.jpg
-Power Bar,Dessert & Snacks,NASA Foods,,2.308,232,200,10.656,43.549,3.303,Power Bar.jpg,Power Bar.jpg
-Fiber One Bar,Dessert & Snacks,NASA Foods,,3.071,140,88,1.793,30.783,4.009,Fiber One Bar.jpg,Fiber One Bar.jpg
-Nature Valley Granola Bar,Dessert & Snacks,NASA Foods,,3.132,140,111,1.999,24.989,4.303,Nature Valley Bar.jpg,Nature Valley Bar.jpg
-Doritos,Dessert & Snacks,NASA Foods,,2.355,141,180,1.504,15.547,8.062,Dorritos.jpg,Dorritos.jpg
-Hummus,Dessert & Snacks,NASA Foods,,16.455,54,33,2.387,6.433,2.393,Hummus.jpg,Hummus.jpg
-Italian black or green olive pate,Dessert & Snacks,ESA Foods,,18.546,58,81,4.093,0.817,3.796,Pate.jpg,Pate.jpg
-Almonds,Fruit & Nuts,NASA Foods,,1.746,411,2,14.531,14.628,35.915,Almonds.jpg,Almonds.jpg
-Cashews,Fruit & Nuts,NASA Foods,,1.165,393,11,10.487,22.393,31.75,Cashews.jpg,Cashews.jpg
-Peanut Butter,Fruit & Nuts,NASA Foods,,0.513,167,5,7.113,5.545,14.285,Peanut Butter.jpg,Peanut Butter.jpg
-French Rich Chocolate Cake,Dessert & Snacks,ESA Foods,,11.258,73,121,1.074,10.29,3.411,Chocolate Cake.jpg,Chocolate Cake.jpg
-"Pudding, Banana",Dessert & Snacks,NASA Foods,,63.211,158,80,3.684,28.693,3.671,Pudding.jpg,Pudding.jpg
-Mars Bar,Dessert & Snacks,CSA Foods,,6.417,220,75,1.001,36.002,8.633,Mars Bar.jpg,Mars Bar.jpg
-Caramel,Dessert & Snacks,Russian Foods,,4.293,193,124,2.323,38.885,4.091,Caramel.jpg,Caramel.jpg
-M&Ms,Dessert & Snacks,NASA Foods,,0.814,236,29,2.074,34.1,10.121,M&Ms.jpg,M&Ms.jpg
-Japanese Peppermint Candy,Dessert & Snacks,JAXA Foods,,3.506,140,10,0.588,30.138,2.5,Japanese Peppermint Candy.jpg,Japanese Peppermint Candy.jpg
-Skittles,Dessert & Snacks,NASA Foods,,3.252,236,10,0,56,2.5,Skittles.jpg,Skittles.jpg
-Canadian Dried Cranberries,Fruit & Nuts,CSA Foods,,9.61,185,2,0.042,49.465,0.823,Canadian Dried Cranberries.jpg,Canadian Dried Cranberries.jpg
-Peaches,Fruit & Nuts,NASA Foods,,108.488,55,5,0.781,14.347,0.037,Dried Peaches.jpg,Dried Peaches.jpg
-Prunes,Fruit & Nuts,Russian Foods,,81.279,154,1,1.119,40.169,0.186,Prunes.jpg,Prunes.jpg
-Applesauce,Fruit & Nuts,NASA Foods,,100.835,84,2,0.197,21.513,0.209,Applesauce.jpg,Applesauce.jpg
-Tropical Fruit Salad,Fruit & Nuts,NASA Foods,,103.279,69,7,0.63,17.369,0.232,Tropical Fruit Salad.jpg,Tropical Fruit Salad.jpg
-Apple,Fruit & Nuts,NASA Foods,,155.719,95,2,0.473,25.134,0.309,Apple.jpg,Apple.jpg
-Oranges,Fruit & Nuts,NASA Foods,,113.643,62,0,1.231,15.392,0.157,Orange.jpg,Orange.jpg
-German Potato Cream Soup,Vegetables / Sides,ESA Foods,,211.229,175,480,2.555,19.77,9.692,German Potato Cream Soup.jpg,German Potato Cream Soup.jpg
-Black Beans,Vegetables / Sides,NASA Foods,,54.877,120,331,7.078,22.403,0.533,Black Beans.jpg,Black Beans.jpg
-Carrots,Vegetables / Sides,NASA Foods,,67.854,18,177,0.467,4.044,0.139,Carrots.jpg,Carrots.jpg
-Green Beans,Vegetables / Sides,NASA Foods,,71.367,18,200,0.903,3.374,0.084,Green Beans.jpg,Green Beans.jpg
-Mashed Potatoes,Vegetables / Sides,NASA Foods,,79.695,121,9,1.895,18.678,4.578,Mashed Potatoes.jpg,Mashed Potatoes.jpg
-Macaroni and Cheese,Vegetables / Sides,NASA Foods,,112.116,388,529,10.44,47.536,17.692,Macaroni and Cheese.jpg,Macaroni and Cheese.jpg
-Cheddar Cheese Spread,Dessert & Snacks,NASA Foods,,76.67,273,638,7.643,11.069,22.488,Cheddar Cheese Spread.jpg,Cheddar Cheese Spread.jpg
-Lasagna with Meat Sauce,Meat / Fish,NASA Foods,,166.849,269,759,22.454,24.104,90.31,Lasagna with Meat Sauce.jpg,Lasagna with Meat Sauce.jpg
-Japanese Fish,Meat / Fish,JAXA Foods,,249.704,563,1368,83.716,0,22.743,Japanese Fish.jpg,Japanese Fish.jpg
-Canadian Smoked Salmon,Meat / Fish,CSA Foods,,102.058,166,1111,25.911,0,6.123,Canadian Smoked Salmon.jpg,Canadian Smoked Salmon.jpg
-Shrimp,Meat / Fish,NASA Foods,,85.711,113,167,23.075,0,1.537,Shrimp.jpg,Shrimp.jpg
-Tuna Salad Spread,Meat / Fish,NASA Foods,,71.712,221,273,11.864,5.662,17.087,Tuna Salad.jpg,Tuna Salad.jpg
-Lubitelskiy Sausage,Meat / Fish,Russian Foods,,8.322,53,182,1.798,0.65,4.731,Lubitelskiy Sausage.jpg,Lubitelskiy Sausage.jpg
-Grilled Pork Chop,Meat / Fish,NASA Foods,,49.877,219,42,23.481,0,13.181,Grilled Pork Chop.jpg,Grilled Pork Chop.jpg
-Spaghetti with Meat Sauce,Meat / Fish,NASA Foods,,174.398,265,604,9.235,50.02,3.434,Spaghetti with Meat Sauce.jpg,Spaghetti with Meat Sauce.jpg
-Beef with Vegetables,Meat / Fish,JAXA Foods,,157.26,370,485,19.099,9.651,28.949,Beef with Vegetables.jpg,Beef with Vegetables.jpg
-Chicken in Pouches,Meat / Fish,NASA Foods,,82.533,105,425,19.822,1.25,1.683,Chicken in Pouch.jpg,Chicken in Pouch.jpg
-Smoked Turkey,Meat / Fish,NASA Foods,,63.471,93,1006,14.814,1.87,2.555,Smoked Turkey.jpg,Smoked Turkey.jpg
-Japanese Beef Curry,Meat / Fish,JAXA Foods,,131.415,526,79,17.458,8.207,47.926,Japanese Beef Curry.jpg,Japanese Beef Curry.jpg
-Mayonnaise,Vegetables / Sides,NASA Foods,,1.807,86,68,0.108,0.379,9.527,Mayonnaise.jpg,Mayonnaise.jpg
-Ketchup,Vegetables / Sides,NASA Foods,,6.224,9,100,0.157,2.264,0.028,Ketchup.jpg,Ketchup.jpg
-Mustard,Vegetables / Sides,NASA Foods,,4.133,3,57,0.219,0.267,0.201,Mustard.jpg,Mustard.jpg
-Japanese Worcester Sauce,Vegetables / Sides,JAXA Foods,,4.5,4,56,0,1.115,0,Japanese Worcester Sauce.jpg,Japanese Worcester Sauce.jpg
-Honey,Vegetables / Sides,NASA Foods,,2.394,43,1,0.042,11.536,0,Honey.jpg,Honey.jpg
+Food Product Name,Category,Origin,Barcode,Fluid,Energy,Sodium,Protein,Carb,Fat,Profile Image,Deleted,1
+Almond M&Ms,Vegetables / Sides,NASA Foods,11456588,1.005,217,20,3.428,25.619,11.644,Almond M&Ms.jpg,NO,
+Apple Cider,Drink,NASA Foods,11456589,224.853,144,10,0.262,36.427,0.241,Apple Cider.jpg,NO,
+Brownie,Dessert & Snacks,NASA Foods,11456590,7.933,191,12,2.537,24.221,10.6,Brownie.jpg,NO,
+Butter Cookies,Dessert & Snacks,NASA Foods,11456591,7.476,273,195,2.545,38.798,12.341,Butter Cookies.jpg,NO,
+Coffee Decaf,Drink,NASA Foods,11456592,250.27,6,11,0.309,1.912,0.013,Coffee Decaf.jpg,NO,
+Granola Bars,Breakfast,NASA Foods,11456593,2.914,136,101,3.003,23.158,4.007,Granola Bars.jpg,NO,
+Granola Cereal,Breakfast,Russian Foods,11456594,0.9,173,111,3.508,36.747,2.249,Granola Cereal.jpg,NO,
+Lemonade,Drink,NASA Foods,11456595,234.156,105,10,0.183,27.307,0.105,Lemonade.jpg,NO,
+Peanut M&Ms,Dessert & Snacks,NASA Foods,11456596,1.223,254,25,4.718,29.817,12.882,Peanut M&Ms.jpg,NO,
+Salmon,Meat / Fish,NASA Foods,11456597,102.058,166,1111,25.911,0,6.123,Salmon.jpg,NO,
+Tang,Drink,NASA Foods,11456598,225.95,106,14,0,27.183,0,Tang.jpg,NO,
+Tuna,Meat / Fish,NASA Foods,11456599,94.415,165,486,30.47,0,3.831,Tuna.jpg,NO,
+Orange Juice,Drink,NASA Foods,,229.496,129,5,1.789,30.364,0.316,Orange Juice.jpg,NO,
+Grape  Juice,Drink,NASA Foods,,225.937,160,13,0.989,39.488,0.348,Grape Juice.jpg,NO,
+"Tea, Unsweetened",Drink,NASA Foods,,250.229,2,11,0.149,0.434,0,Tea.jpg,NO,
+Cappuccino,Drink,NASA Foods,,210.391,180,67,4.687,34.781,2.767,Cappuccino.jpg,NO
+Instant Breakfast Drink,Drink,NASA Foods,,3.321,461,417,17.421,94.339,3.553,Carnation Instant Breakfast.jpg,NO
+Cocoa,Drink,NASA Foods,,252.11,147,250,1.429,32.457,2.857,Cocoa.jpg,NO
+Milk,Drink,NASA Foods,,230.018,129,121,8.509,12.376,5.105,Milk.jpg,NO
+Bran Chex,Breakfast,NASA Foods,,0.617,107,227,3.334,25.333,0.667,Bran Chex.jpg,NO
+Cornflakes,Breakfast,NASA Foods,,0.526,51,101,0.925,12.195,0.083,Cornflakes.jpg,NO
+Oatmeal,Breakfast,NASA Foods,,160.875,157,267,3.84,32.37,2.077,Oatmeal.jpg,NO
+Oatmeal with Apples,Breakfast,Russian Foods,,179.824,124,304,3.52,25.982,1.211,Oatmeal with Apples.jpg,NO
+French Toast,Breakfast,NASA Foods,,44.96,184,425,6.128,28.114,5.109,French Toast.jpg,NO
+Muffin,Breakfast,NASA Foods,,60.987,337,327,6.8,49.745,12.544,Muffin.jpg,NO
+Pop-Tarts,Breakfast,NASA Foods,,15.584,422,361,5.044,74.768,11.405,Poptart.jpg,NO
+Waffle,Breakfast,NASA Foods,,31.465,213,484,5.132,32.019,7.192,Waffle.jpg,NO
+French Muesli,Breakfast,ESA Foods,,1.14,233,30,5.7,44.28,3.78,Muesli.jpg,NO
+Japanese Ramen Noodles,Vegetables / Sides,JAXA Foods,,477.773,377,1598,9.991,51.68,14.09,Japanese Ramen Noodles.jpg,NO
+Japanese Rice with Vegetables,Vegetables / Sides,JAXA Foods,,258.299,305,644,7.404,44.645,10.516,Japanese Rice with Veg.jpg,NO
+Eggs,Breakfast,NASA Foods,,64.966,139,88,8.599,1.361,10.692,Egg.jpg,NO
+Omelet with Chicken,Breakfast,Russian Foods,,65.198,181,242,11.097,1.241,14.423,Omelet.jpg,NO
+Rye Bread,Vegetables / Sides,Russian Foods,,11.936,83,211,2.72,15.456,1.056,Rye Bread.jpg,NO
+Tortillas,Vegetables / Sides,NASA Foods,,27.802,287,585,7.627,47.242,7.13,Tortillas.jpg,NO
+Japanese Space Bread,Vegetables / Sides,JAXA Foods,,21.184,101,69,2.06,18.743,2.117,Japanese Space Bread.jpg,NO
+Crackers,Dessert & Snacks,NASA Foods,,0.303,65,107,1.138,7.777,3.253,Crackers.jpg,NO
+Triscuits,Dessert & Snacks,NASA Foods,,6.306,289,424,7.754,42.243,11.617,Triscuit.jpg,NO
+Clif Bar,Dessert & Snacks,NASA Foods,,6.051,249,150,10.305,44.845,5.029,Clif Bar.jpg,NO
+Power Bar,Dessert & Snacks,NASA Foods,,2.308,232,200,10.656,43.549,3.303,Power Bar.jpg,NO
+Fiber One Bar,Dessert & Snacks,NASA Foods,,3.071,140,88,1.793,30.783,4.009,Fiber One Bar.jpg,NO
+Nature Valley Granola Bar,Dessert & Snacks,NASA Foods,,3.132,140,111,1.999,24.989,4.303,Nature Valley Bar.jpg,NO
+Doritos,Dessert & Snacks,NASA Foods,,2.355,141,180,1.504,15.547,8.062,Dorritos.jpg,NO
+Hummus,Dessert & Snacks,NASA Foods,,16.455,54,33,2.387,6.433,2.393,Hummus.jpg,NO
+Italian black or green olive pate,Dessert & Snacks,ESA Foods,,18.546,58,81,4.093,0.817,3.796,Pate.jpg,NO
+Almonds,Fruit & Nuts,NASA Foods,,1.746,411,2,14.531,14.628,35.915,Almonds.jpg,NO
+Cashews,Fruit & Nuts,NASA Foods,,1.165,393,11,10.487,22.393,31.75,Cashews.jpg,NO
+Peanut Butter,Fruit & Nuts,NASA Foods,,0.513,167,5,7.113,5.545,14.285,Peanut Butter.jpg,NO
+French Rich Chocolate Cake,Dessert & Snacks,ESA Foods,,11.258,73,121,1.074,10.29,3.411,Chocolate Cake.jpg,NO
+"Pudding, Banana",Dessert & Snacks,NASA Foods,,63.211,158,80,3.684,28.693,3.671,Pudding.jpg,NO
+Mars Bar,Dessert & Snacks,CSA Foods,,6.417,220,75,1.001,36.002,8.633,Mars Bar.jpg,NO
+Caramel,Dessert & Snacks,Russian Foods,,4.293,193,124,2.323,38.885,4.091,Caramel.jpg,NO
+M&Ms,Dessert & Snacks,NASA Foods,,0.814,236,29,2.074,34.1,10.121,M&Ms.jpg,NO
+Japanese Peppermint Candy,Dessert & Snacks,JAXA Foods,,3.506,140,10,0.588,30.138,2.5,Japanese Peppermint Candy.jpg,NO
+Skittles,Dessert & Snacks,NASA Foods,,3.252,236,10,0,56,2.5,Skittles.jpg,NO
+Canadian Dried Cranberries,Fruit & Nuts,CSA Foods,,9.61,185,2,0.042,49.465,0.823,Canadian Dried Cranberries.jpg,NO
+Peaches,Fruit & Nuts,NASA Foods,,108.488,55,5,0.781,14.347,0.037,Dried Peaches.jpg,NO
+Prunes,Fruit & Nuts,Russian Foods,,81.279,154,1,1.119,40.169,0.186,Prunes.jpg,NO
+Applesauce,Fruit & Nuts,NASA Foods,,100.835,84,2,0.197,21.513,0.209,Applesauce.jpg,NO
+Tropical Fruit Salad,Fruit & Nuts,NASA Foods,,103.279,69,7,0.63,17.369,0.232,Tropical Fruit Salad.jpg,NO
+Apple,Fruit & Nuts,NASA Foods,,155.719,95,2,0.473,25.134,0.309,Apple.jpg,NO
+Oranges,Fruit & Nuts,NASA Foods,,113.643,62,0,1.231,15.392,0.157,Orange.jpg,NO
+German Potato Cream Soup,Vegetables / Sides,ESA Foods,,211.229,175,480,2.555,19.77,9.692,German Potato Cream Soup.jpg,NO
+Black Beans,Vegetables / Sides,NASA Foods,,54.877,120,331,7.078,22.403,0.533,Black Beans.jpg,NO
+Carrots,Vegetables / Sides,NASA Foods,,67.854,18,177,0.467,4.044,0.139,Carrots.jpg,NO
+Green Beans,Vegetables / Sides,NASA Foods,,71.367,18,200,0.903,3.374,0.084,Green Beans.jpg,NO
+Mashed Potatoes,Vegetables / Sides,NASA Foods,,79.695,121,9,1.895,18.678,4.578,Mashed Potatoes.jpg,NO
+Macaroni and Cheese,Vegetables / Sides,NASA Foods,,112.116,388,529,10.44,47.536,17.692,Macaroni and Cheese.jpg,NO
+Cheddar Cheese Spread,Dessert & Snacks,NASA Foods,,76.67,273,638,7.643,11.069,22.488,Cheddar Cheese Spread.jpg,NO
+Lasagna with Meat Sauce,Meat / Fish,NASA Foods,,166.849,269,759,22.454,24.104,90.31,Lasagna with Meat Sauce.jpg,NO
+Japanese Fish,Meat / Fish,JAXA Foods,,249.704,563,1368,83.716,0,22.743,Japanese Fish.jpg,NO
+Canadian Smoked Salmon,Meat / Fish,CSA Foods,,102.058,166,1111,25.911,0,6.123,Canadian Smoked Salmon.jpg,NO
+Shrimp,Meat / Fish,NASA Foods,,85.711,113,167,23.075,0,1.537,Shrimp.jpg,NO
+Tuna Salad Spread,Meat / Fish,NASA Foods,,71.712,221,273,11.864,5.662,17.087,Tuna Salad.jpg,NO
+Lubitelskiy Sausage,Meat / Fish,Russian Foods,,8.322,53,182,1.798,0.65,4.731,Lubitelskiy Sausage.jpg,NO
+Grilled Pork Chop,Meat / Fish,NASA Foods,,49.877,219,42,23.481,0,13.181,Grilled Pork Chop.jpg,NO
+Spaghetti with Meat Sauce,Meat / Fish,NASA Foods,,174.398,265,604,9.235,50.02,3.434,Spaghetti with Meat Sauce.jpg,NO
+Beef with Vegetables,Meat / Fish,JAXA Foods,,157.26,370,485,19.099,9.651,28.949,Beef with Vegetables.jpg,NO
+Chicken in Pouches,Meat / Fish,NASA Foods,,82.533,105,425,19.822,1.25,1.683,Chicken in Pouch.jpg,NO
+Smoked Turkey,Meat / Fish,NASA Foods,,63.471,93,1006,14.814,1.87,2.555,Smoked Turkey.jpg,NO
+Japanese Beef Curry,Meat / Fish,JAXA Foods,,131.415,526,79,17.458,8.207,47.926,Japanese Beef Curry.jpg,NO
+Mayonnaise,Vegetables / Sides,NASA Foods,,1.807,86,68,0.108,0.379,9.527,Mayonnaise.jpg,NO
+Ketchup,Vegetables / Sides,NASA Foods,,6.224,9,100,0.157,2.264,0.028,Ketchup.jpg,NO
+Mustard,Vegetables / Sides,NASA Foods,,4.133,3,57,0.219,0.267,0.201,Mustard.jpg,NO
+Japanese Worcester Sauce,Vegetables / Sides,JAXA Foods,,4.5,4,56,0,1.115,0,Japanese Worcester Sauce.jpg,NO
+Honey,Vegetables / Sides,NASA Foods,,2.394,43,1,0.042,11.536,0,Honey.jpg,NO

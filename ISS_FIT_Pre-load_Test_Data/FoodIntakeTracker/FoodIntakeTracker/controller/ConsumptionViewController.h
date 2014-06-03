@@ -23,9 +23,13 @@
 #import <OpenEars/OpenEarsEventsObserver.h>
 #import <OpenEars/PocketsphinxController.h>
 
+#import <AVFoundation/AVFoundation.h>
+
 @class Food;
 @class CustomTabBarViewController;
 @class BNPieChart;
+@class FoodConsumptionRecord;
+@class AdhocFoodProduct;
 
 /**
  * @protocol DateListViewDelegate
@@ -116,11 +120,12 @@
  * - Added UIScrollViewDelegate. Save nutrition scrollview position to NSDictionary.
  *
  * @author lofzcx, flying2hk, subchap, pvmagacho
- * @version 1.3
+ * @version 1.2
  * @since 1.0
  */
 @interface ConsumptionViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate,
-    CalendarViewDelegate, DateListViewDelegate, UIPopoverControllerDelegate, OpenEarsEventsObserverDelegate>
+    UIGestureRecognizerDelegate, UIPopoverControllerDelegate, AVAudioRecorderDelegate,
+    OpenEarsEventsObserverDelegate, CalendarViewDelegate, DateListViewDelegate>
 
 /* the tab bar controller */
 @property (weak, nonatomic) CustomTabBarViewController *customTabBarController;

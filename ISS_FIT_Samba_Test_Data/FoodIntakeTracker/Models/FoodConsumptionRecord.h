@@ -69,6 +69,10 @@
 
 //Represents whether this record is ad-hoc only or not
 @property (nonatomic, strong) NSNumber * adhocOnly;
+
+//Represents the saved unique object id
+@property (nonatomic, strong) NSString *savedObjectId;
+
 @end
 
 //Auto generated NSSet methods for images and voice recordings.

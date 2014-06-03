@@ -20,6 +20,8 @@
 
 #import <UIKit/UIKit.h>
 
+@class FoodConsumptionRecord;
+
 /**
  * @class FoodDetailViewController
  * controller for detail food view.
@@ -46,7 +48,7 @@
 /* the save button */
 @property (weak, nonatomic) IBOutlet UIButton *btnSave;
 /* the food name label */
-@property (weak, nonatomic) IBOutlet UILabel *lblFoodName;
+@property (weak, nonatomic) IBOutlet UITextField *txtFoodName;
 /* the time label */
 @property (weak, nonatomic) IBOutlet UILabel *lblTime;
 /* the quantity input */
@@ -69,7 +71,7 @@
 /* the scroll view */
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 /* Represents the FoodConsumptionRecord in this view. */
-@property (weak, nonatomic) FoodConsumptionRecord *foodConsumptionRecord;
+@property (strong, nonatomic) FoodConsumptionRecord *foodConsumptionRecord;
 
 /**
  * show hour pikcer when clicking at time.

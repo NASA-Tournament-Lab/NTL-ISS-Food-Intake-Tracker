@@ -18,19 +18,25 @@
 //
 //  Created by duxiaoyang on 2013-07-13.
 //
+//  Updated by pvmagacho on 05/07/2014
+//  F2Finish - NASA iPad App Updates
+//
 
 #import "FoodConsumptionRecordServiceImpl.h"
 #import "SMBClient.h"
 #import "LoggingHelper.h"
+#import "DataHelper.h"
 
 @implementation FoodConsumptionRecordServiceImpl
 
 @synthesize modifiablePeriodInDays;
 @synthesize recordKeptPeriodInDays;
+@synthesize localFileSystemDirectory;
 
 -(id)initWithConfiguration:(NSDictionary *)configuration {
     self = [super initWithConfiguration:configuration];
     if (self) {
+        localFileSystemDirectory = [configuration valueForKey:@"LocalFileSystemDirectory"];
         modifiablePeriodInDays = [configuration valueForKey:@"FoodConsumptionRecordModifiablePeroidInDays"];
         recordKeptPeriodInDays = [configuration valueForKey:@"FoodConsumptionRecordKeptPeriodInDays"];
     }
@@ -49,7 +55,7 @@
     record.foodProduct = nil;
     record.timestamp = [NSDate date];
     record.quantity = @0;
-    record.comment = nil;
+    record.comment = @"";
     record.images = [NSMutableSet set];
     record.voiceRecordings = [NSMutableSet set];
     record.fluid = @0;
@@ -169,6 +175,12 @@
     record.images = images;
     record.voiceRecordings = voiceRecordings;
     [self.managedObjectContext save:error];
+    
+    if (!record.savedObjectId) {
+        record.savedObjectId = [record.objectID.URIRepresentation absoluteString];
+    }
+    [self.managedObjectContext save:error];
+    
     [LoggingHelper logError:methodName error:*error];
     [self.managedObjectContext unlock];
     
@@ -194,8 +206,8 @@
     [LoggingHelper logMethodEntrance:methodName paramNames:@[@"record"] params:@[record]];
     
     //Save record
-    if ([[record.createdDate dateByAddingTimeInterval:60 * 60 * 24 * self.modifiablePeriodInDays.intValue]
-         compare:[NSDate date]] == NSOrderedAscending) {
+    NSDate *saveDate = [record.createdDate dateByAddingTimeInterval:3600 * 24 * self.modifiablePeriodInDays.intValue];
+    if ([saveDate compare:[NSDate date]] == NSOrderedAscending) {
         if(error) {
             *error = [[NSError alloc] initWithDomain:@"FoodConsumptionRecordService"
                                                 code: FoodConsumptionRecordNotModifiableErrorCode
@@ -209,22 +221,11 @@
         record.lastModifiedDate = currentDate;
         record.synchronized = @NO;
         
-        NSFetchRequest *request = [[NSFetchRequest alloc] init];
-        NSEntityDescription *description = [NSEntityDescription  entityForName:@"SummaryGenerationHistory"
-                                                        inManagedObjectContext:[self managedObjectContext]];
-        NSPredicate *predicate = [NSPredicate
-                                  predicateWithFormat:@"(user == %@) AND (startDate <= %@) AND (endDate >= %@)",
-                                  record.user, record.timestamp, record.timestamp];
-        [request setEntity:description];
-        [request setPredicate:predicate];
-        
-        NSArray *result = [[self managedObjectContext] executeFetchRequest:request error:error];
+        [self.managedObjectContext save:error];
         [LoggingHelper logError:methodName error:*error];
         
-        if (result.count > 0) {
-            // re-generate summary
-            SummaryGenerationHistory *history = result[0];
-            [self generateSummary:history.user startDate:history.startDate endDate:history.endDate error:error];
+        if (!record.savedObjectId) {
+            record.savedObjectId = [record.objectID.URIRepresentation absoluteString];
         }
         
         [self.managedObjectContext save:error];
@@ -364,108 +365,113 @@
     
     [LoggingHelper logMethodEntrance:methodName paramNames:nil params:nil];
     
-    //Fetch records
-    [[self managedObjectContext] lock];
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(deleted == NO) AND (user == %@) AND "
-                              "(timestamp >= %@) AND (timestamp <= %@)", user, startDate, endDate];
-    NSEntityDescription *description = [NSEntityDescription  entityForName:@"FoodConsumptionRecord"
-                                                    inManagedObjectContext:[self managedObjectContext]];
-    [request setEntity:description];
-    [request setPredicate:predicate];
-    NSArray *result = [[self managedObjectContext] executeFetchRequest:request error:error];
-    [LoggingHelper logError:methodName error:*error];
-    
-    //Write csv header into memory
-    NSMutableArray *additionalFiles = [NSMutableArray array];
-    NSMutableData *summaryCSVData = [NSMutableData data];
-    const char *csvHeader = [@"\"Username\",\"Date Time\",\"Food Product\",\"Quantity\"\r\n" UTF8String];
-    [summaryCSVData appendBytes:csvHeader length:strlen(csvHeader)]; // header
-    
-    //Write csv rows into memory
-    for (FoodConsumptionRecord *record in result) {
-        NSString* line = [NSString stringWithFormat:@"\"%@\",\"%@\",\"%@\",\"%@\"\r\n",
-                          record.user.fullName, record.timestamp, record.foodProduct.name, record.quantity];
-        const char *lineString = [line UTF8String];
-        // output line for the record
-        [summaryCSVData appendBytes:lineString length:strlen(lineString)];
-        // add additional files
-        for (StringWrapper* imagePath in record.images) {
-            [additionalFiles addObject:imagePath];
-        }
-        for (StringWrapper* voicePath in record.voiceRecordings) {
-            [additionalFiles addObject:voicePath];
-        }
-    }
-    
-    //Create directory for the output files
-    id<SMBClient> smbClient = [self createSMBClient:error];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat: @"yyyyMMdd"];
-    NSString *timestamp = [NSString stringWithFormat:@"%@_%@", [dateFormatter stringFromDate:startDate],
-                           [dateFormatter stringFromDate:endDate]];
-    // Check if the user folder exists.
-    NSArray *outputDirectories = [smbClient listDirectories:@"output_files" error:error];
-    [LoggingHelper logError:methodName error:*error];
-    BOOL userFolderExists = NO;
-    for (NSString *directory in outputDirectories) {
-        if ([user.fullName isEqualToString:directory]) {
-            // No need to initialize.
-            userFolderExists = YES;
-            break;
-        }
-    }
-    if (!userFolderExists) {
-        [smbClient createDirectory:[NSString stringWithFormat:@"output_files/%@", user.fullName] error:error];
+    @synchronized(self) {
+        //Fetch records
+        [[self managedObjectContext] lock];
+        NSFetchRequest *request = [[NSFetchRequest alloc] init];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(deleted == NO) AND (user == %@) AND "
+                                  "(timestamp >= %@) AND (timestamp <= %@)", user, startDate, endDate];
+        NSEntityDescription *description = [NSEntityDescription  entityForName:@"FoodConsumptionRecord"
+                                                        inManagedObjectContext:[self managedObjectContext]];
+        [request setEntity:description];
+        [request setPredicate:predicate];
+        NSArray *result = [[self managedObjectContext] executeFetchRequest:request error:error];
         [LoggingHelper logError:methodName error:*error];
-    }
-    
-    NSArray *timestampDirectories = [smbClient listDirectories:[NSString stringWithFormat:@"output_files/%@",
-                                                                user.fullName] error:error];
-    [LoggingHelper logError:methodName error:*error];
-    
-    if(![timestampDirectories containsObject:timestamp]) {
-        [smbClient createDirectory:[NSString stringWithFormat:@"output_files/%@/%@", user.fullName, timestamp] error:error];
-        [LoggingHelper logError:methodName error:*error];
-    }
-    
-    // Write summaryCSVData
-    [smbClient writeFile:[NSString stringWithFormat:@"output_files/%@/%@/summary.csv", user.fullName, timestamp]
-                    data:summaryCSVData error:error];
-    [LoggingHelper logError:methodName error:*error];
-    
-    // Write additional files
-    for (StringWrapper* path in additionalFiles) {
-        NSData *data = [[NSFileManager defaultManager] contentsAtPath:path.value];
-        if (data) {
-            NSArray *pathSegments = [path.value componentsSeparatedByString:@"/"];
-            if ([pathSegments count] > 0) {
-                NSString *name =  pathSegments[[pathSegments count] - 1];
-                [smbClient writeFile:[NSString stringWithFormat:@"output_files/%@/%@/%@", user.fullName, timestamp, name]
-                                data:data error:error];
-                [LoggingHelper logError:methodName error:*error];
+        
+        //Write csv header into memory
+        NSMutableArray *additionalFiles = [NSMutableArray array];
+        NSMutableData *summaryCSVData = [NSMutableData data];
+        const char *csvHeader = [@"\"Username\",\"Date Time\",\"Food Product\",\"Quantity\",\"Comments\",\"Images\",\"Voices\"\r\n"
+                                 UTF8String];
+        [summaryCSVData appendBytes:csvHeader length:strlen(csvHeader)]; // header
+        
+        //Write csv rows into memory
+        for (FoodConsumptionRecord *record in result) {
+            NSString *comment = [record.comment stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+            NSString* line = [NSString stringWithFormat:@"\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\"\r\n",
+                              record.user.fullName, record.timestamp, record.foodProduct.name, record.quantity, comment,
+                              [DataHelper
+                               convertStringWrapperNSSetToNSString:record.images
+                               withSeparator:@";"],
+                              [DataHelper
+                               convertStringWrapperNSSetToNSString:record.voiceRecordings
+                               withSeparator:@";"]];
+            const char *lineString = [line UTF8String];
+            // output line for the record
+            [summaryCSVData appendBytes:lineString length:strlen(lineString)];
+            // add additional files
+            for (StringWrapper* imagePath in record.images) {
+                [additionalFiles addObject:imagePath];
+            }
+            for (StringWrapper* voicePath in record.voiceRecordings) {
+                [additionalFiles addObject:voicePath];
             }
         }
+        
+        //Create directory for the output files
+        id<SMBClient> smbClient = [self createSMBClient:error];
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+        [dateFormatter setDateFormat: @"yyyyMMdd"];
+        NSString *timestamp = [NSString stringWithFormat:@"%@_%@", [dateFormatter stringFromDate:startDate],
+                               [dateFormatter stringFromDate:endDate]];
+        
+        // Check if the user folder exists.
+        NSArray *outputDirectories = [smbClient listDirectories:@"output_files" error:error];
+        [LoggingHelper logError:methodName error:*error];
+        BOOL userFolderExists = NO;
+        for (NSString *directory in outputDirectories) {
+            if ([user.fullName isEqualToString:directory]) {
+                // No need to initialize.
+                userFolderExists = YES;
+                break;
+            }
+        }
+        if (!userFolderExists) {
+            [smbClient createDirectory:[NSString stringWithFormat:@"output_files/%@", user.fullName] error:error];
+            [LoggingHelper logError:methodName error:*error];
+        }
+        
+        NSArray *timestampDirectories = [smbClient listDirectories:[NSString stringWithFormat:@"output_files/%@",
+                                                                    user.fullName] error:error];
+        [LoggingHelper logError:methodName error:*error];
+        
+        if(![timestampDirectories containsObject:timestamp]) {
+            for (int i = 0; i < 3; i++) {
+                if ([smbClient createDirectory:[NSString stringWithFormat:@"output_files/%@/%@", user.fullName, timestamp]
+                                         error:error]) {
+                    break;
+                }
+                [LoggingHelper logError:methodName error:*error];
+                [NSThread sleepForTimeInterval:0.5];
+            }
+        }
+
+        // Write summaryCSVData
+        [smbClient writeFile:[NSString stringWithFormat:@"output_files/%@/%@/summary.csv", user.fullName, timestamp]
+                        data:summaryCSVData error:error];
+        [LoggingHelper logError:methodName error:*error];
+        
+        // Create SummaryGenerationHistory record
+        SummaryGenerationHistory *history = [NSEntityDescription
+                                             insertNewObjectForEntityForName:@"SummaryGenerationHistory"
+                                                    inManagedObjectContext:[self managedObjectContext]];
+
+        history.user = (User *) [[self managedObjectContext] objectWithID:user.objectID];
+        history.startDate = startDate;
+        history.endDate = endDate;
+        history.createdDate = [NSDate date];
+        history.lastModifiedDate = history.createdDate;
+        history.synchronized = @NO;
+        history.deleted = @NO;
+        
+        // Save changes in the managedObjectContext
+        [[self managedObjectContext] save:error];
+        [LoggingHelper logError:methodName error:*error];
+        
+        // Unlock the managedObjectContext
+        [[self managedObjectContext] unlock];
     }
-    
-    // Create SummaryGenerationHistory record
-    SummaryGenerationHistory *history = [NSEntityDescription
-                                         insertNewObjectForEntityForName:@"SummaryGenerationHistory"
-                                                inManagedObjectContext:[self managedObjectContext]];
-    history.user = user;
-    history.startDate = startDate;
-    history.endDate = endDate;
-    history.createdDate = [NSDate date];
-    history.lastModifiedDate = history.createdDate;
-    history.synchronized = @NO;
-    history.deleted = @NO;
-    
-    // Save changes in the managedObjectContext
-    [[self managedObjectContext] save:error];
-    [LoggingHelper logError:methodName error:*error];
-    
-    // Unlock the managedObjectContext
-    [[self managedObjectContext] unlock];
     
     [LoggingHelper logMethodExit:methodName returnValue:nil];
     return YES;

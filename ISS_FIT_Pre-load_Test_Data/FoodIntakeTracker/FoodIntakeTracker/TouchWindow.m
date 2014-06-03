@@ -23,4 +23,19 @@
     [super sendEvent:event];
     [[NSNotificationCenter defaultCenter] postNotificationName:AutoLogoutRenewEvent object:nil];
 }
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    
+    CGFloat systemVersion = [[[UIDevice currentDevice] systemVersion] floatValue];
+    if(systemVersion < 7) {
+        self.frame = [[UIScreen mainScreen] bounds];
+    }
+    else {
+        CGRect bounds = [[UIScreen mainScreen] bounds];
+        CGFloat diff = 20;
+        self.frame = CGRectMake(bounds.origin.x, bounds.origin.y + diff, bounds.size.width, bounds.size.height - diff);
+        self.bounds = CGRectMake(bounds.origin.x, bounds.origin.y, bounds.size.width, bounds.size.height - diff);
+        self.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    }
+}
 @end

@@ -152,8 +152,10 @@
     NSString *serverFilePath = [self.serverRootPath stringByAppendingSMBPathComponent:filePath];
     id result = [[KxSMBProvider sharedSmbProvider] fetchAtPath: serverFilePath];
     id data = nil;
-    if([result isKindOfClass:[NSError class]]
-       || [(data = [(KxSMBItemFile*)result readDataToEndOfFile]) isKindOfClass:[NSError class]]){
+    if([result isKindOfClass:[NSError class]]) {
+        [LoggingHelper logMethodExit:methodName returnValue:nil];
+        return nil;
+    } else if ([(data = [(KxSMBItemFile*)result readDataToEndOfFile]) isKindOfClass:[NSError class]]){
         [LoggingHelper logError:methodName error:([result isKindOfClass:[NSError class]]?result:nil)];
         [LoggingHelper logError:methodName error:data];
         if(error) {

@@ -94,7 +94,7 @@ static NSArray *monthNameArray = nil;
     NSDateFormatter *defaultFormatter = [Helper defaultFormatter];
     [defaultFormatter setDateFormat:@"yyyyddMMHHmmss"];
     NSString *dateString = [defaultFormatter stringFromDate:[NSDate date]];
-    NSString *fileName = [NSString stringWithFormat:@"%@.wav", dateString];
+    NSString *fileName = [NSString stringWithFormat:@"%@.aac", dateString];
     NSString *filePath = [additionalFileDirectory stringByAppendingFormat:@"/%@", fileName];
     [data writeToFile:filePath atomically:YES];
     return fileName;
@@ -220,4 +220,31 @@ static NSArray *monthNameArray = nil;
     components.minute = [currentDateComponents minute];
     return [components date];
 }
+@end
+
+@implementation NSString (CustomFunction)
+
+- (NSString *)trimString {
+    return [[self stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+            stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
+}
+
+@end
+
+@implementation NSManagedObject (CustomFunction)
+
+- (NSString *)getSavedObjectId {
+    return [self.objectID.URIRepresentation absoluteString];
+}
+
+- (NSSet *)categoryToSet:(NSString *) categoy {
+    StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
+                                                                          entityForName:@"StringWrapper"
+                                                                          inManagedObjectContext:
+                                                                          self.managedObjectContext]
+                                          insertIntoManagedObjectContext:self.managedObjectContext];
+    stringWrapper.value = categoy;
+    return [NSSet setWithObject:stringWrapper];
+}
+
 @end

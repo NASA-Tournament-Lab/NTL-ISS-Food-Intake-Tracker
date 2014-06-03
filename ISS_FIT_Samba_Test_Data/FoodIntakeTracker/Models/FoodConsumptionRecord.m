@@ -41,5 +41,6 @@
 @dynamic user;
 @dynamic voiceRecordings;
 @dynamic adhocOnly;
+@dynamic savedObjectId;
 
 @end

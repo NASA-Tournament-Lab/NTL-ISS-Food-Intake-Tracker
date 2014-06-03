@@ -14,9 +14,12 @@
 //
 //
 //  DBHelper.h
-//  Hercules Personal Content DVR
+//  ISSFoodIntakeTracker
 //
 //  Created by namanhams on 3/9/13.
+//
+//  Updated by pvmagacho on 04/19/2014
+//  F2Finish - NASA iPad App Updates
 //
 
 #import <Foundation/Foundation.h>
@@ -37,4 +40,9 @@
 // Save the db
 + (void) saveMoc;
 
+/**
+ Reset the persistence store.
+ */
++ (void)resetPersistentStore;
+    
 @end

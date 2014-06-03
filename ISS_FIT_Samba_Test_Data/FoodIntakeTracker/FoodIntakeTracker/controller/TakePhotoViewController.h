@@ -18,11 +18,17 @@
 //
 //  Created by lofzcx 06/25/2013
 //
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
 
 #import <UIKit/UIKit.h>
 #import "CustomTabBarViewController.h"
 #import "TakeBaseViewController.h"
+#import "Tesseract.h"
+
 @class Food;
+
 /**
  * controller for take photo view.
  *
@@ -33,10 +39,14 @@
  * @version 1.1
  * @since 1.0
  */
-@interface TakePhotoViewController : TakeBaseViewController <UIPickerViewDataSource, UIPickerViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIPopoverControllerDelegate>{
+@interface TakePhotoViewController : TakeBaseViewController <UIPickerViewDataSource, UIPickerViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIPopoverControllerDelegate, UIAlertViewDelegate>{
     NSMutableArray *categories;
+    /* Represents the Tesseract used in this controller. */
+    Tesseract *tesseract;
 }
 
+/* the note label at bottom */
+@property (weak, nonatomic) IBOutlet UILabel *lblNoteBottom;
 /* the tab bar controller */
 @property (weak, nonatomic) CustomTabBarViewController *customTabBarController;
 /* the category picker view */
@@ -47,6 +57,31 @@
 @property (weak, nonatomic) IBOutlet UIButton *takeButton;
 /* Represents the popover controller. */
 @property (strong, nonatomic) UIPopoverController *popover;
+
+/* the result view when label is found */
+@property (weak, nonatomic) IBOutlet UIView *resultViewFound;
+/* the image view of food when label is found */
+@property (weak, nonatomic) IBOutlet UIImageView *imgFoodFound;
+
+/* the title label in result view */
+@property (weak, nonatomic) IBOutlet UILabel *lblResultTitleFound;
+/* the food name label */
+@property (weak, nonatomic) IBOutlet UILabel *lblFoodNameFound;
+/* the food category label */
+@property (weak, nonatomic) IBOutlet UILabel *lblFoodCategoryFound;
+
+/* the calories label */
+@property (weak, nonatomic) IBOutlet UILabel *lblCaloriesFound;
+/* the sodium label */
+@property (weak, nonatomic) IBOutlet UILabel *lblSodiumFound;
+/* the fluid label */
+@property (weak, nonatomic) IBOutlet UILabel *lblFluidFound;
+/* the protein label */
+@property (weak, nonatomic) IBOutlet UILabel *lblProteinFound;
+/* the carb label */
+@property (weak, nonatomic) IBOutlet UILabel *lblCarbFound;
+/* the fat label */
+@property (weak, nonatomic) IBOutlet UILabel *lblFatFound;
 
 /**
  * hide the category picker view.

@@ -7,9 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4B26DC4A18FE3BAC001BE1B1 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4B26DC4918FE3BAC001BE1B1 /* Settings.bundle */; };
+		4B54AD0C190C8046003DF8E9 /* application_data in Resources */ = {isa = PBXBuildFile; fileRef = 4B54AD0B190C8046003DF8E9 /* application_data */; };
+		4B626FB4192B70B00080634C /* ISSFoodIntakeTracker23.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4B626FB3192B70B00080634C /* ISSFoodIntakeTracker23.xcmappingmodel */; };
+		4BE31E2D190ED5ED00402D94 /* btn-change.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BE31E2C190ED5ED00402D94 /* btn-change.png */; };
+		4BE31E39190EF4B600402D94 /* ISSFoodIntakeTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4BE31E36190EF4B600402D94 /* ISSFoodIntakeTracker.xcdatamodeld */; };
+		4BE31E541911EA2A00402D94 /* ISSFoodIntakeTracker.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4BE31E531911EA2A00402D94 /* ISSFoodIntakeTracker.xcmappingmodel */; };
 		4D0F2D8717BD23A000B86759 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4D0F2D8517BD23A000B86759 /* InfoPlist.strings */; };
 		4D0F2DBE17BD257700B86759 /* test_data in Resources */ = {isa = PBXBuildFile; fileRef = 4D0F2DBD17BD257700B86759 /* test_data */; };
-		4D0F2DEE17BD2CAC00B86759 /* ISSFoodIntakeTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167B417BD20E100D3633F /* ISSFoodIntakeTracker.xcdatamodeld */; };
 		4D0F2DEF17BD2CC300B86759 /* BaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D0F2D9217BD247D00B86759 /* BaseTests.m */; };
 		4D0F2DF017BD2CCB00B86759 /* BaseCommunicationDataServiceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D0F2D9017BD247D00B86759 /* BaseCommunicationDataServiceTests.m */; };
 		4D0F2DF117BD2D0600B86759 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DF167F517BD216000D3633F /* CoreData.framework */; };
@@ -229,7 +234,6 @@
 		4DF167FE17BD218900D3633F /* libresolv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DF167FD17BD218900D3633F /* libresolv.dylib */; };
 		840B6F1217EB03E000FF75E8 /* DBHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 840B6F1117EB03E000FF75E8 /* DBHelper.m */; };
 		840B6F1717EB043E00FF75E8 /* NSError+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 840B6F1617EB043E00FF75E8 /* NSError+Extension.m */; };
-		E652364217E4B68300596B91 /* application_data in Resources */ = {isa = PBXBuildFile; fileRef = E652364117E4B68300596B91 /* application_data */; };
 		E70A6FCC1767E4A000712B47 /* icon-logo.png in Resources */ = {isa = PBXBuildFile; fileRef = E70A6FCB1767E4A000712B47 /* icon-logo.png */; };
 		E70A6FCE1767F7EF00712B47 /* icon-photo-list-active.png in Resources */ = {isa = PBXBuildFile; fileRef = E70A6FCD1767F7EF00712B47 /* icon-photo-list-active.png */; };
 		E70A6FD017680CA300712B47 /* img-Help-Detail.png in Resources */ = {isa = PBXBuildFile; fileRef = E70A6FCF17680CA300712B47 /* img-Help-Detail.png */; };
@@ -457,6 +461,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4B26DC4918FE3BAC001BE1B1 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = SOURCE_ROOT; };
+		4B54AD0B190C8046003DF8E9 /* application_data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = application_data; path = ../../samba/application_data; sourceTree = "<group>"; };
+		4B626FB3192B70B00080634C /* ISSFoodIntakeTracker23.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = ISSFoodIntakeTracker23.xcmappingmodel; sourceTree = "<group>"; };
+		4BB5B81A19272C7800C67690 /* ISSFoodIntakeTracker 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ISSFoodIntakeTracker 3.xcdatamodel"; sourceTree = "<group>"; };
+		4BE31E2C190ED5ED00402D94 /* btn-change.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-change.png"; sourceTree = "<group>"; };
+		4BE31E37190EF4B600402D94 /* ISSFoodIntakeTracker 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ISSFoodIntakeTracker 2.xcdatamodel"; sourceTree = "<group>"; };
+		4BE31E38190EF4B600402D94 /* ISSFoodIntakeTracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ISSFoodIntakeTracker.xcdatamodel; sourceTree = "<group>"; };
+		4BE31E531911EA2A00402D94 /* ISSFoodIntakeTracker.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = ISSFoodIntakeTracker.xcmappingmodel; sourceTree = "<group>"; };
 		4D0F2D7D17BD23A000B86759 /* FoodIntakeTrackerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodIntakeTrackerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D0F2D8417BD23A000B86759 /* FoodIntakeTrackerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FoodIntakeTrackerTests-Info.plist"; sourceTree = "<group>"; };
 		4D0F2D8617BD23A000B86759 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -834,7 +846,6 @@
 		4DF167B117BD20E100D3633F /* FoodProduct.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoodProduct.m; sourceTree = "<group>"; };
 		4DF167B217BD20E100D3633F /* FoodProductFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoodProductFilter.h; sourceTree = "<group>"; };
 		4DF167B317BD20E100D3633F /* FoodProductFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoodProductFilter.m; sourceTree = "<group>"; };
-		4DF167B517BD20E100D3633F /* ISSFoodIntakeTracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ISSFoodIntakeTracker.xcdatamodel; sourceTree = "<group>"; };
 		4DF167B617BD20E100D3633F /* Models.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Models.h; sourceTree = "<group>"; };
 		4DF167B717BD20E100D3633F /* StringWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringWrapper.h; sourceTree = "<group>"; };
 		4DF167B817BD20E100D3633F /* StringWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StringWrapper.m; sourceTree = "<group>"; };
@@ -884,7 +895,6 @@
 		840B6F1117EB03E000FF75E8 /* DBHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBHelper.m; sourceTree = "<group>"; };
 		840B6F1517EB043E00FF75E8 /* NSError+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+Extension.h"; sourceTree = "<group>"; };
 		840B6F1617EB043E00FF75E8 /* NSError+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError+Extension.m"; sourceTree = "<group>"; };
-		E652364117E4B68300596B91 /* application_data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = application_data; path = ../../samba/application_data; sourceTree = "<group>"; };
 		E70A6FCB1767E4A000712B47 /* icon-logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-logo.png"; sourceTree = "<group>"; };
 		E70A6FCD1767F7EF00712B47 /* icon-photo-list-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon-photo-list-active.png"; sourceTree = "<group>"; };
 		E70A6FCF17680CA300712B47 /* img-Help-Detail.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "img-Help-Detail.png"; sourceTree = "<group>"; };
@@ -1639,7 +1649,9 @@
 				4DF167B117BD20E100D3633F /* FoodProduct.m */,
 				4DF167B217BD20E100D3633F /* FoodProductFilter.h */,
 				4DF167B317BD20E100D3633F /* FoodProductFilter.m */,
-				4DF167B417BD20E100D3633F /* ISSFoodIntakeTracker.xcdatamodeld */,
+				4BE31E531911EA2A00402D94 /* ISSFoodIntakeTracker.xcmappingmodel */,
+				4B626FB3192B70B00080634C /* ISSFoodIntakeTracker23.xcmappingmodel */,
+				4BE31E36190EF4B600402D94 /* ISSFoodIntakeTracker.xcdatamodeld */,
 				4DF167B617BD20E100D3633F /* Models.h */,
 				4DF167B717BD20E100D3633F /* StringWrapper.h */,
 				4DF167B817BD20E100D3633F /* StringWrapper.m */,
@@ -1796,7 +1808,7 @@
 		E7C4072B175FFA1F00C3649E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				E652364117E4B68300596B91 /* application_data */,
+				4B54AD0B190C8046003DF8E9 /* application_data */,
 				4D9856E717DDACBD008B868C /* helpData */,
 				4DAB06BA17C05ADD009F8E91 /* LanguageModels */,
 				E7396BF6176EE3320051E0DB /* icon@72x72.png */,
@@ -1809,6 +1821,7 @@
 				E7C40736175FFA1F00C3649E /* Default.png */,
 				E7C40738175FFA1F00C3649E /* Default@2x.png */,
 				E7C4073A175FFA1F00C3649E /* Default-568h@2x.png */,
+				4B26DC4918FE3BAC001BE1B1 /* Settings.bundle */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1816,6 +1829,7 @@
 		E7C4074917600F1700C3649E /* images */ = {
 			isa = PBXGroup;
 			children = (
+				4BE31E2C190ED5ED00402D94 /* btn-change.png */,
 				E764ECAA1788708700E7A98E /* foods */,
 				E764ECB71788708700E7A98E /* user */,
 				4DAB06AB17C04317009F8E91 /* bg_carb.png */,
@@ -2101,6 +2115,7 @@
 		E7C40719175FFA1F00C3649E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastTestingUpgradeCheck = 0510;
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = topcoder;
 			};
@@ -2343,6 +2358,7 @@
 				4DAB06B117C04317009F8E91 /* bg_carb.png in Resources */,
 				4DAB06B217C04317009F8E91 /* bg_fat.png in Resources */,
 				4DAB06B317C04317009F8E91 /* bg_protein.png in Resources */,
+				4B26DC4A18FE3BAC001BE1B1 /* Settings.bundle in Resources */,
 				4DAB06B417C04317009F8E91 /* icon_carb.png in Resources */,
 				4DAB06B517C04317009F8E91 /* icon_fat.png in Resources */,
 				4DAB06B617C04317009F8E91 /* icon_protein.png in Resources */,
@@ -2387,6 +2403,7 @@
 				4D98575317DDACBD008B868C /* 1-5-3-Delete-Tracked-Foods.html in Resources */,
 				4D98575417DDACBD008B868C /* 1-5-4-Copy-Foods.html in Resources */,
 				4D98575517DDACBD008B868C /* 1-6-0-Types-of-Nutrition-Info.html in Resources */,
+				4B54AD0C190C8046003DF8E9 /* application_data in Resources */,
 				4D98575617DDACBD008B868C /* 1-6-1-Individual-Food-Nutrition.html in Resources */,
 				4D98575717DDACBD008B868C /* 1-6-2-Current-Nutrient-Intake-Progress.html in Resources */,
 				4D98575817DDACBD008B868C /* 1-7-Update-Your-Profile.html in Resources */,
@@ -2448,6 +2465,7 @@
 				4D98579017DDACBD008B868C /* image052.jpg in Resources */,
 				4D98579117DDACBD008B868C /* image053.jpg in Resources */,
 				4D98579217DDACBD008B868C /* image054.jpg in Resources */,
+				4BE31E2D190ED5ED00402D94 /* btn-change.png in Resources */,
 				4D98579317DDACBD008B868C /* image055.png in Resources */,
 				4D98579417DDACBD008B868C /* image056.jpg in Resources */,
 				4D98579517DDACBD008B868C /* image057.png in Resources */,
@@ -2469,7 +2487,6 @@
 				4D9857A517DDACBD008B868C /* image073.png in Resources */,
 				4D9857A617DDACBD008B868C /* image074.png in Resources */,
 				4D9857A717DDACBD008B868C /* placeholder.html in Resources */,
-				E652364217E4B68300596B91 /* application_data in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2521,7 +2538,9 @@
 				E70A6FEA1768371B00712B47 /* CustomTabBarViewController.m in Sources */,
 				E70A6FED176839B200712B47 /* ConsumptionViewController.m in Sources */,
 				E70A700E1768B24600712B47 /* CustomPickerViewController.m in Sources */,
+				4B626FB4192B70B00080634C /* ISSFoodIntakeTracker23.xcmappingmodel in Sources */,
 				E70A702617695F0200712B47 /* PopoverBackgroundView.m in Sources */,
+				4BE31E541911EA2A00402D94 /* ISSFoodIntakeTracker.xcmappingmodel in Sources */,
 				E70A70391769779400712B47 /* SummaryFoodTableCell.m in Sources */,
 				E70A70521769EBB100712B47 /* AddFoodViewController.m in Sources */,
 				E70A705A176A18A100712B47 /* CalendarViewController.m in Sources */,
@@ -2550,6 +2569,7 @@
 				4DF167E317BD20E100D3633F /* StringWrapper.m in Sources */,
 				4DF167E417BD20E100D3633F /* SummaryGenerationHistory.m in Sources */,
 				4DF167E517BD20E100D3633F /* SynchronizableModel.m in Sources */,
+				4BE31E39190EF4B600402D94 /* ISSFoodIntakeTracker.xcdatamodeld in Sources */,
 				4DF167E617BD20E100D3633F /* User.m in Sources */,
 				4DF167E717BD20E100D3633F /* BaseCommunicationDataService.m in Sources */,
 				4DF167E817BD20E100D3633F /* BaseDataService.m in Sources */,
@@ -2561,7 +2581,6 @@
 				4DF167EE17BD20E100D3633F /* SpeechRecognitionServiceImpl.m in Sources */,
 				4DF167EF17BD20E100D3633F /* SynchronizationServiceImpl.m in Sources */,
 				4DF167F017BD20E100D3633F /* UserServiceImpl.m in Sources */,
-				4D0F2DEE17BD2CAC00B86759 /* ISSFoodIntakeTracker.xcdatamodeld in Sources */,
 				4D9FEA8417C002FF001F92B5 /* Tesseract.mm in Sources */,
 				4D4884B317C3CC7C006851A9 /* CustomTableViewController.m in Sources */,
 				4D64994717CD13DC00C15B72 /* BNAppStats.m in Sources */,
@@ -2738,6 +2757,7 @@
 		E7C40745175FFA1F00C3649E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/library/OpenEars\"",
@@ -2756,6 +2776,7 @@
 					"\"$(SRCROOT)/library/Tesseract/lib\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2763,6 +2784,7 @@
 		E7C40746175FFA1F00C3649E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/library/OpenEars\"",
@@ -2781,6 +2803,7 @@
 					"\"$(SRCROOT)/library/Tesseract/lib\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = "armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -2818,12 +2841,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		4DF167B417BD20E100D3633F /* ISSFoodIntakeTracker.xcdatamodeld */ = {
+		4BE31E36190EF4B600402D94 /* ISSFoodIntakeTracker.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				4DF167B517BD20E100D3633F /* ISSFoodIntakeTracker.xcdatamodel */,
+				4BB5B81A19272C7800C67690 /* ISSFoodIntakeTracker 3.xcdatamodel */,
+				4BE31E37190EF4B600402D94 /* ISSFoodIntakeTracker 2.xcdatamodel */,
+				4BE31E38190EF4B600402D94 /* ISSFoodIntakeTracker.xcdatamodel */,
 			);
-			currentVersion = 4DF167B517BD20E100D3633F /* ISSFoodIntakeTracker.xcdatamodel */;
+			currentVersion = 4BB5B81A19272C7800C67690 /* ISSFoodIntakeTracker 3.xcdatamodel */;
 			path = ISSFoodIntakeTracker.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

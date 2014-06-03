@@ -18,6 +18,9 @@
 //
 //  Created by lofzcx 06/12/2013
 //
+//  Updated by pvmagacho on 05/07/2014
+//  F2Finish - NASA iPad App Updates
+//
 
 #import "AppDelegate.h"
 #import "LockServiceImpl.h"
@@ -28,9 +31,18 @@
 #import "SynchronizationServiceImpl.h"
 #import "DataUpdateServiceImpl.h"
 #import "DataHelper.h"
+#import "DBHelper.h"
 #import "Settings.h"
 #import "Helper.h"
 #import "LoggingHelper.h"
+
+typedef NS_ENUM(NSInteger, SyncStatus) {
+    SyncStatusNone,
+    
+    SyncStatusStarted,
+    SyncStatusFinished,
+    SyncStatusError
+} NS_ENUM_AVAILABLE_IOS(7_0);
 
 /**
  * the application delegate
@@ -41,7 +53,14 @@
 @implementation AppDelegate {
     /*! Indicates whether the data loading is done. */
     BOOL loadingFinished;
+    /*! Synchronization status */
+    SyncStatus status;
+    /*! Dispatch queues */
+    dispatch_queue_t dataSyncUpdateQ;
 }
+
+@synthesize tabBarViewController;
+@synthesize mediaFiles;
 
 - (TouchWindow *)window
 {
@@ -53,7 +72,11 @@
         customWindow.frame = [[UIScreen mainScreen] bounds];
     }
     else {
-        customWindow.frame = [[UIScreen mainScreen] applicationFrame];
+        CGRect bounds = [[UIScreen mainScreen] bounds];
+        CGFloat diff = 20;
+        customWindow.frame = CGRectMake(bounds.origin.x, bounds.origin.y + diff, bounds.size.width, bounds.size.height - diff);
+        customWindow.bounds = CGRectMake(bounds.origin.x, bounds.origin.y, bounds.size.width, bounds.size.height - diff);
+        customWindow.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     }
     
     return customWindow;
@@ -74,7 +97,10 @@
  */
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    
+     status = SyncStatusNone;
+     dataSyncUpdateQ = dispatch_queue_create("Data Sync Update", NULL);
+
+    self.mediaFiles = [[NSUserDefaults standardUserDefaults] objectForKey:@"MediaFilesArray"];
     //http://stackoverflow.com/questions/17678881/how-to-change-status-bar-text-color-in-ios-7
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
     
@@ -116,7 +142,7 @@
                                        selector:@selector(sendHeartbeat)
                                        userInfo:nil
                                         repeats:YES];
-        self.summaryGenerationTimer =
+        /*self.summaryGenerationTimer =
         [NSTimer scheduledTimerWithTimeInterval:
          [[self.configuration valueForKey:@"SummaryGenerationInterval"] intValue]
                                          target:self
@@ -129,7 +155,10 @@
                                          target:self
                                        selector:@selector(doSyncUpdate)
                                        userInfo:nil
-                                        repeats:YES];
+                                        repeats:YES];*/
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doSyncUpdate:)
+                                                     name:@"DataSyncUpdateInterval" object:nil];        
         return YES;
     } else {
         return NO;
@@ -166,12 +195,16 @@
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive.
     // If the application was previously in the background, optionally refresh the user interface.
+    if (status == SyncStatusError && !loadingFinished) {
+        [self initialLoad];
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate.
     // See also applicationDidEnterBackground:.
+    dispatch_release(dataSyncUpdateQ);
 }
 
 + (AppDelegate *) shareDelegate {
@@ -223,37 +256,50 @@
 /*!
  * This method will generate food consumption summary.
  */
-- (void) generateSummary {
-    dispatch_queue_t generateSummaryQ = dispatch_queue_create("Generate Summary", NULL);
-    dispatch_async(generateSummaryQ, ^{
+- (void) generateSummary:(NSDate *) date {
+    dispatch_async(dataSyncUpdateQ, ^{
         @autoreleasepool {
-            NSError *error = nil;
-            NSArray *users = [self.userService filterUsers:@"" error:&error];
+            NSDate *now = [NSDate date];
+            NSLog(@"Start summary at   : %@", now);
             
+            NSError *error = nil;
             NSCalendar *calendar = [NSCalendar currentCalendar];
+            [calendar setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+            
             NSDate *startDate;
             NSDate *endDate;
             if ([self.summaryGenerationFrequency isEqualToString:@"Weekly"]) {
                 // Start date should be first day of last week, end date should be last day of last week.
-                NSDateComponents *comps = [NSDateComponents new];
-                comps.week = -1;
-                NSDate *date = [calendar dateByAddingComponents:comps toDate:[NSDate date] options:0];
                 NSDateComponents *components = [calendar components:NSYearCalendarUnit|
-                                                NSWeekCalendarUnit
+                                                NSMonthCalendarUnit|NSWeekdayCalendarUnit
                                                            fromDate:date];
                 components.weekday = 1;
                 components.hour = 0;
                 components.minute = 0;
                 components.second = 0;
                 startDate = [calendar dateFromComponents:components];
+                
                 components.weekday = 7;
+                components.hour = 23;
+                components.minute = 59;
+                components.second = 59;
+                endDate = [calendar dateFromComponents:components];
+            } else if ([self.summaryGenerationFrequency isEqualToString:@"Daily"]) {
+                NSDateComponents *components = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|
+                                                NSDayCalendarUnit
+                                                           fromDate:date];
+                components.hour = 0;
+                components.minute = 0;
+                components.second = 0;
+                startDate = [calendar dateFromComponents:components];
+                
+                components.hour = 23;
+                components.minute = 59;
+                components.second = 59;
                 endDate = [calendar dateFromComponents:components];
             } else {
                 // Monthly
                 // Similarly, start date should be first day of last month, end date should be last day of last month
-                NSDateComponents *comps = [NSDateComponents new];
-                comps.month = -1;
-                NSDate *date = [calendar dateByAddingComponents:comps toDate:[NSDate date] options:0];
                 NSDateComponents *components = [calendar components:NSYearCalendarUnit|
                                                 NSMonthCalendarUnit
                                                            fromDate:date];
@@ -267,66 +313,123 @@
                                               inUnit:NSMonthCalendarUnit
                                              forDate:date];
                 components.day = days.length;
+                components.hour = 23;
+                components.minute = 59;
+                components.second = 59;
                 endDate = [calendar dateFromComponents:components];
             }
             
-            for (User *user in users) {
-                [self.foodConsumptionRecordService generateSummary:user
-                                                         startDate:startDate
-                                                           endDate:endDate
-                                                             error:&error];
-            }
+            [self.foodConsumptionRecordService generateSummary:self.loggedInUser
+                                                     startDate:startDate
+                                                       endDate:endDate
+                                                         error:&error];
+            
+            NSLog(@"Finished summary at: %@", now);
         }
     });
-    dispatch_release(generateSummaryQ);
+}
+
+/*!
+ * This method will generate a full food consumption summary.
+ */
+- (void) generateFullSummary {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"FullSummaryReady"]) {
+        return;
+    }
+    
+    dispatch_async(dataSyncUpdateQ, ^{
+        @autoreleasepool {
+            NSError *error = nil;
+            NSArray *users = [self.userService filterUsers:@"" error:&error];
+            
+            for (User *user in users) {
+                [self.foodConsumptionRecordService generateSummary:user
+                                                         startDate:[NSDate dateWithTimeIntervalSince1970:0]
+                                                           endDate:[NSDate date]
+                                                             error:&error];
+                if (error) {
+                    [LoggingHelper logError:@"generateFullSummary" error:error];
+                    return;
+                }
+            }
+            
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"FullSummaryReady"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+    });
 }
 
 /*!
  * This method will do data sync/update.
  */
-- (void) doSyncUpdate {
+- (void) doSyncUpdate:(NSNotification *) notif {
     // Skip the sync/update if the initial load is still in progress.
     if (loadingFinished) {
-        dispatch_queue_t dataSyncUpdateQ = dispatch_queue_create("Data Sync Update", NULL);
         dispatch_async(dataSyncUpdateQ, ^{
             @autoreleasepool {
+                NSDate *now = [NSDate date];
+                NSLog(@"Start sync at   : %@", now);
                 NSError *error = nil;
                 [self.dataUpdateService update:&error];
-                if(error) {
-                    // https://apps.topcoder.com/bugs/browse/ISSFIT-15
-                    // hides the error messsage
-                    /*dispatch_async(dispatch_get_main_queue(), ^{
-                     [Helper showAlert:@"Error"
-                     message:@"We are unable to sync this iPad with the central food repository.\n "
-                     "Don’t worry! You can still use the ISS FIT app and we will attempt to sync"
-                     " with the central food repository when it is available."];
-                     });
-                     */
-                    
-                }
-                else {
+                if (!error) {
                     [self.synchronizationService synchronize:&error];
-                    // https://apps.topcoder.com/bugs/browse/ISSFIT-15
-                    // hides the error messsage
-                    /*if(error) {
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                     [Helper showAlert:@"Error"
-                     message:@"We are unable to update this iPad with the central food repository. \n"
-                     "Don’t worry! You can still use the ISS FIT app and we will attempt to update"
-                     " with the central food repository when it is available."];
-                     });
-                     }*/
                 }
+                
+                [[NSUserDefaults standardUserDefaults] setObject:self.mediaFiles forKey:@"MediaFilesArray"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                
+                NSLog(@"Finished sync at: %@", now);
             }
         });
-        dispatch_release(dataSyncUpdateQ);
+        
+        [self generateSummary:notif.object];
     }
 }
 
-
 #pragma mark - Test Code
+
 // Check if the app is started for the first time. If so, do some initializations.
 - (void) initialLoad {
+    status = SyncStatusStarted;
+    
+    if (self.mediaFiles && [[NSUserDefaults standardUserDefaults] boolForKey:@"HasLaunchedOnce"]) {
+        loadingFinished = YES;
+        NSDictionary *loadingEndParam = @{@"success": [NSNumber numberWithBool:YES]};
+        [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
+                                                            object:loadingEndParam];
+        
+        status = SyncStatusFinished;
+        
+        [self generateFullSummary];
+        
+        return;
+    }
+    
+    if (!self.mediaFiles) {
+        self.mediaFiles = [NSMutableArray array];
+    }
+    
+    NSArray *searchPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *source = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"samba"];
+    NSString *destination = [[searchPaths objectAtIndex:0] stringByAppendingPathComponent:@"samba"];
+    
+    NSError *error = nil;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:destination]) {
+        [[NSFileManager defaultManager] removeItemAtPath:destination error:&error];
+    }
+    
+    [[NSFileManager defaultManager] copyItemAtPath:source toPath:destination error:&error];
+    if (error) {
+        [LoggingHelper logError:@"initialLoad" error:error];
+        
+        status = SyncStatusError;
+        
+        NSDictionary *loadingEndParam = @{@"success": @NO};
+        [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
+                                                            object:loadingEndParam];
+        return;
+    }
+    
     loadingFinished = NO;
     __block BOOL syncSuccessful = YES;
     [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingBeginEvent object:nil];
@@ -334,20 +437,33 @@
     dispatch_queue_t initialLoadQ = dispatch_queue_create("InitialLoad", NULL);
     dispatch_async(initialLoadQ, ^{
         @autoreleasepool {
+            NSLog(@"Initial load at   : %@", [NSDate date]);
+            
             NSError *error = nil;
-            syncSuccessful = [self.dataUpdateService update:&error];
+            syncSuccessful = [self.dataUpdateService update:&error force:YES];
             [LoggingHelper logError:@"initialLoad" error:error];
             if (syncSuccessful) {
                 syncSuccessful = [self.synchronizationService synchronize:&error];
                 [LoggingHelper logError:@"initialLoad" error:error];
+                
+                if (syncSuccessful) {
+                    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasLaunchedOnce"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    
+                    [self generateFullSummary];
+                }
             }
-            NSLog(@"Finish loading with %@", (syncSuccessful ? @"YES" : @"NO"));
+            
+            [[NSUserDefaults standardUserDefaults] setObject:self.mediaFiles forKey:@"MediaFilesArray"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                loadingFinished = YES;
+                loadingFinished = syncSuccessful;
                 NSDictionary *loadingEndParam = @{@"success": [NSNumber numberWithBool:syncSuccessful]};
                 [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
                                                                     object:loadingEndParam];
+
+                status = syncSuccessful ? SyncStatusFinished : SyncStatusError;
             });
         }
     });

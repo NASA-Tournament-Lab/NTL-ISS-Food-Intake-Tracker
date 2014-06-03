@@ -61,9 +61,6 @@
 //Indicates whether to use the last used food product filter to initialize the food filter UI.
 @property (nonatomic, strong) NSNumber * useLastUsedFoodProductFilter;
 
-//Represents the file paths to the face images.
-@property (nonatomic, strong) NSSet *faceImages;
-
 //Represents the last used food product filter.
 @property (nonatomic, strong) FoodProductFilter *lastUsedFoodProductFilter;
 
@@ -74,18 +71,6 @@
 
 //Auto generated NSSet methods for faceImages
 @interface User (CoreDataGeneratedAccessors)
-
-//Add face image file name
-- (void)addFaceImagesObject:(StringWrapper *)value;
-
-//Remove face image file name
-- (void)removeFaceImagesObject:(StringWrapper *)value;
-
-//Add set of face image file names
-- (void)addFaceImages:(NSSet *)values;
-
-//Remove set of face image file names
-- (void)removeFaceImages:(NSSet *)values;
 
 - (void)addAdhocFoodProductObject:(AdhocFoodProduct *)value;
 - (void)removeAdhocFoodProductObject:(AdhocFoodProduct *)value;

@@ -18,6 +18,9 @@
 //
 //  Created by lofzcx 06/25/2013
 //
+//  Updated by pvmagacho on 05/07/2014
+//  F2Finish - NASA iPad App Updates
+//
 
 #import "TakeBaseViewController.h"
 #import "Helper.h"
@@ -215,13 +218,30 @@
         record.carb = product.carb;
         record.fat = product.fat;
         record.timestamp = selectedDate;
+        
+        if (product.images.count > 0) {
+            for (StringWrapper *s in product.images) {
+                StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
+                                                                                  entityForName:@"StringWrapper"
+                                                                                  inManagedObjectContext:
+                                                                                  recordService.managedObjectContext]
+                                                      insertIntoManagedObjectContext:nil];
+                stringWrapper.value = [s value];
+                [record addImagesObject:stringWrapper];
+            }
+        }
         [recordService addFoodConsumptionRecord:appDelegate.loggedInUser record:record error:&error];
+        
         record.foodProduct = product;
         [recordService saveFoodConsumptionRecord:record error:&error];
 
         if ([Helper displayError:error]) return;
         [consumptionViewController.foodConsumptionRecords addObject:record];
     }
+    if (selectFoods.count > 0) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:selectedDate];
+    }
+    
     [selectFoods removeAllObjects];
     [consumptionViewController updateProgress];
 }

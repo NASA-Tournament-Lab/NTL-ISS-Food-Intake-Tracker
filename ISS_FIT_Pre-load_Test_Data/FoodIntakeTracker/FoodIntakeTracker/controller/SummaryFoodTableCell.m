@@ -18,6 +18,12 @@
 //
 //  Created by lofzcx 06/12/2013
 //
+//  Updated by pvmagacho on 05/07/2014
+//  F2Finish - NASA iPad App Updates
+//
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
 
 #import "SummaryFoodTableCell.h"
 #import "CustomPickerViewController.h"
@@ -38,16 +44,19 @@
 - (void)Picker:(BaseCustomPickerView *)picker DidSelectedValue:(NSString *)val{
     if([picker isKindOfClass:[HourPickerView class]]){
         self.lblTime.text = val;
-        int hour = [[val substringToIndex:2] intValue];
+        int hour = [[[val componentsSeparatedByString:@":"] objectAtIndex:0] integerValue];
+        int minute = [[[val componentsSeparatedByString:@":"] objectAtIndex:1] integerValue];
         
         NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
         gregorian.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
         NSDateComponents *info = [gregorian components:(NSYearCalendarUnit |
                                                         NSMonthCalendarUnit |
                                                         NSDayCalendarUnit |
-                                                        NSWeekdayCalendarUnit)
+                                                        NSWeekdayCalendarUnit |
+                                                        NSHourCalendarUnit |
+                                                        NSMinuteCalendarUnit)
                                               fromDate:self.foodConsumptionRecord.timestamp];
-        [info setMinute:0];
+        [info setMinute:minute];
         [info setHour:hour];
         self.foodConsumptionRecord.timestamp = [gregorian dateFromComponents:info];
         [[NSNotificationCenter defaultCenter] postNotificationName:ConsumptionUpdatedEvent
@@ -66,6 +75,8 @@
     NSError *error = nil;
     [recordService saveFoodConsumptionRecord:self.foodConsumptionRecord error:&error];
     if ([Helper displayError:error]) return;
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.foodConsumptionRecord.timestamp];    
 }
 
 /**
@@ -73,9 +84,9 @@
  * @param sender the button.
  */
 - (IBAction)showDropDown:(id)sender {
-    // fixme:
-    // currently disable modifying timestamp
-    return;
+    if ([self.foodConsumptionRecord.foodProduct.deleted boolValue]) {
+        return;
+    }
     UIButton *btn = (UIButton *)sender;
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
     HourPickerView *timePicker = [sb instantiateViewControllerWithIdentifier:@"HourPickerView"];
@@ -97,6 +108,9 @@
  * @param sender the button.
  */
 - (IBAction)showQuantityPicker:(id)sender{
+    if ([self.foodConsumptionRecord.foodProduct.deleted boolValue]) {
+        return;
+    }
     UIButton *btn = (UIButton *)sender;
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
     QuantityPickerView *picker = [sb instantiateViewControllerWithIdentifier:@"QuantityPickerView"];
@@ -121,12 +135,12 @@
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     [numberFormatter setPositiveFormat:@"#.##"];
     self.lblQuantity.text = [numberFormatter stringFromNumber:self.foodConsumptionRecord.quantity];
-    CGSize size2 = self.lblQuantityUnit.frame.size;
+    /*CGSize size2 = self.lblQuantityUnit.frame.size;
     CGSize size1 = [self.lblQuantity.text sizeWithFont:self.lblQuantity.font];
     float centerX = 140;
     float startX = centerX - (size1.width + size2.width) / 2;
     self.lblQuantity.frame = CGRectMake(startX, 17, size1.width, size2.height);
-    self.lblQuantityUnit.frame = CGRectMake(startX + size1.width, 17, size2.width, size2.height);
+    self.lblQuantityUnit.frame = CGRectMake(startX + size1.width, 17, size2.width, size2.height);*/
     self.nutrientScrollView.contentSize = CGSizeMake(self.nutrientView.frame.size.width,
                                                      self.nutrientScrollView.frame.size.height);
 }
@@ -135,7 +149,7 @@
  * hide delete view.
  * @param sender the button or nil.
  */
-- (void)hideDelete:(id)sender {
+- (void)hideDelete:(id)sender{
     UIButton *btn = (UIButton *)sender;
     NSArray *subViews = btn.superview.subviews;
     UIView *v = [subViews objectAtIndex:subViews.count - 2];
@@ -166,6 +180,7 @@
     int w = self.lblName.frame.size.width;
     self.redline.frame = CGRectMake(x + (w - size.width) / 2, 27, size.width, 2);
     
+    
     if (editing) {
         self.deleteView.hidden = NO;
         // F2Finish change - iOS7 added a new superview to UITableViewCell.
@@ -193,11 +208,7 @@
         [btn2 addTarget:self action:@selector(hideDelete:) forControlEvents:UIControlEventTouchDown];
     } else {
         // F2Finish change - iOS7 added a new superview to UITableViewCell.
-        UITableView *table = (UITableView *)self.superview;
-        NSArray *subViews = table.superview.subviews;
-        if (![table isKindOfClass:[UITableView class]]) {
-            subViews = table.superview.superview.subviews;
-        }
+        NSArray *subViews = self.superview.superview.subviews;
         UIView *v = [subViews objectAtIndex:subViews.count - 2];
         if([v isKindOfClass:[UIButton class]]){
             [v removeFromSuperview];

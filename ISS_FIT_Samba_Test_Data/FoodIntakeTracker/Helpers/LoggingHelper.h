@@ -18,6 +18,9 @@
 //
 //  Created by duxiaoyang on 2013-07-11.
 //
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
 
 #import <Foundation/Foundation.h>
 
@@ -36,10 +39,11 @@
  @class LoggingHelper
  @discussion This class is a helper class used for logging.
  @author duxiaoyang, LokiYang
- @version 1.1
+ @version 1.2
  @changes from 1.0
     1. minor fixes.
     2. Added differnt logging level support.
+    3. Added log exception
  */
 @interface LoggingHelper : NSObject
 
@@ -64,5 +68,12 @@
  @param error The error to log.
  */
 +(void)logError:(NSString *)methodName error:(NSError *)error;
+
+/*!
+ @discussion Log exception.
+ @param methodName The method name.
+ @param exception The exception to log.
+ */
++(void)logException:(NSString *)methodName error:(NSException *)exception;
 
 @end

@@ -17,6 +17,9 @@
 //
 //  Created by lofzcx 06/12/2013
 //
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
 
 #import "AddFoodViewController.h"
 #import "PopoverBackgroundView.h"
@@ -104,13 +107,38 @@
 }
 
 /**
+ * show quantity pikcer when clicking at quantity.
+ * @param sender the button.
+ */
+- (IBAction)showQuantityPicker:(id)sender{
+    UIButton *btn = (UIButton *)sender;
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle:nil];
+    QuantityPickerView *picker = [sb instantiateViewControllerWithIdentifier:@"QuantityPickerView"];
+    picker.delegate = self;
+    UIPopoverController *popController = [[UIPopoverController alloc] initWithContentViewController:picker];
+    popController.popoverBackgroundViewClass = [PopoverBackgroundView class];
+    popController.popoverContentSize = CGSizeMake(240, 267);
+    picker.popController = popController;
+    [picker setSelectedVal:[NSString stringWithFormat:@"%.2f", self.txtQuantity.text.floatValue]];
+    CGRect popoverRect = CGRectMake(btn.bounds.origin.x, btn.bounds.origin.y, 1, 30);
+    [popController presentPopoverFromRect:popoverRect
+                                   inView:btn
+                 permittedArrowDirections:UIPopoverArrowDirectionUp
+                                 animated:NO];
+}
+
+/**
  * custom picker deletegate method.
  * change the text label for time if value changed.
  * @param picker the picker view.
  * @param value the selected value.
  */
 - (void)Picker:(BaseCustomPickerView *)picker DidSelectedValue:(NSString *)val{
-    self.timeLabel.text = val;
+    if([picker isKindOfClass:[HourPickerView class]]){
+        self.timeLabel.text = val;
+    } else {
+        self.txtQuantity.text = val;
+    }
 }
 
 #pragma mark TextView and TextField Delegate Methods
@@ -174,7 +202,7 @@
             for (int i = 0; i < result.count; i++) {
                 AdhocFoodProduct *product = result[i];
                 NSString *productName = [product.name uppercaseString];
-                if ([searchText isEqualToString:@""] || [productName rangeOfString:[searchText uppercaseString]].location == 0) {
+                if ([searchText isEqualToString:@""] || [productName rangeOfString:[searchText uppercaseString]].location != NSNotFound) {
                     [suggestions addObject:product.name];
                 }
             }

@@ -45,6 +45,12 @@
 @property (nonatomic, readonly, strong) NSNumber *recordKeptPeriodInDays;
 
 /*!
+ @discussion This value represents the local file system directory to save the image and voice recording files.
+ Can't be null or empty.
+ */
+@property (nonatomic, readonly, strong) NSString *localFileSystemDirectory;
+
+/*!
  @discussion Initialize the class instance with NSManagedObjectContext and configuration.
  * @param context The NSManagedObjectContext.
  * @param configuration The configuration.

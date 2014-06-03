@@ -18,6 +18,12 @@
 //
 //  Created by lofzcx 06/12/2013
 //
+//  Updated by pvmagacho on 05/07/2014
+//  F2Finish - NASA iPad App Updates
+//
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
 
 #import "ConsumptionViewController.h"
 #import "CustomTabBarViewController.h"
@@ -39,13 +45,15 @@
 
 #define MAX_CALORIES 2800
 #define MAX_SODIUM 160
-#define MAX_FLUID 3
+#define MAX_FLUID 3000
 
 #define PROTEIN_CALORIES_FACTOR 4.0
 #define CARB_CALORIES_FACTOR 4.0
 #define FAT_CALORIES_FACTOR 9.0
 
 #define PROGRESSBAR_WIDTH 168
+
+#define DOCUMENTS_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
 
 @implementation DateListView
 
@@ -213,6 +221,10 @@
     SelectConsumptionViewController *selectConsumption;
     /* whether the open ear is listening */
     bool listening;
+
+    /* Audio record objects */
+    NSString *recorderFilePath;
+    AVAudioRecorder *recorder;
 }
 
 @end
@@ -300,12 +312,12 @@
         self.sodiumProgress.lblTotal.text =
         [NSString stringWithFormat:@"/ %@ mg", appDelegate.loggedInUser.dailyTargetSodium];
         self.fluidProgress.lblTotal.text =
-        [NSString stringWithFormat:@"/ %@ liters", appDelegate.loggedInUser.dailyTargetFluid];
+        [NSString stringWithFormat:@"/ %@ mL", appDelegate.loggedInUser.dailyTargetFluid];
     }
     else {
         self.caloriesProgess.lblTotal.text = [NSString stringWithFormat:@"/ %d kcal", MAX_CALORIES];
         self.sodiumProgress.lblTotal.text = [NSString stringWithFormat:@"/ %d mg", MAX_SODIUM];
-        self.fluidProgress.lblTotal.text = [NSString stringWithFormat:@"/ %d liters", MAX_FLUID];
+        self.fluidProgress.lblTotal.text = [NSString stringWithFormat:@"/ %d mL", MAX_FLUID];
     }
     
     listening = NO;
@@ -342,10 +354,26 @@
 
     [self redrawPieChartWithProtein:0.333 carb:0.333 fat:0.334];
     
+    // Save audio
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+    [audioSession setActive:YES error:nil];
+    //record sound test code -  END
+    
     NSError *error;
     self.lmPaths = [srService getGeneralLanguageModelPaths:&error];
     if ([Helper displayError:error]) return;
     [[NSNotificationCenter defaultCenter] postNotificationName:AutoLogoutRenewEvent object:nil];
+    
+    UISwipeGestureRecognizer *rLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleDateSwipe:)];
+    rLeft.direction = UISwipeGestureRecognizerDirectionLeft;
+    rLeft.delegate = self;
+    [self.dateListView addGestureRecognizer:rLeft];
+    
+    UISwipeGestureRecognizer *rRight = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleDateSwipe:)];
+    rRight.direction = UISwipeGestureRecognizerDirectionRight;
+    rRight.delegate = self;    
+    [self.dateListView addGestureRecognizer:rRight];
 }
 
 /**
@@ -397,9 +425,9 @@
     [numberFormatter setPositiveFormat:@"#.##"];
     self.fluidProgress.lblCurrent.text = [numberFormatter stringFromNumber:[NSNumber numberWithFloat:fluidTotal]];
     
-    self.proteinProgess.lblCurrent.text = [NSString stringWithFormat:@"%d grams eaten", proteinTotal];
-    self.carbProgress.lblCurrent.text = [NSString stringWithFormat:@"%d grams eaten", carbTotal];
-    self.fatProgress.lblCurrent.text = [NSString stringWithFormat:@"%d grams eaten", fatTotal];
+    self.proteinProgess.lblCurrent.text = [NSString stringWithFormat:@"%d kCal", (int) (proteinTotal * PROTEIN_CALORIES_FACTOR)];
+    self.carbProgress.lblCurrent.text = [NSString stringWithFormat:@"%d kCal", (int) (carbTotal * CARB_CALORIES_FACTOR)];
+    self.fatProgress.lblCurrent.text = [NSString stringWithFormat:@"%d kCal", (int) (fatTotal * FAT_CALORIES_FACTOR)];
 
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     
@@ -411,13 +439,13 @@
     self.sodiumProgress.currentProgress = sodiumProgressPercentage;
     self.fluidProgress.currentProgress = fluidProgressPercentage;
     
-    int maxConsumption = proteinTotal;
-    if (carbTotal > maxConsumption) {
+    int maxConsumption = [appDelegate.loggedInUser.dailyTargetEnergy intValue];
+    /*if (carbTotal > maxConsumption) {
         maxConsumption = carbTotal;
     }
     if (fatTotal > maxConsumption) {
         maxConsumption = fatTotal;
-    }
+    }*/
     
     self.proteinProgess.currentProgress = 1.0;
     self.carbProgress.currentProgress =  1.0;
@@ -428,15 +456,19 @@
     CGRect fatProgressFrame = self.fatProgress.progressView.frame;
     
     if (maxConsumption > 0) {
-        proteinProgressFrame.size.width = (int)(proteinTotal * 1.0f / maxConsumption * PROGRESSBAR_WIDTH);
-        carbProgressFrame.size.width = (int)(carbTotal * 1.0f / maxConsumption * PROGRESSBAR_WIDTH);
-        fatProgressFrame.size.width = (int)(fatTotal * 1.0f / maxConsumption * PROGRESSBAR_WIDTH);
+        proteinProgressFrame.size.width = (int)(proteinTotal * PROTEIN_CALORIES_FACTOR / maxConsumption * PROGRESSBAR_WIDTH);
+        carbProgressFrame.size.width = (int)(carbTotal * CARB_CALORIES_FACTOR / maxConsumption * PROGRESSBAR_WIDTH);
+        fatProgressFrame.size.width = (int)(fatTotal * FAT_CALORIES_FACTOR / maxConsumption * PROGRESSBAR_WIDTH);
     }
     else {
         proteinProgressFrame.size.width = 0;
         carbProgressFrame.size.width = 0;
         fatProgressFrame.size.width = 0;
     }
+    
+    [self.proteinProgess.progressView setBackgroundColor:[UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1.0]];
+    [self.carbProgress.progressView setBackgroundColor:[UIColor colorWithRed:0.66 green:0.36 blue:0.0 alpha:1.0]];
+    [self.fatProgress.progressView setBackgroundColor:[UIColor colorWithRed:0.882 green:0.757 blue:0.384 alpha:1.0]];
     
     self.proteinProgess.progressView.frame = proteinProgressFrame;
     self.carbProgress.progressView.frame = carbProgressFrame;
@@ -506,12 +538,15 @@
         [selectedItems addObject:item];
         [btn setSelected:YES];
     }
-    if(selectedItems.count == 0){
+    BOOL canCopy = YES;
+    for (FoodConsumptionRecord *record in selectedItems) {
+        canCopy &= ![record.foodProduct.deleted boolValue];
+    }
+    if (selectedItems.count == 0){
         [self.btnCopy setEnabled:NO];
         [self.btnDelete setEnabled:NO];
-    }
-    else{
-        [self.btnCopy setEnabled:YES];
+    } else {
+        [self.btnCopy setEnabled:canCopy];
         [self.btnDelete setEnabled:YES];
     }
 }
@@ -614,6 +649,16 @@
         components.minute = [[time substringFromIndex:3] intValue];
         self.foodConsumptionRecordToAdd.timestamp = [components date];
         
+        if (recorderFilePath) {
+            StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
+                                                                                  entityForName:@"StringWrapper"
+                                                                                  inManagedObjectContext:
+                                                                                  recordService.managedObjectContext]
+                                                  insertIntoManagedObjectContext:nil];
+            stringWrapper.value = recorderFilePath;
+            self.foodConsumptionRecordToAdd.voiceRecordings = [NSSet setWithObject:stringWrapper];
+        }
+        
         [recordService addFoodConsumptionRecord:appDelegate.loggedInUser
                                          record:self.foodConsumptionRecordToAdd
                                           error:&error];
@@ -625,6 +670,8 @@
             if ([Helper displayError:error]) return;
         }
         
+        [[foodDetail.foodConsumptionRecord managedObjectContext] save:nil];
+        
         [self.foodConsumptionRecords addObject:self.foodConsumptionRecordToAdd];
         self.adhocFoodProductToAdd = nil;
         self.foodConsumptionRecordToAdd = nil;
@@ -633,8 +680,11 @@
         [clearCover removeFromSuperview];
         _addFood = nil;
         clearCover = nil;
+        recorderFilePath = nil;
         
         [self.btnAddFood setSelected:NO];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
     }
     [self updateProgress];
     [self stopCommentDictation];
@@ -729,9 +779,40 @@
     }
     
     foodDetail.txtComment.text = [foodDetail.txtComment.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    foodDetail.txtFoodName.text = [foodDetail.txtFoodName.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     FoodConsumptionRecordServiceImpl *recordService = appDelegate.foodConsumptionRecordService;
     NSError *error;
+    
+    // handle food name change
+    if ([foodDetail.foodConsumptionRecord.foodProduct isKindOfClass:[AdhocFoodProduct class]] &&
+        ![foodDetail.foodConsumptionRecord.foodProduct.name isEqualToString:foodDetail.txtFoodName.text]) {
+        FoodProductServiceImpl *foodService = appDelegate.foodProductService;
+        AdhocFoodProduct *product = (AdhocFoodProduct *) foodDetail.foodConsumptionRecord.foodProduct;
+        AdhocFoodProduct *newProduct = [foodService buildAdhocFoodProduct:&error];
+        newProduct.name = foodDetail.txtFoodName.text;
+        newProduct.barcode = product.barcode;
+        newProduct.origin = product.origin;
+        newProduct.fluid = product.fluid;
+        newProduct.energy = product.energy;
+        newProduct.sodium = product.sodium;
+        newProduct.protein = product.protein;
+        newProduct.carb = product.carb;
+        newProduct.fat = product.fat;
+        [newProduct addCategories:product.categories];
+        
+        [foodService deleteAdhocFoodProduct:product error:&error];
+        if ([Helper displayError:error]) return;
+        
+        foodDetail.foodConsumptionRecord.foodProduct = nil;
+        [recordService saveFoodConsumptionRecord:foodDetail.foodConsumptionRecord error:&error];
+        if ([Helper displayError:error]) return;
+        
+        [foodService addAdhocFoodProduct:appDelegate.loggedInUser product:newProduct error:&error];
+        if ([Helper displayError:error]) return;
+        
+        foodDetail.foodConsumptionRecord.foodProduct = newProduct;
+    }
     
     foodDetail.foodConsumptionRecord.quantity = [NSNumber numberWithFloat:foodDetail.txtQuantity.text.floatValue];
     foodDetail.foodConsumptionRecord.comment = foodDetail.txtComment.text;
@@ -752,6 +833,16 @@
     components.second = (int)round([foodDetail.foodConsumptionRecord.timestamp timeIntervalSince1970]) % 60;
     foodDetail.foodConsumptionRecord.timestamp = [components date];
     
+    if (recorderFilePath) {
+        StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
+                                                                              entityForName:@"StringWrapper"
+                                                                              inManagedObjectContext:
+                                                                              recordService.managedObjectContext]
+                                              insertIntoManagedObjectContext:recordService.managedObjectContext];
+        stringWrapper.value = recorderFilePath;
+        [foodDetail.foodConsumptionRecord addVoiceRecordingsObject:stringWrapper];
+    }
+    
     [recordService saveFoodConsumptionRecord:foodDetail.foodConsumptionRecord error:&error];
     if ([Helper displayError:error]) return;
     
@@ -761,7 +852,8 @@
     clearCover = nil;
     [foodDetail.view removeFromSuperview];
     foodDetail = nil;
-    [self stopCommentDictation];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
 }
 
 /**
@@ -782,6 +874,8 @@
                              action:@selector(hideFoodDetail)
                    forControlEvents:UIControlEventTouchUpInside];
     
+    [foodDetail.btnSave setHidden:[record.foodProduct.deleted boolValue]];
+    [foodDetail.txtQuantity setUserInteractionEnabled:![record.foodProduct.deleted boolValue]];
     [foodDetail.btnSave addTarget:self
                            action:@selector(saveFoodDetail)
                  forControlEvents:UIControlEventTouchUpInside];
@@ -792,6 +886,28 @@
 }
 
 #pragma mark - Calendar
+
+/**
+ * handle calendar swipe.
+ * @param recognizer the gesture object
+ */
+- (void)handleDateSwipe:(UIGestureRecognizer *) recognizer {
+    UISwipeGestureRecognizer *rec = (UISwipeGestureRecognizer *) recognizer;
+    if (rec.state != UIGestureRecognizerStateEnded) {
+        return;
+    }
+    
+    int direction = 0;
+    if (rec.direction == UISwipeGestureRecognizerDirectionLeft) {
+        direction = 1;
+    } else if (rec.direction == UISwipeGestureRecognizerDirectionRight) {
+        direction = -1;
+    }
+    
+    NSDate *newDate = [self.dateListView.currentDate dateByAddingTimeInterval:direction * 7 * 24 * 3600];
+    [self calendarDidSelect:newDate];
+}
+
 /**
  * handle action for date click in date list view.
  * @param date the selected date.
@@ -930,6 +1046,11 @@
         [recordService deleteFoodConsumptionRecord:record error:&error];
         if ([Helper displayError:error]) return;
     }
+    
+    if (selectedItems.count > 0) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
+    }
+    
     [self.foodTableView reloadData];
     [self updateProgress];
     [self hideDeletePop:nil];
@@ -1015,6 +1136,8 @@
         [self.foodConsumptionRecords removeObjectAtIndex:row];
         [recordService deleteFoodConsumptionRecord:cell.foodConsumptionRecord error:&error];
         if ([Helper displayError:error]) return;
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
     }
     [self.foodTableView reloadData];
     [self updateProgress];
@@ -1071,14 +1194,15 @@
     
     voiceSearch = [self.storyboard instantiateViewControllerWithIdentifier:@"VoiceSearchView"];
     voiceSearch.view.frame = CGRectMake(173, 203, 422, 598);
+    voiceSearch.consumptionViewController = self;
     [self.view addSubview:voiceSearch.view];
     
     [voiceSearch.btnCancel addTarget:self
                               action:@selector(hideVoice:)
                     forControlEvents:UIControlEventTouchUpInside];
-    [voiceSearch.btnDone addTarget:self
+    /*[voiceSearch.btnDone addTarget:self
                             action:@selector(hideVoice:)
-                  forControlEvents:UIControlEventTouchUpInside];
+                  forControlEvents:UIControlEventTouchUpInside];*/
     
     [voiceSearch.btnAddToConsumption addTarget:self
                                         action:@selector(hideVoice:)
@@ -1113,30 +1237,51 @@
                                                                  NSMinuteCalendarUnit)
                                                        fromDate:self.dateListView.currentDate];
             [components setCalendar:calendar];
-            
             NSDateComponents *currentDateComponents = [calendar components:(NSHourCalendarUnit |
                                                                             NSMinuteCalendarUnit)
                                                                   fromDate:record.timestamp];
             components.hour = [currentDateComponents hour];
             components.minute = [currentDateComponents minute];
             record.timestamp = [components date];
-
+            
+            if (recorderFilePath) {
+                StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
+                                                                                      entityForName:@"StringWrapper"
+                                                                                      inManagedObjectContext:
+                                                                                      recordService.managedObjectContext]
+                                                      insertIntoManagedObjectContext:nil];
+                stringWrapper.value = recorderFilePath;
+                record.voiceRecordings = [NSSet setWithObject:stringWrapper];
+            }
+            
             [recordService addFoodConsumptionRecord:appDelegate.loggedInUser record:record error:&error];
             record.foodProduct = product;
             [recordService saveFoodConsumptionRecord:record error:&error];
             
             if ([Helper displayError:error]) return;
             [self.foodConsumptionRecords addObject:record];
+            recorderFilePath = nil;
         }
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
+        
         [voiceSearch.selectedFoodProducts removeAllObjects];
         [self.foodTableView reloadData];
         [self updateProgress];
+        [clearCover removeFromSuperview];
+        clearCover = nil;
+        
+        [voiceSearch.view removeFromSuperview];
+        voiceSearch = nil;
+    } else {
+        [clearCover removeFromSuperview];
+        clearCover = nil;
+        
+        [voiceSearch.view removeFromSuperview];
+        voiceSearch = nil;
+        
+        [recorder stop];
     }
-    [clearCover removeFromSuperview];
-    clearCover = nil;
-    
-    [voiceSearch.view removeFromSuperview];
-    voiceSearch = nil;
 }
 
 #pragma mark - select consumption
@@ -1151,6 +1296,21 @@
     if([animationID isEqualToString:@"hideSelectConsumption"]){
         [selectConsumption.view removeFromSuperview];
         selectConsumption = nil;
+    }
+}
+
+/**
+ * hide the select consumption view and cancel food add to consumption action.
+ * @param sender the button or nil.
+ */
+- (void)cancelSelectConsumption:(id)sender {
+    if(selectConsumption != nil){
+        [selectConsumption.selectFoods removeAllObjects];
+        [self.foodTableView reloadData];
+        [self updateProgress];
+        
+        [self.navigationController popViewControllerAnimated:YES];
+        [self.customTabBarController setConsumptionActive];
     }
 }
 
@@ -1183,6 +1343,9 @@
                 if ([Helper displayError:error]) return;
                 [self.foodConsumptionRecords addObject:record];
             }
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
+            
             [selectConsumption.selectFoods removeAllObjects];
             [self.foodTableView reloadData];
             [self updateProgress];
@@ -1208,9 +1371,46 @@
         _addFood.commentInstructionLabel.text = @"Initializing...";
         foodDetail.commentInstructionLabel.text = @"Initializing...";
         listening = YES;
-        [self.pocketsphinxController startListeningWithLanguageModelAtPath:[self.lmPaths valueForKey:@"LMPath"]
-                                                          dictionaryAtPath:[self.lmPaths valueForKey:@"DictionaryPath"]
-                                                       languageModelIsJSGF:FALSE];
+        
+        if (foodDetail) {
+            foodDetail.btnSave.enabled = NO;
+        }
+        if (_addFood) {
+            _addFood.btnDone.enabled = NO;
+        }
+        
+        //[self.pocketsphinxController startListeningWithLanguageModelAtPath:[self.lmPaths valueForKey:@"LMPath"]
+        //                                                  dictionaryAtPath:[self.lmPaths valueForKey:@"DictionaryPath"]
+        //                                               languageModelIsJSGF:FALSE];
+        
+        NSDictionary *recordSetting = @{AVFormatIDKey: @(kAudioFormatMPEG4AAC),
+                                        AVEncoderAudioQualityKey: @(AVAudioQualityMedium),
+                                        AVNumberOfChannelsKey: @2};        
+        NSURL *url = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/tmp.aac", DOCUMENTS_FOLDER]];
+        NSError *err = nil;
+        recorder = [[ AVAudioRecorder alloc] initWithURL:url settings:recordSetting error:&err];
+        if(!recorder){
+            NSLog(@"recorder: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
+            UIAlertView *alert =
+            [[UIAlertView alloc] initWithTitle: @"Warning"
+                                       message: [err localizedDescription]
+                                      delegate: nil
+                             cancelButtonTitle:@"OK"
+                             otherButtonTitles:nil];
+            [alert show];
+            return;
+        }
+        
+        //prepare to record
+        [recorder setDelegate:self];
+        [recorder prepareToRecord];
+        
+        //start recording
+        [recorder recordForDuration:600];
+        
+        _addFood.commentInstructionLabel.text = @"Speak now, please tap the Mic icon to stop";
+        foodDetail.commentInstructionLabel.text = @"Speak now, please tap the Mic icon to stop";
+        
         UIButton *button = (UIButton *)sender;
         if ([button isEqual:foodDetail.btnVoice]) {
             self.commentToUpdate = foodDetail.txtComment;
@@ -1229,7 +1429,9 @@
     _addFood.commentInstructionLabel.text = @"";
     foodDetail.commentInstructionLabel.text = @"";
     if (listening) {
-        [self.pocketsphinxController stopListening];
+        // [self.pocketsphinxController stopListening];
+        [recorder stop];
+        listening = NO;
     }
     self.commentToUpdate = nil;
 }
@@ -1287,8 +1489,12 @@
 
 - (void) bindSelectionConsumptionBackButton {
     [selectConsumption.btnBack addTarget:self
-                                  action:@selector(hideSelectConsumption:)
+                                  action:@selector(cancelSelectConsumption:)
                         forControlEvents:UIControlEventTouchUpInside];
+    
+    [selectConsumption.btnBack addTarget:self
+                                  action:@selector(hideSelectConsumption:)
+                        forControlEvents:UIControlEventApplicationReserved];
 }
 
 #pragma mark - UIPopover Delegate Methods
@@ -1367,6 +1573,9 @@
     
     cell.lblTime.text = [NSString stringWithFormat:@"%.2d:%.2d", hour, minute];
     cell.lblName.text = item.foodProduct.name;
+    if ([item.foodProduct.deleted boolValue]) {
+        cell.lblName.textColor = [UIColor colorWithRed:192 green:0 blue:0 alpha:1];
+    }
     if(item.foodProduct.energy.intValue == 0 && item.foodProduct.sodium.intValue == 0 &&
        item.foodProduct.fluid.intValue == 0){
         cell.btnNonNutrient.hidden = NO;
@@ -1392,11 +1601,16 @@
         cell.nutrientScrollView.contentOffset = CGPointZero;
     }
     
+    cell.btnComment.hidden = YES;
     if(item.comment.length > 0){
         cell.btnComment.hidden = NO;
-    }
-    else{
-        cell.btnComment.hidden = YES;
+    } else if (item.voiceRecordings.count > 0) {
+        for (StringWrapper *itemVoice in [item.voiceRecordings allObjects]) {
+            if (itemVoice && itemVoice.value && itemVoice.value.length > 0) {
+                cell.btnComment.hidden = NO;
+                break;
+            }
+        }
     }
     if(cell.editing){
         cell.deleteView.hidden = NO;
@@ -1465,10 +1679,72 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
  * @param scrollView The scroll-view object in which the scrolling occurred.
  */
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    FoodConsumptionRecord *item = [self.foodConsumptionRecords objectAtIndex:scrollView.tag];
-    CGPoint point = scrollView.contentOffset;
-    NSValue *value = [NSValue valueWithCGPoint:point];
-    [contentOffset setObject:value forKey:item.objectID];
+    if (![scrollView isEqual:self.foodTableView]) {
+        FoodConsumptionRecord *item = [self.foodConsumptionRecords objectAtIndex:scrollView.tag];
+        CGPoint point = scrollView.contentOffset;
+        NSValue *value = [NSValue valueWithCGPoint:point];
+        [contentOffset setObject:value forKey:item.objectID];
+    }
+}
+
+#pragma mark - AVAudioRecorderDelegate methods
+
+- (void)audioRecorderDidFinishRecording:(AVAudioRecorder *)aRecorder successfully:(BOOL)flag {
+    [self audioRecorderEndInterruption:aRecorder];
+}
+
+- (void)audioRecorderEndInterruption:(AVAudioRecorder *)aRecorder {
+    NSURL *url = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/tmp.aac", DOCUMENTS_FOLDER]];
+    NSError *err = nil;
+    NSData *audioData = [NSData dataWithContentsOfFile:[url path] options: 0 error:&err];
+    if ([Helper displayError:err]) return;
+    
+    //[recorder deleteRecording];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    err = nil;
+    [fm removeItemAtPath:[url path] error:&err];
+    if ([Helper displayError:err]) return;
+    
+    NSString *audioPath = [Helper saveVoiceRecording:audioData];
+    recorderFilePath = audioPath;
+    
+    if (voiceSearch) {
+        NSString *name = @"Intake From Voice";
+        
+        AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
+        NSError *error;
+        FoodProduct *foodProduct = [foodProductService getFoodProductByName:appDelegate.loggedInUser
+                                                                       name:name
+                                                                      error:&error];
+        if (foodProduct) {
+            [voiceSearch.selectedFoodProducts addObject:foodProduct];
+        } else {
+            error = nil;
+            AdhocFoodProduct *product = [foodProductService buildAdhocFoodProduct:&error];
+            product.quantity = @1;
+            product.name = name;
+            [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser
+                                            product:product
+                                              error:&error];
+            [voiceSearch.selectedFoodProducts addObject:product];
+        }
+        
+        [self hideVoice:nil];
+    }
+    
+    if (foodDetail) {
+        foodDetail.btnSave.enabled = YES;
+    }
+    if (_addFood) {
+        _addFood.btnDone.enabled = YES;
+    }
+}
+
+#pragma mark - UIGestureRecognizer methods
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    return YES;
 }
 
 @end

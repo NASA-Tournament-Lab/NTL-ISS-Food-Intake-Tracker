@@ -18,6 +18,12 @@
 //
 //  Created by lofzcx 06/12/2013
 //
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
+
+#define FACTOR 10
+#define RFACTOR (60 / FACTOR)
 
 #import "CustomPickerViewController.h"
 
@@ -176,7 +182,7 @@
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row
           forComponent:(NSInteger)component reusingView:(UIView *)view{
     UILabel *lbl = (UILabel *)[super pickerView:pickerView viewForRow:row forComponent:component reusingView:view];
-    lbl.text = [NSString stringWithFormat:@"%.2d:00", row];
+    lbl.text = [NSString stringWithFormat:@"%.2d:%.2d", (int)(row / RFACTOR), (row % RFACTOR) * FACTOR];
     return lbl;
 }
 
@@ -187,7 +193,18 @@
  * @return 24 as there are only 24 hours a day.
  */
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component{
-    return 24;
+    return 24 * RFACTOR;
+}
+
+/**
+ * overwrite this method to parse from val and set the picker.
+ * @param val the setting value.
+ */
+- (void)setSelectedVal:(NSString *)val{
+    int v1 = [[[val componentsSeparatedByString:@":"] objectAtIndex:0] intValue];
+    int v2 = [[[val componentsSeparatedByString:@":"] objectAtIndex:1] intValue];
+    int r = (v1 * RFACTOR + v2 / FACTOR);
+    [self.timePicker selectRow:r inComponent:0 animated:NO];
 }
 
 /**
@@ -195,7 +212,9 @@
  * @param sender the button.
  */
 - (IBAction)doneButtonClick:(id)sender{
-    selectValue = [NSString stringWithFormat:@"%.2d:00", [self.timePicker selectedRowInComponent:0]];
+    int v1 = [self.timePicker selectedRowInComponent:0] / RFACTOR;
+    int v2 = ([self.timePicker selectedRowInComponent:0] % RFACTOR) * FACTOR;
+    selectValue = [NSString stringWithFormat:@"%.2d:%.2d", v1, v2];
     [super doneButtonClick:sender];
 }
 

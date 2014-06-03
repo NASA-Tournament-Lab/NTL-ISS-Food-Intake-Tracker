@@ -67,18 +67,18 @@
 {
     [self clearIndex];
     int i;
-    float sectionheight = 20;
+    float sectionheight = 28;
     visibleIndexBackground = [[UIImageView alloc] initWithFrame:CGRectZero];
     visibleIndexBackground.backgroundColor = [UIColor colorWithRed:0.2 green:0.43 blue:0.62 alpha:1];
     [self addSubview:visibleIndexBackground];
     for (i=0; i<[indexes count]; i++){
         float ypos = i * sectionheight;
         
-        UILabel *alphaLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, ypos, self.frame.size.width, 20.0)];
+        UILabel *alphaLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, ypos, self.frame.size.width, sectionheight)];
         alphaLabel.textAlignment = UITextAlignmentCenter;
         alphaLabel.text = [indexes objectAtIndex:i];
         alphaLabel.tag = 100 + i;
-        alphaLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:13.0];
+        alphaLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0];
         alphaLabel.backgroundColor = [UIColor clearColor];
         alphaLabel.textColor = textColor;
         [self addSubview:alphaLabel];
@@ -92,7 +92,7 @@
  * @param end the end index.
  */
 - (void)setVisibleStartIndex:(int)start EndIndex:(int)end{
-    visibleIndexBackground.frame = CGRectMake(0, start * 20, self.frame.size.width, (end - start) * 20);
+    visibleIndexBackground.frame = CGRectMake(0, start * 28, self.frame.size.width, (end - start) * 28);
     int count = 0;
     for(UIView *v in self.subviews){
         if([v isKindOfClass:[UILabel class]]){
@@ -174,7 +174,7 @@
         return;
     }
     
-    int count = touchPoint.y / 20;
+    int count = touchPoint.y / 28;
     if(count < totalIndex){
         if(self.delegate && [self.delegate respondsToSelector:@selector(indexBar:DidChangeIndexSelection:)]){
             [self.delegate indexBar:self DidChangeIndexSelection:count];
@@ -201,7 +201,7 @@
         return;
     }
     
-    int count = touchPoint.y / 20;
+    int count = touchPoint.y / 28;
     if(count < totalIndex && count >= 0){
         if(self.delegate && [self.delegate respondsToSelector:@selector(indexBar:DidChangeIndexSelection:)]){
             [self.delegate indexBar:self DidChangeIndexSelection:count];

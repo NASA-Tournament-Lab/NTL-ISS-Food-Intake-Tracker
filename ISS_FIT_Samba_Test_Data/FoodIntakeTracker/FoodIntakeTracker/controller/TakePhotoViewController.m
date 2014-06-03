@@ -18,11 +18,17 @@
 //
 //  Created by lofzcx 06/25/2013
 //
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
 
 #import "TakePhotoViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "Helper.h"
+#import "DataHelper.h"
+#import "DBHelper.h"
 #import "FoodProductServiceImpl.h"
+#import "FoodConsumptionRecordServiceImpl.h"
 #import "AppDelegate.h"
 
 @implementation TakePhotoViewController
@@ -39,6 +45,8 @@
     categories = [NSMutableArray arrayWithArray:[foodProductService getAllProductCategories:&error]];
     if ([Helper displayError:error]) return;
     [self.preview insertSubview:photoImage belowSubview:self.imgCenter];
+    
+    [self.scrollView setContentSize:CGSizeMake(560, 54)];
 }
 
 /**
@@ -56,7 +64,7 @@
  */
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    [self take:self.takeButton];
+    // [self take:self.takeButton];
 }
 
 /**
@@ -107,12 +115,14 @@
     picker.allowsEditing = YES;
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
-        picker.cameraViewTransform = CGAffineTransformScale(picker.cameraViewTransform, -1, 1);
+        picker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
+        //picker.cameraViewTransform = CGAffineTransformScale(picker.cameraViewTransform, -1, 1);
     }
     else {
         picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     }
+    self.takeButton.hidden = YES;
+    self.lblTakeButtonTitle.hidden = YES;
     self.popover = [[UIPopoverController alloc] initWithContentViewController:picker];
     self.popover.delegate = self;
     [self.popover presentPopoverFromRect:button.frame
@@ -146,13 +156,32 @@
         AdhocFoodProduct *adhocFoodProduct = [foodProductService buildAdhocFoodProduct:&error];
         if ([Helper displayError:error]) return;
         adhocFoodProduct.name = self.txtFoodName.text;
-        adhocFoodProduct.category = self.lblFoodCategory.text;
+        
+        StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
+                                                                              entityForName:@"StringWrapper"
+                                                                              inManagedObjectContext:
+                                                                              foodProductService.managedObjectContext]
+                                              insertIntoManagedObjectContext:nil];
+        stringWrapper.value = self.lblFoodCategory.text;
+        adhocFoodProduct.categories = [NSSet setWithObject:stringWrapper];
+        
         NSString *imagePath = [Helper saveImage:UIImageJPEGRepresentation(self.imgFood.image,1.0)];
         adhocFoodProduct.productProfileImage = imagePath;
+        
+        stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
+                                                               entityForName:@"StringWrapper"
+                                                               inManagedObjectContext:
+                                                               foodProductService.managedObjectContext]
+                               insertIntoManagedObjectContext:nil];
+        stringWrapper.value = imagePath;
+        adhocFoodProduct.images = [NSSet setWithObject:stringWrapper];
+        
         [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser product:adhocFoodProduct error:&error];
         if ([Helper displayError:error]) return;
         [resultFoods addObject:adhocFoodProduct];
         [self buildResults];
+        [self.btnResults setEnabled:YES];
+    } else if (self.resultViewFound.hidden == NO) {
         [self.btnResults setEnabled:YES];
     }
     
@@ -165,6 +194,7 @@
     self.resultView.hidden = YES;
     self.foodAddedPopup.hidden = YES;
     self.resultsView.hidden = YES;
+    self.resultViewFound.hidden = YES;
     self.btnAdd.hidden = YES;
     [self.btnResults setSelected:NO];
     
@@ -194,19 +224,71 @@
         FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
         NSError *error;
         AdhocFoodProduct *adhocFoodProduct = [foodProductService buildAdhocFoodProduct:&error];
-        if ([Helper displayError:error]) return;
+        
+        if ([Helper displayError:error]) {
+            return;
+        }
+        
         adhocFoodProduct.name = self.txtFoodName.text;
-        adhocFoodProduct.category = self.lblFoodCategory.text;
-        NSString *imagePath = [Helper saveImage:UIImageJPEGRepresentation(self.imgFood.image,1.0)];
+        
+        StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
+                                                                              entityForName:@"StringWrapper"
+                                                                              inManagedObjectContext:
+                                                                              foodProductService.managedObjectContext]
+                                              insertIntoManagedObjectContext:nil];
+        stringWrapper.value = self.lblFoodCategory.text;
+        adhocFoodProduct.categories = [NSSet setWithObject:stringWrapper];
+        
+        CGFloat r = self.imgFood.image.size.width / self.imgFood.image.size.height;
+        UIImage *resized = [self resizeImage:self.imgFood.image newSize:CGSizeMake(r * 800, 800)];
+        NSString *imagePath = [Helper saveImage:UIImageJPEGRepresentation(resized, 1.0)];
         adhocFoodProduct.productProfileImage = imagePath;
+        
+        stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
+                                                                              entityForName:@"StringWrapper"
+                                                                              inManagedObjectContext:
+                                                                              foodProductService.managedObjectContext]
+                                              insertIntoManagedObjectContext:nil];
+        stringWrapper.value = imagePath;
+        adhocFoodProduct.images = [NSSet setWithObject:stringWrapper];
+        
         [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser product:adhocFoodProduct error:&error];
-        if ([Helper displayError:error]) return;
+
+        if ([Helper displayError:error]) {
+            return;
+        }
+        
         [resultFoods addObject:adhocFoodProduct];
         [self buildResults];
-        [self.btnResults setEnabled:YES];
+        
+        self.btnResults.enabled = YES;
         self.resultView.hidden = YES;
+        self.foodAddedPopup.hidden = NO;
+    } else if (self.resultViewFound.hidden == NO) {
+        AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
+
+        FoodProduct *foodProduct = [resultFoods objectAtIndex:0];
+        CGFloat r = self.imgFood.image.size.width / self.imgFood.image.size.height;
+        UIImage *resized = [self resizeImage:self.imgFood.image newSize:CGSizeMake(r * 800, 800)];
+        NSString *imagePath = [Helper saveImage:UIImageJPEGRepresentation(resized, 1.0)];
+
+        [[foodProduct managedObjectContext] lock];
+        StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
+                                                                              entityForName:@"StringWrapper"
+                                                                              inManagedObjectContext:
+                                                                              foodProductService.managedObjectContext]
+                                              insertIntoManagedObjectContext:foodProduct.managedObjectContext];
+        stringWrapper.value = imagePath;
+        [foodProduct addImagesObject:stringWrapper];
+        
+        [[foodProduct managedObjectContext] save:nil];
+        [[foodProduct managedObjectContext] unlock];
+        
+        self.btnResults.enabled = YES;
+        self.resultViewFound.hidden = YES;
+        self.foodAddedPopup.hidden = NO;
     }
-    self.foodAddedPopup.hidden = NO;
     [self addSelectedFoodsToConsumption];
 }
 
@@ -215,17 +297,27 @@
  * @param sender the button.
  */
 - (IBAction)cancelTake:(id)sender{
-    self.imgCenter.hidden = NO;
-    self.lblTakeButtonTitle.text = @"Take Photo";
-    [self.txtFoodName resignFirstResponder];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Cancel" message:@"Would like to cancel photo?" delegate:self
+                                              cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil];
+    [alertView show];
+}
+
+/**
+ * action for cancel button in progress view.
+ * @param sender the button.
+ */
+- (IBAction)cancelProcessing:(id)sender {
+    [updateProcessTimer invalidate];
+    updateProcessTimer = nil;
+    self.processView.hidden = YES;
     
-    [clearCover removeFromSuperview];
-    clearCover = nil;
-    self.resultView.hidden = YES;
-    self.foodAddedPopup.hidden = YES;
-    self.btnAdd.hidden = YES;
-    self.resultsView.hidden = YES;
-    [self.btnResults setSelected:NO];
+    [self.btnTake setEnabled:YES];
+    self.lblTakeButtonTitle.text = @"Take Photo";
+    
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(showClearLabel) object:nil];
+    
+    [self performSelector:@selector(showClearLabel) withObject:nil afterDelay:1];
+    
 }
 
 #pragma mark - Picker delegate
@@ -282,8 +374,16 @@
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
     photoImage.image = chosenImage;
+    
     [picker dismissViewControllerAnimated:YES completion:NULL];
     [photoImage removeFromSuperview];
+    
+    [self.popover dismissPopoverAnimated:YES];
+    
+    if ([self recognize:chosenImage]) {
+        return;
+    }
+    
     self.txtFoodName.text = @"";
     self.lblFoodCategory.text = @"Select Food Category";
     self.imgFood.image = chosenImage;
@@ -294,8 +394,78 @@
     self.lblTakeButtonTitle.text = @"Take Another Photo";
     self.resultsView.hidden = YES;
     [self.btnResults setSelected:NO];
+}
+
+-(BOOL) recognize:(UIImage *)image {
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.4]];
     
-    [self.popover dismissPopoverAnimated:YES];
+    self.processView.hidden = NO;
+    self.prgProcess.progress = 0.0;
+    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.4]];
+    
+    tesseract = [[Tesseract alloc] initWithDataPath:appDelegate.tesseractDataPath language:@"eng"];
+    [tesseract setImage:image];
+    
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.4]];
+    self.prgProcess.progress = 0.5;
+    BOOL succeeded = [tesseract recognize];
+    self.prgProcess.progress = 1.0;
+    if (succeeded) {
+        NSString *label = [tesseract recognizedText];
+        // Remove trailing characters
+        if (label.length > 0 && [[label substringFromIndex:MAX(label.length - 2, 0)] isEqualToString:@"\n\n"]) {
+            label = [label substringToIndex:MAX(label.length - 2, 0)];
+        }
+        
+        AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
+        NSError *error;
+        FoodProductFilter *filter = [foodProductService buildFoodProductFilter:&error];
+        filter.name = label;
+        NSArray *results = [foodProductService filterFoodProducts:appDelegate.loggedInUser filter:filter error:&error];
+        
+        if (error || results.count == 0) {
+            /* if ([error code] == EntityNotFoundErrorCode) {
+                [Helper showAlert:@"Not Found" message:error.userInfo[NSLocalizedDescriptionKey]];
+            } else {
+                [Helper displayError:error];
+            } */
+            succeeded = NO;
+        } else {
+            FoodProduct *foodProduct = [results objectAtIndex:0];
+            self.resultViewFound.hidden = NO;
+            self.imgFoodFound.image = [UIImage imageNamed:foodProduct.productProfileImage];
+            self.imgFood.image = image;
+            self.lblFoodNameFound.text = foodProduct.name;
+            self.lblFoodCategoryFound.text = @"";
+            if (foodProduct.categories.count > 0) {
+                self.lblFoodCategoryFound.text = [DataHelper convertStringWrapperNSSetToNSString:foodProduct.categories withSeparator:@", "];
+            }
+            self.lblCaloriesFound.text = [NSString stringWithFormat:@"%@",foodProduct.energy];
+            self.lblSodiumFound.text = [NSString stringWithFormat:@"%@",foodProduct.sodium];
+            self.lblFluidFound.text = [NSString stringWithFormat:@"%@",foodProduct.fluid];
+            self.lblProteinFound.text = [NSString stringWithFormat:@"%@",foodProduct.protein];
+            self.lblCarbFound.text = [NSString stringWithFormat:@"%@",foodProduct.carb];
+            self.lblFatFound.text = [NSString stringWithFormat:@"%@",foodProduct.fat];
+            [self.scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+            
+            [resultFoods addObject:foodProduct];
+            
+            [self buildResults];
+            
+            [self.view bringSubviewToFront:self.resultViewFound];
+            [self.btnTake setEnabled:YES];
+            self.lblTakeButtonTitle.text = @"Take Photo";
+            [self.lblTakeButtonTitle setTextColor:[UIColor colorWithRed:0.2 green:0.43 blue:0.62 alpha:1]];
+            [self.btnResults setEnabled:YES];
+        }
+    }
+    self.processView.hidden = YES;
+    
+    [tesseract clear];
+    return succeeded;
 }
 
 /*!
@@ -303,7 +473,51 @@
  * @param picker the UIImagePickerController
  */
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [self.popover dismissPopoverAnimated:YES];
+    [self cancelTake:nil];
+}
+
+#pragma mark - PopoverControllerDelegate
+
+- (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
+    [self cancelTake:nil];
+
+    return NO;
+}
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    self.takeButton.hidden = NO;
+    self.lblTakeButtonTitle.hidden = NO;
+}
+
+#pragma mark - AlertView delegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {       
+        [self.popover dismissPopoverAnimated:YES];
+        
+        self.imgCenter.hidden = NO;
+        self.takeButton.hidden = NO;
+        self.lblTakeButtonTitle.hidden = NO;
+        self.lblTakeButtonTitle.text = @"Take Photo";
+        [self.txtFoodName resignFirstResponder];
+        
+        [clearCover removeFromSuperview];
+        clearCover = nil;
+        self.resultView.hidden = YES;
+        self.resultViewFound.hidden = YES;
+        self.foodAddedPopup.hidden = YES;
+        self.btnAdd.hidden = YES;
+        self.resultsView.hidden = YES;
+        [self.btnResults setSelected:NO];
+    }
+}
+
+- (UIImage *)resizeImage:(UIImage*)image newSize:(CGSize)newSize {
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 @end

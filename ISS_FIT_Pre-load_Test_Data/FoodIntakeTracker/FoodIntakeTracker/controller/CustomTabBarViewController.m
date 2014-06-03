@@ -83,12 +83,22 @@
     [self.btnLogout addTarget:self action:@selector(logout) forControlEvents:UIControlEventTouchUpInside];
     [self setAdmin:admin];
     
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSNumber *lastSyncTime = [defaults objectForKey:@"LastSynchronizedTime"];
+    if(lastSyncTime != nil) {
+        [self updateLastSyncLabel:[NSDate
+                                   dateWithTimeIntervalSince1970:[lastSyncTime longLongValue]/1000]];
+    }
+    self.lastSyncLabel.hidden = YES;
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(renewAutoLogout)
                                                  name:AutoLogoutRenewEvent object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startAutoLogout)
                                                  name:AutoLogoutStartEvent object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopAutoLogout)
                                                  name:AutoLogoutStopEvent object:nil];
+    /* [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLastSyncLabel:)
+                                                 name:UpdateLastSync object:nil]; */
     [[NSNotificationCenter defaultCenter] postNotificationName:AutoLogoutRenewEvent object:nil];
 }
 
@@ -120,6 +130,7 @@
         [Helper showAlert:@"Error" message:@"Please login to perform this functionality."];
         return;
     }
+    appDelegate.tabBarViewController = self;
     
     self.activeTab = 1;
     
@@ -357,6 +368,35 @@
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     if (appDelegate.shouldAutoLogout) {
         [self logout];
+    }
+}
+
+/*!
+ * Update last sync label.
+ */
+- (void)updateLastSyncLabel:(id) value {
+    NSDate *date = nil;
+    if ([value isKindOfClass:[NSDate class]]) {
+        date = (NSDate *) value;
+    } else {
+        date = [(NSNotification *)value object];
+    }
+    if (date) {
+        NSDateFormatter *f = [[NSDateFormatter alloc] init];
+        [f setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US"]];
+        [f setDateStyle:NSDateFormatterLongStyle];
+        [f setTimeStyle:NSDateFormatterMediumStyle];
+        
+        @synchronized(self) {
+            NSLog(@"\tUpdated last sync to %@", date);
+            unichar chr[1] = {'\n'};
+            NSString *singleCR = [NSString stringWithCharacters:(const unichar *)chr length:1];
+            NSString *text = [NSString stringWithFormat:@"Last Sync:%@%@", singleCR,
+                              [f stringFromDate:date]];
+            [self.lastSyncLabel performSelectorOnMainThread:@selector(setText:)
+                                                 withObject:text waitUntilDone:YES];
+            f = nil;
+        }
     }
 }
 

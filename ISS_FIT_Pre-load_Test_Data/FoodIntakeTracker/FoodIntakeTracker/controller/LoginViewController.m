@@ -318,6 +318,8 @@
     if ([Helper displayError:error]) return;
     appDelegate.loggedInUser = loggedInUser;
     [self performSegueWithIdentifier:@"Login" sender:self];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:[NSDate date]];
 }
 
 /**
@@ -362,15 +364,9 @@
     NSDictionary *params = [notification object];
     NSNumber *success = [params objectForKey:@"success"];
     if (![success boolValue]) {
-#ifndef USE_TEST_DATA
-        [Helper showAlert:@"Error" message:@"We are unable to sync this iPad with the central food repository. \n"
-         "Don’t worry! You can still use the ISS FIT app and we will attempt to sync with the central food repository"
-         " when it is available."];
-#else
         NSLog(@"We are unable to sync this iPad with the central food repository. \n"
               "Don’t worry! You can still use the ISS FIT app and we will attempt to sync with the central food repository"
               " when it is available.");
-#endif
     }
 }
 

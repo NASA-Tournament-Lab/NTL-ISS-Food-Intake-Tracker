@@ -21,6 +21,7 @@
 
 #import "BaseDataService.h"
 #import "SMBClient.h"
+#import "LocalClient.h"
 
 /*!
  @protocol BaseCommunicationDataService
@@ -59,6 +60,12 @@
  * @return The newly created object.
  */
 -(id)initWithConfiguration:(NSDictionary *)configuration;
+
+/*!
+ @discussion Create a LocalClient.
+ @return The created LocalClient.
+ */
+-(id<LocalClient>)createLocalClient;
 
 /*!
  @discussion Create an SMBClient.

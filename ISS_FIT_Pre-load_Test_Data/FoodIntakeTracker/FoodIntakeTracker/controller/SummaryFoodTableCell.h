@@ -18,6 +18,9 @@
 //
 //  Created by lofzcx 06/12/2013
 //
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
 
 #import <UIKit/UIKit.h>
 #import "CustomPickerViewController.h"
@@ -41,7 +44,7 @@
 /* the name label */
 @property (weak, nonatomic) IBOutlet UILabel *lblName;
 /* the quantity label */
-@property (weak, nonatomic) IBOutlet UILabel *lblQuantity;
+@property (weak, nonatomic) IBOutlet UITextField *lblQuantity;
 /* the quantity unit label */
 @property (weak, nonatomic) IBOutlet UILabel *lblQuantityUnit;
 /* the calories value label */

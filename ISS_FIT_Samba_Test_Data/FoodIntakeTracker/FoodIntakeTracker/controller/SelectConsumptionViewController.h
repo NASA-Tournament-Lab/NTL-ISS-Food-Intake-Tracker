@@ -71,6 +71,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblInfoTitle;
 /* the sort title label */
 @property (weak, nonatomic) IBOutlet UILabel *lblSortTitle;
+/* the change button */
+@property (weak, nonatomic) IBOutlet UIButton *btnChange;
 
 /* the scroll view that contains foods in grid view */
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
@@ -95,6 +97,12 @@
  * @param sender the button.
  */
 - (IBAction)showSortList:(id)sender;
+
+/**
+ * Change from sort/filter.
+ * @param sender the button.
+ */
+- (IBAction)changeList:(id)sender;
 
 /**
  * hide sort by option list.

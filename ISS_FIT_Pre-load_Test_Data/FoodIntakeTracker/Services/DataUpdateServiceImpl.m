@@ -18,6 +18,9 @@
 //
 //  Created by LokiYang on 2013-07-27.
 //
+//  Updated by pvmagacho on 04/19/2014
+//  F2Finish - NASA iPad App Updates
+//
 
 #import "DataUpdateServiceImpl.h"
 #import "FoodProductServiceImpl.h"
@@ -26,17 +29,19 @@
 #import "Models.h"
 #import "LoggingHelper.h"
 #import "DataHelper.h"
+#import "AppDelegate.h"
 
 
 @implementation DataUpdateServiceImpl
 
+@synthesize cancelUpdate = _cancelUpdate;
 @synthesize localFileSystemDirectory = _localFileSystemDirectory;
 @synthesize imageFileNameSuffix = _imageFileNameSuffix;
 @synthesize voiceRecordingFileNameSuffix = _voiceRecordingFileNameSuffix;
 
 #define CHECK_ERROR_AND_RETURN(error, return_error, error_msg, error_code, unlock_context, undo_context) \
-    if (error) {\
-        if (return_error) {\
+    if (error || self.cancelUpdate) {\
+        if (error && return_error) {\
             *return_error = [NSError errorWithDomain:@"DataUpdateService" code:error_code\
                                             userInfo:@{NSUnderlyingErrorKey:error_msg}];\
         }\
@@ -73,87 +78,80 @@
  @return YES if the operation succceeds, otherwise NO.
  */
 -(BOOL)update:(NSError **)error {
+    return [self update:error force:NO];
+}
+
+/*!
+ @discussion This method will be used to apply data changes (control files) pushed from Earth Laboratory.
+ @parame error The NSError object if any error occurred during the operation
+ @return YES if the operation succceeds, otherwise NO.
+ */
+-(BOOL)update:(NSError **)error force:(BOOL)force {
     NSString *methodName = [NSString stringWithFormat:@"%@.update:error:", NSStringFromClass(self.class)];
     [LoggingHelper logMethodEntrance:methodName paramNames:nil params:nil];
-    // Create SMBClient and connect to the shared file server
-    NSError *e = nil;
-#ifndef USE_TEST_DATA
-    id<SMBClient> smbClient = [self createSMBClient:&e];
-#else
-    NSString *resourcePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/samba"];
-    NSString *path = nil;
-#endif
     
-    CHECK_ERROR_AND_RETURN(e, error, @"Cannot create SMBClient.", ConnectionErrorCode, NO, NO);
+    // Create localClient and connect to the shared file server
+    NSError *e = nil;
+    id<LocalClient> localClient = [self createLocalClient];
+    CHECK_ERROR_AND_RETURN(e, error, @"Cannot create LocalClient.", ConnectionErrorCode, NO, NO);
     
     // Lock on the managedObjectContext
     [[self managedObjectContext] lock];
     
-    
     NSString* deviceID = [DataHelper getDeviceIdentifier];
     e = nil;
     /* Do not delete the files now ISSFIT-44
-    NSArray* deviceRegistry = [smbClient listFiles:@"device_registry" error:&e];
+    NSArray* deviceRegistry = [localClient listFiles:@"device_registry" error:&e];
     CHECK_ERROR_AND_RETURN(e, error, @"Cannot list 'device_registry' directory.", DataUpdateErrorCode, YES, NO);
      */
+    
+    // Update progress
+    [self updateProgress:@0.01];
+    
+    // Calculate the the delta progress
+    float currentProgress, progressDelta, count;
+    
     if (!e) {
+    
         // Scan /control_files/food_product_inventory for changes that have not been applied yet
-#ifndef USE_TEST_DATA
-        NSArray* ackFiles = [smbClient listFiles:@"control_files/food_product_inventory/ack" error:&e];
-#else
-        path = [NSString stringWithFormat:@"%@/control_files/food_product_inventory/ack", resourcePath];
-        NSArray *tmpFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path  error:&e];
-        NSMutableArray *ackFiles = [NSMutableArray array];
-        for (NSString *cPath in tmpFiles) {
-            NSString *fullPath = [NSString stringWithFormat:@"%@/%@", path, cPath];
-            NSDictionary *dPath = [[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:&e];
-            if ([[dPath objectForKey:NSFileType] isEqualToString:NSFileTypeRegular]) {
-                [ackFiles addObject:cPath];
-            }
-        }
-#endif
-        
+        NSArray* ackFiles = [localClient listFiles:@"control_files/food_product_inventory/ack" error:&e];
         CHECK_ERROR_AND_RETURN(e, error, @"Cannot list 'control_files/food_product_inventory/ack' directory.",
                                DataUpdateErrorCode, YES, NO);
-
-        if (![ackFiles containsObject:deviceID]) {
-#ifndef USE_TEST_DATA
-            NSArray* foodDataFolder = [smbClient listFiles:@"control_files/food_product_inventory/data" error:&e];
-#else
-            path = [NSString stringWithFormat:@"%@/control_files/food_product_inventory/data", resourcePath];
-            NSArray *tmpFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path  error:&e];
-            NSMutableArray *foodDataFolder = [NSMutableArray array];
-            for (NSString *cPath in tmpFiles) {
-                NSString *fullPath = [NSString stringWithFormat:@"%@/%@", path, cPath];
-                NSDictionary *dPath = [[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:&e];
-                if ([[dPath objectForKey:NSFileType] isEqualToString:NSFileTypeRegular]) {
-                    [foodDataFolder addObject:cPath];
-                }
-            }
-#endif
+        
+        if (![ackFiles containsObject:deviceID] || force) {
+            
+            NSArray* foodDataFolder = [localClient listFiles:@"control_files/food_product_inventory/data" error:&e];
             CHECK_ERROR_AND_RETURN(e, error, @"Cannot read food data folder.", DataUpdateErrorCode, YES, NO);
             
             if([foodDataFolder containsObject:@"data.csv"]) {
                 // The changes have not been applied yet
-#ifndef USE_TEST_DATA
-                NSData *data = [smbClient readFile:@"control_files/food_product_inventory/data/data.csv" error:&e];
-#else
-                path = [NSString stringWithFormat:@"%@/control_files/food_product_inventory/data/data.csv", resourcePath];
-                NSData *data = [[NSFileManager defaultManager] contentsAtPath:path];
-#endif
+                NSData *data = [localClient readFile:@"control_files/food_product_inventory/data/data.csv" error:&e];
                 CHECK_ERROR_AND_RETURN(e, error, @"Cannot read data.csv file.", DataUpdateErrorCode, YES, NO);
                 CSVParser *parser = [[CSVParser alloc] init];
                 NSMutableArray *foodProductDataArray = [parser parseData:data];
                 
                 NSMutableArray *foodProductNames = [NSMutableArray array];
                 BOOL headerFind = NO;
+                
+                // Calculate the the delta progress
+                currentProgress = 0.01;
+                progressDelta = 0.04;
+                count = foodProductDataArray.count;
+                int fileDataVersion = 0;
+                
                 for (NSMutableArray* foodProductData in foodProductDataArray) {
                     // skip header
                     if(!headerFind) {
                         headerFind = YES;
+                        fileDataVersion = [[foodProductData lastObject] integerValue];
                         continue;
                     }
-                    NSString *foodProductName = foodProductData[0];
+                    NSString *foodProductName = [[foodProductData[0]
+                                                 stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                                                 stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
+                    if (foodProductName == nil || foodProductName.length == 0) {
+                        continue;
+                    }
                     [foodProductNames addObject:foodProductName];
                     // Try to fetch existing FoodProduct with the foodProductName from Core Data managedObjectContext
                     NSFetchRequest *request = [[NSFetchRequest alloc] init];
@@ -170,15 +168,13 @@
                         // Extract other properties from foodProductData array, and update the foodProduct object
                         // Refer to control_files/food_product_inventory.csv for the file format.
                         foodProduct.barcode = foodProductData[3];
-                        foodProduct.images = [DataHelper convertNSStringToNSSet:foodProductData[8]
-                                                          withEntityDescription:[NSEntityDescription
-                                                                                 entityForName:@"StringWrapper"
-                                                                                 inManagedObjectContext:
-                                                                                 self.managedObjectContext]
-                                                         inManagedObjectContext:self.managedObjectContext
-                                                                  withSeparator:@";"];
                         foodProduct.origin = foodProductData[2];
-                        foodProduct.category = foodProductData[1];
+                        foodProduct.categories = [DataHelper convertNSStringToNSSet:[foodProductData[1]
+                                                                                     stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]
+                                                              withEntityDescription:[NSEntityDescription
+                                                                                     entityForName:@"StringWrapper"
+                                                                                     inManagedObjectContext:self.managedObjectContext]
+                                                             inManagedObjectContext:self.managedObjectContext withSeparator:@";"];
                         foodProduct.fluid =  @([foodProductData[4] intValue]);
                         foodProduct.energy = @([foodProductData[5] intValue]);
                         foodProduct.sodium = @([foodProductData[6] intValue]);
@@ -186,7 +182,11 @@
                         foodProduct.carb = @([foodProductData[8] intValue]);
                         foodProduct.fat = @([foodProductData[9] intValue]);
                         foodProduct.productProfileImage = foodProductData[10];
-
+                        if (fileDataVersion == 0) {
+                            foodProduct.deleted = @NO;
+                        } else {
+                            foodProduct.deleted = [foodProductData[11] isEqualToString:@"YES"]?@YES:@NO;
+                        }
                     } else {
                         // Create a new FoodProduct in Core Data managedObjectContext
                         // Extract other properties from foodProductData array, and set the properties to the foodProduct
@@ -195,17 +195,14 @@
                                                                   inManagedObjectContext:[self managedObjectContext]];
                         foodProduct = [[FoodProduct alloc] initWithEntity:entity
                                            insertIntoManagedObjectContext:self.managedObjectContext];
-                        foodProduct.name = foodProductData[0];
+                        foodProduct.name = foodProductName;
                         foodProduct.barcode = foodProductData[3];
-                        foodProduct.images = [DataHelper convertNSStringToNSSet:foodProductData[11]
-                                                          withEntityDescription:[NSEntityDescription
-                                                                                 entityForName:@"StringWrapper"
-                                                                                 inManagedObjectContext:
-                                                                                 self.managedObjectContext]
-                                                         inManagedObjectContext:self.managedObjectContext
-                                                                  withSeparator:@";"];
                         foodProduct.origin = foodProductData[2];
-                        foodProduct.category = foodProductData[1];
+                        foodProduct.categories = [DataHelper convertNSStringToNSSet:foodProductData[1]
+                                                              withEntityDescription:[NSEntityDescription
+                                                                                     entityForName:@"StringWrapper"
+                                                                                     inManagedObjectContext:self.managedObjectContext]
+                                                             inManagedObjectContext:self.managedObjectContext withSeparator:@";"];
                         foodProduct.fluid =  @([foodProductData[4] intValue]);
                         foodProduct.energy = @([foodProductData[5] intValue]);
                         foodProduct.sodium = @([foodProductData[6] intValue]);
@@ -214,9 +211,21 @@
                         foodProduct.fat = @([foodProductData[9] intValue]);
                         foodProduct.active = @YES;
                         foodProduct.productProfileImage = foodProductData[10];
-                        foodProduct.deleted = @NO;
+                        if (fileDataVersion == 0) {
+                            foodProduct.deleted = @NO;
+                        } else {
+                            foodProduct.deleted = [foodProductData[11] isEqualToString:@"YES"]?@YES:@NO;
+                        }
                     }
+                    
+                    // Update progress
+                    currentProgress += progressDelta/count;
+                    [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
                 }
+                
+                // Update progress
+                [self updateProgress:@0.05];
+                
                 // Query Core Data to fetch the existing FoodProduct records with active == YES and name
                 // is NOT IN foodProductNames array
                 
@@ -235,23 +244,15 @@
                     foodProductToDeactivate.active = NO;
                 }
                 // Read image recording files in control_files/food_product_inventory/data and save in local file system
-#ifndef USE_TEST_DATA
-                NSArray* dataFiles = [smbClient listFiles:@"control_files/food_product_inventory/data" error:&e];
-#else
-                path = [NSString stringWithFormat:@"%@/control_files/food_product_inventory/data", resourcePath];
-                NSArray *tmpFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path  error:&e];
-                NSMutableArray *dataFiles = [NSMutableArray array];
-                for (NSString *cPath in tmpFiles) {
-                    NSString *fullPath = [NSString stringWithFormat:@"%@/%@", path, cPath];
-                    NSDictionary *dPath = [[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:&e];
-                    if ([[dPath objectForKey:NSFileType] isEqualToString:NSFileTypeRegular]) {
-                        [dataFiles addObject:cPath];
-                    }
-                }
-#endif
-                
+                NSArray* dataFiles = [localClient listFiles:@"control_files/food_product_inventory/data" error:&e];
                 CHECK_ERROR_AND_RETURN(e, error, @"Cannot list 'control_files/food_product_inventory/data' directory.",
                                        DataUpdateErrorCode, YES, NO);
+                
+                // Calculate the the delta progress
+                currentProgress = 0.05;
+                progressDelta = 0.2;
+                count = dataFiles.count;
+                
                 for (NSString *dataFile in dataFiles) {
                     if([dataFile hasSuffix:self.imageFileNameSuffix]
                        || [dataFile hasSuffix:self.voiceRecordingFileNameSuffix]) {
@@ -259,29 +260,29 @@
                                                    stringByAppendingPathComponent:dataFile];
                         NSString *smbPath = [NSString stringWithFormat:@"control_files/food_product_inventory/data/%@",
                                              dataFile];
-#ifndef USE_TEST_DATA
-                        NSData *data = [smbClient readFile:smbPath error:&e];
-#else
-                        path = [NSString stringWithFormat:@"%@/%@", resourcePath, smbPath];
-                        NSData *data = [[NSFileManager defaultManager] contentsAtPath:path];
-#endif
-                        
+                        NSData *data = [localClient readFile:smbPath error:&e];
                         CHECK_ERROR_AND_RETURN(e, error, @"Cannot read image and recording file.",
                                                DataUpdateErrorCode, YES, NO);
                         [data writeToFile:localDataFile atomically:YES];
+                        
+                        AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+                        [appDelegate.mediaFiles addObject:dataFile];
                     }
+                    
+                    // Update progress
+                    currentProgress += progressDelta/count;
+                    [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
                 }
                 
-                // Write acknowledgement file
-#ifndef USE_TEST_DATA
-                [smbClient writeFile:[NSString stringWithFormat:@"control_files/food_product_inventory/ack/%@", deviceID]
-                                data:[NSData data] error:&e];
-#else
-                path = [NSString stringWithFormat:@"%@/control_files/food_product_inventory/ack/%@", resourcePath, deviceID];
-                [[NSFileManager defaultManager] createFileAtPath:path contents:[NSData data] attributes:nil];
-#endif
-                CHECK_ERROR_AND_RETURN(e, error, @"Cannot write acknowledgement file.", DataUpdateErrorCode, YES, NO);
+                // Update progress
+                [self updateProgress:@0.25];
                 
+                if (![ackFiles containsObject:deviceID]) {
+                    // Write acknowledgement file
+                    [localClient writeFile:[NSString stringWithFormat:@"control_files/food_product_inventory/ack/%@", deviceID]
+                                      data:[NSData data] error:&e];
+                    CHECK_ERROR_AND_RETURN(e, error, @"Cannot write acknowledgement file.", DataUpdateErrorCode, YES, NO);
+                }
                 
                 /* Do not delete the files now ISSFIT-44
                  
@@ -296,12 +297,12 @@
                 if (canDelete) {
                     // Received all acknowledgements, delete the whole directory and recreate the control_files
                     // directory hierarchy
-                    [smbClient deleteDirectory:@"control_files/food_product_inventory" error:&e];
+                    [localClient deleteDirectory:@"control_files/food_product_inventory" error:&e];
                     CHECK_ERROR_AND_RETURN(e, error, @"Cannot delete 'food_product_inventory' directory.",
                                            DataUpdateErrorCode, YES, NO);
-                    if((![smbClient createDirectory:@"control_files/food_product_inventory" error:&e])
-                        ||(![smbClient createDirectory:@"control_files/food_product_inventory/ack" error:&e])
-                        ||(![smbClient createDirectory:@"control_files/food_product_inventory/data" error:&e])) {
+                    if((![localClient createDirectory:@"control_files/food_product_inventory" error:&e])
+                        ||(![localClient createDirectory:@"control_files/food_product_inventory/ack" error:&e])
+                        ||(![localClient createDirectory:@"control_files/food_product_inventory/data" error:&e])) {
                         CHECK_ERROR_AND_RETURN(e, error, @"Cannot create  control_files directory and its sub directories.",
                                                DataUpdateErrorCode, YES, NO);
                     }
@@ -312,57 +313,36 @@
         
         // Similar to food product inventory, apply the changes for user profiles in control_files/user_management
         // directory
-#ifndef USE_TEST_DATA
-        ackFiles = [smbClient listFiles:@"control_files/user_management/ack/" error:&e];
-#else
-        path = [NSString stringWithFormat:@"%@/control_files/user_management/ack/", resourcePath];
-        tmpFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path  error:&e];
-        [ackFiles removeAllObjects];
-        for (NSString *cPath in tmpFiles) {
-            NSString *fullPath = [NSString stringWithFormat:@"%@/%@", path, cPath];
-            NSDictionary *dPath = [[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:&e];
-            if ([[dPath objectForKey:NSFileType] isEqualToString:NSFileTypeRegular]) {
-                [ackFiles addObject:cPath];
-            }
-        }
-#endif
         
+        ackFiles = [localClient listFiles:@"control_files/user_management/ack/" error:&e];
         CHECK_ERROR_AND_RETURN(e, error, @"Cannot list 'control_files/user_management/ack/' directory.",
                                DataUpdateErrorCode, YES, NO);
-        if (![ackFiles containsObject:deviceID]) {
-#ifndef USE_TEST_DATA
-            NSArray* userDataFolder = [smbClient listFiles:@"control_files/user_management/data" error:&e];
-#else
-            path = [NSString stringWithFormat:@"%@/control_files/user_management/data", resourcePath];
-            NSArray *tmpFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path  error:&e];
-            NSMutableArray *userDataFolder = [NSMutableArray array];
-            for (NSString *cPath in tmpFiles) {
-                NSString *fullPath = [NSString stringWithFormat:@"%@/%@", path, cPath];
-                NSDictionary *dPath = [[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:&e];
-                if ([[dPath objectForKey:NSFileType] isEqualToString:NSFileTypeRegular]) {
-                    [userDataFolder addObject:cPath];
-                }
-            }
-#endif
+
+        if (![ackFiles containsObject:deviceID] || force) {
+            
+            NSArray* userDataFolder = [localClient listFiles:@"control_files/user_management/data" error:&e];
             CHECK_ERROR_AND_RETURN(e, error, @"Cannot read user data folder.", DataUpdateErrorCode, YES, NO);
             
             if([userDataFolder containsObject:@"data.csv"]) {
                 // The changes have not been applied yet
-#ifndef USE_TEST_DATA
-                NSData *data = [smbClient readFile:@"control_files/user_management/data/data.csv" error:&e];
-#else
-                path = [NSString stringWithFormat:@"%@/control_files/user_management/data/data.csv", resourcePath];
-                NSData *data = [[NSFileManager defaultManager] contentsAtPath:path];
-#endif
+                NSData *data = [localClient readFile:@"control_files/user_management/data/data.csv" error:&e];
                 CHECK_ERROR_AND_RETURN(e, error, @"Cannot read data.csv.", DataUpdateErrorCode, YES, NO);
                 CSVParser *parser = [[CSVParser alloc] init];
                 NSMutableArray *userProfileDataArray = [parser parseData:data];
                 NSMutableArray *userProfileNames = [NSMutableArray array];
                 BOOL headerFind = NO;
+                
+                // Calculate the the delta progress
+                currentProgress = 0.25;
+                progressDelta = 0.05;
+                count = userProfileDataArray.count;
+                int fileDataVersion = 0;
+                
                 for (NSMutableArray* userProfileData in userProfileDataArray) {
                     // skip header
                     if (!headerFind) {
                         headerFind = YES;
+                        fileDataVersion = [[userProfileData lastObject] integerValue];
                         continue;
                     }
                     NSString *userFullName = userProfileData[0];
@@ -384,64 +364,57 @@
                     user.dailyTargetFat = @([userProfileData[7] intValue]);
                     user.maxPacketsPerFoodProductDaily = @([userProfileData[8] intValue]);
                     user.profileImage = userProfileData[9];
-                    user.useLastUsedFoodProductFilter = [userProfileData[11] isEqualToString:@"YES"]?@YES:@NO;
+                    user.useLastUsedFoodProductFilter = [userProfileData[(fileDataVersion == 0 ? 11 : 10)]
+                                                         isEqualToString:@"YES"]?@YES:@NO;
                     
                     // saveUser will update existing user or save new user.
                     [userService saveUser:user error:&e];
                     
-                    NSSet *faceImages = [DataHelper convertNSStringToNSSet:userProfileData[10]
-                                                     withEntityDescription:[NSEntityDescription
-                                                                            entityForName:@"StringWrapper"
-                                                                            inManagedObjectContext:self.managedObjectContext]
-                                                    inManagedObjectContext:user.managedObjectContext withSeparator:@";"];
-                    user.faceImages = faceImages;
-                    [userService saveUser:user error:&e];
                     CHECK_ERROR_AND_RETURN(e, error, @"Cannot save user.", DataUpdateErrorCode, YES, NO);
+                    
+                    // Update progress
+                    currentProgress += progressDelta/count;
+                    [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
                 }
-
+                
+                // Update progress
+                [self updateProgress:@0.3];
+                
                 // Read image recording files in control_files/user_management/data and save in local file system
-#ifndef USE_TEST_DATA
-                NSArray* dataFiles = [smbClient listFiles:@"control_files/user_management/data/" error:&e];
-#else
-                path = [NSString stringWithFormat:@"%@/control_files/user_management/data/", resourcePath];
-                NSArray *tmpFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path  error:&e];
-                NSMutableArray *dataFiles = [NSMutableArray array];
-                for (NSString *cPath in tmpFiles) {
-                    NSString *fullPath = [NSString stringWithFormat:@"%@/%@", path, cPath];
-                    NSDictionary *dPath = [[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:&e];
-                    if ([[dPath objectForKey:NSFileType] isEqualToString:NSFileTypeRegular]) {
-                        [dataFiles addObject:cPath];
-                    }
-                }
-#endif
+                NSArray* dataFiles = [localClient listFiles:@"control_files/user_management/data/" error:&e];
                 CHECK_ERROR_AND_RETURN(e, error, @"Cannot list 'data' directory.", DataUpdateErrorCode, YES, NO);
+                
+                // Calculate the the delta progress
+                currentProgress = 0.3;
+                progressDelta = 0.2;
+                count = dataFiles.count;
+                
                 for (NSString *dataFile in dataFiles) {
                     if([dataFile hasSuffix:self.imageFileNameSuffix]
                        || [dataFile hasSuffix:self.voiceRecordingFileNameSuffix]) {
                         NSString *localDataFile = [[DataHelper getAbsoulteLocalDirectory:self.localFileSystemDirectory]
                                                    stringByAppendingPathComponent:dataFile];
                         NSString *smbPath = [NSString stringWithFormat:@"control_files/user_management/data/%@", dataFile];
-#ifndef USE_TEST_DATA
-                        NSData *data = [smbClient readFile:smbPath error:&e];
-#else
-                        path = [NSString stringWithFormat:@"%@/%@", resourcePath, smbPath];
-                        NSData *data = [[NSFileManager defaultManager] contentsAtPath:path];
-#endif
+                        NSData *data = [localClient readFile:smbPath error:&e];
                         CHECK_ERROR_AND_RETURN(e, error, @"Cannot read image and recording file.",
                                                DataUpdateErrorCode, YES, NO);
                         [data writeToFile:localDataFile atomically:YES];
+                        
+                        AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+                        [appDelegate.mediaFiles addObject:dataFile];
                     }
+                    
+                    // Update progress
+                    currentProgress += progressDelta/count;
+                    [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
                 }
                 
-                // Write acknowledgement file
-#ifndef USE_TEST_DATA
-                [smbClient writeFile:[NSString stringWithFormat:@"control_files/user_management/ack/%@", deviceID]
-                                data:[NSData data] error:&e];
-#else
-                path = [NSString stringWithFormat:@"%@/control_files/user_management/ack/%@", resourcePath, deviceID];
-                [[NSFileManager defaultManager] createFileAtPath:path contents:[NSData data] attributes:nil];
-#endif
-                CHECK_ERROR_AND_RETURN(e, error, @"Cannot write ack file.", DataUpdateErrorCode, YES, NO);
+                if (![ackFiles containsObject:deviceID]) {
+                    // Write acknowledgement file
+                    [localClient writeFile:[NSString stringWithFormat:@"control_files/user_management/ack/%@", deviceID]
+                                    data:[NSData data] error:&e];
+                    CHECK_ERROR_AND_RETURN(e, error, @"Cannot write ack file.", DataUpdateErrorCode, YES, NO);
+                }
                 
                 /* Do not delete the files now ISSFIT-44
                 
@@ -456,16 +429,16 @@
                 if (canDelete) {
                     // Received all acknowledgements, delete the whole directory and recreate the control_files
                     // directory hierarchy
-                    [smbClient deleteDirectory:@"control_files/user_management" error:&e];
+                    [localClient deleteDirectory:@"control_files/user_management" error:&e];
                     CHECK_ERROR_AND_RETURN(e, error, @"Cannot delete 'control_files/user_management' directory.",
                                            DataUpdateErrorCode, YES, NO);
-                    [smbClient createDirectory:@"control_files/user_management" error:&e];
+                    [localClient createDirectory:@"control_files/user_management" error:&e];
                     CHECK_ERROR_AND_RETURN(e, error, @"Cannot create 'control_files/user_management' directory.",
                                            DataUpdateErrorCode, YES, NO);
-                    [smbClient createDirectory:@"control_files/user_management/ack" error:&e];
+                    [localClient createDirectory:@"control_files/user_management/ack" error:&e];
                     CHECK_ERROR_AND_RETURN(e, error, @"Cannot create 'control_files/user_management/ack' directory.",
                                            DataUpdateErrorCode, YES, NO);
-                    [smbClient createDirectory:@"control_files/user_management/data" error:&e];
+                    [localClient createDirectory:@"control_files/user_management/data" error:&e];
                     CHECK_ERROR_AND_RETURN(e, error, @"Cannot create 'control_files/user_management/data' directory.",
                                            DataUpdateErrorCode, YES, NO);
                 }
@@ -478,18 +451,20 @@
         CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
     }
     
+    // Update progress
+    [self updateProgress:@0.5];
+    
     // Unlock the managedObjectContext
     [[self managedObjectContext] unlock];
-    
-    
-    // Finally disconnect from shared file server
-#ifndef USE_TEST_DATA
-    [smbClient disconnect:&e];
-    
-    CHECK_ERROR_AND_RETURN(e, error, @"Cannot disconnect.", DataUpdateErrorCode, NO, NO);
-#endif
-    
+
     [LoggingHelper logMethodExit:methodName returnValue:@YES];
     return YES;
 }
+
+- (void) updateProgress:(NSNumber *)progress {
+    NSDictionary *progressParam = @{@"progress": progress};
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"InitialLoadingProgressEvent" object:progressParam];
+}
+
+
 @end

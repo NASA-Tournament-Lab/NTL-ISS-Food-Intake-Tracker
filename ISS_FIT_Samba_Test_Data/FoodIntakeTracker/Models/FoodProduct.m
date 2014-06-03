@@ -35,7 +35,7 @@
 @dynamic protein;
 @dynamic carb;
 @dynamic fat;
-@dynamic category;
+@dynamic categories;
 @dynamic origin;
 @dynamic images;
 @dynamic quantity;

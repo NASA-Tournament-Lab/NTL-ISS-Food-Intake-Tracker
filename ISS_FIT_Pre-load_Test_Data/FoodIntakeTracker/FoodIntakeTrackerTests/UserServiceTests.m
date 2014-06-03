@@ -46,7 +46,6 @@
     user1.dailyTargetFluid = @100;
     user1.dailyTargetEnergy = @1000;
     user1.dailyTargetSodium = @20;
-    user1.faceImages = [NSMutableSet set];
     user1.lastUsedFoodProductFilter = nil;
     user1.useLastUsedFoodProductFilter = @NO;
     user1.maxPacketsPerFoodProductDaily = @2;
@@ -60,7 +59,6 @@
     user2.dailyTargetFluid = @200;
     user2.dailyTargetEnergy = @2000;
     user2.dailyTargetSodium = @50;
-    user2.faceImages = [NSMutableSet set];
     user2.lastUsedFoodProductFilter = nil;
     user2.useLastUsedFoodProductFilter = @NO;
     user2.maxPacketsPerFoodProductDaily = @2;
@@ -162,7 +160,6 @@
     user.dailyTargetFluid = @100;
     user.dailyTargetEnergy = @1000;
     user.dailyTargetSodium = @20;
-    user.faceImages = [NSMutableSet set];
     user.lastUsedFoodProductFilter = nil;
     user.useLastUsedFoodProductFilter = @NO;
     user.maxPacketsPerFoodProductDaily = @2;
@@ -191,7 +188,6 @@
     user.deleted = @NO;
     user.dailyTargetEnergy = @1000;
     user.dailyTargetSodium = @20;
-    user.faceImages = [NSMutableSet set];
     user.lastUsedFoodProductFilter = nil;
     user.useLastUsedFoodProductFilter = @NO;
     user.maxPacketsPerFoodProductDaily = @2;

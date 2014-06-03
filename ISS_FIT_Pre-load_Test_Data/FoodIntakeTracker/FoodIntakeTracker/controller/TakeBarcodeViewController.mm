@@ -22,6 +22,7 @@
 #import "TakeBarcodeViewController.h"
 #import "TakePhotoViewController.h"
 #import "Helper.h"
+#import "DataHelper.h"
 
 #import <MultiFormatReader.h>
 #import "AppDelegate.h"
@@ -137,6 +138,9 @@
     [self addSelectedFoodsToConsumption];
     self.resultView.hidden = YES;
     [self.foodAddedPopup setHidden:NO];
+    
+    self.imgFood.image = nil;
+    [resultFoods removeAllObjects];
 }
 
 #pragma mark - UISearchBarDelegate methods
@@ -157,9 +161,9 @@
     [resultFoods addObject:foodProduct];
     
     self.resultView.hidden = NO;
-    self.imgFood.image = [UIImage imageNamed:foodProduct.productProfileImage];
+    self.imgFood.image = [Helper loadImage:foodProduct.productProfileImage];
     self.lblFoodName.text = foodProduct.name;
-    self.lblFoodCategory.text = foodProduct.category;
+    self.lblFoodCategory.text = [DataHelper convertStringWrapperNSSetToNSString:foodProduct.categories withSeparator:@", "];
     self.lblCalories.text = [NSString stringWithFormat:@"%@",foodProduct.energy];
     self.lblSodium.text = [NSString stringWithFormat:@"%@",foodProduct.sodium];
     self.lblFluid.text = [NSString stringWithFormat:@"%@",foodProduct.fluid];
@@ -190,6 +194,8 @@
     FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
     NSError *error;
     
+    NSLog(@"Barcode scan results: %@", result);
+    
     FoodProduct* foodProduct = [foodProductService getFoodProductByBarcode:appDelegate.loggedInUser
                                                                    barcode:result
                                                                      error:&error];
@@ -206,8 +212,9 @@
         [resultFoods addObject:foodProduct];
         
         self.resultView.hidden = NO;
-        self.imgFood.image = [UIImage imageNamed:foodProduct.productProfileImage];
+        self.imgFood.image = [Helper loadImage:foodProduct.productProfileImage];
         self.lblFoodName.text = foodProduct.name;
+        self.lblFoodCategory.text = [DataHelper convertStringWrapperNSSetToNSString:foodProduct.categories withSeparator:@", "];
         self.lblCalories.text = [NSString stringWithFormat:@"%@",foodProduct.energy];
         self.lblSodium.text = [NSString stringWithFormat:@"%@",foodProduct.sodium];
         self.lblFluid.text = [NSString stringWithFormat:@"%@",foodProduct.fluid];

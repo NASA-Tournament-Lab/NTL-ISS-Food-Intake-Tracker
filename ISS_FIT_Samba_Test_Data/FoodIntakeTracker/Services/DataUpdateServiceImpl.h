@@ -18,6 +18,10 @@
 //
 //  Created by LokiYang on 2013-07-27.
 //
+//  Updated by pvmagacho on 04/19/2014
+//  F2Finish - NASA iPad App Updates
+//
+
 
 #import <Foundation/Foundation.h>
 #import "BaseCommunicationDataService.h"
@@ -46,4 +50,10 @@
  @discussion This value represents voice recording file name suffix.
  */
 @property (nonatomic, readonly, strong) NSString *voiceRecordingFileNameSuffix;
+
+/*! 
+ @description Flag to cancel update. 
+ */
+@property (nonatomic, assign) BOOL cancelUpdate;
+
 @end

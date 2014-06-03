@@ -108,3 +108,16 @@
 +(NSDate *)convertDateTimeToDate:(NSDate *)date time:(NSDate *)time;
 
 @end
+
+@interface NSString (CustomFunction)
+
+- (NSString *) trimString;
+
+@end
+
+@interface NSManagedObject (CustomFunction)
+
+- (NSString *) getSavedObjectId;
+- (NSSet *) categoryToSet:(NSString *) category;
+
+@end

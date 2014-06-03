@@ -23,9 +23,13 @@
 #import <OpenEars/OpenEarsEventsObserver.h>
 #import <OpenEars/PocketsphinxController.h>
 
+#import <AVFoundation/AVFoundation.h>
+
 @class Food;
 @class CustomTabBarViewController;
 @class BNPieChart;
+@class FoodConsumptionRecord;
+@class AdhocFoodProduct;
 
 /**
  * @protocol DateListViewDelegate
@@ -120,7 +124,8 @@
  * @since 1.0
  */
 @interface ConsumptionViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate,
-    CalendarViewDelegate, DateListViewDelegate, UIPopoverControllerDelegate, OpenEarsEventsObserverDelegate>
+    UIGestureRecognizerDelegate, UIPopoverControllerDelegate, AVAudioRecorderDelegate,
+    OpenEarsEventsObserverDelegate, CalendarViewDelegate, DateListViewDelegate>
 
 /* the tab bar controller */
 @property (weak, nonatomic) CustomTabBarViewController *customTabBarController;

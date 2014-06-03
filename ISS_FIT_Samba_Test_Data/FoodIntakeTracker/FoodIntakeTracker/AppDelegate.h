@@ -18,6 +18,12 @@
 //
 //  Created by lofzcx 06/12/2013
 //
+//  Updated by pvmagacho on 04/19/2014
+//  F2Finish - NASA iPad App Updates
+//
+//  Updated by pvmagacho on 05/14/2014
+//  F2Finish - NASA iPad App Updates - Round 3
+//
 
 #import <UIKit/UIKit.h>
 #import "UserService.h"
@@ -28,6 +34,7 @@
 #import "DataUpdateService.h"
 #import "SynchronizationService.h"
 #import "TouchWindow.h"
+#import "CustomTabBarViewController.h"
 
 /**
  * the application delegate
@@ -35,11 +42,11 @@
  * Changes in 1.1
  * - Added business logic
  *
- * @author lofzcx, flying2hk, subchap
- * @version 1.1
+ * @author lofzcx, flying2hk, subchap, pvmagacho
+ * @version 1.2
  * @since 1.0
  */
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate>
 
 /* the window */
 @property (strong, nonatomic) TouchWindow *window;
@@ -123,12 +130,20 @@
 
 /*!
  @discussion Represents configuration data.  */
-@property (strong, nonatomic) NSDictionary *configuration;
+@property (strong, nonatomic) NSMutableDictionary *configuration;
 
 /*!
  @discussion Represents whether the app should auto-logout.
  */
 @property (assign, nonatomic) BOOL shouldAutoLogout;
+
+/*!
+ @discussion The navigation controller.
+ */
+@property (nonatomic,strong) CustomTabBarViewController *tabBarViewController;
+
+@property (nonatomic, strong) NSMutableArray *mediaFiles;
+
 
 + (AppDelegate *) shareDelegate;
 
@@ -148,11 +163,11 @@
 /*
  * This method will generate food consumption summary.
  */
-- (void) generateSummary;
+//- (void) generateSummary;
 
 /*
  * This method will do data sync/update.
  */
-- (void) doSyncUpdate;
+//- (void) doSyncUpdate;
 
 @end
