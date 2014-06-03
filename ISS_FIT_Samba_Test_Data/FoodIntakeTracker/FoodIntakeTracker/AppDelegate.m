@@ -21,9 +21,12 @@
 //  Updated by pvmagacho on 05/07/2014
 //  F2Finish - NASA iPad App Updates
 //
+<<<<<<< HEAD
 //  Updated by pvmagacho on 05/14/2014
 //  F2Finish - NASA iPad App Updates - Round 3
 //
+=======
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
 
 #import "AppDelegate.h"
 #import "LockServiceImpl.h"
@@ -62,12 +65,18 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     NSLock *lock;
     /*! Synchronization status */
     SyncStatus status;
+<<<<<<< HEAD
     /*! Dispatch queues */
     dispatch_queue_t dataSyncUpdateQ;
 }
 
 @synthesize tabBarViewController;
 @synthesize mediaFiles;
+=======
+}
+
+@synthesize tabBarViewController;
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
 
 - (TouchWindow *)window
 {
@@ -105,12 +114,18 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     status = SyncStatusNone;
+<<<<<<< HEAD
     dataSyncUpdateQ = dispatch_queue_create("Data Sync Update", NULL);
    
     lock = [[NSLock alloc] init];
     [lock setName:@"UpdateLock"];
     
     self.mediaFiles = [[NSUserDefaults standardUserDefaults] objectForKey:@"MediaFilesArray"];
+=======
+    
+    lock = [[NSLock alloc] init];
+    [lock setName:@"UpdateLock"];
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
     
     //http://stackoverflow.com/questions/17678881/how-to-change-status-bar-text-color-in-ios-7
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
@@ -128,6 +143,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     // Load configurations and create services
     NSString *configBundle = [[NSBundle mainBundle] pathForResource:@"Configuration" ofType:@"plist"];
     if (configBundle) {
+<<<<<<< HEAD
         self.configuration = [[NSUserDefaults standardUserDefaults] objectForKey:@"CurrentConfiguration"];
         if (!self.configuration) {
             self.configuration = [NSMutableDictionary dictionaryWithDictionary:[NSDictionary dictionaryWithContentsOfFile:configBundle]];
@@ -137,6 +153,12 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
             [self modifyCurrentConfiguration];
             [self doSambaChange];
         }
+=======
+        self.configuration = [NSMutableDictionary dictionaryWithDictionary:[NSDictionary dictionaryWithContentsOfFile:configBundle]];
+        [self.configuration setObject:[standardUserDefaults objectForKey:@"address_preference"] forKey:@"SharedFileServerPath"];
+        [self.configuration setObject:[standardUserDefaults objectForKey:@"user_preference"] forKey:@"SharedFileServerUsername"];
+        [self.configuration setObject:[standardUserDefaults objectForKey:@"password_preference"] forKey:@"SharedFileServerPassword"];
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         
         self.shouldAutoLogout = NO;
         loadingFinished = NO;
@@ -184,7 +206,10 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doSyncUpdate:)
                                                      name:@"DataSyncUpdateInterval" object:nil];
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         return YES;
     } else {
         return NO;
@@ -283,11 +308,17 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
  * This method will generate food consumption summary.
  */
 - (void) generateSummary:(NSDate *) date {
+<<<<<<< HEAD
     dispatch_async(dataSyncUpdateQ, ^{
         @autoreleasepool {
             NSDate *now = [NSDate date];
             NSLog(@"Start summary at   : %@", now);
             
+=======
+    dispatch_queue_t generateSummaryQ = dispatch_queue_create("Generate Summary", NULL);
+    dispatch_async(generateSummaryQ, ^{
+        @autoreleasepool {
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
             NSError *error = nil;
             NSCalendar *calendar = [NSCalendar currentCalendar];
             [calendar setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
@@ -311,7 +342,11 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                 components.second = 59;
                 endDate = [calendar dateFromComponents:components];
             } else if ([self.summaryGenerationFrequency isEqualToString:@"Daily"]) {
+<<<<<<< HEAD
                 NSDateComponents *components = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|
+=======
+                NSDateComponents *components = [calendar components:NSYearCalendarUnit|
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
                                                 NSDayCalendarUnit
                                                            fromDate:date];
                 components.hour = 0;
@@ -349,10 +384,16 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                                                      startDate:startDate
                                                        endDate:endDate
                                                          error:&error];
+<<<<<<< HEAD
             
             NSLog(@"Finished summary at: %@", now);
         }
     });
+=======
+        }
+    });
+    dispatch_release(generateSummaryQ);
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
 }
 
 /*!
@@ -363,7 +404,12 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         return;
     }
     
+<<<<<<< HEAD
     dispatch_async(dataSyncUpdateQ, ^{
+=======
+    dispatch_queue_t generateSummaryQ = dispatch_queue_create("Generate Full Summary", NULL);
+    dispatch_async(generateSummaryQ, ^{
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         @autoreleasepool {
             NSError *error = nil;
             NSArray *users = [self.userService filterUsers:@"" error:&error];
@@ -399,6 +445,11 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                 [self.dataUpdateService update:&error];
                 if (!error) {
                     [self.synchronizationService synchronize:&error];
+<<<<<<< HEAD
+=======
+                    
+                    [self generateSummary:notif.object];
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
                 }
                 
                 [[NSUserDefaults standardUserDefaults] setObject:self.mediaFiles forKey:@"MediaFilesArray"];
@@ -418,7 +469,11 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
 - (void) initialLoad {
     status = SyncStatusStarted;
     
+<<<<<<< HEAD
     if (self.mediaFiles && [[NSUserDefaults standardUserDefaults] boolForKey:@"HasLaunchedOnce"]) {
+=======
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"HasLaunchedOnce"]) {
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         loadingFinished = YES;
         NSDictionary *loadingEndParam = @{@"success": [NSNumber numberWithBool:YES]};
         [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
@@ -431,6 +486,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         return;
     }
     
+<<<<<<< HEAD
     if (!self.mediaFiles) {
         self.mediaFiles = [NSMutableArray array];
     }
@@ -448,10 +504,21 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
             [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingBeginEvent object:nil];
         }
     });
+=======
+    loadingFinished = NO;
+    __block BOOL syncSuccessful = YES;
+    
+    if (changed) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:LoadingNewBeginEvent object:nil];
+    } else {
+        [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingBeginEvent object:nil];
+    }
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
     
     dispatch_queue_t initialLoadQ = dispatch_queue_create("InitialLoad", NULL);
     dispatch_async(initialLoadQ, ^{
         @autoreleasepool {
+<<<<<<< HEAD
             NSLog(@"Initial load at: %@", [NSDate date]);
             
             [lock lock];
@@ -477,6 +544,25 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
             @catch (NSException *exception) {
                 syncSuccessful = NO;
                 [LoggingHelper logException:@"initialLoad" error:exception];
+=======
+            
+            NSLog(@"Lock before update");
+            [lock lock];
+            
+            NSError *error = nil;
+            syncSuccessful = [self.dataUpdateService update:&error force:YES];
+            [LoggingHelper logError:@"initialLoad" error:error];
+            if (syncSuccessful) {
+                syncSuccessful = [self.synchronizationService synchronize:&error];
+                [LoggingHelper logError:@"initialLoad" error:error];
+                
+                if (syncSuccessful) {
+                    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasLaunchedOnce"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    
+                    [self generateFullSummary];
+                }
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
             }
             
             if ([self.dataUpdateService cancelUpdate]) {
@@ -491,6 +577,11 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                     status = syncSuccessful ? SyncStatusFinished : SyncStatusError;
                 });
             }
+<<<<<<< HEAD
+=======
+            
+            NSLog(@"Unlock after update");
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
             [lock unlock];
         }
     });
@@ -515,7 +606,11 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         NSString *key = [prefSpecification objectForKey:@"Key"];
         if(key) {
             [defaultsToRegister setObject:[prefSpecification objectForKey:@"DefaultValue"] forKey:key];
+<<<<<<< HEAD
             // NSLog(@"writing as default %@ to the key %@",[prefSpecification objectForKey:@"DefaultValue"],key);
+=======
+            NSLog(@"writing as default %@ to the key %@",[prefSpecification objectForKey:@"DefaultValue"],key);
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         }
     }
     
@@ -523,8 +618,11 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+<<<<<<< HEAD
 #pragma mark - Configuration change methods
 
+=======
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
 /*!
  * Handle change in ISS Fit settings.
  */
@@ -533,12 +631,29 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         return;
     }
     
+<<<<<<< HEAD
     if ([self isSambaServerChanged]) {
         [self doSambaChange];
+=======
+    NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    if (![self.configuration[@"SharedFileServerPath"] isEqualToString:[standardUserDefaults objectForKey:@"address_preference"]] ||
+        ![self.configuration[@"SharedFileServerUsername"] isEqualToString:[standardUserDefaults objectForKey:@"user_preference"]] ||
+        ![self.configuration[@"SharedFileServerPassword"] isEqualToString:[standardUserDefaults objectForKey:@"password_preference"]]) {
+        changed = YES;
+        
+        [self.dataUpdateService setCancelUpdate:YES];
+        
+        [self.tabBarViewController logout];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:BackupBeginEvent object:nil];
+        
+        [self performSelectorInBackground:@selector(resetData) withObject:nil];
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
     }
 }
 
 /*!
+<<<<<<< HEAD
  * Reset stored data in application and load data from new samba server.
  */
 - (void)resetData {
@@ -547,10 +662,21 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         [NSThread sleepForTimeInterval:1];
         
         NSLog(@"Backing up data.");
+=======
+ * Reset stored data in application.
+ */
+- (void)resetData {
+    NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    NSError *error = nil;
+    if (loadingFinished) {
+        [NSThread sleepForTimeInterval:1];
+        
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         [self.synchronizationService backup:&error];
     }
     
     if (error) {
+<<<<<<< HEAD
         [LoggingHelper logError:@"resetData" error:error];
         return;
     }
@@ -566,6 +692,24 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     
     // change current configuration
     [self modifyCurrentConfiguration];
+=======
+        return;
+    }
+    
+    NSLog(@"Lock before reset");
+    [lock lock];
+    [DBHelper resetPersistentStore];
+    NSLog(@"UnLock after reset");
+    [lock unlock];
+    
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"HasLaunchedOnce"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"LastSynchronizedTime"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    [self.configuration setObject:[standardUserDefaults objectForKey:@"address_preference"] forKey:@"SharedFileServerPath"];
+    [self.configuration setObject:[standardUserDefaults objectForKey:@"user_preference"] forKey:@"SharedFileServerUsername"];
+    [self.configuration setObject:[standardUserDefaults objectForKey:@"password_preference"] forKey:@"SharedFileServerPassword"];
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
     
     self.lockService = [[LockServiceImpl alloc] initWithConfiguration:self.configuration];
     self.userService = [[UserServiceImpl alloc] initWithConfiguration:self.configuration
@@ -576,6 +720,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     self.synchronizationService = [[SynchronizationServiceImpl alloc] initWithConfiguration:self.configuration];
     self.dataUpdateService = [[DataUpdateServiceImpl alloc] initWithConfiguration:self.configuration];
     
+<<<<<<< HEAD
     // reset media files array
     [self.mediaFiles removeAllObjects];
     self.mediaFiles = nil;
@@ -654,6 +799,11 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         
         [self performSelectorInBackground:@selector(resetData) withObject:nil];
     }
+=======
+    [self initialLoad];
+    
+    changed = NO;
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
 }
 
 @end

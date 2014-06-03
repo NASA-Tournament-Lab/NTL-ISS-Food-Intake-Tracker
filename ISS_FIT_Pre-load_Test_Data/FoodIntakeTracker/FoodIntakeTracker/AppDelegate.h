@@ -139,9 +139,12 @@
  */
 @property (nonatomic,strong) CustomTabBarViewController *tabBarViewController;
 
+<<<<<<< HEAD
 @property (nonatomic, strong) NSMutableArray *mediaFiles;
 
 
+=======
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
 + (AppDelegate *) shareDelegate;
 
 /*

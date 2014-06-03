@@ -69,7 +69,11 @@ static dispatch_once_t onceToken = 0;
         [threadDictionary setValue:moc forKey:key];
     } else {
         if (existMoc.persistentStoreCoordinator != [self persistentStoreCoordinator]) {
+<<<<<<< HEAD
             // NSLog(@"Recreate");
+=======
+            NSLog(@"Recreate");            
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
             NSManagedObjectContext *moc = [self createNewMoc];
             [threadDictionary setValue:moc forKey:key];
             existMoc = nil;

@@ -229,6 +229,7 @@ static NSArray *monthNameArray = nil;
             stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
 }
 
+<<<<<<< HEAD
 @end
 
 @implementation NSManagedObject (CustomFunction)
@@ -247,4 +248,6 @@ static NSArray *monthNameArray = nil;
     return [NSSet setWithObject:stringWrapper];
 }
 
+=======
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
 @end

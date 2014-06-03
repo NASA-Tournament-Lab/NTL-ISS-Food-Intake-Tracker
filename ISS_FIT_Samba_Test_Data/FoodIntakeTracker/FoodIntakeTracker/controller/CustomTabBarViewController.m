@@ -382,12 +382,18 @@
     }
     if (date) {
         NSDateFormatter *f = [[NSDateFormatter alloc] init];
+<<<<<<< HEAD
         [f setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US"]];
+=======
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         [f setDateStyle:NSDateFormatterLongStyle];
         [f setTimeStyle:NSDateFormatterMediumStyle];
         
         @synchronized(self) {
+<<<<<<< HEAD
             NSLog(@"\tUpdated last sync to %@", date);
+=======
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
             unichar chr[1] = {'\n'};
             NSString *singleCR = [NSString stringWithCharacters:(const unichar *)chr length:1];
             NSString *text = [NSString stringWithFormat:@"Last Sync:%@%@", singleCR,

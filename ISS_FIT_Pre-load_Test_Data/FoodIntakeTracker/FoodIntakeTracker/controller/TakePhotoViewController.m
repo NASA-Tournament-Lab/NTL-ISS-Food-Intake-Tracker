@@ -303,6 +303,7 @@
     UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Cancel" message:@"Would like to cancel photo?" delegate:self
                                               cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil];
     [alertView show];
+<<<<<<< HEAD
 }
 
 /**
@@ -321,6 +322,8 @@
     
     [self performSelector:@selector(showClearLabel) withObject:nil afterDelay:1];
     
+=======
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
 }
 
 #pragma mark - Picker delegate
@@ -521,6 +524,37 @@
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return newImage;
+}
+
+#pragma mark - PopoverControllerDelegate
+
+- (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
+    return YES;
+}
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    self.takeButton.hidden = NO;
+    self.lblTakeButtonTitle.hidden = NO;
+}
+
+#pragma mark - AlertView delegate
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        self.imgCenter.hidden = NO;
+        self.takeButton.hidden = NO;
+        self.lblTakeButtonTitle.hidden = NO;
+        self.lblTakeButtonTitle.text = @"Take Photo";
+        [self.txtFoodName resignFirstResponder];
+        
+        [clearCover removeFromSuperview];
+        clearCover = nil;
+        self.resultView.hidden = YES;
+        self.foodAddedPopup.hidden = YES;
+        self.btnAdd.hidden = YES;
+        self.resultsView.hidden = YES;
+        [self.btnResults setSelected:NO];
+    }
 }
 
 @end

@@ -55,12 +55,18 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     BOOL loadingFinished;
     /*! Synchronization status */
     SyncStatus status;
+<<<<<<< HEAD
     /*! Dispatch queues */
     dispatch_queue_t dataSyncUpdateQ;
 }
 
 @synthesize tabBarViewController;
 @synthesize mediaFiles;
+=======
+}
+
+@synthesize tabBarViewController;
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
 
 - (TouchWindow *)window
 {
@@ -98,9 +104,12 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
      status = SyncStatusNone;
+<<<<<<< HEAD
      dataSyncUpdateQ = dispatch_queue_create("Data Sync Update", NULL);
 
     self.mediaFiles = [[NSUserDefaults standardUserDefaults] objectForKey:@"MediaFilesArray"];
+=======
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
     //http://stackoverflow.com/questions/17678881/how-to-change-status-bar-text-color-in-ios-7
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
     
@@ -257,11 +266,17 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
  * This method will generate food consumption summary.
  */
 - (void) generateSummary:(NSDate *) date {
+<<<<<<< HEAD
     dispatch_async(dataSyncUpdateQ, ^{
         @autoreleasepool {
             NSDate *now = [NSDate date];
             NSLog(@"Start summary at   : %@", now);
             
+=======
+    dispatch_queue_t generateSummaryQ = dispatch_queue_create("Generate Summary", NULL);
+    dispatch_async(generateSummaryQ, ^{
+        @autoreleasepool {
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
             NSError *error = nil;
             NSCalendar *calendar = [NSCalendar currentCalendar];
             [calendar setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
@@ -285,7 +300,11 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                 components.second = 59;
                 endDate = [calendar dateFromComponents:components];
             } else if ([self.summaryGenerationFrequency isEqualToString:@"Daily"]) {
+<<<<<<< HEAD
                 NSDateComponents *components = [calendar components:NSYearCalendarUnit|NSMonthCalendarUnit|
+=======
+                NSDateComponents *components = [calendar components:NSYearCalendarUnit|
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
                                                 NSDayCalendarUnit
                                                            fromDate:date];
                 components.hour = 0;
@@ -323,10 +342,16 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                                                      startDate:startDate
                                                        endDate:endDate
                                                          error:&error];
+<<<<<<< HEAD
             
             NSLog(@"Finished summary at: %@", now);
         }
     });
+=======
+        }
+    });
+    dispatch_release(generateSummaryQ);
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
 }
 
 /*!
@@ -337,7 +362,12 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         return;
     }
     
+<<<<<<< HEAD
     dispatch_async(dataSyncUpdateQ, ^{
+=======
+    dispatch_queue_t generateSummaryQ = dispatch_queue_create("Generate Full Summary", NULL);
+    dispatch_async(generateSummaryQ, ^{
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         @autoreleasepool {
             NSError *error = nil;
             NSArray *users = [self.userService filterUsers:@"" error:&error];
@@ -373,6 +403,11 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                 [self.dataUpdateService update:&error];
                 if (!error) {
                     [self.synchronizationService synchronize:&error];
+<<<<<<< HEAD
+=======
+                    
+                    [self generateSummary:notif.object];
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
                 }
                 
                 [[NSUserDefaults standardUserDefaults] setObject:self.mediaFiles forKey:@"MediaFilesArray"];
@@ -392,7 +427,11 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
 - (void) initialLoad {
     status = SyncStatusStarted;
     
+<<<<<<< HEAD
     if (self.mediaFiles && [[NSUserDefaults standardUserDefaults] boolForKey:@"HasLaunchedOnce"]) {
+=======
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"HasLaunchedOnce"]) {
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         loadingFinished = YES;
         NSDictionary *loadingEndParam = @{@"success": [NSNumber numberWithBool:YES]};
         [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
@@ -405,6 +444,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         return;
     }
     
+<<<<<<< HEAD
     if (!self.mediaFiles) {
         self.mediaFiles = [NSMutableArray array];
     }
@@ -430,6 +470,8 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         return;
     }
     
+=======
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
     loadingFinished = NO;
     __block BOOL syncSuccessful = YES;
     [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingBeginEvent object:nil];

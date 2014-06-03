@@ -230,6 +230,7 @@ static NSArray *monthNameArray = nil;
 }
 
 @end
+<<<<<<< HEAD
 
 @implementation NSManagedObject (CustomFunction)
 
@@ -248,3 +249,5 @@ static NSArray *monthNameArray = nil;
 }
 
 @end
+=======
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0

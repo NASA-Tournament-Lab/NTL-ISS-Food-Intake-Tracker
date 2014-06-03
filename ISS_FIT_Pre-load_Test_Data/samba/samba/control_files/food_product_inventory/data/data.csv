@@ -1,4 +1,5 @@
 Food Product Name,Category,Origin,Barcode,Fluid,Energy,Sodium,Protein,Carb,Fat,Profile Image,Deleted,1
+<<<<<<< HEAD
 Almond M&Ms,Vegetables / Sides,NASA Foods,11456588,1.005,217,20,3.428,25.619,11.644,Almond M&Ms.jpg,NO,
 Apple Cider,Drink,NASA Foods,11456589,224.853,144,10,0.262,36.427,0.241,Apple Cider.jpg,NO,
 Brownie,Dessert & Snacks,NASA Foods,11456590,7.933,191,12,2.537,24.221,10.6,Brownie.jpg,NO,
@@ -84,3 +85,928 @@ Ketchup,Vegetables / Sides,NASA Foods,,6.224,9,100,0.157,2.264,0.028,Ketchup.jpg
 Mustard,Vegetables / Sides,NASA Foods,,4.133,3,57,0.219,0.267,0.201,Mustard.jpg,NO
 Japanese Worcester Sauce,Vegetables / Sides,JAXA Foods,,4.5,4,56,0,1.115,0,Japanese Worcester Sauce.jpg,NO
 Honey,Vegetables / Sides,NASA Foods,,2.394,43,1,0.042,11.536,0,Honey.jpg,NO
+=======
+French Toast ,Breakfast,ESA Foods,,58.106,279.636,82.578,6.168,36.751,12.361,,NO
+Omelet Cake with Tomato and Herbs ,Breakfast,ESA Foods,,114.3,195,442.05,14.25,8.55,10.8,,NO
+Apple Jelly ,Breakfast,NASA Foods,,8.273,79.664,6.489,0.023,19.871,0.003,,NO
+Bran Chex ,Breakfast,NASA Foods,,51.528,134.8,245.624,5.064,28.228,0.192,,NO
+Breakfast Sausage Links ,Breakfast,NASA Foods,FT27C692J,46.324,172.38,684.863,13.049,5.234,11.029,,NO
+Breakfast Sausage Links ,Breakfast,NASA Foods,FT27C697J,46.324,172.38,684.863,13.049,5.234,11.029,,NO
+Breakfast Sausage Links ,Breakfast,NASA Foods,FT27C693J,46.324,172.38,684.863,13.049,5.234,11.029,,NO
+Breakfast Sausage Links ,Breakfast,NASA Foods,FT27C694J,46.324,172.38,684.863,13.049,5.234,11.029,,NO
+Breakfast Sausage Links ,Breakfast,NASA Foods,FT27C702J,46.324,172.38,684.863,13.049,5.234,11.029,,NO
+Breakfast Sausage Links ,Breakfast,NASA Foods,FT27C703J,46.324,172.38,684.863,13.049,5.234,11.029,,NO
+Breakfast Sausage Links ,Breakfast,NASA Foods,FT27C682J,46.324,172.38,684.863,13.049,5.234,11.029,,NO
+Cheese Grits ,Breakfast,NASA Foods,,111.26,132.06,185.7,6.15,18.332,3.72,,NO
+Cheerios,Breakfast,NASA Foods,FR70A007J,51.555,91,109,4.331,17.95,0.208,,NO
+Cornflakes ,Breakfast,NASA Foods,FR11B759J,0,147.6,210.7,4.476,32.324,0.048,,NO
+Cornflakes ,Breakfast,NASA Foods,FR11B846J,0,147.6,210.7,4.476,32.324,0.048,,NO
+Cornflakes ,Breakfast,NASA Foods,FR11B774J,0,147.6,210.7,4.476,32.324,0.048,,NO
+Cornflakes ,Breakfast,NASA Foods,FR11C106J,0,147.6,210.7,4.476,32.324,0.048,,NO
+Granola ,Breakfast,NASA Foods,FR15C565J,53.37,312.456,172.992,10.424,54.424,5.896,,NO
+Granola ,Breakfast,NASA Foods,FR15C561J,53.37,312.456,172.992,10.424,54.424,5.896,,NO
+Granola ,Breakfast,NASA Foods,FR15C701J,53.37,312.456,172.992,10.424,54.424,5.896,,NO
+Granola ,Breakfast,NASA Foods,FR15C562J,53.37,312.456,172.992,10.424,54.424,5.896,,NO
+Granola w/ Raisins ,Breakfast,NASA Foods,,54.56,315.2,180.76,9.736,52.976,7.12,,NO
+Grape Jelly ,Breakfast,NASA Foods,,8.338,78.4,2.951,0.048,19.51,0.011,,NO
+Grits w/Butter ,Breakfast,NASA Foods,,125.376,160.77,179.617,3.602,21.2,6.831,,NO
+Maple Top Muffin,Breakfast,NASA Foods,FN07A291J,10.96,254,330,2.802,35.439,11.154,,NO
+Maple Top Muffin,Breakfast,NASA Foods,FN07A262J,10.96,254,330,2.802,35.439,11.154,,NO
+Maple Top Muffin,Breakfast,NASA Foods,FN07A255J,10.96,254,330,2.802,35.439,11.154,,NO
+Maple Top Muffin,Breakfast,NASA Foods,FN07A152J,10.96,254,330,2.802,35.439,11.154,,NO
+Maple Top Muffin,Breakfast,NASA Foods,FN07A254J,10.96,254,330,2.802,35.439,11.154,,NO
+Mexican Scrambled Eggs,Breakfast,NASA Foods,FR13C589J,75.704,162.448,207.954,10.639,3.283,11.875,,NO
+Mexican Scrambled Eggs,Breakfast,NASA Foods,FR13C521J,75.704,162.448,207.954,10.639,3.283,11.875,,NO
+Mexican Scrambled Eggs,Breakfast,NASA Foods,FR13C548J,75.704,162.448,207.954,10.639,3.283,11.875,,NO
+Mexican Scrambled Eggs,Breakfast,NASA Foods,FR13C564J,75.704,162.448,207.954,10.639,3.283,11.875,,NO
+Mexican Scrambled Eggs,Breakfast,NASA Foods,FR13C596J,75.704,162.448,207.954,10.639,3.283,11.875,,NO
+Mexican Scrambled Eggs,Breakfast,NASA Foods,FR13C588J,75.704,162.448,207.954,10.639,3.283,11.875,,NO
+Mexican Scrambled Eggs,Breakfast,NASA Foods,FR13C493J,75.704,162.448,207.954,10.639,3.283,11.875,,NO
+Mexican Scrambled Eggs,Breakfast,NASA Foods,FR13C587J,75.704,162.448,207.954,10.639,3.283,11.875,,NO
+Mexican Scrambled Eggs,Breakfast,NASA Foods,FR13C604J,75.704,162.448,207.954,10.639,3.283,11.875,,NO
+Mexican Scrambled Eggs,Breakfast,NASA Foods,FR13C525J,75.704,162.448,207.954,10.639,3.283,11.875,,NO
+Mexican Scrambled Eggs,Breakfast,NASA Foods,FR13C539J,75.704,162.448,207.954,10.639,3.283,11.875,,NO
+Mexican Scrambled Eggs,Breakfast,NASA Foods,FR13C563J,75.704,162.448,207.954,10.639,3.283,11.875,,NO
+Milk ,Breakfast,NASA Foods,FB72B238J,251.505,90.22,115.193,8.479,14.035,0.013,,NO
+Milk ,Breakfast,NASA Foods,FB72B240J,251.505,90.22,115.193,8.479,14.035,0.013,,NO
+Milk ,Breakfast,NASA Foods,FB72A203J,251.505,90.22,115.193,8.479,14.035,0.013,,NO
+Milk ,Breakfast,NASA Foods,FB72A184J,251.505,90.22,115.193,8.479,14.035,0.013,,NO
+Mocha Yogurt ,Breakfast,NASA Foods,FT82A503J,111.636,112,65.044,4.298,22.694,0.42,,NO
+Mocha Yogurt ,Breakfast,NASA Foods,FT82A539J,111.636,112,65.044,4.298,22.694,0.42,,NO
+Mocha Yogurt ,Breakfast,NASA Foods,FT82A492J,111.636,112,65.044,4.298,22.694,0.42,,NO
+Mocha Yogurt ,Breakfast,NASA Foods,FT82A548J,111.636,112,65.044,4.298,22.694,0.42,,NO
+Oat Cereal,Breakfast,NASA Foods,FR73A084J,51.61,139,141,6.608,27.276,0.384,,NO
+Oat Cereal,Breakfast,NASA Foods,FR73A107J,51.61,139,141,6.608,27.276,0.384,,NO
+Oat Cereal,Breakfast,NASA Foods,FR73A076J,51.61,139,141,6.608,27.276,0.384,,NO
+Oat Cereal,Breakfast,NASA Foods,FR73A118J,51.61,139,141,6.608,27.276,0.384,,NO
+Oatmeal w/ Brown Sugar ,Breakfast,NASA Foods,,103.715,176.5,89.385,4.76,35.23,1.845,,NO
+Oatmeal w/ Raisins Spice ,Breakfast,NASA Foods,FR26C324J,80.319,198.94,109.782,6.31,40.478,1.311,,NO
+Oatmeal w/ Raisins Spice ,Breakfast,NASA Foods,FR26C418J,80.319,198.94,109.782,6.31,40.478,1.311,,NO
+Oatmeal w/ Raisins Spice ,Breakfast,NASA Foods,FR26C344J,80.319,198.94,109.782,6.31,40.478,1.311,,NO
+Oatmeal w/ Raisins Spice ,Breakfast,NASA Foods,FR26C282J,80.319,198.94,109.782,6.31,40.478,1.311,,NO
+Rice Krispies,Breakfast,NASA Foods,,50.909,112.2,179.556,3.738,24.081,0.048,,NO
+Sausage Pattie ,Breakfast,NASA Foods,FR34D274J,25.496,52.782,339.914,6.132,0.699,2.823,,NO
+Sausage Pattie ,Breakfast,NASA Foods,FB54H276J,25.496,52.782,339.914,6.132,0.699,2.823,,NO
+Sausage Pattie ,Breakfast,NASA Foods,FB54H275J,25.496,52.782,339.914,6.132,0.699,2.823,,NO
+Scrambled Eggs ,Breakfast,NASA Foods,,75.749,217.005,184.975,11.678,2.788,17.692,,NO
+Seasoned Scrambled Eggs ,Breakfast,NASA Foods,FR14C519J,100.972,257.85,316.688,17.082,5.499,18.63,,NO
+Seasoned Scrambled Eggs ,Breakfast,NASA Foods,FR14C545J,100.972,257.85,316.688,17.082,5.499,18.63,,NO
+Seasoned Scrambled Eggs ,Breakfast,NASA Foods,FR14C521J,100.972,257.85,316.688,17.082,5.499,18.63,,NO
+Seasoned Scrambled Eggs ,Breakfast,NASA Foods,FR14C510J,100.972,257.85,316.688,17.082,5.499,18.63,,NO
+Waffles,Breakfast,NASA Foods,,5.986,197.8,168.784,3.019,21.973,10.879,,NO
+Apple Jam ,Breakfast,Russian Foods,,13.703,122.598,0.873,0.09,30.398,0.072,,NO
+Canadian Bacon,Breakfast,Russian Foods,,55.91,205.3,497.47,27.37,7.35,7.38,,NO
+Oatmeal w/Apples,Breakfast,Russian Foods,,126.836,165.6,289.625,4.01,33.084,1.913,,NO
+Oatmeal w/Peaches,Breakfast,Russian Foods,,103.588,222.6,145.8,5.556,47.86,2.815,,NO
+"Oatmeal w/rosehips, cranberries & almonds ",Breakfast,Russian Foods,,127.624,139.636,76.64,4.848,26.056,1.78,,NO
+Omelet w/Chicken ,Breakfast,Russian Foods,,73.7,142,384,14.6,1.42,8.65,,NO
+Omelet w/Chicken Livers ,Breakfast,Russian Foods,,72.5,141,524,15.2,2.65,7.7,,NO
+Dark Chocolate Covered Cranberries,Dessert & Snacks,CSA Foods,,8.38,189.831,20.386,1.002,28.003,8.976,,NO
+Fruitsource-Blueberry Pomegranate ,Dessert & Snacks,CSA Foods, ,7,150.218,14.813,0.547,32.002,0.003,,NO
+Fruitsource-Cherry Berry ,Dessert & Snacks,CSA Foods,,5.18,131.218,19.813,0.297,30.522,0.003,,NO
+Fruitsource-Tropical Plus Veggie,Dessert & Snacks,CSA Foods,,5.1,131.218,14.813,0.997,32.002,0.003,,NO
+Original Maple Leaf Cookies David,Dessert & Snacks,CSA Foods,,2.268,149.711,74.828,1.158,22.084,6.004,,NO
+Apple Fondant,Dessert & Snacks,ESA Foods,,48.44,243,8.99,0.405,9.315,22.356,,NO
+Cheesecake French Food,Dessert & Snacks,ESA Foods,,48.78,252,239.58,5.04,16.92,18.36,,NO
+Rich Chocolate Cake ,Dessert & Snacks,ESA Foods,,8.188,347.1,12.905,5.162,69.95,4.806,,NO
+Semolina Cake with Dried Apricots,Dessert & Snacks,ESA Foods,,60.94,220,82.06,3.96,39.05,4.73,,NO
+Japanese Black Sugar Candy ,Dessert & Snacks,JAXA Foods,,0.347,103.88,5.825,0.085,25.75,0,,NO
+Japanese Hot Peas,Dessert & Snacks,JAXA Foods,,0,124,213,3.6,19.56,2.7,,NO
+Japanese Peppermint Candy ,Dessert & Snacks,JAXA Foods,,0.824,78.72,0.146,0.01,19.553,0.01,,NO
+Peppermint Candy ,Dessert & Snacks,JAXA Foods,,0.267,78.67,7.79,0.02,19.7,0.021,,NO
+Apricot Cobbler ,Dessert & Snacks,NASA Foods,FT61B328A,100.3,289,154.904,2.686,58.14,5.066,,NO
+Apricot Cobbler ,Dessert & Snacks,NASA Foods,FT61B332J,100.3,289,154.904,2.686,58.14,5.066,,NO
+Apricot Cobbler ,Dessert & Snacks,NASA Foods,FT61B323J,100.3,289,154.904,2.686,58.14,5.066,,NO
+Apricot Cobbler ,Dessert & Snacks,NASA Foods,FT61B322J,100.3,289,154.904,2.686,58.14,5.066,,NO
+Banana Pudding ,Dessert & Snacks,NASA Foods,,83.231,124.26,110.58,1.915,27.36,0.775,,NO
+Bread Pudding ,Dessert & Snacks,NASA Foods,,115.396,214.2,192.27,5.236,41.072,3.196,,NO
+Brownie ,Dessert & Snacks,NASA Foods,FS22D012J,6.655,268.79,182.756,2.666,37.735,11.785,,NO
+Brownie ,Dessert & Snacks,NASA Foods,FS22D137J,6.655,268.79,182.756,2.666,37.735,11.785,,NO
+Brownie ,Dessert & Snacks,NASA Foods,FS22D025J,6.655,268.79,182.756,2.666,37.735,11.785,,NO
+Brownie ,Dessert & Snacks,NASA Foods,FS22D010J,6.655,268.79,182.756,2.666,37.735,11.785,,NO
+Brownie ,Dessert & Snacks,NASA Foods,FS22D011J,6.655,268.79,182.756,2.666,37.735,11.785,,NO
+Brownie ,Dessert & Snacks,NASA Foods,FS22D030J,6.655,268.79,182.756,2.666,37.735,11.785,,NO
+Brownie ,Dessert & Snacks,NASA Foods,FS22D019J,6.655,268.79,182.756,2.666,37.735,11.785,,NO
+Brownie ,Dessert & Snacks,NASA Foods,FS22D038J,6.655,268.79,182.756,2.666,37.735,11.785,,NO
+Butter Cookies,Dessert & Snacks,NASA Foods,FS05D590J,1.336,157.298,77.516,2.026,23.803,5.998,,NO
+Butter Cookies,Dessert & Snacks,NASA Foods,FS05D577J,1.336,157.298,77.516,2.026,23.803,5.998,,NO
+Butter Cookies,Dessert & Snacks,NASA Foods,FS05D618J,1.336,157.298,77.516,2.026,23.803,5.998,,NO
+Butter Cookies,Dessert & Snacks,NASA Foods,FS05D606J,1.336,157.298,77.516,2.026,23.803,5.998,,NO
+Butterscotch Pudding Pouch,Dessert & Snacks,NASA Foods,,87.278,104.88,169.404,0.616,24.533,0.274,,NO
+Candy Coated Almonds ,Dessert & Snacks,NASA Foods,FS27B868J,0.842,229.5,17.717,4.397,25.191,12.33,,NO
+Candy Coated Almonds ,Dessert & Snacks,NASA Foods,FS27B652J,0.842,229.5,17.717,4.397,25.191,12.33,,NO
+Candy Coated Almonds ,Dessert & Snacks,NASA Foods,FS27B867J,0.842,229.5,17.717,4.397,25.191,12.33,,NO
+Candy Coated Almonds ,Dessert & Snacks,NASA Foods,FS27B866J,0.842,229.5,17.717,4.397,25.191,12.33,,NO
+Candy Coated Chocolates ,Dessert & Snacks,NASA Foods,FS19D485J,0.486,144.969,14.622,1.431,20.643,6.297,,NO
+Candy Coated Chocolates ,Dessert & Snacks,NASA Foods,FS19D466J,0.486,144.969,14.622,1.431,20.643,6.297,,NO
+Candy Coated Chocolates ,Dessert & Snacks,NASA Foods,FS19D463J,0.486,144.969,14.622,1.431,20.643,6.297,,NO
+Candy Coated Chocolates ,Dessert & Snacks,NASA Foods,FS19D456J,0.486,144.969,14.622,1.431,20.643,6.297,,NO
+Candy Coated Chocolates ,Dessert & Snacks,NASA Foods,FS19D506J,0.486,144.969,14.622,1.431,20.643,6.297,,NO
+Candy Coated Chocolates ,Dessert & Snacks,NASA Foods,FS19D510J,0.486,144.969,14.622,1.431,20.643,6.297,,NO
+Candy Coated Chocolates ,Dessert & Snacks,NASA Foods,FS19D509J,0.486,144.969,14.622,1.431,20.643,6.297,,NO
+Candy Coated Chocolates ,Dessert & Snacks,NASA Foods,FS19D488J,0.486,144.969,14.622,1.431,20.643,6.297,,NO
+Candy Coated Peanuts ,Dessert & Snacks,NASA Foods,,0.855,225.909,16.38,4.995,25.664,11.475,,NO
+Cherry Blueberry Cobbler,Dessert & Snacks,NASA Foods,FT53C656J,99.637,306,139.094,2.091,53.329,9.35,,NO
+Cherry Blueberry Cobbler,Dessert & Snacks,NASA Foods,FT53C629J,99.637,306,139.094,2.091,53.329,9.35,,NO
+Cherry Blueberry Cobbler,Dessert & Snacks,NASA Foods,FT53C634J,99.637,306,139.094,2.091,53.329,9.35,,NO
+Cherry Blueberry Cobbler,Dessert & Snacks,NASA Foods,FT53C657J,99.637,306,139.094,2.091,53.329,9.35,,NO
+Chocolate Pudding ,Dessert & Snacks,NASA Foods,,71.993,103.95,139.075,1.277,20.166,1.99,,NO
+Chocolate Pudding Cake ,Dessert & Snacks,NASA Foods,FT64C356J,53.01,365.82,240.396,6.124,61.533,10.626,,NO
+Chocolate Pudding Cake ,Dessert & Snacks,NASA Foods,FT64C367J,53.01,365.82,240.396,6.124,61.533,10.626,,NO
+Chocolate Pudding Cake ,Dessert & Snacks,NASA Foods,FT64C363J,53.01,365.82,240.396,6.124,61.533,10.626,,NO
+Chocolate Pudding Cake ,Dessert & Snacks,NASA Foods,FT64C368J,53.01,365.82,240.396,6.124,61.533,10.626,,NO
+Cinnamon Scone,Dessert & Snacks,NASA Foods,FN04A553J,11.873,213,335,3.865,30.512,8.345,,NO
+Cinnamon Scone,Dessert & Snacks,NASA Foods,FN04A592J,11.873,213,335,3.865,30.512,8.345,,NO
+Cinnamon Scone,Dessert & Snacks,NASA Foods,FN04A559J,11.873,213,335,3.865,30.512,8.345,,NO
+Cinnamon Scone,Dessert & Snacks,NASA Foods,FN04A548J,11.873,213,335,3.865,30.512,8.345,,NO
+Crackers ,Dessert & Snacks,NASA Foods,,0.686,81.9,152.19,1.305,12.013,3.19,,NO
+Cranapple Dessert,Dessert & Snacks,NASA Foods,FT65B430J,121.935,218.117,65.685,3.664,37.046,6.142,,NO
+Cranapple Dessert,Dessert & Snacks,NASA Foods,FT65B429J,121.935,218.117,65.685,3.664,37.046,6.142,,NO
+Cranapple Dessert,Dessert & Snacks,NASA Foods,FT65B410J,121.935,218.117,65.685,3.664,37.046,6.142,,NO
+Cranapple Dessert,Dessert & Snacks,NASA Foods,FT65B420J,121.935,218.117,65.685,3.664,37.046,6.142,,NO
+Cranapple Dessert,Dessert & Snacks,NASA Foods,FT65B425J,121.935,218.117,65.685,3.664,37.046,6.142,,NO
+Cranapple Dessert,Dessert & Snacks,NASA Foods,FT65B428J,121.935,218.117,65.685,3.664,37.046,6.142,,NO
+Cranapple Dessert,Dessert & Snacks,NASA Foods,FT65B426J,121.935,218.117,65.685,3.664,37.046,6.142,,NO
+Cranapple Dessert,Dessert & Snacks,NASA Foods,FT65B427J,121.935,218.117,65.685,3.664,37.046,6.142,,NO
+Granola Bar ,Dessert & Snacks,NASA Foods,FS09D284J,2.276,116.76,48.112,1.618,19.16,3.727,,NO
+Granola Bar ,Dessert & Snacks,NASA Foods,FS09D311J,2.276,116.76,48.112,1.618,19.16,3.727,,NO
+Granola Bar ,Dessert & Snacks,NASA Foods,FS09D305J,2.276,116.76,48.112,1.618,19.16,3.727,,NO
+Granola Bar ,Dessert & Snacks,NASA Foods,FS09D310J,2.276,116.76,48.112,1.618,19.16,3.727,,NO
+Granola Bar ,Dessert & Snacks,NASA Foods,FS09D303J,2.276,116.76,48.112,1.618,19.16,3.727,,NO
+Granola Bar ,Dessert & Snacks,NASA Foods,FS09D312J,2.276,116.76,48.112,1.618,19.16,3.727,,NO
+Granola Bar ,Dessert & Snacks,NASA Foods,FS09D357J,2.276,116.76,48.112,1.618,19.16,3.727,,NO
+Granola Bar ,Dessert & Snacks,NASA Foods,FS09D358J,2.276,116.76,48.112,1.618,19.16,3.727,,NO
+Lemon Curd Cake ,Dessert & Snacks,NASA Foods,FT92A538J,36.69,443.3,204.2,4.98,69.628,16.04,,NO
+Lemon Curd Cake ,Dessert & Snacks,NASA Foods,FT92A519J,36.69,443.3,204.2,4.98,69.628,16.04,,NO
+Lemon Curd Cake ,Dessert & Snacks,NASA Foods,FT92A520J,36.69,443.3,204.2,4.98,69.628,16.04,,NO
+Lemon Curd Cake ,Dessert & Snacks,NASA Foods,FT92A516J,36.69,443.3,204.2,4.98,69.628,16.04,,NO
+Lemon Meringue Pudding,Dessert & Snacks,NASA Foods,FT94A169J,84.428,119,139,2.177,25.342,0.923,,NO
+Lemon Meringue Pudding,Dessert & Snacks,NASA Foods,FT94A170J,84.428,119,139,2.177,25.342,0.923,,NO
+Lemon Meringue Pudding,Dessert & Snacks,NASA Foods,FT94A162J,84.428,119,139,2.177,25.342,0.923,,NO
+Lemon Meringue Pudding,Dessert & Snacks,NASA Foods,FT94A168J,84.428,119,139,2.177,25.342,0.923,,NO
+Peach Ambrosia ,Dessert & Snacks,NASA Foods,,102.233,116.361,8.813,1.627,16.505,4.87,,NO
+Rice Pudding,Dessert & Snacks,NASA Foods,,103.492,137,107,3.157,29.684,0.651,,NO
+Shortbread Cookies,Dessert & Snacks,NASA Foods,FS18D399J,1.383,138.91,110.893,1.43,19.14,6.293,,NO
+Shortbread Cookies,Dessert & Snacks,NASA Foods,FS18D366J,1.383,138.91,110.893,1.43,19.14,6.293,,NO
+Shortbread Cookies,Dessert & Snacks,NASA Foods,FS18D376J,1.383,138.91,110.893,1.43,19.14,6.293,,NO
+Shortbread Cookies,Dessert & Snacks,NASA Foods,FS18D385J,1.383,138.91,110.893,1.43,19.14,6.293,,NO
+Shortbread Cookies,Dessert & Snacks,NASA Foods,FS18D402J,1.383,138.91,110.893,1.43,19.14,6.293,,NO
+Shortbread Cookies,Dessert & Snacks,NASA Foods,FS18D379J,1.383,138.91,110.893,1.43,19.14,6.293,,NO
+Shortbread Cookies,Dessert & Snacks,NASA Foods,FS18D357J,1.383,138.91,110.893,1.43,19.14,6.293,,NO
+Shortbread Cookies,Dessert & Snacks,NASA Foods,FS18D355J,1.383,138.91,110.893,1.43,19.14,6.293,,NO
+Tapioca Pudding,Dessert & Snacks,NASA Foods,,72.884,108.9,127.73,1.683,17.761,3.425,,NO
+Vanilla Pudding Pouch ,Dessert & Snacks,NASA Foods,FT70-07 02512,86.64,107.16,178.011,0.616,25.251,0.194,,NO
+Vanilla Pudding Pouch ,Dessert & Snacks,NASA Foods,FT70-07 02512,86.64,107.16,178.011,0.616,25.251,0.194,,NO
+Vanilla Pudding Pouch ,Dessert & Snacks,NASA Foods,FT70-07 02512,86.64,107.16,178.011,0.616,25.251,0.194,,NO
+Vanilla Pudding Pouch ,Dessert & Snacks,NASA Foods,FT70-07 02512,86.64,107.16,178.011,0.616,25.251,0.194,,NO
+Yogurt Covered Granola Bar,Dessert & Snacks,NASA Foods,FS29B065J,2.685,150.5,146.549,3.658,20.773,5.884,,NO
+Yogurt Covered Granola Bar,Dessert & Snacks,NASA Foods,FS29B043J,2.685,150.5,146.549,3.658,20.773,5.884,,NO
+Yogurt Covered Granola Bar,Dessert & Snacks,NASA Foods,FS29B027J,2.685,150.5,146.549,3.658,20.773,5.884,,NO
+Yogurt Covered Granola Bar,Dessert & Snacks,NASA Foods,FS29B036J,2.685,150.5,146.549,3.658,20.773,5.884,,NO
+Apple Apricot Bar,Dessert & Snacks,Russian Foods,,11.1,141,14.6,0.51,34.7,0,,NO
+Apple Dessert,Dessert & Snacks,Russian Foods,,206,163,42.1,0.375,40.3,0.025,,NO
+Apple Nut Bar ,Dessert & Snacks,Russian Foods,,5.51,236,15,3.56,41.2,6.32,,NO
+Apple Plum Bar,Dessert & Snacks,Russian Foods,,10.8,145,15.3,0.52,35.8,0,,NO
+Apricot Bar,Dessert & Snacks,Russian Foods,,11.6,138,8.18,0.8,33.7,0,,NO
+Arktika Biscuits ,Dessert & Snacks,Russian Foods,,1.31,103,189,2.71,16.9,2.75,,NO
+Borodinskiy Bread ,Dessert & Snacks,Russian Foods,,16.6,98.6,218,3.11,20.7,0.36,,NO
+Cherries w/Cream Sauce ,Dessert & Snacks,Russian Foods,,101,160,77.3,3.71,24.5,5.25,,NO
+Hard Chocolate Candy ,Dessert & Snacks,Russian Foods,,0.9,249,7.29,3.18,27.6,14,,NO
+Honey,Dessert & Snacks,Russian Foods,,20.076,398.4,0.42,0.612,98.544,0,,NO
+Honey Cake ,Dessert & Snacks,Russian Foods,,5.78,158,31.8,3.54,33.3,1.17,,NO
+Kofeyniy Chocolate ,Dessert & Snacks,Russian Foods,,0.8,250,19,3.05,29,13.5,,NO
+Ledokal Toffee,Dessert & Snacks,Russian Foods,,3.27,186,58.8,2.06,36.6,3.52,,NO
+Ledokal Toffee ,Dessert & Snacks,Russian Foods,,3.905,177.5,37.075,2.12,39.995,0.98,,NO
+Osennyaya pora jelly candy,Dessert & Snacks,Russian Foods,,11.71,349,95.16,0.29,86.98,0.1,,NO
+Peach Bar ,Dessert & Snacks,Russian Foods,,8.5,150,9.41,1.51,36,0,,NO
+Peach Dessert ,Dessert & Snacks,Russian Foods,,212,135,10.275,1.8,32.15,0.25,,NO
+Plum Cherry Dessert ,Dessert & Snacks,Russian Foods,,11.1,131,31.5,1.24,31.4,0,,NO
+Quince Bar,Dessert & Snacks,Russian Foods,,11.9,144,9.21,0.49,35.5,0,,NO
+Quince Bar ,Dessert & Snacks,Russian Foods,,11.42,146,1.375,0.295,36.235,0.05,,NO
+Russkoye Cookies,Dessert & Snacks,Russian Foods,,0.387,148,62.1,2.34,19.9,6.53,,NO
+Start Biscuit,Dessert & Snacks,Russian Foods,,2.35,159.28,388.467,5.02,34.074,0.334,,NO
+Stelutsa Dessert ,Dessert & Snacks,Russian Foods,,8.7,141,25.8,0.91,34.3,0,,NO
+Sugar Cookies ,Dessert & Snacks,Russian Foods,,2.238,271.2,173.4,5.688,41.442,9.198,,NO
+Sweet Yogurt ,Dessert & Snacks,Russian Foods,,101,177,241,6.68,26,5.13,,NO
+Utro Candy ,Dessert & Snacks,Russian Foods,,3.15,222,84.7,3.57,33.9,8.04,,NO
+Visit Crackers,Dessert & Snacks,Russian Foods,,0.66,94.38,165.988,2.05,13.475,3.597,,NO
+Vostok Cookies ,Dessert & Snacks,Russian Foods,,0.6,137,66.6,2.65,21,4.69,,NO
+"Carrot Drink, jelly type ",Drink,JAXA Foods,,156.16,92.5,34.6,0.907,21.867,0.185,,NO
+Green Tea,Drink,JAXA Foods,,150.396,3.9,0.66,0.035,0,0,,NO
+Japanese Green Tea ,Drink,JAXA Foods,,150.46,4.322,0.557,0.064,1.006,0.005,,NO
+Japanese Oolong Tea,Drink,JAXA Foods,,150.073,7.364,0.365,0.075,1.764,0.001,,NO
+Tomato Drink with jelly,Drink,JAXA Foods,,154.96,96,20.9,1.09,22.404,0.185,,NO
+Apple Cider,Drink,NASA Foods,,250.739,112.504,26.625,0.037,28.123,0.003,,NO
+Cherry Drink w/ A/S ,Drink,NASA Foods,,250.041,3.078,8.014,0.05,0.72,0,,NO
+Chocolate Breakfast Drink ,Drink,NASA Foods,FB61C430J,171.515,111.21,116.231,7.832,18.815,0.499,,NO
+Chocolate Breakfast Drink ,Drink,NASA Foods,FB61C353J,171.515,111.21,116.231,7.832,18.815,0.499,,NO
+Chocolate Breakfast Drink ,Drink,NASA Foods,FB61C349J,171.515,111.21,116.231,7.832,18.815,0.499,,NO
+Chocolate Breakfast Drink ,Drink,NASA Foods,FB61C418J,171.515,111.21,116.231,7.832,18.815,0.499,,NO
+Cocoa ,Drink,NASA Foods,FB02C842J,176.025,165.64,152.136,2.707,36.254,1.096,,NO
+Cocoa ,Drink,NASA Foods,FB02C836J,176.025,165.64,152.136,2.707,36.254,1.096,,NO
+Cocoa ,Drink,NASA Foods,FB02C759J,176.025,165.64,152.136,2.707,36.254,1.096,,NO
+Cocoa ,Drink,NASA Foods,FB02C713J,176.025,165.64,152.136,2.707,36.254,1.096,,NO
+Cocoa ,Drink,NASA Foods,FB02C801J,176.025,165.64,152.136,2.707,36.254,1.096,,NO
+Cocoa ,Drink,NASA Foods,FB02C710J,176.025,165.64,152.136,2.707,36.254,1.096,,NO
+Cocoa ,Drink,NASA Foods,FB02C841J,176.025,165.64,152.136,2.707,36.254,1.096,,NO
+Cocoa ,Drink,NASA Foods,FB02C835J,176.025,165.64,152.136,2.707,36.254,1.096,,NO
+Cranberry Peach Drink w/ AS ,Drink,NASA Foods,,250.058,4.104,36.387,0.029,0.996,0,,NO
+Decaf Coffee w/ A/ S ,Drink,NASA Foods,,227,10.6,4.95,0.016,2.58,0,,NO
+Decaf Coffee w/ Cream ,Drink,NASA Foods,,227,27.8,9.15,0.08,4.28,1.13,,NO
+Decaf Coffee w/C & A/S,Drink,NASA Foods,,227,25,9.5,0.08,5.65,0.201,,NO
+Decaf Coffee w/C & S ,Drink,NASA Foods,,227,67.2,9.5,0.08,16.2,0.201,,NO
+Decaf Coffee w/Sugar,Drink,NASA Foods,,227,52.8,4.95,0,13.1,0,,NO
+"Decaf Coffee, black ",Drink,NASA Foods,,250.54,7.543,0.738,0.368,1.409,0.009,,NO
+Drinking Water,Drink,NASA Foods,FB22I557J,250,0,2.75,0,0,0,,NO
+Drinking Water,Drink,NASA Foods,FB22I556J,250,0,2.75,0,0,0,,NO
+Drinking Water,Drink,NASA Foods,BTNB19,250,0,2.75,0,0,0,,NO
+Drinking Water,Drink,NASA Foods,FB22I555J,250,0,2.75,0,0,0,,NO
+Drinking Water,Drink,NASA Foods,FB22H255J,250,0,2.75,0,0,0,,NO
+Drinking Water,Drink,NASA Foods,FB22H259J,250,0,2.75,0,0,0,,NO
+Drinking Water,Drink,NASA Foods,FB22H163J,250,0,2.75,0,0,0,,NO
+Drinking Water,Drink,NASA Foods,FB22H251J,250,0,2.75,0,0,0,,NO
+Grape Drink ,Drink,NASA Foods,FB07C527J,250.306,66.3,0.206,0.002,16.59,0.002,,NO
+Grape Drink ,Drink,NASA Foods,FB07C577J,250.306,66.3,0.206,0.002,16.59,0.002,,NO
+Grape Drink ,Drink,NASA Foods,FB07C613J,250.306,66.3,0.206,0.002,16.59,0.002,,NO
+Grape Drink ,Drink,NASA Foods,FB07C529J,250.306,66.3,0.206,0.002,16.59,0.002,,NO
+Grape Drink w/ AS ,Drink,NASA Foods,,250.046,5.805,0.382,0.204,1.229,0.008,,NO
+Grapefruit Drink ,Drink,NASA Foods,FB08C020J,253.875,119.7,11.802,1.505,28.368,0.014,,NO
+Grapefruit Drink ,Drink,NASA Foods,FB08C025J,253.875,119.7,11.802,1.505,28.368,0.014,,NO
+Grapefruit Drink ,Drink,NASA Foods,FB08C032J,253.875,119.7,11.802,1.505,28.368,0.014,,NO
+Grapefruit Drink ,Drink,NASA Foods,FB08C077J,253.875,119.7,11.802,1.505,28.368,0.014,,NO
+Grapefruit Drink ,Drink,NASA Foods,FB08C518J,253.875,119.7,11.802,1.505,28.368,0.014,,NO
+Grapefruit Drink ,Drink,NASA Foods,FB08C026J,253.875,119.7,11.802,1.505,28.368,0.014,,NO
+Grapefruit Drink ,Drink,NASA Foods,FB08C072J,253.875,119.7,11.802,1.505,28.368,0.014,,NO
+Grapefruit Drink ,Drink,NASA Foods,FB08C071J,253.875,119.7,11.802,1.505,28.368,0.014,,NO
+Green Tea ,Drink,NASA Foods,,250.44,0,0.125,0,0,0,,NO
+Green Tea w/ Sugar ,Drink,NASA Foods,FB66C064J,250.024,19.9,0.41,0.014,4.925,0.018,,NO
+Green Tea w/ Sugar ,Drink,NASA Foods,FB66C045J,250.024,19.9,0.41,0.014,4.925,0.018,,NO
+Green Tea w/ Sugar ,Drink,NASA Foods,FB66C048J,250.024,19.9,0.41,0.014,4.925,0.018,,NO
+Green Tea w/ Sugar ,Drink,NASA Foods,FB66C068J,250.024,19.9,0.41,0.014,4.925,0.018,,NO
+Hint of Lemon ,Drink,NASA Foods,FB73A332J,250.013,6.304,0.156,0.001,1.577,0,,NO
+Hint of Lemon ,Drink,NASA Foods,FB73A333J,250.013,6.304,0.156,0.001,1.577,0,,NO
+Hint of Lemon ,Drink,NASA Foods,FB73A374J,250.013,6.304,0.156,0.001,1.577,0,,NO
+Hint of Lemon ,Drink,NASA Foods,FB73A278J,250.013,6.304,0.156,0.001,1.577,0,,NO
+Hint of Lime,Drink,NASA Foods,FB74A089J,250.006,3.16,0.063,0.001,0.789,0,,NO
+Hint of Lime,Drink,NASA Foods,FB74A041J,250.006,3.16,0.063,0.001,0.789,0,,NO
+Hint of Lime,Drink,NASA Foods,FB74A078J,250.006,3.16,0.063,0.001,0.789,0,,NO
+Hint of Lime,Drink,NASA Foods,FB74A092J,250.006,3.16,0.063,0.001,0.789,0,,NO
+Hint of Lime,Drink,NASA Foods,FB74A0765,250.006,3.16,0.063,0.001,0.789,0,,NO
+Hint of Lime,Drink,NASA Foods,FB74A195J,250.006,3.16,0.063,0.001,0.789,0,,NO
+Hint of Lime,Drink,NASA Foods,FB74A045J,250.006,3.16,0.063,0.001,0.789,0,,NO
+Hint of Lime,Drink,NASA Foods,FB74A054J,250.006,3.16,0.063,0.001,0.789,0,,NO
+Hint of Orange,Drink,NASA Foods,FB75A046J,250.006,2.765,0.068,0,0.691,0,,NO
+Hint of Orange,Drink,NASA Foods,FB75A038J,250.006,2.765,0.068,0,0.691,0,,NO
+Hint of Orange,Drink,NASA Foods,FB75A039J,250.006,2.765,0.068,0,0.691,0,,NO
+Hint of Orange,Drink,NASA Foods,FB75A611J,250.006,2.765,0.068,0,0.691,0,,NO
+Hint of Orange,Drink,NASA Foods,FB75A562J,250.006,2.765,0.068,0,0.691,0,,NO
+Hint of Orange,Drink,NASA Foods,FB75A032J,250.006,2.765,0.068,0,0.691,0,,NO
+Hint of Orange,Drink,NASA Foods,FB75A205J,250.006,2.765,0.068,0,0.691,0,,NO
+Hint of Orange,Drink,NASA Foods,FB75A227J,250.006,2.765,0.068,0,0.691,0,,NO
+Hint of Orange,Drink,NASA Foods,FB75A343J,250.006,2.765,0.068,0,0.691,0,,NO
+Hint of Orange,Drink,NASA Foods,FB75A044J,250.006,2.765,0.068,0,0.691,0,,NO
+Hint of Orange,Drink,NASA Foods,FB75A035J,250.006,2.765,0.068,0,0.691,0,,NO
+Hint of Orange,Drink,NASA Foods,FB75A036J,250.006,2.765,0.068,0,0.691,0,,NO
+Hint of Orange,Drink,NASA Foods,FB75A040J,250.006,2.765,0.068,0,0.691,0,,NO
+Hint of Orange,Drink,NASA Foods,FB75A487J,250.006,2.765,0.068,0,0.691,0,,NO
+Hint of Orange,Drink,NASA Foods,FB75A033J,250.006,2.765,0.068,0,0.691,0,,NO
+Hint of Orange,Drink,NASA Foods,FB75A563J,250.006,2.765,0.068,0,0.691,0,,NO
+Kona Coffee Black ,Drink,NASA Foods,FB42G841J,250.079,3.96,0.308,0.273,0.713,0.001,,NO
+Kona Coffee Black ,Drink,NASA Foods,FB42G844J,250.079,3.96,0.308,0.273,0.713,0.001,,NO
+Kona Coffee Black ,Drink,NASA Foods,FB42G923J,250.079,3.96,0.308,0.273,0.713,0.001,,NO
+Kona Coffee Black ,Drink,NASA Foods,FB42G834J,250.079,3.96,0.308,0.273,0.713,0.001,,NO
+Kona Coffee w/ cream,Drink,NASA Foods,,240.222,16,3.075,0.335,3.47,0.087,,NO
+Kona Coffee w/ Cream & Sugar,Drink,NASA Foods,FB54H365,250.202,62.24,4.163,0.326,14.768,0.214,,NO
+Kona Coffee w/ Cream & Sugar,Drink,NASA Foods,FB54H384,250.202,62.24,4.163,0.326,14.768,0.214,,NO
+Kona Coffee w/ Cream & Sugar,Drink,NASA Foods,FB54H385,250.202,62.24,4.163,0.326,14.768,0.214,,NO
+Kona Coffee w/ Cream & Sugar,Drink,NASA Foods,FB54H327J,250.202,62.24,4.163,0.326,14.768,0.214,,NO
+Kona Coffee w/ Cream & Sugar,Drink,NASA Foods,FB54H429J,250.202,62.24,4.163,0.326,14.768,0.214,,NO
+Kona Coffee w/ Cream & Sugar,Drink,NASA Foods,FB54H428J,250.202,62.24,4.163,0.326,14.768,0.214,,NO
+Kona Coffee w/ Cream & Sugar,Drink,NASA Foods,FB54H368J,250.202,62.24,4.163,0.326,14.768,0.214,,NO
+Kona Coffee w/ Cream & Sugar,Drink,NASA Foods,FB54H370J,250.202,62.24,4.163,0.326,14.768,0.214,,NO
+Kona Coffee w/ Cream & Sugar,Drink,NASA Foods,FB54H324J,250.202,62.24,4.163,0.326,14.768,0.214,,NO
+Kona Coffee w/ Cream & Sugar,Drink,NASA Foods,FB54H325J,250.202,62.24,4.163,0.326,14.768,0.214,,NO
+Kona Coffee w/ Cream & Sugar,Drink,NASA Foods,FB54H380J,250.202,62.24,4.163,0.326,14.768,0.214,,NO
+Kona Coffee w/ Cream & Sugar,Drink,NASA Foods,FB54H301J,250.202,62.24,4.163,0.326,14.768,0.214,,NO
+Kona Coffee w/AS ,Drink,NASA Foods,FB56B259J,240.146,5.92,0.706,0.29,1.188,0.002,,NO
+Kona Coffee w/AS ,Drink,NASA Foods,FS56B258J,240.146,5.92,0.706,0.29,1.188,0.002,,NO
+Kona Coffee w/AS ,Drink,NASA Foods,FS56B264J,240.146,5.92,0.706,0.29,1.188,0.002,,NO
+Kona Coffee w/AS ,Drink,NASA Foods,FB56B263J,240.146,5.92,0.706,0.29,1.188,0.002,,NO
+Kona Coffee w/Cream & A/S,Drink,NASA Foods,,240.275,18.37,3.805,0.32,4.048,0.097,,NO
+Kona Coffee w/Sugar ,Drink,NASA Foods,FB43D221J,250.113,48.25,0.666,0.281,11.75,0.011,,NO
+Kona Coffee w/Sugar ,Drink,NASA Foods,FB43D266J,250.113,48.25,0.666,0.281,11.75,0.011,,NO
+Kona Coffee w/Sugar ,Drink,NASA Foods,FB43D225J,250.113,48.25,0.666,0.281,11.75,0.011,,NO
+Kona Coffee w/Sugar ,Drink,NASA Foods,FB43D302J,250.113,48.25,0.666,0.281,11.75,0.011,,NO
+Lemonade ,Drink,NASA Foods,FB13E405J,251.003,80.85,29.873,0.013,20.223,0,,NO
+Lemonade ,Drink,NASA Foods,FB13E339J,251.003,80.85,29.873,0.013,20.223,0,,NO
+Lemonade ,Drink,NASA Foods,FB13E406J,251.003,80.85,29.873,0.013,20.223,0,,NO
+Lemonade ,Drink,NASA Foods,FB13E407J,251.003,80.85,29.873,0.013,20.223,0,,NO
+Lemonade ,Drink,NASA Foods,FB13E341J,251.003,80.85,29.873,0.013,20.223,0,,NO
+Lemonade ,Drink,NASA Foods,FB13E342J,251.003,80.85,29.873,0.013,20.223,0,,NO
+Lemonade ,Drink,NASA Foods,FB13E403J,251.003,80.85,29.873,0.013,20.223,0,,NO
+Lemonade ,Drink,NASA Foods,FB13E404J,251.003,80.85,29.873,0.013,20.223,0,,NO
+Lemonade ,Drink,NASA Foods,FB13E372J,251.003,80.85,29.873,0.013,20.223,0,,NO
+Lemonade w/ AS,Drink,NASA Foods,,250.023,11.85,0.29,0.003,2.959,0,,NO
+Lemon-Lime Drink,Drink,NASA Foods,FB27C857J,250.042,62.4,108.76,0,15.578,0.003,,NO
+Lemon-Lime Drink,Drink,NASA Foods,FB27C859J,250.042,62.4,108.76,0,15.578,0.003,,NO
+Lemon-Lime Drink,Drink,NASA Foods,FB27C835J,250.042,62.4,108.76,0,15.578,0.003,,NO
+Lemon-Lime Drink,Drink,NASA Foods,FB27C855J,250.042,62.4,108.76,0,15.578,0.003,,NO
+Mango Peach Smoothie ,Drink,NASA Foods,,176.48,199,56.79,1.255,45.765,1.205,,NO
+Orange Drink ,Drink,NASA Foods,,250.742,83.001,26.606,0.009,20.75,0.007,,NO
+Orange Drink w/ AS ,Drink,NASA Foods,FB39B305J,250.464,8.073,3.399,0.06,1.955,0.001,,NO
+Orange Drink w/ AS ,Drink,NASA Foods,FB39B304J,250.464,8.073,3.399,0.06,1.955,0.001,,NO
+Orange Drink w/ AS ,Drink,NASA Foods,FB39B298J,250.464,8.073,3.399,0.06,1.955,0.001,,NO
+Orange Drink w/ AS ,Drink,NASA Foods,FB39B374J,250.464,8.073,3.399,0.06,1.955,0.001,,NO
+Orange Drink w/ AS ,Drink,NASA Foods,FB39B368J,250.464,8.073,3.399,0.06,1.955,0.001,,NO
+Orange Drink w/ AS ,Drink,NASA Foods,FB39B308J,250.464,8.073,3.399,0.06,1.955,0.001,,NO
+Orange Drink w/ AS ,Drink,NASA Foods,FB39B373J,250.464,8.073,3.399,0.06,1.955,0.001,,NO
+Orange Drink w/ AS ,Drink,NASA Foods,FB39B307J,250.464,8.073,3.399,0.06,1.955,0.001,,NO
+Orange Juice ,Drink,NASA Foods,FB55C203J,252.828,123.55,8.26,1.575,28.396,0.049,,NO
+Orange Juice ,Drink,NASA Foods,FB55C201J,252.828,123.55,8.26,1.575,28.396,0.049,,NO
+Orange Juice ,Drink,NASA Foods,FB55C183J,252.828,123.55,8.26,1.575,28.396,0.049,,NO
+Orange Juice ,Drink,NASA Foods,FB55C137J,252.828,123.55,8.26,1.575,28.396,0.049,,NO
+Orange-Grapefruit Drink ,Drink,NASA Foods,FB15C349J,251.933,99.275,24.943,0.492,24.307,0.011,,NO
+Orange-Grapefruit Drink ,Drink,NASA Foods,FB15C351J,251.933,99.275,24.943,0.492,24.307,0.011,,NO
+Orange-Grapefruit Drink ,Drink,NASA Foods,(unlabeled),251.933,99.275,24.943,0.492,24.307,0.011,,NO
+Orange-Grapefruit Drink ,Drink,NASA Foods,(unlabeled),251.933,99.275,24.943,0.492,24.307,0.011,,NO
+Orange-Mango Drink ,Drink,NASA Foods,,250.514,91.719,19.332,0.04,22.856,0.002,,NO
+Orange-Pineapple Drink ,Drink,NASA Foods,FB16C736J,250.809,148.995,27.685,0.012,37.253,0,,NO
+Orange-Pineapple Drink ,Drink,NASA Foods,FB16C673J,250.809,148.995,27.685,0.012,37.253,0,,NO
+Orange-Pineapple Drink ,Drink,NASA Foods,FB16C739J,250.809,148.995,27.685,0.012,37.253,0,,NO
+Orange-Pineapple Drink ,Drink,NASA Foods,FB16C729J,250.809,148.995,27.685,0.012,37.253,0,,NO
+Peach Apricot Drink ,Drink,NASA Foods,,250.463,105.717,0.382,0,26.424,0.008,,NO
+Pineapple Drink ,Drink,NASA Foods,FB32D409J,250.03,56.516,1.402,0.014,14.105,0.001,,NO
+Pineapple Drink ,Drink,NASA Foods,FB32D3245,250.03,56.516,1.402,0.014,14.105,0.001,,NO
+Pineapple Drink ,Drink,NASA Foods,FB32D413J,250.03,56.516,1.402,0.014,14.105,0.001,,NO
+Pineapple Drink ,Drink,NASA Foods,FB32D325J,250.03,56.516,1.402,0.014,14.105,0.001,,NO
+Pineapple Drink ,Drink,NASA Foods,FB32D321J,250.03,56.516,1.402,0.014,14.105,0.001,,NO
+Pineapple Drink ,Drink,NASA Foods,FB32D577J,250.03,56.516,1.402,0.014,14.105,0.001,,NO
+Pineapple Drink ,Drink,NASA Foods,FB32D579J,250.03,56.516,1.402,0.014,14.105,0.001,,NO
+Pineapple Drink ,Drink,NASA Foods,FB32D277J,250.03,56.516,1.402,0.014,14.105,0.001,,NO
+Raspberry Lemonade w/AS,Drink,NASA Foods,FB76A160J,240.03,11.82,0.319,0.005,2.948,0,,NO
+Raspberry Lemonade w/AS,Drink,NASA Foods,FB76A110J,240.03,11.82,0.319,0.005,2.948,0,,NO
+Raspberry Lemonade w/AS,Drink,NASA Foods,FB76A109J,240.03,11.82,0.319,0.005,2.948,0,,NO
+Raspberry Lemonade w/AS,Drink,NASA Foods,FB76A131J,240.03,11.82,0.319,0.005,2.948,0,,NO
+Strawberry Breakfast Drink ,Drink,NASA Foods,FB63B353J,175.789,106.964,40.403,2.903,23.832,0.011,,NO
+Strawberry Breakfast Drink ,Drink,NASA Foods,FB63B327J,175.789,106.964,40.403,2.903,23.832,0.011,,NO
+Strawberry Breakfast Drink ,Drink,NASA Foods,FB63B351J,175.789,106.964,40.403,2.903,23.832,0.011,,NO
+Strawberry Breakfast Drink ,Drink,NASA Foods,FB63B352J,175.789,106.964,40.403,2.903,23.832,0.011,,NO
+Tea,Drink,NASA Foods,FB18D971J,250.488,2.749,0.474,0.177,0.507,0.002,,NO
+Tea,Drink,NASA Foods,FB18D972J,250.488,2.749,0.474,0.177,0.507,0.002,,NO
+Tea,Drink,NASA Foods,FB18D726J,250.488,2.749,0.474,0.177,0.507,0.002,,NO
+Tea,Drink,NASA Foods,FB18D725J,250.488,2.749,0.474,0.177,0.507,0.002,,NO
+Tea w/ Lemon ,Drink,NASA Foods,,250.057,5.082,1.443,0.038,1.23,0.002,,NO
+Tea w/ Lemon & AS ,Drink,NASA Foods,,250.595,6.98,0.632,0.063,1.676,0.002,,NO
+Tea w/ Lemon & Sugar ,Drink,NASA Foods,FB19F004J,250.497,83.58,1.905,0.038,20.717,0.067,,NO
+Tea w/ Lemon & Sugar ,Drink,NASA Foods,FB19F005J,250.497,83.58,1.905,0.038,20.717,0.067,,NO
+Tea w/ Lemon & Sugar ,Drink,NASA Foods,FB19F006J,250.497,83.58,1.905,0.038,20.717,0.067,,NO
+Tea w/ Lemon & Sugar ,Drink,NASA Foods,FB19F007J,250.497,83.58,1.905,0.038,20.717,0.067,,NO
+Tea w/ Sugar ,Drink,NASA Foods,FB20D019J,240.057,52.92,0.373,0.146,13.09,0,,NO
+Tea w/ Sugar ,Drink,NASA Foods,FB20D020J,240.057,52.92,0.373,0.146,13.09,0,,NO
+Tea w/ Sugar ,Drink,NASA Foods,FB20D021J,240.057,52.92,0.373,0.146,13.09,0,,NO
+Tea w/ Sugar ,Drink,NASA Foods,FB20D022J,240.057,52.92,0.373,0.146,13.09,0,,NO
+Tea w/Cream & Sugar,Drink,NASA Foods,,250.107,41.837,2.329,0.153,10.287,0.009,,NO
+Tea with A/S ,Drink,NASA Foods,,250.073,4.95,1.064,0.211,1.025,0.001,,NO
+Tea with Cream ,Drink,NASA Foods,,250.112,9.909,2.225,0.213,2.143,0.053,,NO
+Tropical Punch,Drink,NASA Foods,,251.073,96.75,1.698,0,24.195,0,,NO
+Tropical Punch w/AS ,Drink,NASA Foods,,250.035,4.589,11.226,0.046,1.101,0,,NO
+Vanilla Breakfast Drink ,Drink,NASA Foods,FB62B931J,171.467,121.444,128.572,7.803,22.229,0.155,,NO
+Vanilla Breakfast Drink ,Drink,NASA Foods,FB62B299J,171.467,121.444,128.572,7.803,22.229,0.155,,NO
+Vanilla Breakfast Drink ,Drink,NASA Foods,FB62B933J,171.467,121.444,128.572,7.803,22.229,0.155,,NO
+Vanilla Breakfast Drink ,Drink,NASA Foods,FB62C133J,171.467,121.444,128.572,7.803,22.229,0.155,,NO
+Apple Apricot Juice w/Pulp Russian,Drink,Russian Foods,,177,103,11.7,0.525,25,0.045,,NO
+Apple Black Currant Juice with Pulp,Drink,Russian Foods,,176,304,12.3,0.28,37.6,0,,NO
+Apple Cranberry Drink ,Drink,Russian Foods,,136,116,28.8,0.15,28.7,0,,NO
+Apple Juice w/Sugar ,Drink,Russian Foods,,146,74.3,34.7,0.26,18.5,0,,NO
+Apple Peach Juice with Pulp,Drink,Russian Foods,,176,110,3.09,0.73,26.7,0,,NO
+Apple Peach Juice with Pulp,Drink,Russian Foods,,177,103,5.87,0.519,25,0.069,,NO
+Apricot Juice w/Pulp ,Drink,Russian Foods,,176,109,8.64,0.57,26.6,0.03,,NO
+Cherry Apple Juice w/Sugar ,Drink,Russian Foods,,137,112,23.8,0.31,27.6,0,,NO
+Cherry Juice w/Pulp ,Drink,Russian Foods,,176,149,8.34,1.3,35.9,0.04,,NO
+Cherry Juice w/Sugar ,Drink,Russian Foods,,135,119,40.7,0.63,29.2,0,,NO
+Coffee w/Sugar ,Drink,Russian Foods,,192,74.3,31.7,0,18,0.02,,NO
+Coffee w/Sugar & Glucose ,Drink,Russian Foods,,200.156,74.48,0.661,0.676,17.944,0.019,,NO
+Cranberry Drink ,Drink,Russian Foods,,124,165,0,0.25,40.8,0,,NO
+Currant Tea with Sugar,Drink,Russian Foods,,203,89,3.53,0.428,21.8,0.023,,NO
+Foxberry Juice w/Sugar ,Drink,Russian Foods,,124,163,25.3,0.31,40.4,0,,NO
+Grape Plum Juice w/Pulp ,Drink,Russian Foods,,176,183,12.9,0.79,45,0,,NO
+Green Tea ,Drink,Russian Foods,,203,0,0.004,0,0,0,,NO
+Green Tea w/Sugar,Drink,Russian Foods,,203,20.378,0.014,0,5.095,0,,NO
+Milk ,Drink,Russian Foods,,177,208,214,12.2,38.3,5.81,,NO
+Milk 2  ,Drink,Russian Foods,,88.69,103.75,107.175,6.075,19.15,2.905,,NO
+Milk w/Cocoa ,Drink,Russian Foods,,151,148,268,6.07,19.6,5.03,,NO
+Milk w/Coffee ,Drink,Russian Foods,,151,134,190,6.07,22.4,2.22,,NO
+Milk W/Tea,Drink,Russian Foods,,151,133,278,5.51,23.2,1.96,,NO
+Orange Cranberry Drink ,Drink,Russian Foods,,136,116,43.5,0.43,28.3,0,,NO
+Peach Apricot Jc w/Pulp ,Drink,Russian Foods,,176,108,2.93,0.85,26.2,0,,NO
+Peach Apricot Juice w/Pulp ,Drink,Russian Foods,,176,110,18.4,0.495,26.7,0.075,,NO
+Peach Black Currant Juice,Drink,Russian Foods,,176,166,8.19,0.73,40.5,0.05,,NO
+Peach Juice w/Pulp ,Drink,Russian Foods,,176,111,5.93,0.57,27,0.03,,NO
+Skim Milk w/Tea ,Drink,Russian Foods,,151,120,209,7.03,22.9,0.04,,NO
+Strawberry Tea wtih Sugar ,Drink,Russian Foods,,203,87.6,4.21,0.522,21.3,0.023,,NO
+Tea w/Sugar ,Drink,Russian Foods,,193.277,87.845,0.087,0,21.937,0,,NO
+Tea w/Sugar & Glucose ,Drink,Russian Foods,,200.005,92,0.193,0.053,22.897,0.023,,NO
+Tea without Sugar ,Drink,Russian Foods,,203,0,0,0,0.002,0,,NO
+Dried Cranberries-Raspberry Flavor,Fruit & Nuts,CSA Foods,,6.4,150.04,20.2,0.198,30.884,0.998,,NO
+"Almonds, Unsalted",Fruit & Nuts,NASA Foods,FS01C372J,1.661,243.45,1.665,10.715,4.5,20.273,,NO
+Apples w/ Spice,Fruit & Nuts,NASA Foods,FT38C652J,103.859,149.1,133.338,0.213,33.498,1.619,,NO
+Apples w/ Spice,Fruit & Nuts,NASA Foods,FT38C658J,103.859,149.1,133.338,0.213,33.498,1.619,,NO
+Apples w/ Spice,Fruit & Nuts,NASA Foods,FT38C670J,103.859,149.1,133.338,0.213,33.498,1.619,,NO
+Apples w/ Spice,Fruit & Nuts,NASA Foods,FT38C660J,103.859,149.1,133.338,0.213,33.498,1.619,,NO
+Apples w/ Spice,Fruit & Nuts,NASA Foods,FT38C653J,103.859,149.1,133.338,0.213,33.498,1.619,,NO
+Apples w/ Spice,Fruit & Nuts,NASA Foods,FT38C664J,103.859,149.1,133.338,0.213,33.498,1.619,,NO
+Apples w/ Spice,Fruit & Nuts,NASA Foods,FT38C656J,103.859,149.1,133.338,0.213,33.498,1.619,,NO
+Apples w/ Spice,Fruit & Nuts,NASA Foods,FT38C671J,103.859,149.1,133.338,0.213,33.498,1.619,,NO
+Applesauce ,Fruit & Nuts,NASA Foods,,93.53,131.84,9.216,0.128,32.64,0.051,,NO
+Berry Medley ,Fruit & Nuts,NASA Foods,,59.654,96.72,3.912,1.166,22.832,0.096,,YES
+"Cashews, Unsalted",Fruit & Nuts,NASA Foods,,1.013,264.6,4.775,9.878,11.597,19.877,,NO
+Citrus Fruit Salad ,Fruit & Nuts,NASA Foods,FT85A651J,123.412,71,9.798,0.767,16.586,0.114,,NO
+Citrus Fruit Salad ,Fruit & Nuts,NASA Foods,FT85A643J,123.412,71,9.798,0.767,16.586,0.114,,NO
+Citrus Fruit Salad ,Fruit & Nuts,NASA Foods,FT85A648J,123.412,71,9.798,0.767,16.586,0.114,,NO
+Citrus Fruit Salad ,Fruit & Nuts,NASA Foods,FT85A645J,123.412,71,9.798,0.767,16.586,0.114,,NO
+Dried Apricots,Fruit & Nuts,NASA Foods,FS02C735J,22.208,136,14,2.933,31.056,0.062,,NO
+Dried Apricots,Fruit & Nuts,NASA Foods,FS02C745J,22.208,136,14,2.933,31.056,0.062,,NO
+Dried Apricots,Fruit & Nuts,NASA Foods,FS02C733J,22.208,136,14,2.933,31.056,0.062,,NO
+Dried Apricots,Fruit & Nuts,NASA Foods,FS02C720J,22.208,136,14,2.933,31.056,0.062,,NO
+Dried Peaches ,Fruit & Nuts,NASA Foods,FS14C097J,23.572,130.2,5.183,1.959,30.423,0.062,,NO
+Dried Peaches ,Fruit & Nuts,NASA Foods,FS14C093J,23.572,130.2,5.183,1.959,30.423,0.062,,NO
+Dried Peaches ,Fruit & Nuts,NASA Foods,FS14C121J,23.572,130.2,5.183,1.959,30.423,0.062,,NO
+Dried Peaches ,Fruit & Nuts,NASA Foods,FS14C122J,23.572,130.2,5.183,1.959,30.423,0.062,,NO
+Dried Peaches ,Fruit & Nuts,NASA Foods,FS14C106J,23.572,130.2,5.183,1.959,30.423,0.062,,NO
+Dried Peaches ,Fruit & Nuts,NASA Foods,FS14C168J,23.572,130.2,5.183,1.959,30.423,0.062,,NO
+Dried Peaches ,Fruit & Nuts,NASA Foods,FS14C167J,23.572,130.2,5.183,1.959,30.423,0.062,,NO
+Dried Peaches ,Fruit & Nuts,NASA Foods,FS14C166J,23.572,130.2,5.183,1.959,30.423,0.062,,NO
+Dried Pears ,Fruit & Nuts,NASA Foods,FS16C990J,16.269,149.814,8.804,0.918,36.215,0.143,,NO
+Dried Pears ,Fruit & Nuts,NASA Foods,FS16C988J,16.269,149.814,8.804,0.918,36.215,0.143,,NO
+Dried Pears ,Fruit & Nuts,NASA Foods,FS16C958J,16.269,149.814,8.804,0.918,36.215,0.143,,NO
+Dried Pears ,Fruit & Nuts,NASA Foods,FS16C927J,16.269,149.814,8.804,0.918,36.215,0.143,,NO
+Dried Pears ,Fruit & Nuts,NASA Foods,FS16C939J,16.269,149.814,8.804,0.918,36.215,0.143,,NO
+Dried Pears ,Fruit & Nuts,NASA Foods,FS16C962J,16.269,149.814,8.804,0.918,36.215,0.143,,NO
+Dried Pears ,Fruit & Nuts,NASA Foods,FS19C925J,16.269,149.814,8.804,0.918,36.215,0.143,,NO
+Dried Pears ,Fruit & Nuts,NASA Foods,FS19C929J,16.269,149.814,8.804,0.918,36.215,0.143,,NO
+Fruit Cocktail ,Fruit & Nuts,NASA Foods,FT14C516J,112.896,53.76,6.677,0.346,13.12,0.128,,NO
+Fruit Cocktail ,Fruit & Nuts,NASA Foods,FT14C453J,112.896,53.76,6.677,0.346,13.12,0.128,,NO
+Fruit Cocktail ,Fruit & Nuts,NASA Foods,FT14C395J,112.896,53.76,6.677,0.346,13.12,0.128,,NO
+Fruit Cocktail ,Fruit & Nuts,NASA Foods,FT14C461J,112.896,53.76,6.677,0.346,13.12,0.128,,NO
+Fruit Cocktail ,Fruit & Nuts,NASA Foods,FT14C545J,112.896,53.76,6.677,0.346,13.12,0.128,,NO
+Fruit Cocktail ,Fruit & Nuts,NASA Foods,FT14C459J,112.896,53.76,6.677,0.346,13.12,0.128,,NO
+Fruit Cocktail ,Fruit & Nuts,NASA Foods,FT14C465J,112.896,53.76,6.677,0.346,13.12,0.128,,NO
+Fruit Cocktail ,Fruit & Nuts,NASA Foods,FT14C457J,112.896,53.76,6.677,0.346,13.12,0.128,,NO
+"Macadamia Nuts, Unsalted ",Fruit & Nuts,NASA Foods,FS25D216J,0.585,307.8,4.122,3.591,8.231,28.922,,NO
+Nut & Fruit Granola Bar,Fruit & Nuts,NASA Foods,FS28A842J,3.448,138.6,68.59,3.21,22.964,3.756,,NO
+Nut & Fruit Granola Bar,Fruit & Nuts,NASA Foods,FS28B029J,3.448,138.6,68.59,3.21,22.964,3.756,,NO
+Nut & Fruit Granola Bar,Fruit & Nuts,NASA Foods,FS28A969J,3.448,138.6,68.59,3.21,22.964,3.756,,NO
+Nut & Fruit Granola Bar,Fruit & Nuts,NASA Foods,FS28A888J,3.448,138.6,68.59,3.21,22.964,3.756,,NO
+Nut & Fruit Granola Bar,Fruit & Nuts,NASA Foods,FS28A978J,3.448,138.6,68.59,3.21,22.964,3.756,,NO
+Nut & Fruit Granola Bar,Fruit & Nuts,NASA Foods,FS28A874J,3.448,138.6,68.59,3.21,22.964,3.756,,NO
+Nut & Fruit Granola Bar,Fruit & Nuts,NASA Foods,FS28A943J,3.448,138.6,68.59,3.21,22.964,3.756,,NO
+Nut & Fruit Granola Bar,Fruit & Nuts,NASA Foods,FS28A857J,3.448,138.6,68.59,3.21,22.964,3.756,,NO
+Nut & Fruit Granola Bar,Fruit & Nuts,NASA Foods,FS28A938J,3.448,138.6,68.59,3.21,22.964,3.756,,NO
+Nut & Fruit Granola Bar,Fruit & Nuts,NASA Foods,FS28B085J,3.448,138.6,68.59,3.21,22.964,3.756,,NO
+Nut & Fruit Granola Bar,Fruit & Nuts,NASA Foods,FS28A872J,3.448,138.6,68.59,3.21,22.964,3.756,,NO
+Nut & Fruit Granola Bar,Fruit & Nuts,NASA Foods,FS28A939J,3.448,138.6,68.59,3.21,22.964,3.756,,NO
+Nut & Fruit Granola Bar,Fruit & Nuts,NASA Foods,FS28A858J,3.448,138.6,68.59,3.21,22.964,3.756,,NO
+Nut & Fruit Granola Bar,Fruit & Nuts,NASA Foods,FS28A966J,3.448,138.6,68.59,3.21,22.964,3.756,,NO
+Peaches,Fruit & Nuts,NASA Foods,FT15C666J,132.743,71.91,7.268,1.04,16.799,0.107,,NO
+Peaches,Fruit & Nuts,NASA Foods,FT15C664J,132.743,71.91,7.268,1.04,16.799,0.107,,NO
+Peaches,Fruit & Nuts,NASA Foods,FT15C665J,132.743,71.91,7.268,1.04,16.799,0.107,,NO
+Peaches,Fruit & Nuts,NASA Foods,FT15C663J,132.743,71.91,7.268,1.04,16.799,0.107,,NO
+Peanut Butter Unsalted,Fruit & Nuts,NASA Foods,FW14C811J,0.243,204.8,2.301,8.237,4.224,17.213,,NO
+Peanut Butter Unsalted,Fruit & Nuts,NASA Foods,FW14C951J,0.243,204.8,2.301,8.237,4.224,17.213,,NO
+Peanut Butter Unsalted,Fruit & Nuts,NASA Foods,FW14C817J,0.243,204.8,2.301,8.237,4.224,17.213,,NO
+Peanut Butter Unsalted,Fruit & Nuts,NASA Foods,FW14C814J,0.243,204.8,2.301,8.237,4.224,17.213,,NO
+Peanut Butter Unsalted,Fruit & Nuts,NASA Foods,FW14C818J,0.243,204.8,2.301,8.237,4.224,17.213,,NO
+Peanut Butter Unsalted,Fruit & Nuts,NASA Foods,FW14C810J,0.243,204.8,2.301,8.237,4.224,17.213,,NO
+Peanut Butter Unsalted,Fruit & Nuts,NASA Foods,FW14C953J,0.243,204.8,2.301,8.237,4.224,17.213,,NO
+Peanut Butter Unsalted,Fruit & Nuts,NASA Foods,FW14C812J,0.243,204.8,2.301,8.237,4.224,17.213,,NO
+Peanut Butter Unsalted,Fruit & Nuts,NASA Foods,FW14C813J,0.243,204.8,2.301,8.237,4.224,17.213,,NO
+Peanut Butter Unsalted,Fruit & Nuts,NASA Foods,FW14C782J,0.243,204.8,2.301,8.237,4.224,17.213,,NO
+Peanut Butter Unsalted,Fruit & Nuts,NASA Foods,FW14C952J,0.243,204.8,2.301,8.237,4.224,17.213,,NO
+Peanut Butter Unsalted,Fruit & Nuts,NASA Foods,FW14C793J,0.243,204.8,2.301,8.237,4.224,17.213,,NO
+Peanuts Unsalted,Fruit & Nuts,NASA Foods,FS15C204J,0.648,274.05,0.536,13.338,4.721,22.433,,NO
+Peanuts Unsalted,Fruit & Nuts,NASA Foods,FS15C204J,0.648,274.05,0.536,13.338,4.721,22.433,,NO
+Peanuts Unsalted,Fruit & Nuts,NASA Foods,FS15C204J,0.648,274.05,0.536,13.338,4.721,22.433,,NO
+Peanuts Unsalted,Fruit & Nuts,NASA Foods,FS15C204J,0.648,274.05,0.536,13.338,4.721,22.433,,NO
+Peanuts Unsalted,Fruit & Nuts,NASA Foods,FS15C330J,0.648,274.05,0.536,13.338,4.721,22.433,,NO
+Peanuts Unsalted,Fruit & Nuts,NASA Foods,FS15C260J,0.648,274.05,0.536,13.338,4.721,22.433,,NO
+Peanuts Unsalted,Fruit & Nuts,NASA Foods,FS15C292J,0.648,274.05,0.536,13.338,4.721,22.433,,NO
+Peanuts Unsalted,Fruit & Nuts,NASA Foods,FS15C242J,0.648,274.05,0.536,13.338,4.721,22.433,,NO
+Pineapple Pouch ,Fruit & Nuts,NASA Foods,,111.232,60.16,5.632,0.064,14.925,0.128,,NO
+Rhubarb Applesauce,Fruit & Nuts,NASA Foods,FT88A942J,128.141,45.44,1.718,0.824,10.309,0.085,,NO
+Rhubarb Applesauce,Fruit & Nuts,NASA Foods,(unlabeled) FT88-06 13087,128.141,45.44,1.718,0.824,10.309,0.085,,NO
+Rhubarb Applesauce,Fruit & Nuts,NASA Foods,FT88A956J,128.141,45.44,1.718,0.824,10.309,0.085,,NO
+Rhubarb Applesauce,Fruit & Nuts,NASA Foods,FT88A944J,128.141,45.44,1.718,0.824,10.309,0.085,,NO
+Rhubarb Applesauce,Fruit & Nuts,NASA Foods,FT88B212J,128.141,45.44,1.718,0.824,10.309,0.085,,NO
+Rhubarb Applesauce,Fruit & Nuts,NASA Foods,FT88B207J,128.141,45.44,1.718,0.824,10.309,0.085,,NO
+Rhubarb Applesauce,Fruit & Nuts,NASA Foods,FT88B213J,128.141,45.44,1.718,0.824,10.309,0.085,,NO
+Rhubarb Applesauce,Fruit & Nuts,NASA Foods,FT88B208J,128.141,45.44,1.718,0.824,10.309,0.085,,NO
+Strawberries ,Fruit & Nuts,NASA Foods,FR38D040J,53.668,89.04,6.896,1.036,21.154,0.042,,NO
+Strawberries ,Fruit & Nuts,NASA Foods,FR38D053J,53.668,89.04,6.896,1.036,21.154,0.042,,NO
+Strawberries ,Fruit & Nuts,NASA Foods,FR38D039J,53.668,89.04,6.896,1.036,21.154,0.042,,NO
+Strawberries ,Fruit & Nuts,NASA Foods,FR38D074J,53.668,89.04,6.896,1.036,21.154,0.042,,NO
+Trail Mix ,Fruit & Nuts,NASA Foods,FS24C892J,4.185,218.5,47.955,4.75,28.73,9.39,,NO
+Trail Mix ,Fruit & Nuts,NASA Foods,FS24C903J,4.185,218.5,47.955,4.75,28.73,9.39,,NO
+Trail Mix ,Fruit & Nuts,NASA Foods,FS24C985J,4.185,218.5,47.955,4.75,28.73,9.39,,NO
+Trail Mix ,Fruit & Nuts,NASA Foods,FS24C887J,4.185,218.5,47.955,4.75,28.73,9.39,,NO
+Tropical Fruit Salad ,Fruit & Nuts,NASA Foods,,119.862,80.344,11.786,0.369,19.525,0.085,,YES
+Hazelnuts,Fruit & Nuts,Russian Foods,,0.25,172,7.39,4.13,1.29,16.7,,NO
+Kuraga ,Fruit & Nuts,Russian Foods,,7.3,149,20.2,1.55,35.7,0,,NO
+Mashed Dried Apricots ,Fruit & Nuts,Russian Foods,,74.7,84,49,0.83,19.6,0.18,,NO
+Mashed Foxberry Russian Crushed Cowberry,Fruit & Nuts,Russian Foods,,60.6,175,15.5,0.18,43.7,0,,NO
+Prunes ,Fruit & Nuts,Russian Foods,,7.515,141,1.44,0.74,34.11,0.19,,NO
+Prunes w/Nuts ,Fruit & Nuts,Russian Foods,,5.316,258,12.042,4.314,31.224,12.894,,NO
+Salted Almonds ,Fruit & Nuts,Russian Foods,,0.52,149,497,6.18,0.87,13.4,,NO
+Salted Almonds ,Fruit & Nuts,Russian Foods,,0.428,149,266.845,5.918,1.535,13.233,,NO
+Sweet Almonds ,Fruit & Nuts,Russian Foods,,0.62,149,101,6.18,0.87,13.4,,NO
+Artic Char Jerky Chips,Meat / Fish,CSA Foods,,4.38,114.22,599.65,16.996,1.995,3.999,,NO
+Bison Pemmican ,Meat / Fish,CSA Foods,,82.001,219.24,990.048,34.997,0,9,,NO
+Peppered hot Salmon Jerky ,Meat / Fish,CSA Foods,,12.594,20.155,2.465,4.139,1.998,0.005,,NO
+Pipsi Char Dried ,Meat / Fish,CSA Foods,,1019.15,223,990,35,0.43,9,,NO
+Salmon Pate ,Meat / Fish,CSA Foods,,33.6,99.862,245.235,5.996,2.005,7.004,,NO
+Smoked Salmon Jerky ,Meat / Fish,CSA Foods,,3.724,59.935,770.025,8.004,5.998,0.003,,NO
+Smoked Sockeye Salmon,Meat / Fish,CSA Foods,,36.98,110.168,169.858,13.001,3,6,,NO
+Tadka Tempter Freeze dried,Meat / Fish,CSA Foods,,686.001,423.9,1582.483,13.574,70.532,4.589,,NO
+Wild Pacific Smoked King Salmon,Meat / Fish,CSA Foods,,81.36,200.21,499.959,22.996,0,12.002,,NO
+Braised Calf's Cheeks w/ Vegetables in Bals Vin Sa,Meat / Fish,ESA Foods,,204.225,355.486,529.71,32.755,15.766,17.236,,NO
+Duck Breast Confit with Capers,Meat / Fish,ESA Foods,,111.63,366,1474,49.4,0,17.75,,NO
+Red Tuna w/candied Menton Lemon ,Meat / Fish,ESA Foods,,150,262.8,220,64.6,0,1.5,,NO
+Roasted Quail,Meat / Fish,ESA Foods,,128.9,343.8,580,36.9,2.29,19.9,,NO
+Shredded Chicken Parmentier,Meat / Fish,ESA Foods,,158.4,206,343.608,22,18.3,4.7,,NO
+Swordfish Riviera Style ,Meat / Fish,ESA Foods,,134.87,237.9,371.49,29.65,7.137,9.15,,NO
+Beef Curry ,Meat / Fish,JAXA Foods,,154.25,160.72,906,11.23,14.72,6.331,,NO
+Chicken Curry  ,Meat / Fish,JAXA Foods,,154.3,156.428,909,11.64,17.542,4.41,,NO
+Mackerel with Miso Sauce ,Meat / Fish,JAXA Foods,,57.035,309.584,658.79,13.926,12.287,22.748,,NO
+Mackerel with Teriyaki sauce ,Meat / Fish,JAXA Foods,,51.84,265.8,804.3,16.46,9.4,18.04,,NO
+Pork Curry ,Meat / Fish,JAXA Foods,,149.5,177,1001.8,12.78,16.131,6.82,,NO
+Rice Ball w/Salmon ,Meat / Fish,JAXA Foods,,104.43,179,273.931,4.1,39.85,0.23,,NO
+Sardines w/ Tomato sauce ,Meat / Fish,JAXA Foods,,67.06,170.6,388,15.6,2.66,10.84,,NO
+Barbecued Beef Brisket  ,Meat / Fish,NASA Foods,,60.7,260.78,579.5,29.94,15.104,9.02,,NO
+Beef Enchilada ,Meat / Fish,NASA Foods,,129.465,235.875,888.985,9.058,31.23,8.322,,NO
+Beef Fajitas ,Meat / Fish,NASA Foods,,77.238,190,854.25,31.488,5.088,4.888,,NO
+Beef Pattie,Meat / Fish,NASA Foods,FR02B347J,50.524,102,289,12.186,0.588,5.612,,NO
+Beef Pattie,Meat / Fish,NASA Foods,FR02B348J,50.524,102,289,12.186,0.588,5.612,,NO
+Beef Pattie,Meat / Fish,NASA Foods,FR02B282J,50.524,102,289,12.186,0.588,5.612,,NO
+Beef Ravioli ,Meat / Fish,NASA Foods,FT19B406J,158.968,276.94,441.402,13.053,39.952,7.196,,NO
+Beef Ravioli ,Meat / Fish,NASA Foods,FT19B402J,158.968,276.94,441.402,13.053,39.952,7.196,,NO
+Beef Ravioli ,Meat / Fish,NASA Foods,FT19B425J,158.968,276.94,441.402,13.053,39.952,7.196,,NO
+Beef Ravioli ,Meat / Fish,NASA Foods,FT19B428J,158.968,276.94,441.402,13.053,39.952,7.196,,NO
+Beef Ravioli ,Meat / Fish,NASA Foods,FT19B447J,158.968,276.94,441.402,13.053,39.952,7.196,,NO
+Beef Ravioli ,Meat / Fish,NASA Foods,FT19B405J,158.968,276.94,441.402,13.053,39.952,7.196,,NO
+Beef Steak ,Meat / Fish,NASA Foods,,55.6,202,59.1,35.2,1.56,6.09,,NO
+Beef Stew,Meat / Fish,NASA Foods,,160.558,148.5,205.346,20.097,9.365,3.386,,NO
+Beef Stroganoff w/ Noodles ,Meat / Fish,NASA Foods,,101.183,152.95,133.725,9.611,16.405,5.418,,NO
+Beef Tips w/ Mushrooms ,Meat / Fish,NASA Foods,,96.278,191.52,441.317,32.53,3.01,5.486,,NO
+Caribbean Chicken ,Meat / Fish,NASA Foods,FR71A313J,78.09,133.2,293.569,21.763,6.882,2.061,,NO
+Caribbean Chicken ,Meat / Fish,NASA Foods,FR71A365J,78.09,133.2,293.569,21.763,6.882,2.061,,NO
+Caribbean Chicken ,Meat / Fish,NASA Foods,FR71A304J,78.09,133.2,293.569,21.763,6.882,2.061,,NO
+Cashew Chicken Curry ,Meat / Fish,NASA Foods,FR47B177J,101.508,151.92,192.913,22.489,2.315,5.875,,NO
+Cashew Chicken Curry ,Meat / Fish,NASA Foods,FR47B160J,101.508,151.92,192.913,22.489,2.315,5.875,,NO
+Cashew Chicken Curry ,Meat / Fish,NASA Foods,FR47B166J,101.508,151.92,192.913,22.489,2.315,5.875,,NO
+Chicken Consomme ,Meat / Fish,NASA Foods,,250.149,13.735,1398.826,0.127,2.441,0.385,,NO
+Chicken Fajitas ,Meat / Fish,NASA Foods,,90.985,175.56,154.253,32.931,1.516,4.136,,NO
+Chicken in a Pouch,Meat / Fish,NASA Foods,FT95A263J,64.34,77,351,17.64,1.088,0.31,,NO
+Chicken in a Pouch,Meat / Fish,NASA Foods,FT95A267J,64.34,77,351,17.64,1.088,0.31,,NO
+Chicken in a Pouch,Meat / Fish,NASA Foods,FT95A269J,64.34,77,351,17.64,1.088,0.31,,NO
+Chicken in a Pouch,Meat / Fish,NASA Foods,FT95A272J,64.34,77,351,17.64,1.088,0.31,,NO
+Chicken in a Pouch,Meat / Fish,NASA Foods,FT95A273J,64.34,77,351,17.64,1.088,0.31,,NO
+Chicken in a Pouch,Meat / Fish,NASA Foods,FT95A338J,64.34,77,351,17.64,1.088,0.31,,NO
+Chicken Salad ,Meat / Fish,NASA Foods,,57.686,110.476,204.954,21.556,1.713,1.943,,NO
+Chicken Strips in Salsa ,Meat / Fish,NASA Foods,,179.92,186.14,313.4,32.57,5.108,3.86,,NO
+Chicken w/ Corn & Black Beans ,Meat / Fish,NASA Foods,,129.642,146.2,106.471,16.524,13.804,2.788,,NO
+Chicken w/ Peanut Sauce,Meat / Fish,NASA Foods,FT54B949J,147.03,213.84,215,24.16,16.889,5.48,,NO
+Chicken w/ Peanut Sauce,Meat / Fish,NASA Foods,FT54B949J,147.03,213.84,215,24.16,16.889,5.48,,NO
+Chicken w/ Peanut Sauce,Meat / Fish,NASA Foods,FT54B946J,147.03,213.84,215,24.16,16.889,5.48,,NO
+Chicken w/ Peanut Sauce,Meat / Fish,NASA Foods,,147.03,213.84,215,24.16,16.889,5.48,,NO
+Chicken w/ Peanut Sauce,Meat / Fish,NASA Foods,,147.03,213.84,215,24.16,16.889,5.48,,NO
+Chicken-Pineapple Salad,Meat / Fish,NASA Foods,,75.943,128.084,136.718,15.506,4.805,5.217,,NO
+Crawfish Etouffee ,Meat / Fish,NASA Foods,FT36B914J,169.765,118.8,152.955,9.841,11.84,3.604,,NO
+Crawfish Etouffee ,Meat / Fish,NASA Foods,FT36B925J,169.765,118.8,152.955,9.841,11.84,3.604,,NO
+Crawfish Etouffee ,Meat / Fish,NASA Foods,FT36B916J,169.765,118.8,152.955,9.841,11.84,3.604,,NO
+Crawfish Etouffee ,Meat / Fish,NASA Foods,FT36B929J,169.765,118.8,152.955,9.841,11.84,3.604,,NO
+Crawfish Etouffee ,Meat / Fish,NASA Foods,FT36B924J,169.765,118.8,152.955,9.841,11.84,3.604,,NO
+Dried Beef ,Meat / Fish,NASA Foods,,15.297,55.5,496.392,12.267,0.336,0.576,,NO
+Fiesta Chicken ,Meat / Fish,NASA Foods,,175.607,245.16,296.78,23.608,10.056,12.349,,NO
+Grilled Chicken ,Meat / Fish,NASA Foods,,53.83,106.65,28.9,20.85,0.569,2.36,,NO
+Grilled Pork Chop ,Meat / Fish,NASA Foods,,79.44,201.6,225.036,26.388,2.22,9.636,,NO
+Lasagna w/ Meat Sauce,Meat / Fish,NASA Foods,,157.833,299.64,505.189,21.61,30.577,10.215,,NO
+Meatloaf,Meat / Fish,NASA Foods,FT48C645J,78.264,172,397,18.156,10.4,6.625,,NO
+Meatloaf,Meat / Fish,NASA Foods,FT48C642J,78.264,172,397,18.156,10.4,6.625,,NO
+Meatloaf,Meat / Fish,NASA Foods,FT48C647J,78.264,172,397,18.156,10.4,6.625,,NO
+Noodles & Chicken,Meat / Fish,NASA Foods,,100.638,109.48,126.456,13.353,11.06,1.324,,NO
+Pasta w/Shrimp,Meat / Fish,NASA Foods,,101.228,167.6,272.28,8.936,21.936,4.896,,NO
+Rice & Chicken ,Meat / Fish,NASA Foods,,100.925,133.96,148.118,15.824,13.916,1.652,,NO
+Salmon ,Meat / Fish,NASA Foods,FT75A683J,73.07,79.21,240.72,15.08,1.15,1.59,,NO
+Salmon ,Meat / Fish,NASA Foods,(unlabeled) 4800001191,73.07,79.21,240.72,15.08,1.15,1.59,,NO
+Salmon ,Meat / Fish,NASA Foods,FT75A667J,73.07,79.21,240.72,15.08,1.15,1.59,,NO
+Salmon ,Meat / Fish,NASA Foods,FT75A670J,73.07,79.21,240.72,15.08,1.15,1.59,,NO
+Salmon ,Meat / Fish,NASA Foods,FT75A668J,73.07,79.21,240.72,15.08,1.15,1.59,,NO
+Shrimp Cocktail ,Meat / Fish,NASA Foods,,76.398,86,540.743,12.93,7.353,0.528,,NO
+Shrimp Fried Rice ,Meat / Fish,NASA Foods,,100.79,125.12,225.05,7.933,19.194,1.846,,NO
+Smoked Turkey,Meat / Fish,NASA Foods,,64.062,108.09,756.54,19.251,0.441,3.258,,NO
+Spaghetti w/ Meat Sauce,Meat / Fish,NASA Foods,FR36B436J,101.578,111.3,130.296,8.76,13.872,2.298,,NO
+Spaghetti w/ Meat Sauce,Meat / Fish,NASA Foods,FR36B361J,101.578,111.3,130.296,8.76,13.872,2.298,,NO
+Spaghetti w/ Meat Sauce,Meat / Fish,NASA Foods,FR36B186J,101.578,111.3,130.296,8.76,13.872,2.298,,NO
+Spicy Chicken & Vegetables ,Meat / Fish,NASA Foods,,100.477,143.222,624.013,6.62,24.86,1.923,,NO
+Sweet & Sour chicken,Meat / Fish,NASA Foods,FR08C095J,102.748,152.8,43.328,18.772,13.76,2.516,,NO
+Sweet & Sour chicken,Meat / Fish,NASA Foods,FR08C085J,102.748,152.8,43.328,18.772,13.76,2.516,,NO
+Sweet & Sour chicken,Meat / Fish,NASA Foods,FR08C090J,102.748,152.8,43.328,18.772,13.76,2.516,,NO
+Sweet & Sour Pork,Meat / Fish,NASA Foods,,148.302,206,147,20.948,23.146,3.188,,NO
+Teriyaki Beef ,Meat / Fish,NASA Foods,,66.432,234,863.22,39.06,4.176,6.804,,NO
+Chicken Teriyaki,Meat / Fish,NASA Foods,,76.693,119.36,233.606,24.368,1.859,1.619,,NO
+Tuna ,Meat / Fish,NASA Foods,FT76A766J,53.561,79.18,118.4,17.434,2.131,0.074,,NO
+Tuna ,Meat / Fish,NASA Foods,FT76A768J,53.561,79.18,118.4,17.434,2.131,0.074,,NO
+Tuna ,Meat / Fish,NASA Foods,FT76A834J,53.561,79.18,118.4,17.434,2.131,0.074,,NO
+Tuna ,Meat / Fish,NASA Foods,FT76A835J,53.561,79.18,118.4,17.434,2.131,0.074,,NO
+Tuna ,Meat / Fish,NASA Foods,FT76A828J,53.561,79.18,118.4,17.434,2.131,0.074,,NO
+Tuna Noodle Casserole ,Meat / Fish,NASA Foods,,170.84,279.21,228.839,13.552,23.109,14.687,,NO
+Tuna Salad Spread,Meat / Fish,NASA Foods,,48.578,181,313,6.874,11.829,11.811,,NO
+Turkey Tetrazzini ,Meat / Fish,NASA Foods,FR39B969J,75.772,110.16,158.846,9.04,11.688,3.029,,NO
+Turkey Tetrazzini ,Meat / Fish,NASA Foods,FR39B962J,75.772,110.16,158.846,9.04,11.688,3.029,,NO
+Turkey Tetrazzini ,Meat / Fish,NASA Foods,FR39B966J,75.772,110.16,158.846,9.04,11.688,3.029,,NO
+Assorted Meats ,Meat / Fish,Russian Foods,,64.9,154,666.03,23.32,4.41,4.76,,NO
+Azu Beef Stew ,Meat / Fish,Russian Foods,,176,213,1192,16.8,17.5,8.37,,NO
+Beef Goulash ,Meat / Fish,Russian Foods,,60.8,187,651,23.8,3.08,8.69,,NO
+Beef w/Vegetables ,Meat / Fish,Russian Foods,,187,290,946,22.1,17,14.9,,NO
+Borsch with Meat ,Meat / Fish,Russian Foods,,151,119,1191,6.83,10.7,5.46,,NO
+Bream in Tomato Sauce ,Meat / Fish,Russian Foods,,61.5,207,560,15.1,6.63,13.3,,NO
+Chicken,Meat / Fish,Russian Foods,,64.3,167,851,26.4,0,6.81,,NO
+Chicken in White Sauce ,Meat / Fish,Russian Foods,,168,450,1193,40.3,9.9,27.8,,NO
+Chicken w/Buckwheat Gruel ,Meat / Fish,Russian Foods,,153,518,1243,33.6,26,30.9,,NO
+Chicken w/Egg ,Meat / Fish,Russian Foods,,72.4,125,470,21.2,0.23,4.32,,NO
+Chicken w/Prunes ,Meat / Fish,Russian Foods,,71.5,116,441,22.8,0.72,2.43,,NO
+Chicken w/Rice ,Meat / Fish,Russian Foods,,166,443,1109,34.5,20,24.9,,NO
+Chopped Pork w/Egg ,Meat / Fish,Russian Foods,,69.6,137,385,19.1,1.62,6.04,,NO
+Home Style Beef,Meat / Fish,Russian Foods,,151,229,1034,16.5,14.7,11.5,,NO
+Jellied Beef Tongue,Meat / Fish,Russian Foods,,68.74,177.22,937.54,13.09,3.09,12.5,,NO
+Jellied Meat,Meat / Fish,Russian Foods,,74.2,99,448,22.1,0,1.23,,NO
+Jellied Pike Perch ,Meat / Fish,Russian Foods,,79.9,74,650,16.8,0.44,0.52,,NO
+Jellied Pike Perch Quenelle ,Meat / Fish,Russian Foods,,74.7,115,528,14.2,3,5.17,,NO
+L.S. Beef w/Vegetables ,Meat / Fish,Russian Foods,,173,428,524,19.3,22.6,28.9,,NO
+L.S. Buckwheat Gruel ,Meat / Fish,Russian Foods,,150,248,341,7.09,41,6.25,,NO
+L.S. Home Style Beef ,Meat / Fish,Russian Foods,,151,217,133,19.2,20,7.68,,NO
+L.S. Pork w/Potatoes,Meat / Fish,Russian Foods,,191,280,710,20.6,17.3,14.2,,NO
+Lamb w/Vegetables,Meat / Fish,Russian Foods,,179,335,961,38.4,0.05,20.2,,NO
+Liver w/Potatoes ,Meat / Fish,Russian Foods,,184,318,792,17.9,24.4,16.6,,NO
+Lubitelskiy Sausage,Meat / Fish,Russian Foods,,68.35,185,542.25,10.63,1.16,15.34,,NO
+Meat & Vegetable Soup ,Meat / Fish,Russian Foods,,174,415,1097,22.6,14.5,29.7,,NO
+Meat & Vermicelli ,Meat / Fish,Russian Foods,,168,365,1050,32,25,15.2,,NO
+Meat in White Sauce ,Meat / Fish,Russian Foods,,63.5,155,276,25.1,5.13,3.75,,NO
+Meat w/ Barley Kasha ,Meat / Fish,Russian Foods,,183,308,991,25.4,17.4,15.1,,NO
+Meat w/Buckwheat Gruel ,Meat / Fish,Russian Foods,,169,407,1058,29.5,26.9,20.1,,NO
+Meat w/Vegetable Casserole ,Meat / Fish,Russian Foods,,180,355,839,13.1,29.2,20.5,,NO
+Noodle soup w/ meat ,Meat / Fish,Russian Foods,,175.699,119.1,830.064,7.608,14.436,3.42,,NO
+Pan fried meat w/rice & Veg,Meat / Fish,Russian Foods,,151.355,204,809.84,16.835,20.235,6.21,,NO
+Pasta w/Meat ,Meat / Fish,Russian Foods,,176,214,975,14.1,25.1,6.39,,NO
+Peasant Soup ,Meat / Fish,Russian Foods,,151,113,1253,7.06,12.3,3.91,,NO
+Perch Quennelles ,Meat / Fish,Russian Foods,,74.78,107.36,643.45,12.34,1.09,5.96,,NO
+Pickled Cucumber w/Meat Soup,Meat / Fish,Russian Foods,,151,121,1028,7.4,11.4,5.06,,NO
+Pike Perch in Baltika Sauce  ,Meat / Fish,Russian Foods,,63.2,195,734,14.3,8.94,11.3,,NO
+Pike Perch Pilaf ,Meat / Fish,Russian Foods,,165.475,346.525,1515.275,25.525,30.675,13.525,,NO
+Pike Perch Polish Style ,Meat / Fish,Russian Foods,,66.5,190,467,17.8,0.95,12.8,,NO
+Pike Perch Solyanka,Meat / Fish,Russian Foods,,176.3,359.475,1322.8,24.475,13.475,23.075,,NO
+Pork Goulash ,Meat / Fish,Russian Foods,,55,248,588,20.6,4.67,16.3,,NO
+Pork loin w/mashed potatoes ,Meat / Fish,Russian Foods,,200.82,221,759.485,20.8,16.3,8.075,,NO
+Pork Piquant,Meat / Fish,Russian Foods,,142,558,1253,55.2,4.75,35.3,,NO
+Pork w/Lecho Sauce ,Meat / Fish,Russian Foods,,203,200,858,21.4,12.2,7.23,,NO
+Pork w/Potatoes ,Meat / Fish,Russian Foods,,179,385,807,17.5,21.7,25.3,,NO
+Spiced Pike Perch ,Meat / Fish,Russian Foods,,65.1,179,464,16.3,6.95,9.56,,NO
+Stewed Chicken w/TomaChakhokhbili Soup ,Meat / Fish,Russian Foods,,59.18,207.37,235.54,17.24,11.54,10.25,,NO
+Stewed Pork w/ Sweet Peppers ,Meat / Fish,Russian Foods,,75.04,112,308.56,10.14,6.33,5.1,,NO
+Sturgeon ,Meat / Fish,Russian Foods,,69.18,174,655.98,16.05,0.2,11.81,,NO
+Tokana Meat & Vegetables ,Meat / Fish,Russian Foods,,191,233,904,25.6,8.3,10.9,,NO
+Veal ,Meat / Fish,Russian Foods,,72.15,110,321.23,21.66,3.4,1.08,,NO
+Veal w/ Vegetables,Meat / Fish,Russian Foods,,67.51,170.92,170.76,13.15,6.72,10.16,,NO
+Vegetable Ragout w/Meat ,Meat / Fish,Russian Foods,,177.73,192,1293.5,17.95,13.27,7.445,,NO
+Cheesy Palak Freeze Dried,Vegetables / Sides,CSA Foods,,686.585,459.704,1804.254,17.005,69.996,12.996,,NO
+Couscous Sultana Freeze dried,Vegetables / Sides,CSA Foods,,500.296,490.281,2041.021,15.965,104.026,2.994,,NO
+Dal-Bhat Freeze-dried,Vegetables / Sides,CSA Foods,,400.673,419.55,2031.217,21.004,85.997,2.005,,NO
+Carrots with Orange & Coriander,Vegetables / Sides,ESA Foods,,73.4,42.5,237.5,1.36,8.33,0.68,,NO
+Celeriac Puree,Vegetables / Sides,ESA Foods,,85.64,36.78,258.21,1.265,4.64,0.146,,NO
+Muesli French Food,Vegetables / Sides,ESA Foods,,68.593,388,132.37,7.2,40,19.14,,NO
+Tomatoes Aubergine and Olive Dip,Vegetables / Sides,ESA Foods,,72.9,103.4,255.5,1.97,13.07,4.6,,NO
+Clear Soup ,Vegetables / Sides,JAXA Foods,,150.115,16.245,566.151,0.998,2.776,0.125,,NO
+Cooked Rice Plain ,Vegetables / Sides,JAXA Foods,,105.735,224.688,4.712,3.695,51.528,0.422,,NO
+Cooked Rice w/ Vegetables,Vegetables / Sides,JAXA Foods,,106.786,236.205,347.548,4.57,53.808,0.299,,NO
+Cooked Rice with Japanese Red Beans ,Vegetables / Sides,JAXA Foods,,80.787,243.977,4.352,5.413,55.23,0.156,,NO
+Egg Drop Soup Data ,Vegetables / Sides,JAXA Foods,,150.115,33.2,1.664,2.136,2.456,1.6,,NO
+Japanese Clear Soup ,Vegetables / Sides,JAXA Foods,,150.476,14.568,577.895,0.214,3.21,0.097,,NO
+Japanese Curry Sauce w/Vegetables ,Vegetables / Sides,JAXA Foods,,170,190,1090,5,22,10,,NO
+"Japanese Noodles ""Ramen Meijin: Shoyu-Aji"" ",Vegetables / Sides,JAXA Foods,,0,470,3.3,15,71,14,,NO
+Japanese Soup w/ Wakame Seaweed ,Vegetables / Sides,JAXA Foods,,200.455,16.575,848.864,1.369,0.94,0.816,,NO
+Japanese Worcester Sauce,Vegetables / Sides,JAXA Foods,,5.026,12.63,83.3,0.085,2.844,0.009,,NO
+Ramen Noodles Seafood,Vegetables / Sides,JAXA Foods,,125.325,150.448,688.616,4.369,21.377,5.138,,NO
+"Ramen Noodles, curry flavor ",Vegetables / Sides,JAXA Foods,,125.41,228.215,759.116,4.91,23.625,12.086,,NO
+"Ramen Noodles, soy sauce flavor",Vegetables / Sides,JAXA Foods,,142.338,134.088,526.316,3.39,17.566,5.517,,NO
+"Rice Porridge, plain",Vegetables / Sides,JAXA Foods,,226.996,115,2.56,1.786,25.083,0.717,,NO
+Soup with Wakame Seaweed ,Vegetables / Sides,JAXA Foods,,200.14,21,667,1.35,0,0,,NO
+Space Bread Sweet Potato ,Vegetables / Sides,JAXA Foods,,43.996,289.484,945.805,7.906,49.951,6.229,,NO
+Space Bread Tropical ,Vegetables / Sides,JAXA Foods,,43.476,289.943,173.944,8.732,51.384,5.035,,NO
+Space Bread Unrefined Sugar,Vegetables / Sides,JAXA Foods,,36.44,266,681,7.64,50.61,3.29,,NO
+Sweet Red Bean Paste ,Vegetables / Sides,JAXA Foods,,17.343,178.3,3.47,2.375,42.032,0.124,,NO
+Sweet Red Bean Paste w/ Chestnut ,Vegetables / Sides,JAXA Foods,,17.073,180.64,3.056,1.855,42.841,0.182,,NO
+Tomato Ketchup ,Vegetables / Sides,JAXA Foods,,8.27,15,139,0.2,0,0,,NO
+Macaroni & Cheese ,Vegetables / Sides,NASA Foods,,125.496,180,210.736,7.66,22.516,6.596,,NO
+Mashed Potatoes ,Vegetables / Sides,NASA Foods,FR49C112J,100.381,112.42,132.471,1.938,11.75,6.402,,NO
+Mashed Potatoes ,Vegetables / Sides,NASA Foods,FR49C091J,100.381,112.42,132.471,1.938,11.75,6.402,,NO
+Mashed Potatoes ,Vegetables / Sides,NASA Foods,FR49C102J,100.381,112.42,132.471,1.938,11.75,6.402,,NO
+Mashed Potatoes ,Vegetables / Sides,NASA Foods,FR49C094J,100.381,112.42,132.471,1.938,11.75,6.402,,NO
+Mashed Potatoes ,Vegetables / Sides,NASA Foods,FR49B907J,100.381,112.42,132.471,1.938,11.75,6.402,,NO
+Mashed Potatoes ,Vegetables / Sides,NASA Foods,FR49C095J,100.381,112.42,132.471,1.938,11.75,6.402,,NO
+Mashed Potatoes ,Vegetables / Sides,NASA Foods,FR49C110J,100.381,112.42,132.471,1.938,11.75,6.402,,NO
+Mashed Potatoes ,Vegetables / Sides,NASA Foods,FR49C115J,100.381,112.42,132.471,1.938,11.75,6.402,,NO
+Mayonnaise,Vegetables / Sides,NASA Foods,,1.813,78.48,61.44,0.169,2.177,7.675,,NO
+Minestrone Soup ,Vegetables / Sides,NASA Foods,FT49C420J,195.424,120.31,175.289,5.13,19.295,2.406,,NO
+Mixed Vegetables ,Vegetables / Sides,NASA Foods,FT74B283J,91.361,74.58,50.974,4.002,10.622,1.785,,NO
+Mixed Vegetables ,Vegetables / Sides,NASA Foods,FT74B241J,91.361,74.58,50.974,4.002,10.622,1.785,,NO
+Mixed Vegetables ,Vegetables / Sides,NASA Foods,FT74B243J,91.361,74.58,50.974,4.002,10.622,1.785,,NO
+Mixed Vegetables ,Vegetables / Sides,NASA Foods,FT74B295J,91.361,74.58,50.974,4.002,10.622,1.785,,NO
+Mustard ,Vegetables / Sides,NASA Foods,,4.7,2.688,60.396,0.217,0.034,0.22,,NO
+Pasta w/ Pesto Sauce ,Vegetables / Sides,NASA Foods,FT72A501J,79.025,142.8,186.025,6.031,23.085,2.953,,NO
+Pasta w/ Pesto Sauce ,Vegetables / Sides,NASA Foods,FT72A672J,79.025,142.8,186.025,6.031,23.085,2.953,,NO
+Pasta w/ Pesto Sauce ,Vegetables / Sides,NASA Foods,FT72A667J,79.025,142.8,186.025,6.031,23.085,2.953,,NO
+Pasta w/ Pesto Sauce ,Vegetables / Sides,NASA Foods,FT72A663J,79.025,142.8,186.025,6.031,23.085,2.953,,NO
+Potato Medley,Vegetables / Sides,NASA Foods,FT87A626J,103.9,146,80,4.26,26.1,3.18,,NO
+Potato Medley,Vegetables / Sides,NASA Foods,FT87A625J,103.9,146,80,4.26,26.1,3.18,,NO
+Potato Medley,Vegetables / Sides,NASA Foods,FT87A624,103.9,146,80,4.26,26.1,3.18,,NO
+Potato Medley,Vegetables / Sides,NASA Foods,FT87A624,103.9,146,80,4.26,26.1,3.18,,NO
+Potato Soup ,Vegetables / Sides,NASA Foods,,201.778,131.04,165.695,3.814,21.902,3.229,,NO
+Potatoes Au Gratin ,Vegetables / Sides,NASA Foods,,100.969,138,226.023,5.388,14.394,6.546,,NO
+Red Beans & Rice  ,Vegetables / Sides,NASA Foods,,176.447,163.44,189.386,11.01,28.443,0.545,,NO
+Rice Pilaf ,Vegetables / Sides,NASA Foods,,75.578,108,43.54,2.193,18.218,2.93,,NO
+Rice w/ Butter,Vegetables / Sides,NASA Foods,,81.938,128.8,101.994,2.829,28.543,0.391,,NO
+Seafood Gumbo ,Vegetables / Sides,NASA Foods,,172.36,100.98,283.754,10.316,7.187,3.505,,NO
+Southwestern Corn ,Vegetables / Sides,NASA Foods,FT30C292J,137.598,119,129.149,3.4,21.998,1.887,,NO
+Southwestern Corn ,Vegetables / Sides,NASA Foods,FT30C293J,137.598,119,129.149,3.4,21.998,1.887,,NO
+Southwestern Corn ,Vegetables / Sides,NASA Foods,FT30C348J,137.598,119,129.149,3.4,21.998,1.887,,NO
+Southwestern Corn ,Vegetables / Sides,NASA Foods,FT30C334J,137.598,119,129.149,3.4,21.998,1.887,,NO
+Southwestern Corn ,Vegetables / Sides,NASA Foods,FT30C294J,137.598,119,129.149,3.4,21.998,1.887,,NO
+Southwestern Corn ,Vegetables / Sides,NASA Foods,FT30C306J,137.598,119,129.149,3.4,21.998,1.887,,NO
+Spicy Green Beans ,Vegetables / Sides,NASA Foods,FR68A597J,75.987,60.32,203.733,1.661,6.986,2.866,,NO
+Spicy Green Beans ,Vegetables / Sides,NASA Foods,FR68A606J,75.987,60.32,203.733,1.661,6.986,2.866,,NO
+Spicy Green Beans ,Vegetables / Sides,NASA Foods,FR68A583J,75.987,60.32,203.733,1.661,6.986,2.866,,NO
+Spicy Green Beans ,Vegetables / Sides,NASA Foods,FR68A588J,75.987,60.32,203.733,1.661,6.986,2.866,,NO
+Split Pea Soup ,Vegetables / Sides,NASA Foods,FT13C561J,150.797,170.28,294.367,13.82,25.819,1.346,,NO
+Split Pea Soup ,Vegetables / Sides,NASA Foods,FT13C557J,150.797,170.28,294.367,13.82,25.819,1.346,,NO
+Split Pea Soup ,Vegetables / Sides,NASA Foods,FT13C563J,150.797,170.28,294.367,13.82,25.819,1.346,,NO
+Split Pea Soup ,Vegetables / Sides,NASA Foods,FT13C562J,150.797,170.28,294.367,13.82,25.819,1.346,,NO
+Sugar Snap Peas ,Vegetables / Sides,NASA Foods,,110.1,42.16,263.388,2.976,5.382,0.93,,NO
+Tabasco Sauce ,Vegetables / Sides,NASA Foods,,2.502,0.13,17.62,0.016,0.016,0,,NO
+Taco Sauce ,Vegetables / Sides,NASA Foods,,8.368,3.325,60.414,0.105,0.675,0.025,,NO
+Teriyaki Vegetables ,Vegetables / Sides,NASA Foods,FR62C682J,101.656,44.64,321.098,1.878,8.469,0.368,,NO
+Teriyaki Vegetables ,Vegetables / Sides,NASA Foods,FR62C649J,101.656,44.64,321.098,1.878,8.469,0.368,,NO
+Teriyaki Vegetables ,Vegetables / Sides,NASA Foods,FR62C651J,101.656,44.64,321.098,1.878,8.469,0.368,,NO
+Teriyaki Vegetables ,Vegetables / Sides,NASA Foods,FR62C612J,101.656,44.64,321.098,1.878,8.469,0.368,,NO
+Teriyaki Vegetables ,Vegetables / Sides,NASA Foods,FR62C659J,101.656,44.64,321.098,1.878,8.469,0.368,,NO
+Teriyaki Vegetables ,Vegetables / Sides,NASA Foods,FR62C658J,101.656,44.64,321.098,1.878,8.469,0.368,,NO
+Teriyaki Vegetables ,Vegetables / Sides,NASA Foods,FR62C647J,101.656,44.64,321.098,1.878,8.469,0.368,,NO
+Teriyaki Vegetables ,Vegetables / Sides,NASA Foods,FR62C665J,101.656,44.64,321.098,1.878,8.469,0.368,,NO
+Tofu w/ Hoison Sauce,Vegetables / Sides,NASA Foods,(unlabeled) FT58-08 29711,106.32,133.48,471.3,11.76,20.931,0.28,,NO
+Tofu w/ Hot Mustard Sauce ,Vegetables / Sides,NASA Foods,,105.192,113.4,118.436,10.341,12.514,2.39,,NO
+Tomato Basil Soup ,Vegetables / Sides,NASA Foods,FT40C801J,155.618,54.4,198.203,2.329,6.562,2.091,,NO
+Tomato Basil Soup ,Vegetables / Sides,NASA Foods,FT40C805J,155.618,54.4,198.203,2.329,6.562,2.091,,NO
+Tomato Basil Soup ,Vegetables / Sides,NASA Foods,FT40C806J,155.618,54.4,198.203,2.329,6.562,2.091,,NO
+Tomato Basil Soup ,Vegetables / Sides,NASA Foods,FT40C797J,155.618,54.4,198.203,2.329,6.562,2.091,,NO
+Tomatoes & Artichokes ,Vegetables / Sides,NASA Foods,,101.505,46.2,91.67,2.052,6.647,1.272,,NO
+Tomatoes & Eggplant,Vegetables / Sides,NASA Foods,,154.921,61.2,232.747,1.632,5.933,3.349,,NO
+Tortillas,Vegetables / Sides,NASA Foods,FE06N077J,14.074,208.64,441.005,4.461,39.046,3.834,,NO
+Tortillas,Vegetables / Sides,NASA Foods,FE06N078J,14.074,208.64,441.005,4.461,39.046,3.834,,NO
+Tortillas,Vegetables / Sides,NASA Foods,FE06N012J,14.074,208.64,441.005,4.461,39.046,3.834,,NO
+Tortillas,Vegetables / Sides,NASA Foods,FE06N076J,14.074,208.64,441.005,4.461,39.046,3.834,,NO
+Vegetable Quiche ,Vegetables / Sides,NASA Foods,,50.528,138.75,135.095,7.403,5.03,19.78,,NO
+Vegetarian Chili ,Vegetables / Sides,NASA Foods,FR56B282J,127.15,81.25,244.92,9.3,6.743,1.885,,NO
+Vegetarian Chili ,Vegetables / Sides,NASA Foods,FR56B250J,127.15,81.25,244.92,9.3,6.743,1.885,,NO
+Vegetarian Chili ,Vegetables / Sides,NASA Foods,FR56B278J,127.15,81.25,244.92,9.3,6.743,1.885,,NO
+Vegetarian Chili ,Vegetables / Sides,NASA Foods,FR56B257J,127.15,81.25,244.92,9.3,6.743,1.885,,NO
+Vegetarian Chili ,Vegetables / Sides,NASA Foods,FR56B281J,127.15,81.25,244.92,9.3,6.743,1.885,,NO
+Vegetarian Vegetable Soup ,Vegetables / Sides,NASA Foods,FT34C487J,203.846,77.18,234.491,2.747,15.459,0.363,,NO
+Wheat Flat Bread,Vegetables / Sides,NASA Foods,,11.788,193.8,381.159,4.976,31.567,5.29,,NO
+Wild Rice Salad ,Vegetables / Sides,NASA Foods,FR72A021J,77.021,182.25,65.93,6.944,26.622,5.328,,NO
+Wild Rice Salad ,Vegetables / Sides,NASA Foods,FR72A028J,77.021,182.25,65.93,6.944,26.622,5.328,,NO
+Wild Rice Salad ,Vegetables / Sides,NASA Foods,FR72A035J,77.021,182.25,65.93,6.944,26.622,5.328,,NO
+Wild Rice Salad ,Vegetables / Sides,NASA Foods,FR72A023J,77.021,182.25,65.93,6.944,26.622,5.328,,NO
+Appetizing Appetizer ,Vegetables / Sides,Russian Foods,,73.3,98,413,1.63,11.2,5.19,,NO
+Apple Cranberry Sauce ,Vegetables / Sides,Russian Foods,,114,182,28.3,0.51,44.9,0,,NO
+Assorted Vegetables ,Vegetables / Sides,Russian Foods,,101,89.8,815,2.7,11.4,3.7,,NO
+Beet Salad ,Vegetables / Sides,Russian Foods,,102,237,1157,6.96,15.8,16.2,,NO
+Black Currant Jelly w/Pectin ,Vegetables / Sides,Russian Foods,,176,278,22.2,0.44,68.9,0.08,,NO
+Buckwheat Gruel ,Vegetables / Sides,Russian Foods,,152,251,848,7.31,39.4,7.12,,NO
+Buckwheat Gruel w/Milk ,Vegetables / Sides,Russian Foods,,101.82,236,639,9,39,6.7,,NO
+Buckwheat Kasha ,Vegetables / Sides,Russian Foods,,104,253,367,6.14,36.8,9.01,,NO
+Bulgarian-style Beans ,Vegetables / Sides,Russian Foods,,87.16,181.675,595.315,8.415,19.105,7.955,,NO
+Cottage Cheese Pie ,Vegetables / Sides,Russian Foods,,154.6,487.4,633.625,29.2,27.175,29.1,,NO
+Cottage Cheese w/Apple Puree ,Vegetables / Sides,Russian Foods,,54.7,226,20.61,9.56,21.52,11.26,,NO
+Cottage Cheese w/Black Currant Puree ,Vegetables / Sides,Russian Foods,,50.58,251,39.11,10.36,23.17,12.99,,NO
+Cottage Cheese w/Cranberry Puree ,Vegetables / Sides,Russian Foods,,87.2,393,37.4,16.2,37,20,,NO
+Cottage Cheese w/Dried Berries ,Vegetables / Sides,Russian Foods,,102,426,161,28.3,27.1,22.8,,NO
+Cottage Cheese w/Nuts ,Vegetables / Sides,Russian Foods,,102,560,377,25.7,34.5,35.5,,NO
+Country Bread,Vegetables / Sides,Russian Foods,,29.665,153.93,341.761,5.388,32.208,0.432,,NO
+Deli Assortment,Vegetables / Sides,Russian Foods,,73.07,96.87,742.07,17.61,1.77,2.15,,NO
+Eggplant Spread ,Vegetables / Sides,Russian Foods,,80.68,90,783.41,1.88,7.33,5.94,,NO
+Five Grain Porridge w/ raisins ,Vegetables / Sides,Russian Foods,,127.664,171.198,172.049,3.96,30.74,3.6,,NO
+Goulash w/Buckwheat Gruel ,Vegetables / Sides,Russian Foods,,151,226,973,16.7,18.3,9.51,,NO
+Gyuvech,Vegetables / Sides,Russian Foods,,105.355,213.61,701.575,3.75,30.055,8.71,,NO
+Kharcho Mutton Soup ,Vegetables / Sides,Russian Foods,,151,130,1093,10.5,8.93,5.8,,NO
+L.S. Borsch w/Meat ,Vegetables / Sides,Russian Foods,,150,139,505,9.8,8.67,7.2,,NO
+L.S. Kharcho Mutton Soup ,Vegetables / Sides,Russian Foods,,150,170,378,5.12,9.6,12.4,,NO
+L.S. Peasant Soup ,Vegetables / Sides,Russian Foods,,150,126,349,10,11.3,4.49,,NO
+L.S. Pureed Vegetable Soup ,Vegetables / Sides,Russian Foods,,151,130,56.9,6.18,15.9,5.78,,NO
+Lel Cheese ,Vegetables / Sides,Russian Foods,,42.7,409,717,10.7,5.6,38.3,,NO
+Mashed Potatoes,Vegetables / Sides,Russian Foods,,201,230,923,4.76,28.4,10.8,,NO
+Mashed Potatoes w/Onions ,Vegetables / Sides,Russian Foods,,201,232,749,4.55,27.3,11.6,,NO
+Moscow Rye Bread,Vegetables / Sides,Russian Foods,,15.2,103,222,3.26,21.1,0.6,,NO
+Pureed Pea Soup ,Vegetables / Sides,Russian Foods,,154.046,111.719,1157.036,3.336,16.926,3.323,,NO
+Pureed Vegetable Soup,Vegetables / Sides,Russian Foods,,201,146,1029,2.23,13.6,9.16,,NO
+Rhubarb ,Vegetables / Sides,Russian Foods,,10.5,133,4.92,0.7,32.4,0,,NO
+Rice Pilaf ,Vegetables / Sides,Russian Foods,,101.55,218.715,665.65,10.895,25.66,8.055,,NO
+Rossiyskiy Cheese,Vegetables / Sides,Russian Foods,,45.8,316,964,19.5,7.54,23.1,,NO
+Rye Croutons Salted ,Vegetables / Sides,Russian Foods,,0.678,80,376.792,2.728,16.955,0.138,,NO
+Sauerkraut Soup ,Vegetables / Sides,Russian Foods,,176,90.5,939,7.32,8.29,3.12,,NO
+Sausage Stuffing ,Vegetables / Sides,Russian Foods,,72.66,143,501.32,11.31,1.48,10.19,,NO
+Stewed Cabbage ,Vegetables / Sides,Russian Foods,,101,95.3,702,2.48,10.9,4.63,,NO
+Stewed Eggplant w/ Potatoes ,Vegetables / Sides,Russian Foods,,178.72,231.39,978.9,3.345,18.255,16.11,,NO
+Sweet Peas w/Milk Sauce ,Vegetables / Sides,Russian Foods,,151,186,687,10.5,20.6,6.81,,NO
+Table Bread ,Vegetables / Sides,Russian Foods,,14.3,109,240,3.54,22.2,0.72,,NO
+Tomato-Vegetable Sauce ,Vegetables / Sides,Russian Foods,,116,149,2192,5.2,32.1,0,,NO
+Vegetable Spread ,Vegetables / Sides,Russian Foods,,75.8,99,563,1.87,7.77,6.72,,NO
+Wheat Bread Enriched ,Vegetables / Sides,Russian Foods,,8.53,84.3,146,3.38,13.7,1.74,,NO
+Yantar Cheese ,Vegetables / Sides,Russian Foods,,47.2,336,1162,16.2,5.88,27.5,,NO
+Yuzhniy Cheese ,Vegetables / Sides,Russian Foods,,48.59,300,1488.06,18.55,4.44,22.84,,NO
+Plum Compote w/ brew of star-anise & spices,Vegetables / Sides,ESA Foods,,44.298,288.585,4.914,0.44,15.464,0.317,,NO
+Potato Cream Soup w/ Marjoram,Vegetables / Sides,ESA Foods,,196.489,287.812,897.993,7.403,13.602,22.596,,NO
+Puree of White Beans ,Vegetables / Sides,ESA Foods,,231.679,765.377,1147.648,20.723,38.703,63.277,,NO
+Asparagus ,Vegetables / Sides,NASA Foods,,50.819,20.748,4.536,2.876,1.853,0.204,,NO
+Baked Beans ,Vegetables / Sides,NASA Foods,FT73B264J,97.313,151.94,119.152,6.418,30.502,0.454,,NO
+Baked Beans ,Vegetables / Sides,NASA Foods,FT73B266J,97.313,151.94,119.152,6.418,30.502,0.454,,NO
+Baked Beans ,Vegetables / Sides,NASA Foods,FT73B262J,97.313,151.94,119.152,6.418,30.502,0.454,,NO
+Baked Beans ,Vegetables / Sides,NASA Foods,FT73B263J,97.313,151.94,119.152,6.418,30.502,0.454,,NO
+Baked Tofu ,Vegetables / Sides,NASA Foods,,88.259,87.78,306.272,13.703,6.692,0.661,,NO
+Black Beans ,Vegetables / Sides,NASA Foods,FT62B711J,133.076,108.8,206.176,7.854,17.918,0.663,,NO
+Black Beans ,Vegetables / Sides,NASA Foods,FT62B892J,133.076,108.8,206.176,7.854,17.918,0.663,,NO
+Black Beans ,Vegetables / Sides,NASA Foods,FT62B885J,133.076,108.8,206.176,7.854,17.918,0.663,,NO
+Black Beans ,Vegetables / Sides,NASA Foods,FT62B717J,133.076,108.8,206.176,7.854,17.918,0.663,,NO
+Blueberry/Raspberry Yogurt ,Vegetables / Sides,NASA Foods,FT77B268J,109.256,120.4,41.58,3.5,26.236,0.238,,NO
+Blueberry/Raspberry Yogurt ,Vegetables / Sides,NASA Foods,FT77B264J,109.256,120.4,41.58,3.5,26.236,0.238,,NO
+Blueberry/Raspberry Yogurt ,Vegetables / Sides,NASA Foods,FT77B265J,109.256,120.4,41.58,3.5,26.236,0.238,,NO
+Blueberry/Raspberry Yogurt ,Vegetables / Sides,NASA Foods,FT77B262J,109.256,120.4,41.58,3.5,26.236,0.238,,NO
+Blueberry/Raspberry Yogurt ,Vegetables / Sides,NASA Foods,FT77B266J,109.256,120.4,41.58,3.5,26.236,0.238,,NO
+Blueberry/Raspberry Yogurt ,Vegetables / Sides,NASA Foods,FT77B276J,109.256,120.4,41.58,3.5,26.236,0.238,,NO
+Blueberry/Raspberry Yogurt ,Vegetables / Sides,NASA Foods,FT77B279J,109.256,120.4,41.58,3.5,26.236,0.238,,NO
+Blueberry/Raspberry Yogurt ,Vegetables / Sides,NASA Foods,FT77B275J,109.256,120.4,41.58,3.5,26.236,0.238,,NO
+Broccoli Au Gratin ,Vegetables / Sides,NASA Foods,,101.368,124.248,740.397,4.833,10.164,7.14,,NO
+Brown Rice,Vegetables / Sides,NASA Foods,FT83A768J,79.34,157,75,3.836,33.904,0.75,,NO
+Brown Rice,Vegetables / Sides,NASA Foods,FT83A801J,79.34,157,75,3.836,33.904,0.75,,NO
+Brown Rice,Vegetables / Sides,NASA Foods,FT83A800J,79.34,157,75,3.836,33.904,0.75,,NO
+Brown Rice,Vegetables / Sides,NASA Foods,FT83A776J,79.34,157,75,3.836,33.904,0.75,,NO
+Candied Yams ,Vegetables / Sides,NASA Foods,FT21B894J,127.007,153,34.272,1.581,34.459,0.969,,NO
+Candied Yams ,Vegetables / Sides,NASA Foods,FT21B891J,127.007,153,34.272,1.581,34.459,0.969,,NO
+Candied Yams ,Vegetables / Sides,NASA Foods,FT21B892J,127.007,153,34.272,1.581,34.459,0.969,,NO
+Candied Yams ,Vegetables / Sides,NASA Foods,FT21B896J,127.007,153,34.272,1.581,34.459,0.969,,NO
+Carrot Coins ,Vegetables / Sides,NASA Foods,FT02B723J,123.355,39.73,132.438,1.329,7.604,0.452,,NO
+Carrot Coins ,Vegetables / Sides,NASA Foods,FT02B725J,123.355,39.73,132.438,1.329,7.604,0.452,,NO
+Carrot Coins ,Vegetables / Sides,NASA Foods,FT02B722J,123.355,39.73,132.438,1.329,7.604,0.452,,NO
+Carrot Coins ,Vegetables / Sides,NASA Foods,FT02B724J,123.355,39.73,132.438,1.329,7.604,0.452,,NO
+Cauliflower w/ Cheese ,Vegetables / Sides,NASA Foods,FR06C355J,100.736,72.96,229.32,4.502,3.376,4.598,,NO
+Cauliflower w/ Cheese ,Vegetables / Sides,NASA Foods,FR06C369J,100.736,72.96,229.32,4.502,3.376,4.598,,NO
+Cauliflower w/ Cheese ,Vegetables / Sides,NASA Foods,FR06C363J,100.736,72.96,229.32,4.502,3.376,4.598,,NO
+Cauliflower w/ Cheese ,Vegetables / Sides,NASA Foods,FR06C344J,100.736,72.96,229.32,4.502,3.376,4.598,,NO
+Cheddar Cheese Spread ,Vegetables / Sides,NASA Foods,,11.232,118.415,470.154,3.419,1.021,11.184,,NO
+Cheese Tortellini ,Vegetables / Sides,NASA Foods,FT23B295J,136.92748,214.742,265.44072,8.72642,40.25402,2.10872,,NO
+Cheese Tortellini ,Vegetables / Sides,NASA Foods,FT23B295J,136.92748,214.742,265.44072,8.72642,40.25402,2.10872,,NO
+Cheese Tortellini ,Vegetables / Sides,NASA Foods,FT23B322J,136.92748,214.742,265.44072,8.72642,40.25402,2.10872,,NO
+Cheese Tortellini ,Vegetables / Sides,NASA Foods,FT23B290J,136.92748,214.742,265.44072,8.72642,40.25402,2.10872,,NO
+Cheese Tortellini ,Vegetables / Sides,NASA Foods,FT23B338J,136.92748,214.742,265.44072,8.72642,40.25402,2.10872,,NO
+Cheese Tortellini ,Vegetables / Sides,NASA Foods,FT23B340J,136.92748,214.742,265.44072,8.72642,40.25402,2.10872,,NO
+Chicken Noodle Soup,Vegetables / Sides,NASA Foods,,188.001,156.63,229.27,17.57,16.616,2.157,,NO
+Chipotle Snack Bread,Vegetables / Sides,NASA Foods,FN06A687J,11.856,192,379,4.611,31.766,5.124,,NO
+Chipotle Snack Bread,Vegetables / Sides,NASA Foods,FN06A731J,11.856,192,379,4.611,31.766,5.124,,NO
+Chipotle Snack Bread,Vegetables / Sides,NASA Foods,FN06A730J,11.856,192,379,4.611,31.766,5.124,,NO
+Chipotle Snack Bread,Vegetables / Sides,NASA Foods,FN06A729J,11.856,192,379,4.611,31.766,5.124,,NO
+Corn ,Vegetables / Sides,NASA Foods,FR41C552J,101.119,103.53,73.068,3.825,18.125,1.757,,NO
+Corn ,Vegetables / Sides,NASA Foods,FR41C565J,101.119,103.53,73.068,3.825,18.125,1.757,,NO
+Corn ,Vegetables / Sides,NASA Foods,FR41C769J,101.119,103.53,73.068,3.825,18.125,1.757,,NO
+Corn ,Vegetables / Sides,NASA Foods,FR41C566J,101.119,103.53,73.068,3.825,18.125,1.757,,NO
+Cornbread Dressing ,Vegetables / Sides,NASA Foods,,75.79,179.34,288.8,6.472,25.687,5.611,,NO
+Cream of Mushroom Soup,Vegetables / Sides,NASA Foods,,176.342,142.83,99.695,3.567,9.258,10.184,,NO
+Creamed Spinach ,Vegetables / Sides,NASA Foods,FR37,75.245,90.06,224.719,3.602,6.851,5.362,,NO
+Curry Sauce w/Vegetables,Vegetables / Sides,NASA Foods,FT55C546J,155.922,104.88,175.886,2.558,18.326,2.3,,NO
+Curry Sauce w/Vegetables,Vegetables / Sides,NASA Foods,FT55C548J,155.922,104.88,175.886,2.558,18.326,2.3,,NO
+Curry Sauce w/Vegetables,Vegetables / Sides,NASA Foods,FT55C542J,155.922,104.88,175.886,2.558,18.326,2.3,,NO
+Curry Sauce w/Vegetables,Vegetables / Sides,NASA Foods,FT55C675J,155.922,104.88,175.886,2.558,18.326,2.3,,NO
+Curry Sauce w/Vegetables,Vegetables / Sides,NASA Foods,FT55C670J,155.922,104.88,175.886,2.558,18.326,2.3,,NO
+Curry Sauce w/Vegetables,Vegetables / Sides,NASA Foods,FT55C547J,155.922,104.88,175.886,2.558,18.326,2.3,,NO
+Curry Sauce w/Vegetables,Vegetables / Sides,NASA Foods,FT55C551J,155.922,104.88,175.886,2.558,18.326,2.3,,NO
+Curry Sauce w/Vegetables,Vegetables / Sides,NASA Foods,FT55C543J,155.922,104.88,175.886,2.558,18.326,2.3,,NO
+Green Beans & Mushrooms ,Vegetables / Sides,NASA Foods,FR19C621J,75.846,25.6,71.855,1.571,4.609,0.096,,NO
+Green Beans & Mushrooms ,Vegetables / Sides,NASA Foods,FR19C635J,75.846,25.6,71.855,1.571,4.609,0.096,,NO
+Green Beans & Mushrooms ,Vegetables / Sides,NASA Foods,FR19C650J,75.846,25.6,71.855,1.571,4.609,0.096,,NO
+Green Beans & Mushrooms ,Vegetables / Sides,NASA Foods,FR19C666J,75.846,25.6,71.855,1.571,4.609,0.096,,NO
+Green Beans & Potatoes ,Vegetables / Sides,NASA Foods,,100.354,41.599,210.786,1.733,8.231,0.194,,NO
+Homestyle Potatoes,Vegetables / Sides,NASA Foods,,105.336,146.26,19.397,2.996,23.16,4.558,,NO
+Hot and Sour Soup ,Vegetables / Sides,NASA Foods,,155.261,54.4,299.54,2.754,8.823,0.986,,NO
+Italian Vegetables ,Vegetables / Sides,NASA Foods,,76.248,62.05,133.588,1.936,6.282,3.235,,NO
+Ketchup ,Vegetables / Sides,NASA Foods,,7.685,11.036,135.199,0.118,2.629,0.006,,NO
+Lentil Soup,Vegetables / Sides,NASA Foods,,166.439,181,8.177,18.275,0.495,,,NO
+Nature's Bounty Vitamin D Tablet,Vitamins / Supplements,NASA Foods,,0,0,0,0,0,0,,NO
+One A Day Essential High Potency Suppl,Vitamins / Supplements,NASA Foods,,0,0,0,0,0,0,,NO
+
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0

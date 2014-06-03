@@ -852,6 +852,10 @@
     clearCover = nil;
     [foodDetail.view removeFromSuperview];
     foodDetail = nil;
+<<<<<<< HEAD
+=======
+    [self stopCommentDictation];
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
 }
@@ -1685,6 +1689,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
         NSValue *value = [NSValue valueWithCGPoint:point];
         [contentOffset setObject:value forKey:item.objectID];
     }
+<<<<<<< HEAD
 }
 
 #pragma mark - AVAudioRecorderDelegate methods
@@ -1745,6 +1750,8 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     return YES;
+=======
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
 }
 
 @end

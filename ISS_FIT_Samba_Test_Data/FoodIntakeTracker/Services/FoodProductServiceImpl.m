@@ -514,8 +514,12 @@
     [self.managedObjectContext lock];
     //Fetch categories
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
+<<<<<<< HEAD
     
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SUBQUERY(categories, $x, $x.value LIKE[c] 'Vitamins / Supplements').@count == 0 AND deleted == NO"];
+=======
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"category != '' AND category != 'Vitamins / Supplements' AND deleted == NO"];
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
     NSEntityDescription *description = [NSEntityDescription  entityForName:@"FoodProduct"
                                                     inManagedObjectContext:self.managedObjectContext];
     //NSExpression *categoryExpression = [NSExpression expressionForKeyPath:@"categories"];

@@ -67,14 +67,22 @@
     self.noResultsMessageLabel.hidden = YES;
     self.topDivider.hidden = YES;
     
+<<<<<<< HEAD
     //record sound test code -  END
+=======
+    NSError *error;
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
     /* Uncomment to regenarte language models. */
     /*
     if ([srService updateFoodProductLanguageModel:&error]) {
         NSLog(@"Updated successfully");
     }
     */
+<<<<<<< HEAD
     //NSDictionary *dict = [srService getFoodProductLanguageModelPaths:&error];
+=======
+    NSDictionary *dict = [srService getFoodProductLanguageModelPaths:&error];
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
     // start listening for speech
     //[pocketsphinxController startListeningWithLanguageModelAtPath:[dict valueForKey:@"LMPath"]
     //                                             dictionaryAtPath:[dict valueForKey:@"DictionaryPath"]

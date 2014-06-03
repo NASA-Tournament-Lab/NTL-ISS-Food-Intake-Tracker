@@ -221,6 +221,7 @@
         record.lastModifiedDate = currentDate;
         record.synchronized = @NO;
         
+<<<<<<< HEAD
         [self.managedObjectContext save:error];
         [LoggingHelper logError:methodName error:*error];
         
@@ -228,6 +229,8 @@
             record.savedObjectId = [record.objectID.URIRepresentation absoluteString];
         }
         
+=======
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         [self.managedObjectContext save:error];
         [LoggingHelper logError:methodName error:*error];
         
@@ -381,12 +384,17 @@
         //Write csv header into memory
         NSMutableArray *additionalFiles = [NSMutableArray array];
         NSMutableData *summaryCSVData = [NSMutableData data];
+<<<<<<< HEAD
         const char *csvHeader = [@"\"Username\",\"Date Time\",\"Food Product\",\"Quantity\",\"Comments\",\"Images\",\"Voices\"\r\n"
                                  UTF8String];
+=======
+        const char *csvHeader = [@"\"Username\",\"Date Time\",\"Food Product\",\"Quantity\"\r\n" UTF8String];
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         [summaryCSVData appendBytes:csvHeader length:strlen(csvHeader)]; // header
         
         //Write csv rows into memory
         for (FoodConsumptionRecord *record in result) {
+<<<<<<< HEAD
             NSString *comment = [record.comment stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
             NSString* line = [NSString stringWithFormat:@"\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\"\r\n",
                               record.user.fullName, record.timestamp, record.foodProduct.name, record.quantity, comment,
@@ -396,6 +404,10 @@
                               [DataHelper
                                convertStringWrapperNSSetToNSString:record.voiceRecordings
                                withSeparator:@";"]];
+=======
+            NSString* line = [NSString stringWithFormat:@"\"%@\",\"%@\",\"%@\",\"%@\"\r\n",
+                              record.user.fullName, record.timestamp, record.foodProduct.name, record.quantity];
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
             const char *lineString = [line UTF8String];
             // output line for the record
             [summaryCSVData appendBytes:lineString length:strlen(lineString)];
@@ -406,6 +418,7 @@
             for (StringWrapper* voicePath in record.voiceRecordings) {
                 [additionalFiles addObject:voicePath];
             }
+<<<<<<< HEAD
         }
         
         //Create directory for the output files
@@ -434,12 +447,92 @@
         
         NSArray *timestampDirectories = [localClient listDirectories:[NSString stringWithFormat:@"output_files/%@",
                                                                       user.fullName] error:error];
+=======
+        }
+        
+        //Create directory for the output files
+#ifndef USE_TEST_DATA
+        id<SMBClient> smbClient = [self createSMBClient:&e];
+#else
+        NSString *resourcePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingString:@"/samba"];
+        NSString *path = nil;
+#endif
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+        [dateFormatter setDateFormat: @"yyyyMMdd"];
+        NSString *timestamp = [NSString stringWithFormat:@"%@_%@", [dateFormatter stringFromDate:startDate],
+                               [dateFormatter stringFromDate:endDate]];
+        
+        // Check if the user folder exists.
+#ifndef USE_TEST_DATA
+        NSArray *outputDirectories = [smbClient listDirectories:@"output_files" error:error];
+#else
+        path = [NSString stringWithFormat:@"%@/output_files", resourcePath];
+        NSArray *tmpFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path  error:error];
+        NSMutableArray *outputDirectories = [NSMutableArray array];
+        for (NSString *cPath in tmpFiles) {
+            NSString *fullPath = [NSString stringWithFormat:@"%@/%@", path, cPath];
+            NSDictionary *dPath = [[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:error];
+            if ([[dPath objectForKey:NSFileType] isEqualToString:NSFileTypeDirectory]) {
+                [outputDirectories addObject:cPath];
+            }
+        }
+#endif
+        [LoggingHelper logError:methodName error:*error];
+        BOOL userFolderExists = NO;
+        for (NSString *directory in outputDirectories) {
+            if ([user.fullName isEqualToString:directory]) {
+                // No need to initialize.
+                userFolderExists = YES;
+                break;
+            }
+        }
+        if (!userFolderExists) {
+#ifndef USE_TEST_DATA
+            [smbClient createDirectory:[NSString stringWithFormat:@"output_files/%@", user.fullName] error:error];
+#else
+            path = [NSString stringWithFormat:@"%@/output_files/%@", resourcePath, user.fullName];
+            [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:NO
+                                                       attributes:nil error:error];
+#endif
+            [LoggingHelper logError:methodName error:*error];
+        }
+        
+#ifndef USE_TEST_DATA
+        NSArray *timestampDirectories = [smbClient listDirectories:[NSString stringWithFormat:@"output_files/%@",
+                                                                    user.fullName] error:error];
+#else
+        path = [NSString stringWithFormat:@"%@/output_files/%@", resourcePath, user.fullName];
+        tmpFiles = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path  error:error];
+        NSMutableArray *timestampDirectories = [NSMutableArray array];
+        for (NSString *cPath in tmpFiles) {
+            NSString *fullPath = [NSString stringWithFormat:@"%@/%@", path, cPath];
+            NSDictionary *dPath = [[NSFileManager defaultManager] attributesOfItemAtPath:fullPath error:error];
+            if ([[dPath objectForKey:NSFileType] isEqualToString:NSFileTypeDirectory]) {
+                [timestampDirectories addObject:cPath];
+            }
+        }
+#endif
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         [LoggingHelper logError:methodName error:*error];
         
         if(![timestampDirectories containsObject:timestamp]) {
             for (int i = 0; i < 3; i++) {
+<<<<<<< HEAD
                 if ([localClient createDirectory:[NSString stringWithFormat:@"output_files/%@/%@", user.fullName, timestamp]
                                            error:error]) {
+=======
+                BOOL result = NO;
+#ifndef USE_TEST_DATA
+                result = [smbClient createDirectory:[NSString stringWithFormat:@"output_files/%@/%@", user.fullName, timestamp]
+                                              error:error]
+#else
+                path = [NSString stringWithFormat:@"%@/output_files/%@/%@", resourcePath, user.fullName, timestamp];
+                result = [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:NO
+                                                                    attributes:nil error:error];
+#endif
+                if (result) {
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
                     break;
                 }
                 [LoggingHelper logError:methodName error:*error];
@@ -448,9 +541,40 @@
         }
 
         // Write summaryCSVData
+<<<<<<< HEAD
         [localClient writeFile:[NSString stringWithFormat:@"output_files/%@/%@/summary.csv", user.fullName, timestamp]
                           data:summaryCSVData error:error];
         [LoggingHelper logError:methodName error:*error];
+=======
+#ifndef USE_TEST_DATA
+        [smbClient writeFile:[NSString stringWithFormat:@"output_files/%@/%@/summary.csv", user.fullName, timestamp]
+                        data:summaryCSVData error:error];
+#else
+        NSString *lpath = [NSString stringWithFormat:@"%@/output_files/%@/%@/summary.csv", resourcePath, user.fullName, timestamp];
+        [[NSFileManager defaultManager] createFileAtPath:lpath contents:summaryCSVData attributes:nil];
+#endif
+        [LoggingHelper logError:methodName error:*error];
+
+        // Write additional files
+        for (StringWrapper* path in additionalFiles) {
+            NSData *data = [[NSFileManager defaultManager] contentsAtPath:path.value];
+            if (data) {
+                NSArray *pathSegments = [path.value componentsSeparatedByString:@"/"];
+                if ([pathSegments count] > 0) {
+                    NSString *name =  pathSegments[[pathSegments count] - 1];
+#ifndef USE_TEST_DATA
+                    [smbClient writeFile:[NSString stringWithFormat:@"output_files/%@/%@/%@", user.fullName, timestamp, name]
+                                    data:data error:error];
+#else
+                    NSString *lpath = [NSString stringWithFormat:@"%@/output_files/%@/%@/%@", resourcePath, user.fullName,
+                                       timestamp, name];
+                    [[NSFileManager defaultManager] createFileAtPath:lpath contents:data attributes:nil];
+#endif
+                    [LoggingHelper logError:methodName error:*error];
+                }
+            }
+        }
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         
         // Create SummaryGenerationHistory record
         SummaryGenerationHistory *history = [NSEntityDescription

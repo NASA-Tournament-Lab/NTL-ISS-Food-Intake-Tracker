@@ -79,7 +79,11 @@
 		<string>2-0-Admin-Functions</string>
 	</dict>
 	<key>SummaryGenerationFrequency</key>
+<<<<<<< HEAD
 	<string>Daily</string>
+=======
+	<string>Monthly</string>
+>>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
 	<key>HeartbeatInterval</key>
 	<integer>180</integer>
 	<key>SummaryGenerationInterval</key>
@@ -87,7 +91,7 @@
 	<key>DataSyncUpdateInterval</key>
 	<integer>600</integer>
 	<key>DailyTargetCalories</key>
-	<integer>2800</integer>
+	<real>2800</real>
 	<key>DailyTargetSodium</key>
 	<integer>160</integer>
 	<key>DailyTargetFluid</key>
