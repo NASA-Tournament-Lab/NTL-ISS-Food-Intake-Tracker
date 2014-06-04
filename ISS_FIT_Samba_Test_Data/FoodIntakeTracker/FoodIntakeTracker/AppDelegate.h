@@ -21,12 +21,9 @@
 //  Updated by pvmagacho on 04/19/2014
 //  F2Finish - NASA iPad App Updates
 //
-<<<<<<< HEAD
 //  Updated by pvmagacho on 05/14/2014
 //  F2Finish - NASA iPad App Updates - Round 3
 //
-=======
->>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
 
 #import <UIKit/UIKit.h>
 #import "UserService.h"
@@ -145,12 +142,9 @@
  */
 @property (nonatomic,strong) CustomTabBarViewController *tabBarViewController;
 
-<<<<<<< HEAD
 @property (nonatomic, strong) NSMutableArray *mediaFiles;
 
 
-=======
->>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
 + (AppDelegate *) shareDelegate;
 
 /*

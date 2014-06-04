@@ -98,10 +98,6 @@
     // Lock on the managedObjectContext
     [[self managedObjectContext] lock];
     
-<<<<<<< HEAD
-=======
-    int fileDataVersion = 0;
->>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
     NSString* deviceID = [DataHelper getDeviceIdentifier];
     e = nil;
     /* Do not delete the files now ISSFIT-44

@@ -221,7 +221,6 @@
         record.lastModifiedDate = currentDate;
         record.synchronized = @NO;
         
-<<<<<<< HEAD
         [self.managedObjectContext save:error];
         [LoggingHelper logError:methodName error:*error];
         
@@ -229,8 +228,6 @@
             record.savedObjectId = [record.objectID.URIRepresentation absoluteString];
         }
         
-=======
->>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         [self.managedObjectContext save:error];
         [LoggingHelper logError:methodName error:*error];
         
@@ -384,17 +381,12 @@
         //Write csv header into memory
         NSMutableArray *additionalFiles = [NSMutableArray array];
         NSMutableData *summaryCSVData = [NSMutableData data];
-<<<<<<< HEAD
         const char *csvHeader = [@"\"Username\",\"Date Time\",\"Food Product\",\"Quantity\",\"Comments\",\"Images\",\"Voices\"\r\n"
                                  UTF8String];
-=======
-        const char *csvHeader = [@"\"Username\",\"Date Time\",\"Food Product\",\"Quantity\"\r\n" UTF8String];
->>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         [summaryCSVData appendBytes:csvHeader length:strlen(csvHeader)]; // header
         
         //Write csv rows into memory
         for (FoodConsumptionRecord *record in result) {
-<<<<<<< HEAD
             NSString *comment = [record.comment stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
             NSString* line = [NSString stringWithFormat:@"\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\"\r\n",
                               record.user.fullName, record.timestamp, record.foodProduct.name, record.quantity, comment,
@@ -404,10 +396,6 @@
                               [DataHelper
                                convertStringWrapperNSSetToNSString:record.voiceRecordings
                                withSeparator:@";"]];
-=======
-            NSString* line = [NSString stringWithFormat:@"\"%@\",\"%@\",\"%@\",\"%@\"\r\n",
-                              record.user.fullName, record.timestamp, record.foodProduct.name, record.quantity];
->>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
             const char *lineString = [line UTF8String];
             // output line for the record
             [summaryCSVData appendBytes:lineString length:strlen(lineString)];
@@ -463,23 +451,6 @@
         [smbClient writeFile:[NSString stringWithFormat:@"output_files/%@/%@/summary.csv", user.fullName, timestamp]
                         data:summaryCSVData error:error];
         [LoggingHelper logError:methodName error:*error];
-<<<<<<< HEAD
-=======
-
-        // Write additional files
-        for (StringWrapper* path in additionalFiles) {
-            NSData *data = [[NSFileManager defaultManager] contentsAtPath:path.value];
-            if (data) {
-                NSArray *pathSegments = [path.value componentsSeparatedByString:@"/"];
-                if ([pathSegments count] > 0) {
-                    NSString *name =  pathSegments[[pathSegments count] - 1];
-                    [smbClient writeFile:[NSString stringWithFormat:@"output_files/%@/%@/%@", user.fullName, timestamp, name]
-                                    data:data error:error];
-                    [LoggingHelper logError:methodName error:*error];
-                }
-            }
-        }
->>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         
         // Create SummaryGenerationHistory record
         SummaryGenerationHistory *history = [NSEntityDescription

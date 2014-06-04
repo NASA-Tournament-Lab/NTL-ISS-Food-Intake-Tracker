@@ -214,11 +214,7 @@
         self.resultView.hidden = NO;
         self.imgFood.image = [Helper loadImage:foodProduct.productProfileImage];
         self.lblFoodName.text = foodProduct.name;
-<<<<<<< HEAD
         self.lblFoodCategory.text = [DataHelper convertStringWrapperNSSetToNSString:foodProduct.categories withSeparator:@", "];
-=======
-        self.lblFoodCategory.text = foodProduct.category;
->>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         self.lblCalories.text = [NSString stringWithFormat:@"%@",foodProduct.energy];
         self.lblSodium.text = [NSString stringWithFormat:@"%@",foodProduct.sodium];
         self.lblFluid.text = [NSString stringWithFormat:@"%@",foodProduct.fluid];

@@ -89,10 +89,7 @@
         [self updateLastSyncLabel:[NSDate
                                    dateWithTimeIntervalSince1970:[lastSyncTime longLongValue]/1000]];
     }
-<<<<<<< HEAD
     self.lastSyncLabel.hidden = YES;
-=======
->>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(renewAutoLogout)
                                                  name:AutoLogoutRenewEvent object:nil];
@@ -100,13 +97,8 @@
                                                  name:AutoLogoutStartEvent object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopAutoLogout)
                                                  name:AutoLogoutStopEvent object:nil];
-<<<<<<< HEAD
     /* [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLastSyncLabel:)
                                                  name:UpdateLastSync object:nil]; */
-=======
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLastSyncLabel:)
-                                                 name:UpdateLastSync object:nil];
->>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
     [[NSNotificationCenter defaultCenter] postNotificationName:AutoLogoutRenewEvent object:nil];
 }
 
@@ -391,18 +383,12 @@
     }
     if (date) {
         NSDateFormatter *f = [[NSDateFormatter alloc] init];
-<<<<<<< HEAD
         [f setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US"]];
-=======
->>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         [f setDateStyle:NSDateFormatterLongStyle];
         [f setTimeStyle:NSDateFormatterMediumStyle];
         
         @synchronized(self) {
-<<<<<<< HEAD
             NSLog(@"\tUpdated last sync to %@", date);
-=======
->>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
             unichar chr[1] = {'\n'};
             NSString *singleCR = [NSString stringWithCharacters:(const unichar *)chr length:1];
             NSString *text = [NSString stringWithFormat:@"Last Sync:%@%@", singleCR,

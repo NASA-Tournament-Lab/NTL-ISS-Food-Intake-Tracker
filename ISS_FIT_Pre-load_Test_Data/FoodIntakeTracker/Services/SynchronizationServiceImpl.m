@@ -193,12 +193,7 @@
         BOOL isFolderCreated = NO;
         for (User* userToPush in usersToPush) {
             // Write a comma-separated line of the User to userCSVData, refer to ADS 1.1.3
-<<<<<<< HEAD
             // and data_sync_files/User.csv for detailed format            
-=======
-            // and data_sync_files/User.csv for detailed format
-            
->>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
             NSString *csvLine = [NSString stringWithFormat:@"\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\","
                                  "\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%@\",\"%.0f\",\"%.0f\"\r\n",
                                  [userToPush.admin boolValue] == YES ? @"YES":@"NO",
@@ -240,7 +235,6 @@
                 userToPush.synchronized = @YES;
             }
             
-<<<<<<< HEAD
             /* transfer additional files */
             if (userToPush.profileImage && ![appDelegate.mediaFiles containsObject:userToPush.profileImage]) {
                 [localClient createDirectory:[NSString stringWithFormat:@"data_sync/%@/media/%@",timestamp, userToPush.fullName]
@@ -258,9 +252,6 @@
                 
                 [appDelegate.mediaFiles addObject:userToPush.profileImage];
             }
-=======
-            [additionalFiles addObject:userToPush.profileImage];
->>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         }
         
         // Update progress
@@ -515,10 +506,7 @@
             continue;
         }
         CHECK_ERROR_AND_RETURN(e, error, @"Cannot read 'User.csv'.", SynchronizationErrorCode, YES, NO);
-<<<<<<< HEAD
 
-=======
->>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         CSVParser *parser = [CSVParser new];
         NSMutableArray *userDataArray = [parser parseData:data];
         for (NSMutableArray* userData in userDataArray) {
@@ -611,7 +599,6 @@
         [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
     }
     
-<<<<<<< HEAD
     // Check media folders
     for (NSString *subDirectory in subDirectoriesToSync) {
         // Read image/voice recording files in /data and save in local file system
@@ -658,24 +645,12 @@
         [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
     }
     
-=======
->>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
     for (NSString *subDirectory in subDirectoriesToSync) {
         // Similarly, pull and process AdhocFoodProduct.csv, FoodConsumptionRecord.csv,
         // SummaryGenerationHistory.csv files
         
         // process AdhocFoodProduct.csv
-<<<<<<< HEAD
         NSData *data = [localClient readFile:[NSString stringWithFormat:@"data_sync/%@/data/AdhocFoodProduct.csv", subDirectory] error:&e];
-=======
-#ifndef USE_TEST_DATA
-        NSData *data = [smbClient readFile:[NSString stringWithFormat:@"data_sync/%@/data/AdhocFoodProduct.csv",
-                                            subDirectory] error:&e];
-#else
-        path = [NSString stringWithFormat:@"%@/data_sync/%@/data/AdhocFoodProduct.csv", resourcePath, subDirectory];
-        NSData *data = [[NSFileManager defaultManager] contentsAtPath:path];
-#endif
->>>>>>> 7d183cd79eaceb537437987a93602b139f9bedb0
         CSVParser *parser = [CSVParser new];
         NSMutableArray *adhocFoodProductDataArray = [parser parseData:data];
         for (NSMutableArray* adhocFoodProductData in adhocFoodProductDataArray) {
