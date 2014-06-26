@@ -38,11 +38,6 @@
 @property (nonatomic, readonly, strong) NSString *sharedFileServerPath;
 
 /*!
- @discussion Represents the workgroup of the shared file server.
- */
-@property (nonatomic, readonly, strong) NSString *sharedFileServerWorkgroup;
-
-/*!
  @discussion Represents the username used to access the shared file server.
  */
 @property (nonatomic, readonly, strong) NSString *sharedFileServerUsername;

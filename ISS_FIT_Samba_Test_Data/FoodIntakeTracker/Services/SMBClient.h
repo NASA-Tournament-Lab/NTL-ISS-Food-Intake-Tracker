@@ -46,6 +46,17 @@
       password:(NSString *)password error:(NSError **)error;
 
 /*!
+ @discussion Connect to Samba server.
+ @param serverPath The Samba server path.
+ @param username The Samba server username.
+ @param password The Samba server password.
+ @param error The reference to an NSError object which will be filled if any error occurs.
+ @return YES if the operation succceeds, otherwise NO.
+ */
+-(BOOL)connect:(NSString *)serverPath username:(NSString *)username
+      password:(NSString *)password error:(NSError **)error;
+
+/*!
  @discussion Disconnect from Samba server.
  @param error The reference to an NSError object which will be filled if any error occurs.
  @return YES if the operation succceeds, otherwise NO.
@@ -68,6 +79,14 @@
  @return YES if the operation succceeds, otherwise NO.
  */
 -(BOOL)writeFile:(NSString *)filePath data:(NSData *)data error:(NSError **)error;
+
+/*!
+ @discussion Get file modified date
+ @param filePath The remote file path.
+ @param error The reference to an NSError object which will be filled if any error occurs.
+ @return The modified date.
+ */
+-(NSDate *)modifiedDate:(NSString *)filePath error:(NSError **)error;
 
 /*!
  @discussion List all files under a directory (non-recrusively).

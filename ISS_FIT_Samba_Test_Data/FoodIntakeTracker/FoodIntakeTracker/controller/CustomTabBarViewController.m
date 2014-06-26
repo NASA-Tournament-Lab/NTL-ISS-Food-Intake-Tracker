@@ -387,7 +387,7 @@
         [f setTimeStyle:NSDateFormatterMediumStyle];
         
         @synchronized(self) {
-            NSLog(@"\tUpdated last sync to %@", date);
+            NSLog(@"\tUpdated last sync label to %@", date);
             unichar chr[1] = {'\n'};
             NSString *singleCR = [NSString stringWithCharacters:(const unichar *)chr length:1];
             NSString *text = [NSString stringWithFormat:@"Last Sync:%@%@", singleCR,

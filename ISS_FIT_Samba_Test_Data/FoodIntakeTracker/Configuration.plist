@@ -23,8 +23,6 @@
 	<string>OTHER_DEVICE_ID</string>
 	<key>CreatePreloadApplicationData</key>
 	<false/>
-	<key>SharedFileServerWorkgroup</key>
-	<string>WORKGROUP</string>
 	<key>FoodConsumptionRecordModifiablePeroidInDays</key>
 	<integer>10</integer>
 	<key>FoodConsumptionRecordKeptPeriodInDays</key>

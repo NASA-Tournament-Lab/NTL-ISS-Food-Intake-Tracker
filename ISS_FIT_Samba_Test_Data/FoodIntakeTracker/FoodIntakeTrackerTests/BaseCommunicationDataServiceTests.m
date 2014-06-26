@@ -53,10 +53,6 @@
                          [self.configurations valueForKey:@"SharedFileServerPath"],
                          [@"shared file server path should be "
                           stringByAppendingString:[self.configurations valueForKey:@"SharedFileServerPath"]]);
-    STAssertEqualObjects(self.service.sharedFileServerWorkgroup,
-                         [self.configurations valueForKey:@"SharedFileServerWorkgroup"],
-                         [@"shared file server workgroup should be "
-                          stringByAppendingString:[self.configurations valueForKey:@"SharedFileServerWorkgroup"]]);
     STAssertEqualObjects(self.service.sharedFileServerUsername,
                          [self.configurations valueForKey:@"SharedFileServerUsername"],
                          [@"username should be "

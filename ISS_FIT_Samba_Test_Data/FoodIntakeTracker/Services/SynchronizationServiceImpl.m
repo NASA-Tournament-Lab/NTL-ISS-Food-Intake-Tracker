@@ -96,10 +96,13 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:syncTime forKey:@"LastSynchronizedTime"];
     
+    NSLog(@"\tUpdated last sync to %@", [NSDate dateWithTimeIntervalSince1970:timestamp/1000]);
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:UpdateLastSync
                                                         object:[NSDate dateWithTimeIntervalSince1970:timestamp/1000]];
     return;
 }
+
 /*!
  @discussion This method will get all entity objects.
  @param entityName The object's entity name.
@@ -153,6 +156,14 @@
     NSString *methodName = [NSString stringWithFormat:@"%@.synchronize:", NSStringFromClass(self.class)];
   
     [LoggingHelper logMethodEntrance:methodName paramNames:@[@"synchronize:"] params:nil];
+    
+    // List local files:
+    NSArray *directoryContent = [[NSFileManager defaultManager]
+                                 contentsOfDirectoryAtPath:[DataHelper getAbsoulteLocalDirectory:self.localFileSystemDirectory]
+                                 error:NULL];
+    for (int count = 0; count < directoryContent.count; count++) {
+        NSLog(@" ---->> File %d: %@", (count + 1), [directoryContent objectAtIndex:count]);
+    }
     
     // Create SMBClient and connect to the shared file server
     NSError *e = nil;
@@ -261,8 +272,10 @@
                                        stringByAppendingPathComponent:userToPush.profileImage];
                 NSString *smbPath = [NSString stringWithFormat:@"data_sync/%@/media/%@/%@", timestamp, userToPush.fullName, userToPush.profileImage];
                 NSData *data = [NSData dataWithContentsOfFile:localPath];
+                NSString *errorMessage = [NSString stringWithFormat:@"Cannot copy local file, %@, to shared file server, %@.",
+                                          localPath, smbPath];
                 [smbClient writeFile:smbPath data:data error:&e];
-                CHECK_ERROR_AND_RETURN(e, error, @"Cannot copy local file to shared file server.",
+                CHECK_ERROR_AND_RETURN(e, error, errorMessage,
                                        SynchronizationErrorCode, YES, YES);
                 
                 [appDelegate.mediaFiles addObject:userToPush.profileImage];
@@ -332,8 +345,10 @@
                     NSString *smbPath = [NSString stringWithFormat:@"data_sync/%@/media/%@/%@", timestamp,
                                          foodProductToPush.user.fullName, path];
                     NSData *data = [NSData dataWithContentsOfFile:localPath];
+                    NSString *errorMessage = [NSString stringWithFormat:@"Cannot copy local file, %@, to shared file server, %@.",
+                                              localPath, smbPath];
                     [smbClient writeFile:smbPath data:data error:&e];
-                    CHECK_ERROR_AND_RETURN(e, error, @"Cannot copy local file to shared file server.",
+                    CHECK_ERROR_AND_RETURN(e, error, errorMessage,
                                            SynchronizationErrorCode, YES, YES);
                     
                     [appDelegate.mediaFiles addObject:path];
@@ -404,8 +419,10 @@
                     NSString *smbPath = [NSString stringWithFormat:@"data_sync/%@/media/%@/%@", timestamp,
                                          foodConsumptionRecordToPush.user.fullName, path];
                     NSData *data = [NSData dataWithContentsOfFile:localPath];
+                    NSString *errorMessage = [NSString stringWithFormat:@"Cannot copy local file, %@, to shared file server, %@.",
+                                              localPath, smbPath];
                     [smbClient writeFile:smbPath data:data error:&e];
-                    CHECK_ERROR_AND_RETURN(e, error, @"Cannot copy local file to shared file server.",
+                    CHECK_ERROR_AND_RETURN(e, error, errorMessage,
                                            SynchronizationErrorCode, YES, YES);
                     
                     [appDelegate.mediaFiles addObject:path];
@@ -1088,8 +1105,10 @@
             NSString *smbPath = [NSString stringWithFormat:@"data_sync/%@/media/%@/%@", timestamp, userToPush.fullName,
                                  userToPush.profileImage];
             NSData *data = [NSData dataWithContentsOfFile:localPath];
+            NSString *errorMessage = [NSString stringWithFormat:@"Cannot copy local file, %@, to shared file server, %@.",
+                                      localPath, smbPath];
             [smbClient writeFile:smbPath data:data error:&e];
-            CHECK_ERROR_AND_RETURN(e, error, @"Cannot copy local file to shared file server.",
+            CHECK_ERROR_AND_RETURN(e, error, errorMessage,
                                    SynchronizationErrorCode, YES, YES);
         }
     }
@@ -1156,8 +1175,10 @@
             NSString *smbPath = [NSString stringWithFormat:@"data_sync/%@/media/%@/%@", timestamp, foodProductToPush.user.fullName,
                                  path];
             NSData *data = [NSData dataWithContentsOfFile:localPath];
+            NSString *errorMessage = [NSString stringWithFormat:@"Cannot copy local file, %@, to shared file server, %@.",
+                                      localPath, smbPath];
             [smbClient writeFile:smbPath data:data error:&e];
-            CHECK_ERROR_AND_RETURN(e, error, @"Cannot copy local file to shared file server.",
+            CHECK_ERROR_AND_RETURN(e, error, errorMessage,
                                    SynchronizationErrorCode, YES, YES);
         }
     }
@@ -1223,8 +1244,10 @@
             NSString *smbPath = [NSString stringWithFormat:@"data_sync/%@/media/%@/%@", timestamp,
                                  foodConsumptionRecordToPush.user.fullName, path];
             NSData *data = [NSData dataWithContentsOfFile:localPath];
+            NSString *errorMessage = [NSString stringWithFormat:@"Cannot copy local file, %@, to shared file server, %@.",
+                                      localPath, smbPath];
             [smbClient writeFile:smbPath data:data error:&e];
-            CHECK_ERROR_AND_RETURN(e, error, @"Cannot copy local file to shared file server.",
+            CHECK_ERROR_AND_RETURN(e, error, errorMessage,
                                    SynchronizationErrorCode, YES, YES);
         }
     }

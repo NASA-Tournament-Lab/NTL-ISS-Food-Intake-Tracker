@@ -64,6 +64,8 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     SyncStatus status;
     /*! Dispatch queues */
     dispatch_queue_t dataSyncUpdateQ;
+    
+    UIBackgroundTaskIdentifier backgroundTask;
 }
 
 @synthesize tabBarViewController;
@@ -190,6 +192,8 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         return NO;
     }
     
+    backgroundTask = UIBackgroundTaskInvalid;
+    
     // Override point for customization after application launch.
     return YES;
 }
@@ -209,6 +213,26 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     // state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of
     // applicationWillTerminate: when the user quits.
+    
+    if (loadingFinished && status == SyncStatusStarted && backgroundTask == UIBackgroundTaskInvalid) {
+        backgroundTask = [application beginBackgroundTaskWithExpirationHandler:^ {
+            [application endBackgroundTask: backgroundTask];
+            backgroundTask = UIBackgroundTaskInvalid;
+        }];
+        
+        // Start the long-running task and return immediately.
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            
+            // Do the work associated with the task, preferably in chunks.
+            while (status == SyncStatusStarted) {
+                [NSThread sleepForTimeInterval:1];
+                NSLog(@"Waiting for synchronization: %f", application.backgroundTimeRemaining);
+            }
+            
+            [application endBackgroundTask: backgroundTask];
+            backgroundTask = UIBackgroundTaskInvalid;
+        });
+    }
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -221,9 +245,9 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive.
     // If the application was previously in the background, optionally refresh the user interface.
-    if (status == SyncStatusError && !loadingFinished) {
+    /*if (status == SyncStatusError && !loadingFinished) {
         [self initialLoad];
-    }
+    }*/
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -393,11 +417,14 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     if (loadingFinished) {
         dispatch_async(dataSyncUpdateQ, ^{
             @autoreleasepool {
+                status = SyncStatusStarted;
+                
                 NSDate *now = [NSDate date];
-                NSLog(@"Start sync at   : %@", now);
+                NSLog(@"Start update at : %@", now);
                 NSError *error = nil;
                 [self.dataUpdateService update:&error];
                 if (!error) {
+                    NSLog(@"Start sync at   : %@", now);
                     [self.synchronizationService synchronize:&error];
                 }
                 
@@ -405,6 +432,13 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                 [[NSUserDefaults standardUserDefaults] synchronize];
                 
                 NSLog(@"Finished sync at: %@", now);
+                
+                status = SyncStatusFinished;
+                
+                if (backgroundTask != UIBackgroundTaskInvalid) {
+                    [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
+                    backgroundTask = UIBackgroundTaskInvalid;
+                }
             }
         });
         

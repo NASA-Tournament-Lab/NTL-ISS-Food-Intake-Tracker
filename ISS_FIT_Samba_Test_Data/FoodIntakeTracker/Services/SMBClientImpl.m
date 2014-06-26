@@ -73,7 +73,6 @@
  */
 -(BOOL)connect:(NSString *)serverPath workgroup:(NSString*)workgroup username:(NSString *)username
       password:(NSString *)password error:(NSError **)error {
-    
     NSString *methodName = [NSString stringWithFormat:@"%@.connect:workgroup:username:password:error:",
                             NSStringFromClass(self.class)];
     
@@ -82,7 +81,7 @@
             *error = [NSError errorWithDomain:@"SMBClient"
                                          code: IllegalArgumentErrorCode
                                      userInfo:@{NSLocalizedDescriptionKey: @"serverPath or workgroup or"
-                      " username or password should not be nil."}];
+                                                " username or password should not be nil."}];
             [LoggingHelper logError:methodName error:*error];
         }
         return NO;
@@ -90,9 +89,60 @@
     }
     [LoggingHelper logMethodEntrance:methodName paramNames:@[@"server path", @"workgroup", @"username", @"password" ]
                               params:@[serverPath, workgroup, username, password]];
-
+    
     // stores connection information
     KxSMBAuth *auth = [KxSMBAuth smbAuthWorkgroup:workgroup
+                                         username:username
+                                         password:password];
+    NSURL *serverURL = [NSURL URLWithString:serverPath];
+    _cachedAuths[serverURL.host.uppercaseString] = auth;
+    _serverRootPath = serverPath;
+    
+    // try to connect to server
+    NSArray *result = [self listDirectories:@"" error:error];
+    if(result == nil) {
+        if(error) {
+            *error = [NSError errorWithDomain:@"SMBClient"
+                                         code: ConnectionErrorCode
+                                     userInfo:@{NSLocalizedDescriptionKey: @"Cannot connect to smb server."}];
+            [LoggingHelper logError:methodName error:*error];
+        }
+        return NO;
+    }
+    [LoggingHelper logMethodExit:methodName returnValue:@YES];
+    return YES;
+}
+
+/*!
+ @discussion Connect to Samba server.
+ @param serverPath The Samba server path.
+ @param workgroup the Samba server workgroup.
+ @param username The Samba server username.
+ @param password The Samba server password.
+ @param error The reference to an NSError object which will be filled if any error occurs.
+ @return YES if the operation succceeds, otherwise NO.
+ */
+-(BOOL)connect:(NSString *)serverPath username:(NSString *)username
+      password:(NSString *)password error:(NSError **)error {
+    NSString *methodName = [NSString stringWithFormat:@"%@.connect:username:password:error:",
+                            NSStringFromClass(self.class)];
+    
+    if (serverPath == nil || username == nil || password == nil) {
+        if(error) {
+            *error = [NSError errorWithDomain:@"SMBClient"
+                                         code: IllegalArgumentErrorCode
+                                     userInfo:@{NSLocalizedDescriptionKey: @"serverPath or"
+                                                " username or password should not be nil."}];
+            [LoggingHelper logError:methodName error:*error];
+        }
+        return NO;
+        
+    }
+    [LoggingHelper logMethodEntrance:methodName paramNames:@[@"server path", @"username", @"password" ]
+                              params:@[serverPath, username, password]];
+    
+    // stores connection information
+    KxSMBAuth *auth = [KxSMBAuth smbAuthWorkgroup:nil
                                          username:username
                                          password:password];
     NSURL *serverURL = [NSURL URLWithString:serverPath];
@@ -229,7 +279,43 @@
     }
     [LoggingHelper logMethodExit:methodName returnValue:success==YES?@YES:@NO];
     return success;
+}
+
+/*!
+ @discussion Get file modified date
+ @param filePath The remote file path.
+ @param error The reference to an NSError object which will be filled if any error occurs.
+ @return The modified date.
+ */
+-(NSDate *)modifiedDate:(NSString *)filePath error:(NSError **)error {
+    NSString *methodName = [NSString stringWithFormat:@"%@.modifiedDate:data:error:", NSStringFromClass(self.class)];
     
+    if (filePath == nil) {
+        if(error) {
+            *error = [NSError errorWithDomain:@"SMBClient"
+                                         code: IllegalArgumentErrorCode
+                                     userInfo:@{NSLocalizedDescriptionKey: @"filePath should not be nil."}];
+            [LoggingHelper logError:methodName error:*error];
+        }
+        return NO;
+        
+    }
+    [LoggingHelper logMethodEntrance:methodName paramNames:@[@"filePath"] params:@[filePath]];
+    NSString *serverFilePath = [self.serverRootPath stringByAppendingSMBPathComponent:filePath];
+    NSDate *date = nil;
+    
+    id result = [[KxSMBProvider sharedSmbProvider] fetchAtPath: serverFilePath];
+    if([result isKindOfClass:[NSError class]]) {
+        [LoggingHelper logMethodExit:methodName returnValue:nil];
+        return nil;
+    } else {
+        KxSMBItemFile *file = (KxSMBItemFile*) result;
+        date = file.stat.lastModified;
+        [file close];
+    }
+    
+    [LoggingHelper logMethodExit:methodName returnValue:date];
+    return date;
 }
 
 /*!

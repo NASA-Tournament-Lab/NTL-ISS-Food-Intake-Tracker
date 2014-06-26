@@ -29,7 +29,6 @@
 @synthesize sharedFileServerPath = _sharedFileServerPath;
 @synthesize sharedFileServerUsername = _sharedFileServerUsername;
 @synthesize sharedFileServerPassword = _sharedFileServerPassword;
-@synthesize sharedFileServerWorkgroup = _sharedFileServerWorkgroup;
 
 /*!
  @discussion Initialize the class instance with NSManagedObjectContext and configuration.
@@ -41,7 +40,6 @@
     self = [super init];
     if (self) {
         _sharedFileServerPath = configuration[@"SharedFileServerPath"];
-        _sharedFileServerWorkgroup = configuration[@"SharedFileServerWorkgroup"];
         _sharedFileServerUsername = configuration[@"SharedFileServerUsername"];
         _sharedFileServerPassword = configuration[@"SharedFileServerPassword"];
     }
@@ -64,8 +62,8 @@
         // Create an implementation of SMBClient
         id<SMBClient> client = [[SMBClientImpl alloc] init];
         NSError *e = nil;
-        [client connect:self.sharedFileServerPath workgroup:self.sharedFileServerWorkgroup
-               username:self.sharedFileServerUsername password:self.sharedFileServerPassword error:&e];
+        [client connect:self.sharedFileServerPath username:self.sharedFileServerUsername
+               password:self.sharedFileServerPassword error:&e];
         if (e) {
             if (error) {
                 *error = e;
