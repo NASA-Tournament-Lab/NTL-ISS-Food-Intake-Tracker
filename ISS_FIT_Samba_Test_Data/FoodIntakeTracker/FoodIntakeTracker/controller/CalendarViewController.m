@@ -163,7 +163,6 @@
  * @param rect the view frame size.
  */
 - (void)drawRect:(CGRect)rect{
-    
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     gregorian.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
     NSDateComponents *info = [gregorian components:(NSYearCalendarUnit |
@@ -178,7 +177,7 @@
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    if(isCurrentMonth){
+    if (isCurrentMonth) {
         CGContextSetRGBFillColor(context, 0.54, 0.79, 1, 1);
         CGContextFillRect(context, CGRectMake(posX * 48, posY * 40, 47, 39));
         CGContextStrokePath(context);
@@ -191,32 +190,59 @@
     int y = 0;
     CGContextSetRGBFillColor(context, 0.8, 0.8, 0.8, 1);
     // drawing prev month days
-    for(NSString *str in prevMonth){
+    for (NSString *str in prevMonth) {
         CGSize size = [str sizeWithFont:font];
         [str drawAtPoint:CGPointMake(x * 48 - size.width / 2 + 23, y * 40 - size.height / 2 + 20) withFont:font];
         x = (x + 1);
-        if(x == 7){
+        if (x == 7) {
             y++;
             x = 0;
         }
     }
-    CGContextStrokePath(context);
-    CGContextSetRGBFillColor(context, 0.2, 0.2, 0.2, 1);
+    
+    NSDateComponents *comps = [[NSDateComponents alloc] init];
+    [comps setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+    [comps setYear:info.year];
+    [comps setMonth:1];
+    [comps setDay:1];
+    NSDate *firstDay = [gregorian dateFromComponents:comps];
+    
     // drawing current month days
-    for(NSString *str in curMonth){
+    for (NSString *str in curMonth) {
+        NSDateComponents *compsToAdd = [[NSDateComponents alloc] init];
+        [compsToAdd setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+        [compsToAdd setDay:str.integerValue - 1];
+        
+        NSDate *finalDate = [gregorian dateByAddingComponents:compsToAdd toDate:firstDay options:0];
+        if ([Helper daysFromToday:finalDate] == 0) {
+            // paint current date
+            CGContextSetRGBFillColor(context, 231./255., 245./255., 43./255., 1);
+            CGContextFillRect(context, CGRectMake(x * 48, y * 40, 47, 39));
+            CGContextStrokePath(context);
+            
+            // paint if selected date is equal to current date
+            if ([Helper daysFromToday:self.selectedDate] == 0) {
+                CGContextSetRGBFillColor(context, 0.54, 0.79, 1, 1);
+                CGContextFillRect(context, CGRectMake(posX * 48 + 3, posY * 40 + 3, 41, 33));
+                CGContextStrokePath(context);
+            }
+        }
+        
+        CGContextStrokePath(context);
+        CGContextSetRGBFillColor(context, 0.2, 0.2, 0.2, 1);
+        
         // check is selcted or not.
-        if(isCurrentMonth && posX == x && posY == y){
+        if (isCurrentMonth && posX == x && posY == y) {
             CGSize size = [str sizeWithFont:boldFont];
             [str drawAtPoint:CGPointMake(x * 48 - size.width / 2 + 23, y * 40 - size.height / 2 + 20)
                     withFont:boldFont];
-        }
-        else{
+        } else {
             CGSize size = [str sizeWithFont:font];
             [str drawAtPoint:CGPointMake(x * 48 - size.width / 2 + 23, y * 40 - size.height / 2 + 20)
                     withFont:font];
         }
         x = (x + 1);
-        if(x == 7){
+        if (x == 7) {
             y++;
             x = 0;
         }
@@ -224,12 +250,12 @@
     CGContextStrokePath(context);
     CGContextSetRGBFillColor(context, 0.8, 0.8, 0.8, 1);
     // drawing next month days
-    for(NSString *str in nextMonth){
+    for (NSString *str in nextMonth) {
         CGSize size = [str sizeWithFont:font];
         [str drawAtPoint:CGPointMake(x * 48 - size.width / 2 + 23, y * 40 - size.height / 2 + 20)
                 withFont:font];
         x = (x + 1);
-        if(x == 7){
+        if (x == 7) {
             y++;
             x = 0;
         }

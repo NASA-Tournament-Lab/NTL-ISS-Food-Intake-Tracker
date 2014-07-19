@@ -69,6 +69,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblFoodNameFound;
 /* the food category label */
 @property (weak, nonatomic) IBOutlet UILabel *lblFoodCategoryFound;
+/* the food comment text */
+@property (weak, nonatomic) IBOutlet UITextField *txtFoodComment;
 
 /* the calories label */
 @property (weak, nonatomic) IBOutlet UILabel *lblCaloriesFound;

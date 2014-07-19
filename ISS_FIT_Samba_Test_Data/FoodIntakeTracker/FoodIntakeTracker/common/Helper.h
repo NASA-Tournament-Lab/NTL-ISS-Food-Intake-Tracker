@@ -107,6 +107,13 @@
  */
 +(NSDate *)convertDateTimeToDate:(NSDate *)date time:(NSDate *)time;
 
+/*!
+ @discussion Get number of days from today.
+ @param the date to compare.
+ @return the number of days from today.
+ */
++(NSInteger) daysFromToday:(NSDate *) date;
+
 @end
 
 @interface NSString (CustomFunction)

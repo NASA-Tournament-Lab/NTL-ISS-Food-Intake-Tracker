@@ -54,7 +54,7 @@
             [[self managedObjectContext] unlock];\
         }\
         [LoggingHelper logMethodExit:methodName returnValue:@NO];\
-        return NO;\
+        return !unlock_context;\
     }
 
 /*!
@@ -165,13 +165,13 @@
         NSLog(@" ---->> File %d: %@", (count + 1), [directoryContent objectAtIndex:count]);
     }
     
+    // Lock on the managedObjectContext
+    [[self managedObjectContext] lock];
+    
     // Create SMBClient and connect to the shared file server
     NSError *e = nil;
     id<SMBClient> smbClient = [self createSMBClient:&e];
     CHECK_ERROR_AND_RETURN(e, error, @"Cannot create SMBClient.", ConnectionErrorCode, YES, NO);
-
-    // Lock on the managedObjectContext
-    [[self managedObjectContext] lock];
      
     // Update progress
     [self updateProgress:@0.5];
@@ -249,7 +249,7 @@
                                  userToPush.dailyTargetCarb,
                                  userToPush.dailyTargetFat,
                                  userToPush.maxPacketsPerFoodProductDaily,
-                                 userToPush.profileImage,
+                                 userToPush.profileImage ? userToPush.profileImage : @"",
                                  [userToPush.deleted boolValue] == YES ? @"YES":@"NO",
                                  [userToPush.lastModifiedDate timeIntervalSince1970],
                                  [userToPush.createdDate timeIntervalSince1970]];
@@ -276,7 +276,7 @@
                                           localPath, smbPath];
                 [smbClient writeFile:smbPath data:data error:&e];
                 CHECK_ERROR_AND_RETURN(e, error, errorMessage,
-                                       SynchronizationErrorCode, YES, YES);
+                                       SynchronizationErrorCode, NO, NO);
                 
                 [appDelegate.mediaFiles addObject:userToPush.profileImage];
             }
@@ -305,7 +305,7 @@
                                  foodProductToPush.protein,
                                  foodProductToPush.carb,
                                  foodProductToPush.fat,
-                                 foodProductToPush.productProfileImage,
+                                 foodProductToPush.productProfileImage ? foodProductToPush.productProfileImage : @"",
                                  foodProductToPush.user.fullName,
                                  [foodProductToPush.deleted boolValue] == YES ? @"YES" : @"NO",
                                  [foodProductToPush.lastModifiedDate timeIntervalSince1970],
@@ -349,7 +349,7 @@
                                               localPath, smbPath];
                     [smbClient writeFile:smbPath data:data error:&e];
                     CHECK_ERROR_AND_RETURN(e, error, errorMessage,
-                                           SynchronizationErrorCode, YES, YES);
+                                           SynchronizationErrorCode, NO, NO);
                     
                     [appDelegate.mediaFiles addObject:path];
                 }
@@ -423,7 +423,7 @@
                                               localPath, smbPath];
                     [smbClient writeFile:smbPath data:data error:&e];
                     CHECK_ERROR_AND_RETURN(e, error, errorMessage,
-                                           SynchronizationErrorCode, YES, YES);
+                                           SynchronizationErrorCode, NO, NO);
                     
                     [appDelegate.mediaFiles addObject:path];
                 }
@@ -973,12 +973,12 @@
     [[self managedObjectContext] save:&e];
     CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", SynchronizationErrorCode, YES, NO);
     
-    // Unlock the managedObjectContext
-    [[self managedObjectContext] unlock];
-    
     // Finally disconnect from shared file server
     [smbClient disconnect:&e];
-    CHECK_ERROR_AND_RETURN(e, error, @"Cannot disconnect.", SynchronizationErrorCode, NO, NO);
+    CHECK_ERROR_AND_RETURN(e, error, @"Cannot disconnect.", SynchronizationErrorCode, YES, NO);
+    
+    // Unlock the managedObjectContext
+    [[self managedObjectContext] unlock];
     
     // Update progress
     [self updateProgress:@1.0];
@@ -1000,13 +1000,13 @@
     // Update progress
     [self updateProgress:@0.0];
     
+    // Lock on the managedObjectContext
+    [[self managedObjectContext] lock];
+    
     // Create SMBClient and connect to the shared file server
     NSError *e = nil;
     id<SMBClient> smbClient = [self createSMBClient:&e];
     CHECK_ERROR_AND_RETURN(e, error, @"Cannot create SMBClient.", ConnectionErrorCode, YES, NO);
-    
-    // Lock on the managedObjectContext
-    [[self managedObjectContext] lock];
     
     // Update progress
     [self updateProgress:@0.1];
@@ -1109,7 +1109,7 @@
                                       localPath, smbPath];
             [smbClient writeFile:smbPath data:data error:&e];
             CHECK_ERROR_AND_RETURN(e, error, errorMessage,
-                                   SynchronizationErrorCode, YES, YES);
+                                   SynchronizationErrorCode, NO, NO);
         }
     }
     
@@ -1179,7 +1179,7 @@
                                       localPath, smbPath];
             [smbClient writeFile:smbPath data:data error:&e];
             CHECK_ERROR_AND_RETURN(e, error, errorMessage,
-                                   SynchronizationErrorCode, YES, YES);
+                                   SynchronizationErrorCode, NO, NO);
         }
     }
     
@@ -1248,7 +1248,7 @@
                                       localPath, smbPath];
             [smbClient writeFile:smbPath data:data error:&e];
             CHECK_ERROR_AND_RETURN(e, error, errorMessage,
-                                   SynchronizationErrorCode, YES, YES);
+                                   SynchronizationErrorCode, NO, NO);
         }
     }
     
@@ -1335,12 +1335,12 @@
     [[self managedObjectContext] save:&e];
     CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", SynchronizationErrorCode, YES, NO);
     
-    // Unlock the managedObjectContext
-    [[self managedObjectContext] unlock];
-    
     // Finally disconnect from shared file server
     [smbClient disconnect:&e];
-    CHECK_ERROR_AND_RETURN(e, error, @"Cannot disconnect.", SynchronizationErrorCode, NO, NO);
+    CHECK_ERROR_AND_RETURN(e, error, @"Cannot disconnect.", SynchronizationErrorCode, YES, NO);
+    
+    // Unlock the managedObjectContext
+    [[self managedObjectContext] unlock];
     
     // Update progress
     [self updateProgress:@1.0];

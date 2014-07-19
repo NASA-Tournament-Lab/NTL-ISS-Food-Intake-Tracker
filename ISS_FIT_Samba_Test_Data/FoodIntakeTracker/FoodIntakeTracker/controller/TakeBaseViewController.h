@@ -115,6 +115,8 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 /* the food name text input */
 @property (weak, nonatomic) IBOutlet UITextField *txtFoodName;
+/* the food comment text */
+@property (weak, nonatomic) IBOutlet UITextField *txtFoodComment;
 /* the food added popup view */
 @property (weak, nonatomic) IBOutlet UIView *foodAddedPopup;
 /* the title label food added popup view */

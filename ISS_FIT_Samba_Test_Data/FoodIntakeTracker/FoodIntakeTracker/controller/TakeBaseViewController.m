@@ -218,6 +218,7 @@
         record.carb = product.carb;
         record.fat = product.fat;
         record.timestamp = selectedDate;
+        record.comment = self.txtFoodComment.text;
         
         if (product.images.count > 0) {
             for (StringWrapper *s in product.images) {

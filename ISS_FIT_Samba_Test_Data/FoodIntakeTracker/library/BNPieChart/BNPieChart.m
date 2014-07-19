@@ -174,7 +174,7 @@
 	CGContextAddPath(context, path);
 	CGFloat red, green, blue;
 	[self getRGBForIndex:index red:&red green:&green blue:&blue];
-	CGContextSetRGBFillColor(context, red, green, blue, 0.35);
+	CGContextSetRGBFillColor(context, red, green, blue, 0.9);
 	CGContextFillPath(context);
 	CGContextRestoreGState(context);
 	
@@ -195,7 +195,7 @@
 	CGContextClip(context);
 	CGContextAddPath(context, path);
 	CGContextSetLineWidth(context, 0.5);
-	UIColor* darken = [UIColor colorWithWhite:0.0 alpha:0.2];
+	UIColor* darken = [UIColor colorWithWhite:0.2 alpha:0.6];
 	CGContextSetStrokeColorWithColor(context, darken.CGColor);
 	CGContextStrokePath(context);
 	CGContextRestoreGState(context);
@@ -209,7 +209,7 @@
 	CGFloat red, green, blue;
 	[self getRGBForIndex:index red:&red green:&green blue:&blue];
 	CGFloat components[8] = {red, green, blue, 0.9,
-    sqrt(red), sqrt(green), sqrt(blue), 0.15};
+    sqrt(red), sqrt(green), sqrt(blue), 0.81};
 	return CGGradientCreateWithColorComponents(colorspace, components,
                                              locations, num_locations);
 }

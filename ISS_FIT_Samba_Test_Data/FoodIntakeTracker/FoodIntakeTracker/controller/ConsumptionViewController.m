@@ -120,6 +120,13 @@
             [btn setSelected:NO];
             lblDay.textColor = lblDayName.textColor = [UIColor colorWithRed:0.32 green:0.32 blue:0.32 alpha:1];
         }
+        
+        btn.layer.borderWidth = 0.f;
+        btn.layer.borderColor = NULL;
+        if ([Helper daysFromToday:date] == 0) {
+            btn.layer.borderWidth = 2.f;
+            btn.layer.borderColor = [UIColor yellowColor].CGColor;
+        }
     }
     
 }
@@ -157,7 +164,7 @@
     float x = self.progressView.frame.origin.x;
     float y = self.progressView.frame.origin.y;
     
-    CGSize size = [self.lblCurrent.text sizeWithFont:self.lblCurrent.font
+    /*CGSize size = [self.lblCurrent.text sizeWithFont:self.lblCurrent.font
                                    constrainedToSize:CGSizeMake(MAXFLOAT, self.frame.size.height)];
     
     self.lblCurrent.frame = CGRectMake(self.lblCurrent.frame.origin.x,
@@ -168,7 +175,7 @@
     self.lblTotal.frame = CGRectMake(self.lblCurrent.frame.origin.x + size.width + 5,
                                      self.lblTotal.frame.origin.y,
                                      self.lblTotal.frame.size.width,
-                                     self.lblTotal.frame.size.height);
+                                     self.lblTotal.frame.size.height);*/
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     if(_currentProgress == 1){
@@ -248,8 +255,8 @@
     self.customTabBarController.tabView.hidden = NO;
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     NSMutableString *str = [[NSMutableString alloc] init];
-    [str appendString:@"summary    for"];
-    if(appDelegate.loggedInUser.fullName.length > 0){
+    // [str appendString:@"summary    for"];
+    if (appDelegate.loggedInUser.fullName.length > 0){
         NSArray *names = [appDelegate.loggedInUser.fullName componentsSeparatedByString:@" "];
         // F2Finish change - Display name
         if (names.count == 1) {
@@ -258,9 +265,14 @@
             [str appendFormat:@"    %@   %@", names[0], names[1]];
         }
     }
+    
     CGSize size1 = [str sizeWithFont:self.lblHeaderTitle.font constrainedToSize:self.lblHeaderTitle.frame.size];
     [str appendString:@"           daily    intake    report"];
     self.lblHeaderTitle.text = str;
+    [self.lblHeaderTitle sizeToFit];
+    
+    self.lblHeaderTitle.center = self.imgBgHeader.center;
+    
     self.imgHeaderLine.frame = CGRectMake(self.lblHeaderTitle.frame.origin.x + size1.width + 10, 10, 2, 41);
     
     [super viewWillAppear:animated];
@@ -294,9 +306,9 @@
     self.caloriesProgess.fullColor = [UIColor greenColor];
     self.sodiumProgress.fullColor = [UIColor redColor];
     self.fluidProgress.fullColor = [UIColor greenColor];
-    self.proteinProgess.fullColor = [UIColor redColor];
-    self.carbProgress.fullColor = [UIColor redColor];
-    self.fatProgress.fullColor = [UIColor redColor];
+    self.proteinProgess.fullColor = [UIColor clearColor];
+    self.carbProgress.fullColor = [UIColor clearColor];
+    self.fatProgress.fullColor = [UIColor clearColor];
     
     self.caloriesProgess.progressImage = [UIImage imageNamed:@"bg-progress-red.png"];
     self.sodiumProgress.progressImage = [UIImage imageNamed:@"bg-progress-green.png"];
@@ -374,6 +386,18 @@
     rRight.direction = UISwipeGestureRecognizerDirectionRight;
     rRight.delegate = self;    
     [self.dateListView addGestureRecognizer:rRight];
+    
+    self.proteinPercentageLabel.layer.borderWidth = 0.8f;
+    self.proteinPercentageLabel.layer.borderColor = [UIColor colorWithWhite:0.2 alpha:0.2].CGColor;
+    self.proteinPercentageLabel.layer.cornerRadius = 7.f;
+    
+    self.carbPercentageLabel.layer.cornerRadius = 7.f;
+    self.carbPercentageLabel.layer.borderWidth = 0.8f;
+    self.carbPercentageLabel.layer.borderColor = [UIColor colorWithWhite:0.2 alpha:0.2].CGColor;
+    
+    self.fatPercentageLabel.layer.cornerRadius = 7.f;
+    self.fatPercentageLabel.layer.borderWidth = 0.8f;
+    self.fatPercentageLabel.layer.borderColor = [UIColor colorWithWhite:0.2 alpha:0.2].CGColor;
 }
 
 /**
@@ -447,6 +471,10 @@
         maxConsumption = fatTotal;
     }*/
     
+    self.proteinProgess.lblPercent.text = [NSString stringWithFormat:@"%10d gm", proteinTotal];
+    self.carbProgress.lblPercent.text = [NSString stringWithFormat:@"%10d gm", carbTotal];
+    self.fatProgress.lblPercent.text = [NSString stringWithFormat:@"%10d gm", fatTotal];
+    
     self.proteinProgess.currentProgress = 1.0;
     self.carbProgress.currentProgress =  1.0;
     self.fatProgress.currentProgress =  1.0;
@@ -466,9 +494,13 @@
         fatProgressFrame.size.width = 0;
     }
     
-    [self.proteinProgess.progressView setBackgroundColor:[UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:1.0]];
-    [self.carbProgress.progressView setBackgroundColor:[UIColor colorWithRed:0.66 green:0.36 blue:0.0 alpha:1.0]];
-    [self.fatProgress.progressView setBackgroundColor:[UIColor colorWithRed:0.882 green:0.757 blue:0.384 alpha:1.0]];
+    self.proteinProgess.progressView.hidden = YES;
+    self.carbProgress.progressView.hidden = YES;
+    self.fatProgress.progressView.hidden = YES;
+    
+    [self.proteinProgess.progressView setBackgroundColor:[UIColor colorWithRed:1.0 green:0.89 blue:0.89 alpha:1.0]];
+    [self.carbProgress.progressView setBackgroundColor:[UIColor colorWithRed:1.0 green:0.89 blue:0.79 alpha:1.0]];
+    [self.fatProgress.progressView setBackgroundColor:[UIColor colorWithRed:0.98 green:0.98 blue:0.85 alpha:1.0]];
     
     self.proteinProgess.progressView.frame = proteinProgressFrame;
     self.carbProgress.progressView.frame = carbProgressFrame;
@@ -488,11 +520,11 @@
         [self redrawPieChartWithProtein:0.333 carb:0.333 fat:0.334];
     }
     
-    self.proteinPercentageLabel.text = [NSString stringWithFormat:@"%.0f%% of Calories",
+    self.proteinPercentageLabel.text = [NSString stringWithFormat:@"        %4.0f%% of Calories",
                                             floor(proteinCalories * 100)];
-    self.carbPercentageLabel.text = [NSString stringWithFormat:@"%.0f%% of Calories",
+    self.carbPercentageLabel.text = [NSString stringWithFormat:@"        %4.0f%% of Calories",
                                            floor(carbCalories * 100)];
-    self.fatPercentageLabel.text = [NSString stringWithFormat:@"%.0f%% of Calories",
+    self.fatPercentageLabel.text = [NSString stringWithFormat:@"        %4.0f%% of Calories",
                                           floor(fatCalories * 100)];
 
     self.caloriesProgess.lblPercent.text = [NSString stringWithFormat:@"%.0f%%",
@@ -518,6 +550,13 @@
     NSArray *records = [recordService getFoodConsumptionRecords:appDelegate.loggedInUser date:date error:&error];
     if ([Helper displayError:error]) return;
     self.foodConsumptionRecords = [NSMutableArray arrayWithArray:records];
+    
+    NSInteger diffDays = [Helper daysFromToday:date];
+    if (diffDays != 0) {
+        self.lblFooterTitle.text = [NSString stringWithFormat:@"GMT    %+d    Nutrient    Intake    Total", diffDays];
+    } else {
+        self.lblFooterTitle.text = @"Today's    Nutrient    Intake    Progress";
+    }
     
     [self.foodTableView reloadData];
 }
@@ -570,9 +609,9 @@
     [self.pieChart addSlicePortion:proteinRatio withName:@"Protein"];
     [self.pieChart addSlicePortion:carbRatio withName:@"Carb"];
     [self.pieChart addSlicePortion:fatRatio withName:@"Fat"];
-    NSArray *colors = @[[BNColor colorWithRed:1.0 green:0.0 blue:0.0],
-                        [BNColor colorWithRed:0.66 green:0.36 blue:0.0],
-                        [BNColor colorWithRed:0.882 green:0.757 blue:0.384]];
+    NSArray *colors = @[[BNColor colorWithRed:1.0 green:0.89 blue:0.89],
+                        [BNColor colorWithRed:1.0 green:0.89 blue:0.79],
+                        [BNColor colorWithRed:0.98 green:0.98 blue:0.85]];
     self.pieChart.colors = colors;
     [self.pieChart showLabels:NO];
     [self.progressView2 addSubview:self.pieChart];
@@ -1426,8 +1465,8 @@
  */
 - (void)stopCommentDictation {
     // Stop listening for speech
-    _addFood.commentInstructionLabel.text = @"";
-    foodDetail.commentInstructionLabel.text = @"";
+    _addFood.commentInstructionLabel.text = @"Recording Stopped";
+    foodDetail.commentInstructionLabel.text = @"Recording Stopped";
     if (listening) {
         // [self.pocketsphinxController stopListening];
         [recorder stop];
@@ -1495,6 +1534,76 @@
     [selectConsumption.btnBack addTarget:self
                                   action:@selector(hideSelectConsumption:)
                         forControlEvents:UIControlEventApplicationReserved];
+}
+
+#pragma mark - Water method
+
+/**
+ * handle water button clicked.
+ * @param sender the button.
+ */
+- (IBAction)addWaterButtonClicked:(id)sender {
+    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    FoodConsumptionRecordServiceImpl *recordService = appDelegate.foodConsumptionRecordService;
+    FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
+    
+    NSString *name = @"Water";
+    NSError *error = nil;
+    
+    FoodConsumptionRecord *record = [recordService buildFoodConsumptionRecord:&error];
+    if ([Helper displayError:error]) return;
+    
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    [calendar setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+    NSDateComponents *components = [calendar components:(NSYearCalendarUnit |
+                                                         NSMonthCalendarUnit |
+                                                         NSDayCalendarUnit |
+                                                         NSHourCalendarUnit |
+                                                         NSMinuteCalendarUnit)
+                                               fromDate:self.dateListView.currentDate];
+    [components setCalendar:calendar];
+    record.timestamp = [components date];
+    
+    FoodProduct *foodProduct = [foodProductService getFoodProductByName:appDelegate.loggedInUser
+                                                                   name:name
+                                                                  error:&error];
+    if (!foodProduct) {
+        error = nil;
+        AdhocFoodProduct *adhocFoodProduct = [foodProductService buildAdhocFoodProduct:&error];
+        if ([Helper displayError:error]) return;
+        
+        adhocFoodProduct.name = name;
+        adhocFoodProduct.quantity = @1;
+        adhocFoodProduct.fluid = @250;
+        
+        record.foodProduct = adhocFoodProduct;
+        record.quantity = @1;
+        record.fluid = @250;
+        
+        [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser product:adhocFoodProduct error:&error];
+        if ([Helper displayError:error]) return;
+        
+        [recordService addFoodConsumptionRecord:appDelegate.loggedInUser record:record error:&error];
+        if ([Helper displayError:error]) return;
+    } else {
+        foodProduct.name = name;
+        foodProduct.quantity = @2.5;
+        
+        [recordService addFoodConsumptionRecord:appDelegate.loggedInUser record:record error:&error];
+        if ([Helper displayError:error]) return;
+        
+        record.quantity = @2.5;
+        record.foodProduct = foodProduct;
+        record.fluid = foodProduct.fluid;
+        
+        [recordService saveFoodConsumptionRecord:record error:&error];
+        if ([Helper displayError:error]) return;
+    }
+    
+    [self.foodConsumptionRecords addObject:record];
+    [self.foodTableView reloadData];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
 }
 
 #pragma mark - UIPopover Delegate Methods

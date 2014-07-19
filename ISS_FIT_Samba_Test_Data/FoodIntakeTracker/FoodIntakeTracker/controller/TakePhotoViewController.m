@@ -64,7 +64,7 @@
  */
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    // [self take:self.takeButton];
+    [self take:self.takeButton];
 }
 
 /**
@@ -186,7 +186,7 @@
     }
     
     [self.preview insertSubview:photoImage belowSubview:self.imgCenter];
-    self.imgCenter.hidden = NO;
+    // self.imgCenter.hidden = NO;
     self.lblTakeButtonTitle.text = @"Take Photo";
     
     [clearCover removeFromSuperview];
@@ -211,7 +211,8 @@
         [self.txtFoodName resignFirstResponder];
         // Validate the food name
         self.txtFoodName.text = [self.txtFoodName.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        if([self.lblFoodCategory.text isEqualToString:@"Select Food Category"] || self.txtFoodName.text.length == 0){
+        self.txtFoodComment.text = [self.txtFoodComment.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        /*if([self.lblFoodCategory.text isEqualToString:@"Select Food Category"] || self.txtFoodName.text.length == 0){
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
                                                             message:@"Please enter food name and select food category"
                                                            delegate:nil
@@ -219,7 +220,7 @@
                                                   otherButtonTitles:nil];
             [alert show];
             return;
-        }
+        }*/
         AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
         FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
         NSError *error;
@@ -231,20 +232,20 @@
         
         adhocFoodProduct.name = self.txtFoodName.text;
         
-        StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
+        /*StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
                                                                               entityForName:@"StringWrapper"
                                                                               inManagedObjectContext:
                                                                               foodProductService.managedObjectContext]
                                               insertIntoManagedObjectContext:nil];
-        stringWrapper.value = self.lblFoodCategory.text;
-        adhocFoodProduct.categories = [NSSet setWithObject:stringWrapper];
+        stringWrapper.value = self.lblFoodCategory.text;*/
+        adhocFoodProduct.categories = [NSSet set];
         
         CGFloat r = self.imgFood.image.size.width / self.imgFood.image.size.height;
         UIImage *resized = [self resizeImage:self.imgFood.image newSize:CGSizeMake(r * 800, 800)];
         NSString *imagePath = [Helper saveImage:UIImageJPEGRepresentation(resized, 1.0)];
         adhocFoodProduct.productProfileImage = imagePath;
         
-        stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
+        StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
                                                                               entityForName:@"StringWrapper"
                                                                               inManagedObjectContext:
                                                                               foodProductService.managedObjectContext]
@@ -495,7 +496,7 @@
     if (buttonIndex == 1) {       
         [self.popover dismissPopoverAnimated:YES];
         
-        self.imgCenter.hidden = NO;
+        // self.imgCenter.hidden = NO;
         self.takeButton.hidden = NO;
         self.lblTakeButtonTitle.hidden = NO;
         self.lblTakeButtonTitle.text = @"Take Photo";

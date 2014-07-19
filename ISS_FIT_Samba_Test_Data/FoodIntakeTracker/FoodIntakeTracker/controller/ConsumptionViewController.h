@@ -46,6 +46,12 @@
 
 - (void)clickDate:(NSDate *)date;
 
+/**
+ * get days from today.
+ * @param the date to compare.
+ */
+-(NSInteger) daysFromToday:(NSDate *) date;
+
 @end
 
 /**
@@ -132,6 +138,8 @@
 
 /* the header title label */
 @property (weak, nonatomic) IBOutlet UILabel *lblHeaderTitle;
+/* the header line image */
+@property (weak, nonatomic) IBOutlet UIImageView *imgBgHeader;
 /* the header line image */
 @property (weak, nonatomic) IBOutlet UIImageView *imgHeaderLine;
 

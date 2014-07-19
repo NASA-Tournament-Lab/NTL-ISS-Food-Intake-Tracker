@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="5056" systemVersion="13C64" targetRuntime="iOS.CocoaTouch.iPad" variant="6xAndEarlier" propertyAccessControl="none" initialViewController="ciN-Rv-ZGq">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="5056" systemVersion="13D65" targetRuntime="iOS.CocoaTouch.iPad" variant="6xAndEarlier" propertyAccessControl="none" initialViewController="ciN-Rv-ZGq">
     <dependencies>
         <deployment defaultVersion="1280" identifier="iOS"/>
         <development version="4600" identifier="xcode"/>
@@ -930,7 +930,7 @@ Sun,  21st April 2014</string>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="icon-summary-logo.png" id="vwd-Je-T3K">
-                                <rect key="frame" x="0.0" y="0.0" width="112" height="100"/>
+                                <rect key="frame" x="0.0" y="0.0" width="112" height="101"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <view contentMode="scaleToFill" id="2om-We-a1K" userLabel="View - header">
@@ -962,7 +962,7 @@ Sun,  21st April 2014</string>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
                                             <button opaque="NO" tag="101" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="PFm-l6-ngI">
-                                                <rect key="frame" x="1" y="-1" width="76" height="44"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="78" height="40"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -976,7 +976,7 @@ Sun,  21st April 2014</string>
                                                 </state>
                                             </button>
                                             <button opaque="NO" tag="102" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="dUG-MU-zIo">
-                                                <rect key="frame" x="78" y="-1" width="76" height="44"/>
+                                                <rect key="frame" x="78" y="0.0" width="77" height="40"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -990,7 +990,7 @@ Sun,  21st April 2014</string>
                                                 </state>
                                             </button>
                                             <button opaque="NO" tag="103" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="vNi-MN-Uba">
-                                                <rect key="frame" x="155" y="-1" width="76" height="44"/>
+                                                <rect key="frame" x="154" y="0.0" width="78" height="40"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -1004,7 +1004,7 @@ Sun,  21st April 2014</string>
                                                 </state>
                                             </button>
                                             <button opaque="NO" tag="104" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="ej4-OV-QfD">
-                                                <rect key="frame" x="231" y="-1" width="76" height="44"/>
+                                                <rect key="frame" x="231" y="0.0" width="77" height="40"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -1018,7 +1018,7 @@ Sun,  21st April 2014</string>
                                                 </state>
                                             </button>
                                             <button opaque="NO" tag="105" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="ieX-K2-mM8">
-                                                <rect key="frame" x="308" y="-1" width="76" height="44"/>
+                                                <rect key="frame" x="307" y="0.0" width="78" height="40"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -1032,7 +1032,7 @@ Sun,  21st April 2014</string>
                                                 </state>
                                             </button>
                                             <button opaque="NO" tag="106" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="wIB-2d-9GO">
-                                                <rect key="frame" x="385" y="-1" width="76" height="44"/>
+                                                <rect key="frame" x="385" y="0.0" width="76" height="40"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -1046,7 +1046,7 @@ Sun,  21st April 2014</string>
                                                 </state>
                                             </button>
                                             <button opaque="NO" tag="107" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="cNL-EB-0UC">
-                                                <rect key="frame" x="459" y="-1" width="76" height="44"/>
+                                                <rect key="frame" x="460" y="0.0" width="76" height="40"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -1249,15 +1249,15 @@ Sun,  21st April 2014</string>
                                                     <action selector="showPastePop:" destination="o9g-Oy-ZKb" eventType="touchUpInside" id="7RY-lx-zLo"/>
                                                 </connections>
                                             </button>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Record a food item:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="b6P-fS-Jxo">
-                                                <rect key="frame" x="396" y="20" width="141" height="21"/>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Add Food:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="b6P-fS-Jxo">
+                                                <rect key="frame" x="404" y="20" width="80" height="21"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="14"/>
                                                 <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="r4V-ck-2kf" userLabel="Button - select">
-                                                <rect key="frame" x="543" y="10" width="42" height="44"/>
+                                                <rect key="frame" x="486" y="10" width="42" height="44"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                 <state key="normal" image="btn-select.png">
@@ -1272,7 +1272,7 @@ Sun,  21st April 2014</string>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="ba1-4k-PP4" userLabel="Button - voice">
-                                                <rect key="frame" x="602" y="10" width="42" height="44"/>
+                                                <rect key="frame" x="545" y="10" width="42" height="44"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                 <state key="normal" image="btn-voice.png">
@@ -1287,7 +1287,7 @@ Sun,  21st April 2014</string>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="58a-8q-R8S" userLabel="Button - photo">
-                                                <rect key="frame" x="658" y="10" width="45" height="44"/>
+                                                <rect key="frame" x="601" y="10" width="45" height="44"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                 <state key="normal" image="btn-photo.png">
@@ -1303,7 +1303,7 @@ Sun,  21st April 2014</string>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Uuh-vz-JM3" userLabel="Button - add">
-                                                <rect key="frame" x="712" y="10" width="49" height="44"/>
+                                                <rect key="frame" x="655" y="10" width="49" height="44"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                 <state key="normal" image="btn-add.png">
@@ -1316,6 +1316,22 @@ Sun,  21st April 2014</string>
                                                 </state>
                                                 <connections>
                                                     <action selector="showAddFoodPopover:" destination="o9g-Oy-ZKb" eventType="touchUpInside" id="n8Z-JH-Wng"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="BjJ-5s-i0X" userLabel="Button - add">
+                                                <rect key="frame" x="710" y="10" width="49" height="44"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                                <state key="normal" image="btn-water.png">
+                                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <state key="selected" image="btn-water-active.png"/>
+                                                <state key="highlighted" image="btn-water-active.png">
+                                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="addWaterButtonClicked:" destination="o9g-Oy-ZKb" eventType="touchUpInside" id="teH-My-Z04"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -1722,8 +1738,8 @@ Sun,  21st April 2014</string>
                                 <rect key="frame" x="0.0" y="765" width="768" height="167"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Current    Nutrient    Intake    Progress" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xXe-qt-PlO">
-                                        <rect key="frame" x="15" y="11" width="331" height="28"/>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Today's    Nutrient    Intake    Progress" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="xXe-qt-PlO">
+                                        <rect key="frame" x="218" y="11" width="331" height="28"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -1903,6 +1919,27 @@ Sun,  21st April 2014</string>
                                                 <rect key="frame" x="768" y="0.0" width="768" height="125"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <subviews>
+                                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="         100% of Calories" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="O8o-11-5Oz">
+                                                        <rect key="frame" x="607" y="18" width="150" height="30"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        <color key="backgroundColor" red="1" green="0.89411764709999997" blue="0.89411764709999997" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="         100% of Calories" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="IOZ-8V-4il">
+                                                        <rect key="frame" x="607" y="84" width="150" height="30"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        <color key="backgroundColor" red="0.97647058823529409" green="0.97647058823529409" blue="0.85098039215686272" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="         100% of Calories" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="3vN-6n-Czj">
+                                                        <rect key="frame" x="607" y="51" width="150" height="30"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                        <color key="backgroundColor" red="0.99607843137254903" green="0.88627450980392153" blue="0.78823529411764703" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="icon_fat.png" id="NfY-n8-Oe6">
                                                         <rect key="frame" x="607" y="73" width="49" height="49"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -1930,12 +1967,19 @@ Sun,  21st April 2014</string>
                                                                 <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
-                                                            <view contentMode="scaleToFill" id="gLf-op-hpS" userLabel="View - calories progress">
+                                                            <view hidden="YES" contentMode="scaleToFill" id="gLf-op-hpS" userLabel="View - calories progress">
                                                                 <rect key="frame" x="135" y="16" width="168" height="16"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                             </view>
-                                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="100 grams eaten" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hZ4-1F-xcs">
+                                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="100 grams eaten" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="SvF-eT-ulh">
+                                                                <rect key="frame" x="187" y="14" width="116" height="21"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
+                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="100 grams eaten" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hZ4-1F-xcs">
                                                                 <rect key="frame" x="311" y="14" width="116" height="21"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
@@ -1946,6 +1990,7 @@ Sun,  21st April 2014</string>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                         <connections>
                                                             <outlet property="lblCurrent" destination="hZ4-1F-xcs" id="AEV-g4-Bp0"/>
+                                                            <outlet property="lblPercent" destination="SvF-eT-ulh" id="cFi-Zf-tho"/>
                                                             <outlet property="progressView" destination="gLf-op-hpS" id="OlF-2n-LRw"/>
                                                         </connections>
                                                     </view>
@@ -1964,12 +2009,19 @@ Sun,  21st April 2014</string>
                                                                 <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
-                                                            <view contentMode="scaleToFill" id="IN8-iv-CWx" userLabel="View - calories progress">
+                                                            <view hidden="YES" contentMode="scaleToFill" id="IN8-iv-CWx" userLabel="View - calories progress">
                                                                 <rect key="frame" x="136" y="16" width="168" height="16"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                             </view>
-                                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="10000" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Z7h-FR-g9w">
+                                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="100 grams eaten" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="HVf-Zh-hc1">
+                                                                <rect key="frame" x="187" y="16" width="116" height="21"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
+                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="10000" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Z7h-FR-g9w">
                                                                 <rect key="frame" x="311" y="14" width="116" height="21"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
@@ -1980,6 +2032,7 @@ Sun,  21st April 2014</string>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                         <connections>
                                                             <outlet property="lblCurrent" destination="Z7h-FR-g9w" id="HYA-qa-PyS"/>
+                                                            <outlet property="lblPercent" destination="HVf-Zh-hc1" id="adK-11-due"/>
                                                             <outlet property="progressView" destination="IN8-iv-CWx" id="b69-d2-sWh"/>
                                                         </connections>
                                                     </view>
@@ -1998,12 +2051,19 @@ Sun,  21st April 2014</string>
                                                                 <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
-                                                            <view contentMode="scaleToFill" id="eJY-j9-CIQ" userLabel="View - calories progress">
+                                                            <view hidden="YES" contentMode="scaleToFill" id="eJY-j9-CIQ" userLabel="View - calories progress">
                                                                 <rect key="frame" x="136" y="16" width="168" height="16"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                             </view>
-                                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="10.00" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="J3V-EV-6nY">
+                                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="100 grams eaten" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="cgs-Ex-Pq2">
+                                                                <rect key="frame" x="187" y="16" width="116" height="21"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
+                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="10.00" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="J3V-EV-6nY">
                                                                 <rect key="frame" x="311" y="14" width="116" height="21"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
@@ -2014,27 +2074,10 @@ Sun,  21st April 2014</string>
                                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                         <connections>
                                                             <outlet property="lblCurrent" destination="J3V-EV-6nY" id="3st-Fe-32R"/>
+                                                            <outlet property="lblPercent" destination="cgs-Ex-Pq2" id="hi9-1N-Ext"/>
                                                             <outlet property="progressView" destination="eJY-j9-CIQ" id="lSa-6i-3Um"/>
                                                         </connections>
                                                     </view>
-                                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="20% of Calories" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="O8o-11-5Oz">
-                                                        <rect key="frame" x="649" y="23" width="99" height="21"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
-                                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="20% of Calories" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="3vN-6n-Czj">
-                                                        <rect key="frame" x="649" y="55" width="99" height="21"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
-                                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="20% of Calories" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="IOZ-8V-4il">
-                                                        <rect key="frame" x="649" y="87" width="99" height="21"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             </view>
@@ -2042,7 +2085,7 @@ Sun,  21st April 2014</string>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     </scrollView>
                                 </subviews>
-                                <color key="backgroundColor" red="0.91764705882352937" green="0.91764705882352937" blue="0.91764705882352937" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="0.9882352941176471" green="0.9882352941176471" blue="0.9882352941176471" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <view contentMode="scaleToFill" id="jBr-3s-Ssc" userLabel="View - line">
                                 <rect key="frame" x="0.0" y="764" width="768" height="1"/>
@@ -2348,6 +2391,7 @@ Sun,  21st April 2014</string>
                         <outlet property="fatProgress" destination="4ct-Cl-6ax" id="B8z-wj-8Us"/>
                         <outlet property="fluidProgress" destination="WzB-EI-xu7" id="aLs-Dx-vEi"/>
                         <outlet property="foodTableView" destination="fBW-RS-8Tm" id="fFt-xc-Zkm"/>
+                        <outlet property="imgBgHeader" destination="5Bh-K9-cLR" id="JYm-zY-DTl"/>
                         <outlet property="imgHeaderLine" destination="Fu4-rL-46U" id="HPT-oI-cRn"/>
                         <outlet property="lblCopyPopupTitle" destination="dcg-jt-53L" id="VBz-M6-uFu"/>
                         <outlet property="lblDeletePopupTitle" destination="DHv-46-yBg" id="g4a-vw-30D"/>
@@ -4533,7 +4577,7 @@ the nutritional value (kcal / sodium / fluids).</string>
                                         <rect key="frame" x="0.0" y="0.0" width="768" height="924"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="icon-centering.png" id="2gA-n3-Hvv">
+                                    <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" image="icon-centering.png" id="2gA-n3-Hvv">
                                         <rect key="frame" x="304" y="382" width="160" height="161"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </imageView>
@@ -4606,23 +4650,15 @@ the nutritional value (kcal / sodium / fluids).</string>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
                                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Food Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="NQ4-nc-SpG">
-                                                <rect key="frame" x="11" y="7" width="140" height="35"/>
+                                                <rect key="frame" x="10" y="7" width="140" height="35"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="17"/>
                                                 <color key="textColor" red="0.26666666666666666" green="0.26666666666666666" blue="0.26666666666666666" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Food Category" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="wkr-cy-BWd">
-                                                <rect key="frame" x="11" y="55" width="140" height="35"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="17"/>
-                                                <color key="textColor" red="0.2666666667" green="0.2666666667" blue="0.2666666667" alpha="1" colorSpace="calibratedRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Food Nutrient" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="uV9-EF-IlK">
-                                                <rect key="frame" x="11" y="103" width="140" height="35"/>
+                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Comments (Optional)" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="wkr-cy-BWd">
+                                                <rect key="frame" x="10" y="55" width="173" height="35"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="17"/>
@@ -4634,82 +4670,28 @@ the nutritional value (kcal / sodium / fluids).</string>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" red="0.77254901960784317" green="0.77254901960784317" blue="0.77254901960784317" alpha="1" colorSpace="calibratedRGB"/>
                                             </imageView>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="fX2-Id-hVn" userLabel="Image View - line">
-                                                <rect key="frame" x="0.0" y="97" width="432" height="1"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <color key="backgroundColor" red="0.7725490196" green="0.7725490196" blue="0.7725490196" alpha="1" colorSpace="calibratedRGB"/>
-                                            </imageView>
-                                            <view contentMode="scaleToFill" id="byX-oK-aAw">
-                                                <rect key="frame" x="149" y="96" width="300" height="52"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <subviews>
-                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-calories.png" id="Bkv-mH-2qL">
-                                                        <rect key="frame" x="15" y="5" width="80" height="41"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    </imageView>
-                                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="TBD" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="hY6-tn-jfz">
-                                                        <rect key="frame" x="58" y="10" width="31" height="30"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                        <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="12"/>
-                                                        <color key="textColor" red="0.0" green="0.34509803919999998" blue="0.14901960780000001" alpha="1" colorSpace="calibratedRGB"/>
-                                                        <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    </label>
-                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-sodium.png" id="2ry-ub-RUD">
-                                                        <rect key="frame" x="103" y="4" width="80" height="41"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    </imageView>
-                                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="TBD" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Dch-er-TIH">
-                                                        <rect key="frame" x="146" y="10" width="31" height="31"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                        <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="12"/>
-                                                        <color key="textColor" red="0.62745098040000002" green="0.25490196079999999" blue="0.050980392159999999" alpha="1" colorSpace="calibratedRGB"/>
-                                                        <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    </label>
-                                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-fluid.png" id="wFn-bh-HPa">
-                                                        <rect key="frame" x="191" y="5" width="80" height="41"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    </imageView>
-                                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="TBD" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="knA-wU-paC">
-                                                        <rect key="frame" x="234" y="11" width="31" height="30"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                                        <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="12"/>
-                                                        <color key="textColor" red="0.031372549020000001" green="0.1843137255" blue="0.23529411759999999" alpha="1" colorSpace="calibratedRGB"/>
-                                                        <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    </label>
-                                                </subviews>
-                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                            </view>
                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="ab1-8A-sd3">
-                                                <rect key="frame" x="164" y="10" width="257" height="30"/>
+                                                <rect key="frame" x="195" y="10" width="226" height="30"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textField>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="5K6-8n-E8F">
-                                                <rect key="frame" x="164" y="59" width="256" height="29"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                                <state key="normal" backgroundImage="btn-photo-result-dropdown.png">
-                                                    <color key="titleColor" red="0.19607843459999999" green="0.30980393290000002" blue="0.52156865600000002" alpha="1" colorSpace="calibratedRGB"/>
-                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                </state>
-                                                <state key="highlighted">
-                                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="showCategoryList:" destination="YL4-gF-gLw" eventType="touchUpInside" id="f4a-zY-Ces"/>
-                                                </connections>
-                                            </button>
-                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Select Food Category" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="MwP-PS-f5G">
-                                                <rect key="frame" x="175" y="62" width="185" height="21"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
+                                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" id="pyE-g3-KYk">
+                                                <rect key="frame" x="195" y="58" width="226" height="30"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <color key="textColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                            </textField>
+                                            <textView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" id="xzA-Lu-34I">
+                                                <rect key="frame" x="194" y="58" width="227" height="73"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                            </textView>
                                         </subviews>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     </view>
@@ -5267,20 +5249,16 @@ Unfortunately, the nutritional content will not be immediately available in the 
                         <outlet property="imgCenter" destination="2gA-n3-Hvv" id="6GW-bg-WvX"/>
                         <outlet property="imgFood" destination="EIH-n4-Imn" id="Vkl-6D-d1T"/>
                         <outlet property="imgFoodFound" destination="5tH-oa-uLp" id="0bB-xP-eFN"/>
-                        <outlet property="lblCalories" destination="hY6-tn-jfz" id="wci-gj-7uk"/>
                         <outlet property="lblCaloriesFound" destination="K4g-Dw-GSY" id="ZDY-lK-rqg"/>
                         <outlet property="lblCarbFound" destination="zIQ-Ee-97H" id="hrv-fl-s1Y"/>
                         <outlet property="lblFatFound" destination="gib-YG-oES" id="uUZ-Xq-85J"/>
-                        <outlet property="lblFluid" destination="knA-wU-paC" id="DY4-F3-1CB"/>
                         <outlet property="lblFluidFound" destination="M4a-iV-5xs" id="fGM-Mk-69r"/>
                         <outlet property="lblFoodAddedTitile" destination="ZU9-QM-nOP" id="RnB-1o-3Jp"/>
-                        <outlet property="lblFoodCategory" destination="MwP-PS-f5G" id="in5-Wb-k3a"/>
                         <outlet property="lblFoodCategoryFound" destination="VYf-Nw-12Y" id="ALh-Kp-hDa"/>
                         <outlet property="lblFoodNameFound" destination="Swo-BO-u0Q" id="vPN-qj-LL7"/>
                         <outlet property="lblProteinFound" destination="tJr-Oc-fY1" id="geD-3b-JGY"/>
                         <outlet property="lblResultTitle" destination="5No-dg-cZD" id="dDS-Vv-WM6"/>
                         <outlet property="lblResultTitleFound" destination="3KM-gm-VuR" id="6SI-tZ-42N"/>
-                        <outlet property="lblSodium" destination="Dch-er-TIH" id="N7A-ga-tZB"/>
                         <outlet property="lblSodiumFound" destination="CXZ-Nj-6AB" id="aYd-MS-5Hx"/>
                         <outlet property="lblTakeButtonTitle" destination="B40-Wq-H54" id="vjF-Xf-WCK"/>
                         <outlet property="preview" destination="dJv-Il-8Ew" id="ODM-Z2-gSo"/>
@@ -5292,6 +5270,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                         <outlet property="resultsView" destination="OMp-dS-gBC" id="fcy-1H-83E"/>
                         <outlet property="scrollView" destination="Y7k-Hc-qrD" id="jR6-9S-Zpi"/>
                         <outlet property="takeButton" destination="t1x-Gd-epW" id="8Tl-GV-CMG"/>
+                        <outlet property="txtFoodComment" destination="pyE-g3-KYk" id="BaX-Pj-XmC"/>
                         <outlet property="txtFoodName" destination="ab1-8A-sd3" id="1rw-Gg-s4k"/>
                     </connections>
                 </viewController>
@@ -5312,7 +5291,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker.png" id="mFz-7O-cF6">
-                                        <rect key="frame" x="-1" y="14.999999318804063" width="369" height="378"/>
+                                        <rect key="frame" x="-1" y="14.999998992792031" width="369" height="378"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker-arrow.png" id="a2G-PT-vR1">
@@ -6874,12 +6853,11 @@ Unfortunately, the nutritional content will not be immediately available in the 
         <image name="btn-info.png" width="32" height="32"/>
         <image name="btn-month-active.png" width="119" height="40"/>
         <image name="btn-next-month.png" width="40" height="33"/>
-        <image name="btn-non-nutrient.png" width="240" height="30"/>
+        <image name="btn-non-nutrient.png" width="240" height="29"/>
         <image name="btn-paste-active.png" width="40" height="41"/>
         <image name="btn-paste-enable.png" width="40" height="41"/>
         <image name="btn-paste.png" width="40" height="41"/>
         <image name="btn-photo-active.png" width="40" height="41"/>
-        <image name="btn-photo-result-dropdown.png" width="256" height="27"/>
         <image name="btn-photo.png" width="40" height="41"/>
         <image name="btn-prev-month.png" width="40" height="33"/>
         <image name="btn-red.png" width="128" height="44"/>
@@ -6895,6 +6873,8 @@ Unfortunately, the nutritional content will not be immediately available in the 
         <image name="btn-take-photo-disable.png" width="48" height="49"/>
         <image name="btn-take-photo-enable.png" width="48" height="49"/>
         <image name="btn-voice.png" width="40" height="41"/>
+        <image name="btn-water-active.png" width="40" height="41"/>
+        <image name="btn-water.png" width="40" height="41"/>
         <image name="empty.png" width="768" height="940"/>
         <image name="icon-calories.png" width="49" height="49"/>
         <image name="icon-centering.png" width="160" height="160"/>

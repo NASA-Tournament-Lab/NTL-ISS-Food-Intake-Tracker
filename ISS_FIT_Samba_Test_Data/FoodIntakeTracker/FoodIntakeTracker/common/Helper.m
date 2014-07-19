@@ -220,6 +220,47 @@ static NSArray *monthNameArray = nil;
     components.minute = [currentDateComponents minute];
     return [components date];
 }
+
+/*!
+ @discussion Get number of days from today.
+ @param the date to compare.
+ @return the number of days from today.
+ */
++(NSInteger) daysFromToday:(NSDate *) date {
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    [calendar setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
+    
+    NSDateComponents *c = [calendar components:(NSYearCalendarUnit |
+                                                NSMonthCalendarUnit |
+                                                NSDayCalendarUnit)
+                                      fromDate:[NSDate date]];
+    [c setCalendar:calendar];
+    c.hour = 0;
+    c.minute = 0;
+    c.second = 1;
+    NSDate *f = [c date];
+    
+    c = [calendar components:(NSYearCalendarUnit |
+                              NSMonthCalendarUnit |
+                              NSDayCalendarUnit)
+                    fromDate:date];
+    [c setCalendar:calendar];
+    c.hour = 0;
+    c.minute = 0;
+    c.second = 1;
+    NSDate *t = [c date];
+    
+    NSDateComponents *difference = [calendar components:(NSYearCalendarUnit |
+                                                         NSMonthCalendarUnit |
+                                                         NSDayCalendarUnit)
+                                               fromDate:f toDate:t options:0];
+    
+    int dayDiff = [difference day];
+    int monthDiff = [difference month];
+    
+    return dayDiff + monthDiff * 31;
+}
+
 @end
 
 @implementation NSString (CustomFunction)

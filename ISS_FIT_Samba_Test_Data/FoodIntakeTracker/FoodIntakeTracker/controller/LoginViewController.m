@@ -456,7 +456,10 @@
     User *user = (User*)[users objectAtIndex:selectUserIndex];
     selectedUserFullName = user.fullName;
     // Set the user's photo and user's full name on loginSelectedPanel
-    self.imgSelectedUserImage.image = [Helper loadImage:user.profileImage];
+    self.imgSelectedUserImage.image = [Helper loadImage:user.profileImage];    
+    if (self.imgSelectedUserImage.image == nil) {
+        self.imgSelectedUserImage.image = [UIImage imageNamed:@"defaultUserIcon.png"];
+    }
     NSArray *arr = [user.fullName componentsSeparatedByString:@" "];
     NSMutableString *str = [[NSMutableString alloc] init];
     if(arr.count > 0){
@@ -497,6 +500,9 @@
         UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(pos, 0, 128, 128)];
         img.tag = btn.tag = i;
         img.image = [Helper loadImage:user.profileImage];
+        if (img.image == nil) {
+            img.image = [UIImage imageNamed:@"defaultUserIcon.png"];
+        }
         [btn setImage:[UIImage imageNamed:@"icon-photo-list-active.png"] forState:UIControlStateHighlighted];
         [self.loginListScrollView addSubview:img];
         [self.loginListScrollView addSubview:btn];

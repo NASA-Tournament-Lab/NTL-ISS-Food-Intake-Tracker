@@ -52,11 +52,14 @@
     NSArray *strArray = [str componentsSeparatedByString:separator];
     NSMutableArray *stringWrappersArray = [NSMutableArray array];
     for (NSString *item in strArray) {
-
-        StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:entity
-                                              insertIntoManagedObjectContext:context];
-        stringWrapper.value = item;
-        [stringWrappersArray addObject:stringWrapper];
+        // Only add if string is not empty.
+        NSString *trimmed = [item stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        if (trimmed && trimmed.length > 0) {
+            StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:entity
+                                                  insertIntoManagedObjectContext:context];
+            stringWrapper.value = trimmed;
+            [stringWrappersArray addObject:stringWrapper];
+        }
     }
     
     return [NSSet setWithArray:stringWrappersArray];

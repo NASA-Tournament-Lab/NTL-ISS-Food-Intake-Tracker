@@ -108,7 +108,7 @@
     ZXingWidgetController *widController = [[ZXingWidgetController alloc] initWithDelegate:self
                                                                                 showCancel:YES
                                                                                   OneDMode:NO
-                                                                               showLicense:NO];
+                                                                               showLicense:NO];    
     
     
     NSMutableSet *readers = [[NSMutableSet alloc ] init];

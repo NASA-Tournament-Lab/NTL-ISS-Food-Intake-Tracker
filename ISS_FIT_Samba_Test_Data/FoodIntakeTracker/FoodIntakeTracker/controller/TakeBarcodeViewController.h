@@ -44,7 +44,7 @@
 /* the background image view */
 @property (weak, nonatomic) IBOutlet UIImageView *imgBG;
 /* the scan line image view */
-@property (weak, nonatomic) IBOutlet UIImageView *scanLine;
+@property (weak, nonatomic) IBOutlet UIView *scanLine;
 /* the bracket image view */
 @property (weak, nonatomic) IBOutlet UIImageView *imgBracket;
 /* the search bar */
