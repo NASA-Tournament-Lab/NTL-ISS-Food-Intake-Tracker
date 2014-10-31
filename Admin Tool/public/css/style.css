@@ -1,0 +1,33 @@
+.container {
+    clear: both;
+}
+.goButton {
+    text-align: center;
+}
+body {
+    font-family: Verdana, Arial, sans-serif;
+}
+h3 {
+    font-family: Verdana, Arial, sans-serif;
+    font-size: 18px;
+    line-height: normal;
+}
+a.button {
+    margin-left:10px;
+    height:36px;
+}
+#sides{
+    margin:0;
+    height:144px;
+    width: 100%;
+}
+#left{
+    float:left;
+    width:144px;
+    overflow:hidden;
+}
+#right{
+    float:left;
+    width:50%;
+    overflow:hidden;
+}

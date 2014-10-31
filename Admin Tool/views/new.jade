@@ -1,0 +1,48 @@
+html
+	head
+		title!= title
+		link(rel='stylesheet', href='/css/style.css')
+		link(rel='stylesheet', href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css')
+		script(type='text/javascript', src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
+		script(type='text/javascript', src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js')
+		script.
+			$(document).ready(function() {
+				$( "input[type=submit], input[type=button], a.button" ).button()
+			});
+	body
+		.head
+			#sides
+				#left
+					img(src='/images/logo.png', alt='', style='float: left;height:144px;')
+				#right
+					h1(style='float: left;height:144px;') ISS FIT - Admin Tool
+		.container(style="margin-left:20px;")
+			h1!= message
+			div
+				form(action=action, method='post', enctype='multipart/form-data')
+					- var index = 0
+					each key in keys
+						- var title = titles[index++]
+						h3!=title
+						if key == 'categories'
+							- var cats = ["Vegetables / Sides", "Meat / Fish", "Drink", "Dessert & Snacks", "Breakfast", "Fruit & Nuts"]
+							select(id=key, name=key, style="width:200px;height:80px;", multiple="multiple")
+								for catValue in cats
+									option(value=catValue) #{catValue}
+						else if key == 'admin'
+							select(id=key, name=key)
+								option(value=0) No
+								option(value=1) Yes
+						else if key == 'origin'
+							- var origins = ["NASA Foods", "Russian Foods", "JAXA Foods", "CSA Foods", "ESA Foods"]
+							select(id=key, name=key, style="width:200px;")
+								for originValue in origins
+									option(value=originValue) #{originValue}
+						else if key == 'productProfileImage' || key == 'profileImage'
+							input(type='file', name=key, id=key, accept='image/jpg,image/jpeg')
+						else
+							input(type='text', value=defaultValues[key], name=key, id=key, style="width:200px;")
+					input(type='hidden', value=uuid, key="id", name="id")
+					p
+						input(type='submit',value='Save')
+						a(href="/", class="button") Cancel

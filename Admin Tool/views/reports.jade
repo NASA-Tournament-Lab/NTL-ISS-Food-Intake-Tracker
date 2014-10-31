@@ -1,0 +1,16 @@
+.page-header
+	h2!= message
+div
+	form(action='/reports',method='POST')
+		p
+			input(type='radio', value='0', checked="true", id='radioReport', name='radioReport')
+			| User Food Data Report
+		p
+			select(id='users', name='users', multiple='true', style="height:200px;width:200px")
+				for user in users
+					option(value=user.id) #{user.name}
+		p
+			input(type='radio', value='1', id='radioReport', name='radioReport')
+			| All Users Food Data Report
+		p
+			input(type='submit',value='Run', class="goButton")
