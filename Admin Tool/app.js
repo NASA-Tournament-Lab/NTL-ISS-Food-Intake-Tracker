@@ -572,7 +572,7 @@ app.post('/user', function(req, res) {
             if (err) {
                 req.flash('error', JSON.stringify(err));
             } else {
-                req.flash('message', 'User Profile Saved');
+                req.flash('message', 'New User Profile Created');
             }
             res.redirect('/');
     });
@@ -620,7 +620,7 @@ app.get('/food/:id', function(req, res) {
                 editObject["categoriesId"] = categoriesId;
 
                 console.log("Result: " + JSON.stringify(editObject));
-                res.render('edit_food', { message: editObject.name, action: '/food/' + req.params.id,
+                res.render('edit', { message: editObject.name, action: '/food/' + req.params.id,
                         obj: sortObjectByKey(editObject, foodKeys), editKeys: foodKeys, titles: foodTitles });
             });
         }
@@ -641,7 +641,7 @@ app.get('/user/:id', function(req, res) {
 
         console.log("Result: " + result.rows[0].value);
         var editObject = JSON.parse(result.rows[0].value);
-        res.render('edit_food', { message: editObject.fullName, action: '/user/' + req.params.id,
+        res.render('edit', { message: editObject.fullName, action: '/user/' + req.params.id,
             obj: sortObjectByKey(editObject, userKeys), editKeys: userKeys, titles: userTitles });
     });
 });

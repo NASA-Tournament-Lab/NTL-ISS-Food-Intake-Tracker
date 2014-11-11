@@ -41,8 +41,9 @@ try:
     users = []
     for record in cur:
         obj = json.loads(record[2])
-        obj[u"id"] = record[0]
-        users.append(obj)
+        if obj.has_key(u"removed") and obj[u"removed"] == "0":
+            obj[u"id"] = record[0]
+            users.append(obj)
 
     # Read file to load
     with open(filename, 'rb') as f:
@@ -54,7 +55,7 @@ try:
                     continue
 
                 user = {}
-                user[u"fullName"] = row[0].strip()
+                user[u"fullName"] = xstr(row[0]).strip()
                 user[u"admin"] = 0 if row[1].strip() == "NO" else 1
                 user[u"dailyTargetFluid"] = float(row[2])
                 user[u"dailyTargetEnergy"] = float(row[3])
@@ -69,7 +70,7 @@ try:
                 user[u"removed"] = 0
                 user[u"synchronized"] = 1
 
-                userMatch = next((l for l in users if l[u"fullName"].strip() == user[u"fullName"]), None)
+                userMatch = next((l for l in users if xstr(l[u"fullName"]).strip() == user[u"fullName"]), None)
                 if userMatch is None:
                     found = False
                     id = None
@@ -83,7 +84,7 @@ try:
                     user = copyValue(userMatch, user, u"consumptionRecord")
                     user = copyValue(userMatch, user, u"adhocFoodProduct")
                     user = copyValue(userMatch, user, u"lastUsedFoodProductFilter")
-                    print(user)
+
                     data = json.dumps(user)
                     cur.execute("UPDATE data SET value = %s, modifieddate = 'now', modifiedby = 'file_load' WHERE id = %s;", (data, userMatch[u"id"]))
 
