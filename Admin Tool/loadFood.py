@@ -108,7 +108,6 @@ try:
                     food = copyValue(foodMatch, food, u"images")
                     food = copyValue(foodMatch, food, u"quantity")
                     food = copyValue(foodMatch, food, u"consumptionRecord")
-                    print(food)
                     data = json.dumps(food)
                     cur.execute("UPDATE data SET value = %s, modifieddate = 'now', modifiedby = 'file_load' WHERE id = %s;", (data, foodMatch[u"id"]))
 
