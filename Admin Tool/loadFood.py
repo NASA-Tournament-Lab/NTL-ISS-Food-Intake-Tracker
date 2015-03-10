@@ -94,7 +94,7 @@ try:
                 food[u"active"] = 1
                 food[u"synchronized"] = 1
 
-                foodMatch = next((l for l in foods if l[u"name"] == foodName), None)
+                foodMatch = next((l for l in foods if l.get(u"name","").strip() == foodName), None)
                 if foodMatch is None:
                     found = False
                     id = None
