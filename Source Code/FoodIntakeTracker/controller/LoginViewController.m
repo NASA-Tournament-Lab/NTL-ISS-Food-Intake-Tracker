@@ -117,6 +117,25 @@
     [self showLoginPanel:nil];
     [self getSavedUsers];
     [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startLoading)
+                                                 name:InitialLoadingBeginEvent object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(finishLoading:)
+                                                 name:InitialLoadingEndEvent object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backup)
+                                                 name:BackupBeginEvent object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadingNew)
+                                                 name:LoadingNewBeginEvent object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProgress:)
+                                                 name:InitialLoadingProgressEvent object:nil];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 /**
@@ -136,21 +155,6 @@
     self.progressView.fullColor = [UIColor greenColor];
     self.progressView.progressImage = [UIImage imageNamed:@"bg-progress-red.png"];
     self.progressView.currentProgress = 0.0;
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startLoading)
-                                                 name:InitialLoadingBeginEvent object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(finishLoading:)
-                                                 name:InitialLoadingEndEvent object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(backup)
-                                                 name:BackupBeginEvent object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadingNew)
-                                                 name:LoadingNewBeginEvent object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProgress:)
-                                                 name:InitialLoadingProgressEvent object:nil];
 }
 
 /**

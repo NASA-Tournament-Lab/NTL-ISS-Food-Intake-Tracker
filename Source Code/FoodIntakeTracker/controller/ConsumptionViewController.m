@@ -136,7 +136,7 @@
 
 @implementation CustomProgressView
 
-@synthesize currentProgress = _currentProgress;
+@synthesize currentProgress = _currentProgress, gmKg = _gmKg;
 
 /**
  * setting the current progress value and reflesh the view.
@@ -179,6 +179,8 @@
                                      self.lblTotal.frame.size.height);*/
     
     CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    
     if (self.progressImage != nil) {
         if (_currentProgress == 1) {
             CGContextSetFillColorWithColor(context, self.fullColor.CGColor);
@@ -186,7 +188,6 @@
             CGContextStrokePath(context);
         } else {
             CGContextDrawImage(context, CGRectMake(x, y, w, h), self.backgoundImage.CGImage);
-
 
             UIGraphicsBeginImageContext(CGSizeMake(w - 2, h - 2));
             [self.progressImage drawInRect:CGRectMake(0, 0, w - 2, h - 2)];
@@ -201,12 +202,58 @@
             CGContextDrawImage(context, CGRectMake(x + 1, y + 1, (w - 2), h - 2), img.CGImage);
         }
     } else {
-        CGContextDrawImage(context, CGRectMake(x, y, w, h), self.backgoundImage.CGImage);
-        CGContextSetFillColorWithColor(context, self.fullColor.CGColor);
-        CGContextFillRect(context, CGRectMake(x + 1, y + 1, (w - 2) * _currentProgress, h - 2));
-        CGContextStrokePath(context);
+        if (![self.progressView isHidden] && self.gmKg) {
+            CGFloat minProgress = 1.2f / MAX_GM_KG;
+            CGFloat maxProgress = 1.7f / MAX_GM_KG;
+            
+            self.progressView.layer.borderColor = [UIColor blackColor].CGColor;
+            self.progressView.layer.borderWidth = 1.0f;
+            self.progressView.layer.cornerRadius = 3.0f;
+            
+            CGContextSetFillColorWithColor(context, [UIColor redColor].CGColor);
+            CGContextFillRect(context, CGRectMake(x + 1, y + 1, w - 2, h - 2));
+            CGContextStrokePath(context);
+            
+            CGContextSetFillColorWithColor(context, [UIColor greenColor].CGColor);
+            CGContextFillRect(context, CGRectMake(x + 1 + (w - 2) * minProgress, y + 1, (w - 2) * (maxProgress - minProgress), h - 2));
+            CGContextStrokePath(context);
+            
+            CGContextSetFillColorWithColor(context, [UIColor blackColor].CGColor);
+            CGContextFillRect(context, CGRectMake(x + 1, y + 3, w - 2, h - 6));
+            CGContextStrokePath(context);
+            
+            CGContextSetFillColorWithColor(context, [UIColor colorWithRed:252.f/255.f green:252.f/255.f
+                                                                     blue:252.f/255.f alpha:1.0f].CGColor);
+            CGContextFillRect(context, CGRectMake(x + 1, y + 4, w - 2, h - 8));
+            CGContextStrokePath(context);
+            
+            CGContextDrawImage(context, CGRectMake(x, y, w, h), self.backgoundImage.CGImage);
+            CGContextSetFillColorWithColor(context, self.fullColor.CGColor);
+            CGContextFillRect(context, CGRectMake(x + 1, y + 4, (w - 2) * _currentProgress, h - 8));
+            CGContextStrokePath(context);
+            
+            CGFloat xoff = (w - 2) / (MAX_GM_KG * 10.f);
+            int i = 1;
+            while (xoff < (w - 2)) {
+                CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
+                CGContextSetLineWidth(context, 1.0f);
+                CGContextMoveToPoint(context, x + 1 + xoff, y + h - 4); //start at this point
+                if (i % 5 == 0) {
+                    CGContextAddLineToPoint(context, x + 1 + xoff, y + h - 9); //draw to this point
+                } else {
+                    CGContextAddLineToPoint(context, x + 1 + xoff, y + h - 7); //draw to this point
+                }
+                CGContextStrokePath(context);
+                xoff += (w - 2) / (MAX_GM_KG * 10.f);
+                i++;
+            }
+        } else {
+            CGContextDrawImage(context, CGRectMake(x, y, w, h), self.backgoundImage.CGImage);
+            CGContextSetFillColorWithColor(context, self.fullColor.CGColor);
+            CGContextFillRect(context, CGRectMake(x + 1, y + 1, (w - 2) * _currentProgress, h - 2));
+            CGContextStrokePath(context);
+        }
     }
-    
 }
 
 @end
@@ -247,10 +294,18 @@
 
 /**
  * called when view will appear.
- * just load foods here.
  * @param animated If YES, the view is being added to the window using an animation.
  */
 - (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:YES];
+    
+    [self updateView];
+}
+
+/**
+ * called when view will appear. just load foods here.
+ */
+- (void)updateView {
     if(foodItems.count == 0){
         NSDate *selectDate = self.dateListView.currentDate;
         if (!selectDate) {
@@ -261,29 +316,31 @@
     
     self.customTabBarController.tabView.hidden = NO;
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-    NSMutableString *str = [[NSMutableString alloc] init];
-    // [str appendString:@"summary    for"];
+    NSMutableString *str = [NSMutableString string];
+    // [str appendString:@"SUMMARY    FOR"];
     if (appDelegate.loggedInUser.fullName.length > 0){
         NSArray *names = [appDelegate.loggedInUser.fullName componentsSeparatedByString:@" "];
         // F2Finish change - Display name
-        if (names.count == 1) {
-            [str appendFormat:@"    %@", names[0]];
-        } else if (names.count == 2) {
-            [str appendFormat:@"    %@   %@", names[0], names[1]];
+        [str appendFormat:@"    %@", names[0]];
+        for (int i = 1; i < names.count; i++) {
+           [str appendFormat:@"   %@", names[i]];
         }
     }
     
-    CGSize size1 = [str sizeWithFont:self.lblHeaderTitle.font constrainedToSize:self.lblHeaderTitle.frame.size];
-    [str appendString:@"           daily    intake    report"];
-    self.lblHeaderTitle.text = str;
-    [self.lblHeaderTitle sizeToFit];
+    if (self.lblHeaderTitle != nil) {
+        CGRect textRect = [str boundingRectWithSize:self.lblHeaderTitle.frame.size
+                                             options:NSStringDrawingUsesLineFragmentOrigin
+                                          attributes:@{NSFontAttributeName:self.lblHeaderTitle.font}
+                                             context:nil];
+        CGSize size1 = textRect.size;
+        [str appendString:@"           daily    intake    report"];
+        self.lblHeaderTitle.text = [NSString stringWithString:str];
+        [self.lblHeaderTitle sizeToFit];
+        
+        self.lblHeaderTitle.center = self.imgBgHeader.center;
     
-    self.lblHeaderTitle.center = self.imgBgHeader.center;
-    
-    self.imgHeaderLine.frame = CGRectMake(self.lblHeaderTitle.frame.origin.x + size1.width + 10, 10, 2, 41);
-    
-    [super viewWillAppear:animated];
-    
+        self.imgHeaderLine.frame = CGRectMake(self.lblHeaderTitle.frame.origin.x + size1.width + 10, 10, 2, 41);
+    }
 }
 
 /**
@@ -306,7 +363,7 @@
     self.caloriesProgess.backgoundImage = [UIImage imageNamed:@"bg-progress.png"];
     self.sodiumProgress.backgoundImage = [UIImage imageNamed:@"bg-progress.png"];
     self.fluidProgress.backgoundImage = [UIImage imageNamed:@"bg-progress.png"];
-    self.proteinProgess.backgoundImage = [UIImage imageNamed:@"bg-progress.png"];
+    self.proteinProgess.backgoundImage = nil;
     /*self.carbProgress.backgoundImage = [UIImage imageNamed:@"bg-progress.png"];
     self.fatProgress.backgoundImage = [UIImage imageNamed:@"bg-progress.png"];*/
     
@@ -320,6 +377,7 @@
     self.caloriesProgess.progressImage = [UIImage imageNamed:@"bg-progress-red.png"];
     self.sodiumProgress.progressImage = [UIImage imageNamed:@"bg-progress-green.png"];
     self.fluidProgress.progressImage = [UIImage imageNamed:@"bg-progress-red.png"];
+    self.proteinProgess.progressImage = nil;
     /*self.proteinProgess.progressImage = [UIImage imageNamed:@"bg-progress-red.png"];
     self.carbProgress.progressImage = [UIImage imageNamed:@"bg-progress-red.png"];
     self.fatProgress.progressImage = [UIImage imageNamed:@"bg-progress-red.png"];*/
@@ -364,12 +422,12 @@
     self.lblYear.text = [NSString stringWithFormat:@"GMT %d", info.year];
 
     // Initialize OpenEars
-    self.pocketsphinxController = [[PocketsphinxController alloc] init];
-    self.pocketsphinxController.returnNbest = FALSE;
-    self.openEarsEventsObserver = [[OpenEarsEventsObserver alloc] init];
-    [self.openEarsEventsObserver setDelegate:self];
+    //self.pocketsphinxController = [[PocketsphinxController alloc] init];
+    //self.pocketsphinxController.returnNbest = FALSE;
+    //self.openEarsEventsObserver = [[OpenEarsEventsObserver alloc] init];
+    //[self.openEarsEventsObserver setDelegate:self];
     // Retrieve language model paths
-    SpeechRecognitionServiceImpl *srService = appDelegate.speechRecognitionService;
+    //SpeechRecognitionServiceImpl *srService = appDelegate.speechRecognitionService;
 
     [self redrawPieChartWithProtein:0.333 carb:0.333 fat:0.334];
     
@@ -379,9 +437,9 @@
     [audioSession setActive:YES error:nil];
     //record sound test code -  END
     
-    NSError *error;
-    self.lmPaths = [srService getGeneralLanguageModelPaths:&error];
-    if ([Helper displayError:error]) return;
+    //NSError *error;
+    //self.lmPaths = [srService getGeneralLanguageModelPaths:&error];
+    //if ([Helper displayError:error]) return;
     [[NSNotificationCenter defaultCenter] postNotificationName:AutoLogoutRenewEvent object:nil];
     
     UISwipeGestureRecognizer *rLeft = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleDateSwipe:)];
@@ -431,10 +489,8 @@
 }
 
 -(void)setProgressViewColor:(CustomProgressView *) view {
-    if (view.currentProgress * MAX_GM_KG < 0.8) {
+    if (view.currentProgress * MAX_GM_KG < 1.2) {
         [view setFullColor:[UIColor redColor]];
-    } else if (view.currentProgress * MAX_GM_KG < 1.2) {
-        [view setFullColor:[UIColor yellowColor]];
     } else if (view.currentProgress * MAX_GM_KG < 1.7) {
         [view setFullColor:[UIColor greenColor]];
     } else {
@@ -519,6 +575,7 @@
     self.proteinProgess.lblCurrent.text = [NSString stringWithFormat:@"Protein gm/kg BW"];
     
     [self setProgressViewColor:self.proteinProgess];
+    [self.proteinProgess setGmKg:YES];
     
     float proteinCalories = proteinTotal * PROTEIN_CALORIES_FACTOR;
     float carbCalories = carbTotal * CARB_CALORIES_FACTOR;
@@ -620,9 +677,9 @@
         self.pieChart = nil;
     }
     self.pieChart = [[BNPieChart alloc] initWithFrame:CGRectMake(470, 0, 130, 130)];
-    [self.pieChart addSlicePortion:proteinRatio withName:@"Protein"];
-    [self.pieChart addSlicePortion:carbRatio withName:@"Carb"];
-    [self.pieChart addSlicePortion:fatRatio withName:@"Fat"];
+    [self.pieChart addSlicePortion:proteinRatio withName:@"BLANK" andImage:[UIImage imageNamed:@"icon_protein_pie.png"]];
+    [self.pieChart addSlicePortion:carbRatio withName:@"BLANK" andImage:[UIImage imageNamed:@"icon_carb_pie.png"]];
+    [self.pieChart addSlicePortion:fatRatio withName:@"BLANK" andImage:[UIImage imageNamed:@"icon_fat_pie.png"]];
     NSArray *colors = @[[BNColor colorWithRed:1.0 green:0.89 blue:0.89],
                         [BNColor colorWithRed:1.0 green:0.89 blue:0.79],
                         [BNColor colorWithRed:0.98 green:0.98 blue:0.85]];
@@ -718,7 +775,7 @@
         if (foodProduct) {
             // The food product already exists
             self.foodConsumptionRecordToAdd.foodProduct = foodProduct;
-            self.foodConsumptionRecordToAdd.quantity = foodProduct.quantity;
+            self.foodConsumptionRecordToAdd.quantity = self.foodConsumptionRecordToAdd.quantity;
         } else {
             self.foodConsumptionRecordToAdd.foodProduct = self.adhocFoodProductToAdd;
             self.foodConsumptionRecordToAdd.quantity = self.adhocFoodProductToAdd.quantity;
@@ -738,7 +795,6 @@
         self.foodConsumptionRecordToAdd = nil;
         
         [self.btnAddFood setSelected:NO];
-        
         
         NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
         [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
@@ -1014,8 +1070,7 @@
     popController.popoverContentSize = CGSizeMake(367, 438);
     popController.delegate = self;
     calendar.popController = popController;
-    calendar.listView.selectedDate = self.dateListView.currentDate;
-    [calendar setMonth:self.dateListView.currentDate];
+    calendar.selectedDate = self.dateListView.currentDate;
     CGRect popoverRect = CGRectMake(btn.bounds.origin.x,
                                     btn.bounds.origin.y,
                                     1,
@@ -1326,7 +1381,12 @@
             
             if ([Helper displayError:error]) return;
             [self.foodConsumptionRecords addObject:record];
+            [self.foodTableView reloadData];
+            
             recorderFilePath = nil;
+            
+            NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
+            [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
         }
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
@@ -1864,10 +1924,10 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark - AVAudioRecorderDelegate methods
 
 - (void)audioRecorderDidFinishRecording:(AVAudioRecorder *)aRecorder successfully:(BOOL)flag {
-    [self audioRecorderEndInterruption:aRecorder];
+    [self audioRecorderEndInterruption:aRecorder withOptions:0];
 }
 
-- (void)audioRecorderEndInterruption:(AVAudioRecorder *)aRecorder {
+- (void)audioRecorderEndInterruption:(AVAudioRecorder *)aRecorder withOptions:(NSUInteger)flags {
     NSURL *url = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/tmp.aac", DOCUMENTS_FOLDER]];
     NSError *err = nil;
     NSData *audioData = [NSData dataWithContentsOfFile:[url path] options: 0 error:&err];

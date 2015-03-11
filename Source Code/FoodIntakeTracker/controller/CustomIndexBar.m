@@ -75,7 +75,7 @@
         float ypos = i * sectionheight;
         
         UILabel *alphaLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, ypos, self.frame.size.width, sectionheight)];
-        alphaLabel.textAlignment = UITextAlignmentCenter;
+        alphaLabel.textAlignment = NSTextAlignmentCenter;
         alphaLabel.text = [indexes objectAtIndex:i];
         alphaLabel.tag = 100 + i;
         alphaLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0];

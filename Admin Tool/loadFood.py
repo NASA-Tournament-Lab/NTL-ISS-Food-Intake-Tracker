@@ -71,10 +71,15 @@ try:
             next(reader, None)  # skip the headers
             food = {}
             for row in reader:
-                if len(row) == 0:
+                rowLen = len(row)
+                if rowLen < 12:
                     continue
 
-                food[u"name"] = xstr(row[0].strip())
+                foodName = xstr(row[0]).strip()
+                if not foodName:
+                    continue
+
+                food[u"name"] = foodName
                 food[u"categories"] = checkCategories(cur, row[1].strip())
                 food[u"origin"] = row[2].strip()
                 food[u"barcode"] = row[3].strip()
@@ -85,11 +90,11 @@ try:
                 food[u"carb"] = float(row[8])
                 food[u"fat"] = float(row[9])
                 food[u"productProfileImage"] = row[10].strip()
-                food[u"removed"] = 0 if row[11].strip() == "NO" else 1
+                food[u"removed"] = 1 if row[11].strip() == "YES" else 0
                 food[u"active"] = 1
                 food[u"synchronized"] = 1
 
-                foodMatch = next((l for l in foods if l[u"name"].strip() == food[u"name"]), None)
+                foodMatch = next((l for l in foods if l.get(u"name","").strip() == foodName), None)
                 if foodMatch is None:
                     found = False
                     id = None
@@ -103,7 +108,6 @@ try:
                     food = copyValue(foodMatch, food, u"images")
                     food = copyValue(foodMatch, food, u"quantity")
                     food = copyValue(foodMatch, food, u"consumptionRecord")
-                    print(food)
                     data = json.dumps(food)
                     cur.execute("UPDATE data SET value = %s, modifieddate = 'now', modifiedby = 'file_load' WHERE id = %s;", (data, foodMatch[u"id"]))
 

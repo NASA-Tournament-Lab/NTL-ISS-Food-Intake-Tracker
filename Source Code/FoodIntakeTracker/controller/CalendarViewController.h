@@ -99,6 +99,8 @@
 @property (nonatomic, weak) id<CalendarViewDelegate> delegate;
 /* the pop over controller */
 @property (nonatomic, strong) UIPopoverController *popController;
+/* the selected date */
+@property (nonatomic, strong) NSDate *selectedDate;
 
 /**
  * setting the current month value.

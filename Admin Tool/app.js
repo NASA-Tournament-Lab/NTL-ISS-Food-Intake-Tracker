@@ -116,7 +116,7 @@ var updateValue = function(req, res, remove) {
         }
     }
     if (remove) {
-        newValue["remove"] = 1;
+        newValue["removed"] = 1;
     }
 
     var queryFunctions = [];

@@ -173,8 +173,9 @@
     
     // Save any pending data
     [[self managedObjectContext] processPendingChanges];
-    [[self managedObjectContext] save:&e];
-    CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+    if (![self.managedObjectContext save:&e]) {
+        CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+    }
     
     // check for unsychronized objects
     NSArray *d = self.managedObjectContext.persistentStoreCoordinator.managedObjectModel.entities;
@@ -209,7 +210,9 @@
         [request setEntity:description];
         [request setPredicate:predicate];
         
-        NSArray *objects = [self.managedObjectContext executeFetchRequest:request error:error];
+        NSArray *objects = [self.managedObjectContext executeFetchRequest:request error:&e];
+        CHECK_ERROR_AND_RETURN(e, error, @"Cannot fetch request.", DataUpdateErrorCode, YES, NO);
+        
         for (SynchronizableModel *object in objects) {
             NSNumber *synced = object.synchronized;
             if (synced && ![synced boolValue]) {
@@ -229,8 +232,9 @@
         [self updateSyncTime:[[NSDate date] timeIntervalSince1970] * 1000];
     }
 
-    [[self managedObjectContext] save:&e];
-    CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+    if (![self.managedObjectContext save:&e]) {
+        CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+    }
     
     // fetch all new objects from other devices
     NSArray *allData = [coreData fetchObjects];
@@ -257,11 +261,12 @@
                                                            inManagedObjectContext:[self managedObjectContext]];
             [request setEntity:description];
             [request setPredicate:predicate];
-            NSArray *objects = [self.managedObjectContext executeFetchRequest:request error:error];
+            NSArray *objects = [self.managedObjectContext executeFetchRequest:request error:&e];
             CHECK_ERROR_AND_RETURN(e, error, @"Cannot fetch object in managed object context.",
                                    EntityNotFoundErrorCode, YES, YES);
             
             // Update if objects exists or insert if it doesn't (only for not removed object)
+            // hack for admin tool
             BOOL isRemoved = [[jsonDictionary objectForKey:@"removed"] boolValue] && ![name isEqualToString:@"FoodProduct"];
             if (objects.count > 0) {
                 SynchronizableModel *object = [objects objectAtIndex:0];
@@ -282,8 +287,9 @@
             }
             
             [self endUndoActions];
-            [[self managedObjectContext] save:&e];
-            CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+            if (![self.managedObjectContext save:&e]) {
+                CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+            }
         }
         
         [self updateSyncTime:[[NSDate date] timeIntervalSince1970] * 1000];

@@ -46,12 +46,6 @@
 
 - (void)clickDate:(NSDate *)date;
 
-/**
- * get days from today.
- * @param the date to compare.
- */
--(NSInteger) daysFromToday:(NSDate *) date;
-
 @end
 
 /**
@@ -93,11 +87,11 @@
     float _currentProgress;
 }
 /* the background image */
-@property (nonatomic, weak) UIImage *backgoundImage;
+@property (nonatomic, strong) UIImage *backgoundImage;
 /* the progress image */
-@property (nonatomic, weak) UIImage *progressImage;
+@property (nonatomic, strong) UIImage *progressImage;
 /* the color progress equals 1 */
-@property (nonatomic, weak) UIColor *fullColor;
+@property (nonatomic, strong) UIColor *fullColor;
 /* current value label */
 @property (nonatomic, weak) IBOutlet UILabel *lblCurrent;
 /* total value label */
@@ -108,6 +102,8 @@
 @property (nonatomic, weak) IBOutlet UIView *progressView;
 /* the current progress */
 @property (nonatomic, unsafe_unretained) float currentProgress;
+/* the gmKg flag */
+@property (nonatomic, unsafe_unretained) BOOL gmKg;
 
 @end
 
@@ -251,6 +247,11 @@
 
 /* Represents the pie chart. */
 @property (strong, nonatomic) BNPieChart *pieChart;
+
+/**
+ * called when view will appear. just load foods here.
+ */
+- (void)updateView;
 
 /**
  * update progress in the footer info bar.

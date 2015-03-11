@@ -28,13 +28,13 @@
 - (void)addLabelForLastName;
 - (void)getRGBForIndex:(int)index red:(float *)red green:(float *)green blue:(float *)blue;
 - (float)approxDistFromCenter:(CGRect)rect;
+- (void)moveInImage:(int)index;
 - (void)moveInLabel:(int)index;
+- (void)movePreviousImagessIn;
 - (void)movePreviousLabelsIn;
 - (float)pointAtIndex:(int)index;
 
 @end
-
-
 
 @implementation BNPieChart
 
@@ -43,29 +43,29 @@
 + (BNPieChart *)pieChartSampleWithFrame:(CGRect)frame {
 	BNPieChart *chart = [[[BNPieChart alloc]
                         initWithFrame:frame] autorelease];
-	[chart addSlicePortion:0.1 withName:@"Orange"];
-	[chart addSlicePortion:0.2 withName:@"Fandango"];
-	[chart addSlicePortion:0.1 withName:@"Blue"];
-	[chart addSlicePortion:0.1 withName:@"Cerulean"];
-	[chart addSlicePortion:0.3 withName:@"Green"];
-	[chart addSlicePortion:0.1 withName:@"Yellow"];
-	[chart addSlicePortion:0.1 withName:@"Pink"];
+    [chart addSlicePortion:0.1 withName:@"Orange" andImage:nil];
+	[chart addSlicePortion:0.2 withName:@"Fandango" andImage:nil];
+	[chart addSlicePortion:0.1 withName:@"Blue" andImage:nil];
+	[chart addSlicePortion:0.1 withName:@"Cerulean" andImage:nil];
+	[chart addSlicePortion:0.3 withName:@"Green" andImage:nil];
+	[chart addSlicePortion:0.1 withName:@"Yellow" andImage:nil];
+	[chart addSlicePortion:0.1 withName:@"Pink" andImage:nil];
 	return chart;
 }
 
 - (id)initWithFrame:(CGRect)frame {
-  if (self = [super initWithFrame:frame]) {
-    [self initInstance];
-    self.frame = frame;    
-  }
-  return self;
+    if (self = [super initWithFrame:frame]) {
+        [self initInstance];
+        self.frame = frame;
+    }
+    return self;
 }
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
-  if (self = [super initWithCoder:aDecoder]) {
-    [self initInstance];
-  }
-  return self;
+    if (self = [super initWithCoder:aDecoder]) {
+        [self initInstance];
+    }
+    return self;
 }
 
 - (void)dealloc {
@@ -74,30 +74,38 @@
 	[sliceNames release];
 	[nameLabels release];
 	CFRelease(colorspace);
-  self.colors = nil;
-  [super dealloc];
+    self.colors = nil;
+    [super dealloc];
 }
 
 - (void)setFrame:(CGRect)frame {
-  [super setFrame:frame];
-  
-  fontSize = frame.size.width / 20;
-  if (fontSize < 9) fontSize = 9;
-  
-  // Compute the center & radius of the circle.
-  centerX = frame.size.width / 2.0;
-  centerY = frame.size.height / 2.0;
-  radius = centerX < centerY ? centerX : centerY;
-  radius *= kRadiusPortion;
-  [self setNeedsDisplay];
+    [super setFrame:frame];
+
+    fontSize = frame.size.width / 20;
+    if (fontSize < 9) fontSize = 9;
+
+    // Compute the center & radius of the circle.
+    centerX = frame.size.width / 2.0;
+    centerY = frame.size.height / 2.0;
+    radius = centerX < centerY ? centerX : centerY;
+    radius *= kRadiusPortion;
+    [self setNeedsDisplay];
 }
 
-- (void)addSlicePortion:(float)slicePortion withName:(NSString *)name {
+- (void)addSlicePortion:(float)slicePortion withName:(NSString *)name andImage:(UIImage *)image{
 	[sliceNames addObject:(name ? name : @"")];
-  [slicePortions addObject:nFloat(slicePortion)];
+    [slicePortions addObject:nFloat(slicePortion)];
 	float sumSoFar = [self pointAtIndex:-1];
-	[slicePointsIn01 addObject:nFloat(sumSoFar + slicePortion)];
-	[self addLabelForLastName];
+    [slicePointsIn01 addObject:nFloat(sumSoFar + slicePortion)];
+    
+    if (image != nil) {
+        UIImageView *iview = [[UIImageView alloc] initWithImage:image];
+        [iview setBackgroundColor:[UIColor colorWithWhite:0.9 alpha:0.1]];
+        [images addObject:iview];
+        [self addImages];
+    } else {
+        [self addLabelForLastName];
+    }
 }
 
 - (void)drawRect:(CGRect)rect {
@@ -114,15 +122,15 @@
 	CGContextSetRGBFillColor(context, 1.0, 1.0, 1.0, 1.0);
 	CGContextFillPath(context);
   
-  CGContextSaveGState(context);
-  float shadowSize = radius / 15.0;
-	CGContextSetShadow(context, CGSizeMake(shadowSize, shadowSize), shadowSize);
-  CGContextBeginTransparencyLayer(context, NULL);
-  for (int i = 0; i < [slicePortions count]; ++i) {
-    [self drawSlice:i inContext:context];
-  }
-  CGContextEndTransparencyLayer(context);
-  CGContextRestoreGState(context);
+    CGContextSaveGState(context);
+    float shadowSize = radius / 30.0;
+    CGContextSetShadow(context, CGSizeMake(shadowSize, shadowSize), shadowSize);
+    CGContextBeginTransparencyLayer(context, NULL);
+    for (int i = 0; i < [slicePortions count]; ++i) {
+        [self drawSlice:i inContext:context];
+    }
+    CGContextEndTransparencyLayer(context);
+    CGContextRestoreGState(context);
 	
 	// Draw the glare.
 	CGContextBeginPath(context);
@@ -149,15 +157,16 @@
 #pragma mark private methods
 
 - (void)initInstance {
-  // Initialization code
-  self.backgroundColor = [UIColor clearColor];
-  self.opaque = NO;
-  self.slicePortions = [NSMutableArray new];
-  slicePointsIn01 = [[NSMutableArray alloc]
+    // Initialization code
+    self.backgroundColor = [UIColor clearColor];
+    self.opaque = NO;
+    self.slicePortions = [NSMutableArray new];
+    slicePointsIn01 = [[NSMutableArray alloc]
                      initWithObjects:nFloat(0.0), nil];
-  sliceNames = [NSMutableArray new];
-  nameLabels = [NSMutableArray new];
-  colorspace = CGColorSpaceCreateDeviceRGB();    
+    sliceNames = [NSMutableArray new];
+    nameLabels = [NSMutableArray new];
+    images = [NSMutableArray new];
+    colorspace = CGColorSpaceCreateDeviceRGB();
 }
 
 - (void)drawSlice:(int)index inContext:(CGContextRef)context {
@@ -215,13 +224,13 @@
 }
 
 - (void)addLabelForLastName {	
-  if ([[sliceNames lastObject] length] == 0) {
+    if ([[sliceNames lastObject] length] == 0) {
 		[nameLabels addObject:[NSNull null]];
 		return;
 	}
 		
 	NSString* text = [sliceNames lastObject];
-	CGSize textSize = [text sizeWithFont:[UIFont boldSystemFontOfSize:fontSize]];
+	CGSize textSize = [text sizeWithAttributes:@{ NSFontAttributeName : [UIFont boldSystemFontOfSize:fontSize] }];
 
 	// Find the angle of the relevant corners.
 	float cornerDist[2] = {
@@ -262,10 +271,10 @@
 	label.text = text;
 	CGFloat red, green, blue;
 	[self getRGBForIndex:index red:&red green:&green blue:&blue];
-  float darkenFactor = 0.87;  // Closer to 0 = closer to black.
-  red *= darkenFactor;
-  green *= darkenFactor;
-  blue *= darkenFactor;
+    float darkenFactor = 0.87;  // Closer to 0 = closer to black.
+    red *= darkenFactor;
+    green *= darkenFactor;
+    blue *= darkenFactor;
 	label.textColor = [UIColor colorWithRed:red green:green blue:blue alpha:1.0];
 	label.backgroundColor = [UIColor clearColor];
 	[nameLabels addObject:label];
@@ -280,6 +289,58 @@
 	} else {
 		[self moveInLabel:index];
 	}
+}
+- (void)addImages {
+    NSInteger size = 17;
+    
+    // Find the angle of the relevant corners.
+    float cornerDist[2] = {
+        (self.frame.size.width - size) / 2,
+        (self.frame.size.height - size) / 2};
+    float cornerAngles[4];
+    cornerAngles[0] = atan2(cornerDist[1], cornerDist[0]);
+    cornerAngles[1] = M_PI - cornerAngles[0];
+    cornerAngles[2] = cornerAngles[0] + M_PI;
+    cornerAngles[3] = cornerAngles[1] + M_PI;
+    
+    // Find out which wall the center ray will hit.
+    int index = [slicePortions count] - 1;
+    float rayAngle = ([self pointAtIndex:index] +
+                      [self pointAtIndex:(index + 1)]) * M_PI;
+    int i;
+    for (i = 0; i < 4 && rayAngle > cornerAngles[i]; ++i);
+    i = i % 4;  // i might end up as 4 out of the loop
+    
+    // Find the hit point.  This is the point where the ray hits the frame, inset
+    // by half of textSize.  It's the farthest away we can put the center of the
+    // text while keeping it within frame and along the ray central to this slice.
+    float hitPoint[2];
+    float dist = (i % 2 == 0 ? cornerDist[0] : cornerDist[1]);
+    if (i > 1) dist *= -1;
+    hitPoint[i % 2] = dist;
+    float delta[2] = {cos(rayAngle), sin(rayAngle)};
+    float t = dist / delta[i % 2];
+    hitPoint[1 - (i % 2)] = t * delta[1 - (i % 2)];
+    
+    int hitOriginX = hitPoint[0] + centerX - size / 2;
+    int hitOriginY = hitPoint[1] + centerY - size / 2;
+    
+    UIImageView *iview = [images lastObject];
+    iview.frame = CGRectMake(hitOriginX, hitOriginY, size, size);
+    [self addSubview:iview];
+    
+    // Reposition the labels and/or resize the radius as needed to fit.
+    float iviewDist = [self approxDistFromCenter:iview.frame];
+    if (iviewDist < radius / kRadiusPortion) {
+        radius = iviewDist * kRadiusPortion;
+        [self movePreviousImagessIn];
+    } else {
+        [self moveInImage:index];
+    }
+    
+    if ([[slicePortions objectAtIndex:index] floatValue] <= 0) {
+        [iview setHidden:YES];
+    }
 }
 
 - (void)getRGBForIndex:(int)index red:(float *)red green:(float *)green blue:(float *)blue {
@@ -316,6 +377,20 @@ float dist(float x1, float y1, float x2, float y2) {
 	return distance;
 }
 
+
+- (void)moveInImage:(int)index {
+    float outerRadius = radius / kRadiusPortion;
+    UIImageView* iview = [images objectAtIndex:index];
+    float distance = [self approxDistFromCenter:iview.frame];
+    float excessDist = distance - outerRadius;
+    if (excessDist < 5.0) return;
+    float rayAngle = ([self pointAtIndex:index] +
+                      [self pointAtIndex:(index + 1)]) * M_PI;
+    iview.frame = CGRectOffset(iview.frame,
+                               (int)(-cos(rayAngle) * excessDist),
+                               (int)(-sin(rayAngle) * excessDist));	
+}
+
 - (void)moveInLabel:(int)index {
 	float outerRadius = radius / kRadiusPortion;
 	UILabel* label = [nameLabels objectAtIndex:index];
@@ -327,6 +402,12 @@ float dist(float x1, float y1, float x2, float y2) {
 	label.frame = CGRectOffset(label.frame,
 							   (int)(-cos(rayAngle) * excessDist),
 							   (int)(-sin(rayAngle) * excessDist));	
+}
+
+- (void)movePreviousImagessIn {
+    for (int index = 0; index < [slicePortions count] - 1; ++index) {
+        [self moveInImage:index];
+    }
 }
 
 - (void)movePreviousLabelsIn {
@@ -343,7 +424,9 @@ float dist(float x1, float y1, float x2, float y2) {
 // Whether to show the labels
 - (void)showLabels:(BOOL)show {
     for (int i = 0; i < nameLabels.count; i++) {
-        [nameLabels[i] setHidden:!show];
+        // [nameLabels[i] setHidden:!show];
+        [images[i] setHidden:show];
     }
 }
+
 @end

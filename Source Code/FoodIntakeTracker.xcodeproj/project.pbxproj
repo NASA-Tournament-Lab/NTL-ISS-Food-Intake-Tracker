@@ -11,7 +11,6 @@
 		4B044588196A2C6B005A7401 /* btn-water.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B044586196A2C6B005A7401 /* btn-water.png */; };
 		4B0E784619944A8F00D8360B /* PGManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E784519944A8F00D8360B /* PGManagedObject.m */; };
 		4B26DC4A18FE3BAC001BE1B1 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4B26DC4918FE3BAC001BE1B1 /* Settings.bundle */; };
-		4B2C767F19908CA9009F8FB3 /* libZXingWidget.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D9FEAAF17C01569001F92B5 /* libZXingWidget.a */; };
 		4B2C76D919908EA0009F8FB3 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B2C76B519908EA0009F8FB3 /* libcrypto.a */; };
 		4B2C76DA19908EA0009F8FB3 /* libpq.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B2C76B619908EA0009F8FB3 /* libpq.a */; };
 		4B2C76DB19908EA0009F8FB3 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B2C76B719908EA0009F8FB3 /* libssl.a */; };
@@ -38,6 +37,9 @@
 		4BE31E2D190ED5ED00402D94 /* btn-change.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BE31E2C190ED5ED00402D94 /* btn-change.png */; };
 		4BE31E39190EF4B600402D94 /* ISSFoodIntakeTracker.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4BE31E36190EF4B600402D94 /* ISSFoodIntakeTracker.xcdatamodeld */; };
 		4BE31E541911EA2A00402D94 /* ISSFoodIntakeTracker.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4BE31E531911EA2A00402D94 /* ISSFoodIntakeTracker.xcmappingmodel */; };
+		4BE639761AAF620C0019B988 /* icon_protein_pie.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BE639731AAF620C0019B988 /* icon_protein_pie.png */; };
+		4BE639771AAF620C0019B988 /* icon_fat_pie.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BE639741AAF620C0019B988 /* icon_fat_pie.png */; };
+		4BE639781AAF620C0019B988 /* icon_carb_pie.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BE639751AAF620C0019B988 /* icon_carb_pie.png */; };
 		4D0F2DF117BD2D0600B86759 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DF167F517BD216000D3633F /* CoreData.framework */; };
 		4D0F2DF217BD2D0600B86759 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7C40724175FFA1F00C3649E /* UIKit.framework */; };
 		4D0F2DF317BD2D0600B86759 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7C40726175FFA1F00C3649E /* Foundation.framework */; };
@@ -433,27 +435,6 @@
 			remoteGlobalIDString = E7C40720175FFA1F00C3649E;
 			remoteInfo = FoodIntakeTracker;
 		};
-		4D9FEAAE17C01569001F92B5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4D9FEAA917C01569001F92B5 /* ZXingWidget.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D2AAC07E0554694100DB518D;
-			remoteInfo = ZXingWidget;
-		};
-		4D9FEAB017C01569001F92B5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4D9FEAA917C01569001F92B5 /* ZXingWidget.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1D60398D13DF7CAD006F4B51;
-			remoteInfo = ZXingTests;
-		};
-		4D9FEAB217C01576001F92B5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4D9FEAA917C01569001F92B5 /* ZXingWidget.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = D2AAC07D0554694100DB518D;
-			remoteInfo = ZXingWidget;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -589,6 +570,9 @@
 		4BE31E37190EF4B600402D94 /* ISSFoodIntakeTracker 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ISSFoodIntakeTracker 2.xcdatamodel"; sourceTree = "<group>"; };
 		4BE31E38190EF4B600402D94 /* ISSFoodIntakeTracker.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ISSFoodIntakeTracker.xcdatamodel; sourceTree = "<group>"; };
 		4BE31E531911EA2A00402D94 /* ISSFoodIntakeTracker.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = ISSFoodIntakeTracker.xcmappingmodel; sourceTree = "<group>"; };
+		4BE639731AAF620C0019B988 /* icon_protein_pie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_protein_pie.png; sourceTree = "<group>"; };
+		4BE639741AAF620C0019B988 /* icon_fat_pie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_fat_pie.png; sourceTree = "<group>"; };
+		4BE639751AAF620C0019B988 /* icon_carb_pie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_carb_pie.png; sourceTree = "<group>"; };
 		4D0F2D7D17BD23A000B86759 /* FoodIntakeTrackerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodIntakeTrackerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D0F2DBB17BD255900B86759 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		4D4884B117C3CC7B006851A9 /* CustomTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTableViewController.h; sourceTree = "<group>"; };
@@ -867,7 +851,6 @@
 		4D9FEA8117C002FF001F92B5 /* Tesseract.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Tesseract.mm; sourceTree = "<group>"; };
 		4D9FEA8517C008B1001F92B5 /* tessdata */ = {isa = PBXFileReference; lastKnownFileType = folder; path = tessdata; sourceTree = "<group>"; };
 		4D9FEAA717C0154B001F92B5 /* libZXingWidget.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libZXingWidget.a; path = "library/zxing/iphone/ZXingWidget/build/Release-iphoneos/libZXingWidget.a"; sourceTree = "<group>"; };
-		4D9FEAA917C01569001F92B5 /* ZXingWidget.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ZXingWidget.xcodeproj; path = zxing/iphone/ZXingWidget/ZXingWidget.xcodeproj; sourceTree = "<group>"; };
 		4D9FEAB417C015BC001F92B5 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		4D9FEAB617C015C8001F92B5 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		4D9FEAB817C015DD001F92B5 /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
@@ -1210,7 +1193,6 @@
 				4B2C774119908FC7009F8FB3 /* libtesseract_all.a in Frameworks */,
 				4B2C774019908FC0009F8FB3 /* liblept.a in Frameworks */,
 				4B2C773F19908FA9009F8FB3 /* Security.framework in Frameworks */,
-				4B2C767F19908CA9009F8FB3 /* libZXingWidget.a in Frameworks */,
 				4D9FEABA17C015DE001F92B5 /* AddressBook.framework in Frameworks */,
 				4D9FEABB17C015DE001F92B5 /* AddressBookUI.framework in Frameworks */,
 				4D9FEAB717C015C8001F92B5 /* CoreMedia.framework in Frameworks */,
@@ -1724,15 +1706,6 @@
 			path = lib;
 			sourceTree = "<group>";
 		};
-		4D9FEAAA17C01569001F92B5 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				4D9FEAAF17C01569001F92B5 /* libZXingWidget.a */,
-				4D9FEAB117C01569001F92B5 /* ZXingTests.octest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		4DAB06BA17C05ADD009F8E91 /* LanguageModels */ = {
 			isa = PBXGroup;
 			children = (
@@ -1748,7 +1721,6 @@
 			isa = PBXGroup;
 			children = (
 				4B2C76B419908E90009F8FB3 /* Postgresql */,
-				4D9FEAA917C01569001F92B5 /* ZXingWidget.xcodeproj */,
 				4D64992C17CD13DC00C15B72 /* BNPieChart */,
 				4D9FE9EA17C002FF001F92B5 /* Tesseract */,
 				4DF1676B17BD20D500D3633F /* cCSVParse */,
@@ -1995,9 +1967,9 @@
 		E7C4074917600F1700C3649E /* images */ = {
 			isa = PBXGroup;
 			children = (
-				4B044585196A2C6B005A7401 /* btn-water-active.png */,
-				4B044586196A2C6B005A7401 /* btn-water.png */,
-				4BA9B52319688E2D006B3689 /* defaultUserIcon.png */,
+				4DAB06AB17C04317009F8E91 /* bg_carb.png */,
+				4DAB06AC17C04317009F8E91 /* bg_fat.png */,
+				4DAB06AD17C04317009F8E91 /* bg_protein.png */,
 				E78D4DBA17754A4C0026D29D /* bg-blue-panel.png */,
 				E72BD14D176AD29300B459FC /* bg-calendar-vertical.png */,
 				E70A705B176A196400712B47 /* bg-calendar.png */,
@@ -2041,10 +2013,6 @@
 				E70A700A1768B17A00712B47 /* bg-time-picker.png */,
 				E75A69FE176B560F003062B3 /* bg-voice-search.png */,
 				E7D664B017804B320092C03F /* bg-white-cover.png */,
-				4DAB06AB17C04317009F8E91 /* bg_carb.png */,
-				4DAB06AC17C04317009F8E91 /* bg_fat.png */,
-				4DAB06AD17C04317009F8E91 /* bg_protein.png */,
-				E75A69E2176AF331003062B3 /* btn+.png */,
 				E75A69E1176AF331003062B3 /* btn-.png */,
 				E75A69DA176AE998003062B3 /* btn-add-active.png */,
 				E70A7014176944A400712B47 /* btn-add.png */,
@@ -2097,8 +2065,35 @@
 				E78D4DB8177549110026D29D /* btn-take-photo-disable.png */,
 				E78D4DAE177542030026D29D /* btn-take-photo-enable.png */,
 				E70A701A176944A500712B47 /* btn-voice.png */,
+				4B044585196A2C6B005A7401 /* btn-water-active.png */,
+				4B044586196A2C6B005A7401 /* btn-water.png */,
+				E75A69E2176AF331003062B3 /* btn+.png */,
+				4BA9B52319688E2D006B3689 /* defaultUserIcon.png */,
 				E722C0EF176B65B000FD5CB8 /* empty.png */,
 				E764ECAA1788708700E7A98E /* foods */,
+				4DAA8A1C17D833BD005FFF93 /* icon_all_food.png */,
+				4DAA8A2217D833BD005FFF93 /* icon_breakfast.png */,
+				4BE639751AAF620C0019B988 /* icon_carb_pie.png */,
+				4DAB06AE17C04317009F8E91 /* icon_carb.png */,
+				4DAA8A2517D833BD005FFF93 /* icon_csa.png */,
+				4DAA8A2117D833BD005FFF93 /* icon_dessert.png */,
+				4DAA8A1F17D833BD005FFF93 /* icon_drink.png */,
+				4DAA8A2617D833BD005FFF93 /* icon_esa.png */,
+				4BE639741AAF620C0019B988 /* icon_fat_pie.png */,
+				4DAB06AF17C04317009F8E91 /* icon_fat.png */,
+				4DAA8A2817D833BD005FFF93 /* icon_fav_all.png */,
+				4DAA8A2A17D833BD005FFF93 /* icon_fav_month.png */,
+				4DAA8A2917D833BD005FFF93 /* icon_fav_week.png */,
+				4DAA8A1D17D833BD005FFF93 /* icon_fruit.png */,
+				4DAA8A1B17D833BD005FFF93 /* icon_help_list.png */,
+				4DAA8A2717D833BD005FFF93 /* icon_jaxa.png */,
+				4DAA8A2017D833BD005FFF93 /* icon_meat.png */,
+				4DAA8A2317D833BD005FFF93 /* icon_nasa.png */,
+				4BE639731AAF620C0019B988 /* icon_protein_pie.png */,
+				4DAB06B017C04317009F8E91 /* icon_protein.png */,
+				4DAA8A2417D833BD005FFF93 /* icon_russian.png */,
+				4DAA8A1E17D833BD005FFF93 /* icon_vegetable.png */,
+				4DAA8A2B17D833BD005FFF93 /* icon_vitamins.png */,
 				E70A6FF617684E0500712B47 /* icon-arrow.png */,
 				E76D4FFA17773117000EFFBB /* icon-barcode-a.png */,
 				E76D4FFB17773117000EFFBB /* icon-barcode-b.png */,
@@ -2137,26 +2132,6 @@
 				E70A70481769C4E900712B47 /* icon-sodium.png */,
 				E70A70101769385A00712B47 /* icon-summary-logo.png */,
 				E70A6FE31768211C00712B47 /* icon-tab-active.png */,
-				4DAA8A1C17D833BD005FFF93 /* icon_all_food.png */,
-				4DAA8A2217D833BD005FFF93 /* icon_breakfast.png */,
-				4DAB06AE17C04317009F8E91 /* icon_carb.png */,
-				4DAA8A2517D833BD005FFF93 /* icon_csa.png */,
-				4DAA8A2117D833BD005FFF93 /* icon_dessert.png */,
-				4DAA8A1F17D833BD005FFF93 /* icon_drink.png */,
-				4DAA8A2617D833BD005FFF93 /* icon_esa.png */,
-				4DAB06AF17C04317009F8E91 /* icon_fat.png */,
-				4DAA8A2817D833BD005FFF93 /* icon_fav_all.png */,
-				4DAA8A2A17D833BD005FFF93 /* icon_fav_month.png */,
-				4DAA8A2917D833BD005FFF93 /* icon_fav_week.png */,
-				4DAA8A1D17D833BD005FFF93 /* icon_fruit.png */,
-				4DAA8A1B17D833BD005FFF93 /* icon_help_list.png */,
-				4DAA8A2717D833BD005FFF93 /* icon_jaxa.png */,
-				4DAA8A2017D833BD005FFF93 /* icon_meat.png */,
-				4DAA8A2317D833BD005FFF93 /* icon_nasa.png */,
-				4DAB06B017C04317009F8E91 /* icon_protein.png */,
-				4DAA8A2417D833BD005FFF93 /* icon_russian.png */,
-				4DAA8A1E17D833BD005FFF93 /* icon_vegetable.png */,
-				4DAA8A2B17D833BD005FFF93 /* icon_vitamins.png */,
 				E70A6FCF17680CA300712B47 /* img-Help-Detail.png */,
 				E78D4DBE177552C60026D29D /* item-orange.png */,
 				E7C4074A17600F1700C3649E /* logo.png */,
@@ -2272,7 +2247,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				4D9FEAB317C01576001F92B5 /* PBXTargetDependency */,
 			);
 			name = FoodIntakeTracker;
 			productName = FoodIntakeTracker;
@@ -2285,8 +2259,8 @@
 		E7C40719175FFA1F00C3649E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastTestingUpgradeCheck = 0510;
-				LastUpgradeCheck = 0460;
+				LastTestingUpgradeCheck = 0610;
+				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = topcoder;
 			};
 			buildConfigurationList = E7C4071C175FFA1F00C3649E /* Build configuration list for PBXProject "FoodIntakeTracker" */;
@@ -2299,12 +2273,6 @@
 			mainGroup = E7C40718175FFA1F00C3649E;
 			productRefGroup = E7C40722175FFA1F00C3649E /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 4D9FEAAA17C01569001F92B5 /* Products */;
-					ProjectRef = 4D9FEAA917C01569001F92B5 /* ZXingWidget.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				E7C40720175FFA1F00C3649E /* FoodIntakeTracker */,
@@ -2312,23 +2280,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		4D9FEAAF17C01569001F92B5 /* libZXingWidget.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libZXingWidget.a;
-			remoteRef = 4D9FEAAE17C01569001F92B5 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		4D9FEAB117C01569001F92B5 /* ZXingTests.octest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = ZXingTests.octest;
-			remoteRef = 4D9FEAB017C01569001F92B5 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		4D0F2D7A17BD23A000B86759 /* Resources */ = {
@@ -2368,6 +2319,7 @@
 				E70A6FD017680CA300712B47 /* img-Help-Detail.png in Resources */,
 				E70A6FD41768115700712B47 /* bg-header.png in Resources */,
 				E70A6FD51768115700712B47 /* bg-subHeader.png in Resources */,
+				4BE639771AAF620C0019B988 /* icon_fat_pie.png in Resources */,
 				E70A6FD61768115700712B47 /* bg-tab.png in Resources */,
 				E70A6FE017681F8100712B47 /* icon-consumption.png in Resources */,
 				E70A6FE217681F8100712B47 /* icon-logout.png in Resources */,
@@ -2412,6 +2364,7 @@
 				E70A7054176A06A100712B47 /* btn-blue3.png in Resources */,
 				E70A7056176A145800712B47 /* btn-non-nutrient.png in Resources */,
 				E70A705C176A196400712B47 /* bg-calendar.png in Resources */,
+				4BE639781AAF620C0019B988 /* icon_carb_pie.png in Resources */,
 				E70A705F176A1A4800712B47 /* btn-next-month.png in Resources */,
 				E70A7060176A1A4800712B47 /* btn-prev-month.png in Resources */,
 				E70A7062176A1B2400712B47 /* btn-blue4.png in Resources */,
@@ -2563,6 +2516,7 @@
 				4D98574D17DDACBD008B868C /* 1-4-3-Scan-Barcode.html in Resources */,
 				4D98574E17DDACBD008B868C /* 1-4-4-Capture-Food-Label.html in Resources */,
 				4D98574F17DDACBD008B868C /* 1-4-5-Snap-Photo.html in Resources */,
+				4BE639761AAF620C0019B988 /* icon_protein_pie.png in Resources */,
 				4D98575017DDACBD008B868C /* 1-4-6-Manually-Enter-Food.html in Resources */,
 				4B044587196A2C6B005A7401 /* btn-water-active.png in Resources */,
 				4D98575117DDACBD008B868C /* 1-5-1-View-Consumption.html in Resources */,
@@ -2773,11 +2727,6 @@
 			target = E7C40720175FFA1F00C3649E /* FoodIntakeTracker */;
 			targetProxy = 4D0F2DBF17BD265B00B86759 /* PBXContainerItemProxy */;
 		};
-		4D9FEAB317C01576001F92B5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = ZXingWidget;
-			targetProxy = 4D9FEAB217C01576001F92B5 /* PBXContainerItemProxy */;
-		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -2877,10 +2826,10 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MOMC_NO_INVERSE_RELATIONSHIP_WARNINGS = YES;
 				MOMC_SUPPRESS_INVERSE_TRANSIENT_ERROR = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 			};
@@ -2904,9 +2853,10 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MOMC_NO_INVERSE_RELATIONSHIP_WARNINGS = YES;
 				MOMC_SUPPRESS_INVERSE_TRANSIENT_ERROR = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
@@ -2917,7 +2867,6 @@
 		E7C40745175FFA1F00C3649E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2934,7 +2883,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/library/Samba\"",
 					"\"$(SRCROOT)/library/Tesseract/lib\"",
 					"$(PROJECT_DIR)/library/Postgresql",
 					"$(PROJECT_DIR)/library/Tesseract/lib",
@@ -2949,7 +2897,6 @@
 		E7C40746175FFA1F00C3649E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2966,7 +2913,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/library/Samba\"",
 					"\"$(SRCROOT)/library/Tesseract/lib\"",
 					"$(PROJECT_DIR)/library/Postgresql",
 					"$(PROJECT_DIR)/library/Tesseract/lib",

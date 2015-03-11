@@ -35,7 +35,7 @@
  * @version 1.1
  * @since 1.0
  */
-@interface TakeBaseViewController : UIViewController{
+@interface TakeBaseViewController : UIViewController<UITextFieldDelegate> {
     /* the update progress timer */
     NSTimer *updateProcessTimer;
     /* the photo image view */

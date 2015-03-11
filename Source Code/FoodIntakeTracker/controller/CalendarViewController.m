@@ -191,8 +191,9 @@
     CGContextSetRGBFillColor(context, 0.8, 0.8, 0.8, 1);
     // drawing prev month days
     for (NSString *str in prevMonth) {
-        CGSize size = [str sizeWithFont:font];
-        [str drawAtPoint:CGPointMake(x * 48 - size.width / 2 + 23, y * 40 - size.height / 2 + 20) withFont:font];
+        CGSize size = [str sizeWithAttributes:@{NSFontAttributeName : font}];
+        [str drawAtPoint:CGPointMake(x * 48 - size.width / 2 + 23, y * 40 - size.height / 2 + 20)
+          withAttributes:@{NSFontAttributeName : font}];
         x = (x + 1);
         if (x == 7) {
             y++;
@@ -233,13 +234,13 @@
         
         // check is selcted or not.
         if (isCurrentMonth && posX == x && posY == y) {
-            CGSize size = [str sizeWithFont:boldFont];
+            CGSize size = [str sizeWithAttributes:@{NSFontAttributeName : boldFont}];
             [str drawAtPoint:CGPointMake(x * 48 - size.width / 2 + 23, y * 40 - size.height / 2 + 20)
-                    withFont:boldFont];
+              withAttributes:@{NSFontAttributeName : boldFont}];
         } else {
-            CGSize size = [str sizeWithFont:font];
+            CGSize size = [str sizeWithAttributes:@{NSFontAttributeName : boldFont}];
             [str drawAtPoint:CGPointMake(x * 48 - size.width / 2 + 23, y * 40 - size.height / 2 + 20)
-                    withFont:font];
+              withAttributes:@{NSFontAttributeName : boldFont}];
         }
         x = (x + 1);
         if (x == 7) {
@@ -251,9 +252,9 @@
     CGContextSetRGBFillColor(context, 0.8, 0.8, 0.8, 1);
     // drawing next month days
     for (NSString *str in nextMonth) {
-        CGSize size = [str sizeWithFont:font];
+        CGSize size = [str sizeWithAttributes:@{NSFontAttributeName : font}];
         [str drawAtPoint:CGPointMake(x * 48 - size.width / 2 + 23, y * 40 - size.height / 2 + 20)
-                withFont:font];
+          withAttributes:@{NSFontAttributeName : font}];
         x = (x + 1);
         if (x == 7) {
             y++;
@@ -276,6 +277,8 @@
  */
 @implementation CalendarViewController
 
+@synthesize selectedDate = _selectedDate;
+
 /**
  * initilize some values and actions after view loaded.
  */
@@ -285,6 +288,9 @@
     self.monthLabel.font = [UIFont fontWithName:@"Bebas" size:20];
     
     self.listView.userInteractionEnabled = YES;
+    self.listView.selectedDate = self.selectedDate;
+    [self setMonth:self.selectedDate];
+    
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tap:)];
     [self.listView addGestureRecognizer:tap];
     // Do any additional setup after loading the view.

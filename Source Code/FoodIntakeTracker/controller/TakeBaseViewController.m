@@ -66,6 +66,9 @@
     [self.btnResults setEnabled:NO];
     [self.btnAdd setHidden:YES];
     [[NSNotificationCenter defaultCenter] postNotificationName:AutoLogoutRenewEvent object:nil];
+    
+    self.txtFoodName.delegate = self;
+    self.txtFoodComment.delegate = self;
 }
 /**
  * release resource by setting nil value.
@@ -149,7 +152,7 @@
         lbl.font = [UIFont fontWithName:@"HelveticaNeue-Regular" size:15];
         lbl.text = item.name;
         lbl.textColor = [UIColor colorWithRed:0.27 green:0.27 blue:0.27 alpha:1];
-        lbl.lineBreakMode = UILineBreakModeClip;
+        lbl.lineBreakMode = NSLineBreakByClipping;
         [v addSubview:lbl];
         
         UIImageView *imgCover = [[UIImageView alloc] initWithFrame:CGRectMake(70, 111, 50, 41)];
@@ -241,6 +244,13 @@
 
         if ([Helper displayError:error]) return;
         [consumptionViewController.foodConsumptionRecords addObject:record];
+        
+        [consumptionViewController.foodTableView reloadData];
+        
+        NSInteger count = consumptionViewController.foodConsumptionRecords.count;
+        NSIndexPath* ipath = [NSIndexPath indexPathForRow:count - 1 inSection:0];
+        [consumptionViewController.foodTableView scrollToRowAtIndexPath:ipath
+                                                       atScrollPosition:UITableViewScrollPositionBottom animated:YES];
     }
     
     if (selectFoods.count > 0) {
@@ -335,4 +345,10 @@
         self.customTabBarController.activeTab = 0;
     }
 }
+
+-(BOOL) textFieldShouldReturn:(UITextField *)textField{
+    [textField resignFirstResponder];
+    return YES;
+}
+
 @end
