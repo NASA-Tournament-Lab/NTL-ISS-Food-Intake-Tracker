@@ -47,7 +47,7 @@
  * @author subchap
  * @version 1.0
  */
-@interface BaseCustomTableView : UIViewController<UITableViewDataSource, UITableViewDelegate>{
+@interface BaseCustomTableView : UIViewController {
     NSString *selectValue;
 }
 
@@ -67,7 +67,7 @@
  * @author subchap
  * @version 1.0
  */
-@interface SuggestionTableView : BaseCustomTableView
+@interface SuggestionTableView : BaseCustomTableView<UITableViewDataSource, UITableViewDelegate>
 
 /* the content string format*/
 @property (nonatomic, strong) NSString *stringFormat;

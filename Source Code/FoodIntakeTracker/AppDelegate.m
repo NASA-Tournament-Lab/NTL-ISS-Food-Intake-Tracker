@@ -161,7 +161,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         self.summaryGenerationFrequency = [self.configuration objectForKey:@"SummaryGenerationFrequency"];
         
         if (!changed) {
-            [self performSelector:@selector(initialLoad) withObject:nil afterDelay:0.1];
+            [self performSelector:@selector(initialLoad) withObject:nil afterDelay:0.5];
         }
         
         // Start timers
@@ -176,7 +176,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doSyncUpdate:)
                                                      name:@"DataSyncUpdateInterval" object:nil];
         
-        [self performSelector:@selector(doSyncUpdate:) withObject:nil afterDelay:0.3];
+        [self performSelector:@selector(doSyncUpdate:) withObject:nil afterDelay:1.0];
 
         return YES;
     } else {

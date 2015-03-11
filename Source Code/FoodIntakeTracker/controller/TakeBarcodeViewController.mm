@@ -244,7 +244,8 @@
     [self.lblTakeButtonTitle setTextColor:[UIColor colorWithRed:0.2 green:0.43 blue:0.62 alpha:1]];
     [self.btnResults setEnabled:YES];
     
-    [self dismissModalViewControllerAnimated:NO];
+    //[self dismissModalViewControllerAnimated:NO];
+    [self dismissViewControllerAnimated:NO completion:nil];
     [self.searchBar resignFirstResponder];
 }
 

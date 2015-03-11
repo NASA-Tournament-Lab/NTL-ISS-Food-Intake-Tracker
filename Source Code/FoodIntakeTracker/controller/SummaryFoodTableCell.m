@@ -172,7 +172,7 @@
  */
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated{
     
-    CGSize size = [self.lblName.text sizeWithFont:self.lblName.font];
+    CGSize size = [self.lblName.text sizeWithAttributes:@{ NSFontAttributeName : self.lblName.font}];
     if (size.width > self.lblName.frame.size.width) {
         size.width = self.lblName.frame.size.width;
     }

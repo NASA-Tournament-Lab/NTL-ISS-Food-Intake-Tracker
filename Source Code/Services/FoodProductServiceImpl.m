@@ -411,7 +411,8 @@
         if(error) {
             *error = [[NSError alloc] initWithDomain:@"FoodProductService"
                                                 code:EntityNotFoundErrorCode
-                                            userInfo:@{NSLocalizedDescriptionKey: @"No such food product."}];
+                                            userInfo:@{NSLocalizedDescriptionKey:[NSString
+                                                                                  stringWithFormat:@"No product for barcode\n'%@'", barcode]}];
         }
         [LoggingHelper logMethodExit:methodName returnValue:nil];
         return nil;

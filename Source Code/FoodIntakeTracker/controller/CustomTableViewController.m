@@ -28,6 +28,7 @@
  * @author subchap
  * @version 1.0
  */
+
 @implementation BaseCustomTableView
 
 @end

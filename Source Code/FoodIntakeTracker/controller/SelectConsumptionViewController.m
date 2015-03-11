@@ -1248,7 +1248,7 @@
             lbl.textColor = [UIColor colorWithRed:0.27 green:0.27 blue:0.27 alpha:1];
             lbl.text = [foodKeys objectAtIndex:section];
             lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:16];
-            lbl.textAlignment = UITextAlignmentCenter;
+            lbl.textAlignment = NSTextAlignmentCenter;
             [v addSubview:lbl];
             img.autoresizingMask = UIViewAutoresizingFlexibleWidth;
             lbl.autoresizingMask = UIViewAutoresizingFlexibleWidth;

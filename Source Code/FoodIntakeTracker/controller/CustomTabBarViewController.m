@@ -153,7 +153,7 @@
     self.imgData.image = [UIImage imageNamed:@"icon-data.png"];
     self.imgProfile.image = [UIImage imageNamed:@"icon-profile.png"];
     
-    [consumptionController viewWillAppear:YES];
+    [consumptionController updateView];
 }
 
 /**

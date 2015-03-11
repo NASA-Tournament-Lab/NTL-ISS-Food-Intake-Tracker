@@ -160,8 +160,9 @@
                 }
                 
                 [self endUndoActions];
-                [[self managedObjectContext] save:&e];
-                CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+                if (![self.managedObjectContext save:&e]) {
+                    CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+                }
                 
                 // Update progress
                 currentProgress += progressDelta/count;
