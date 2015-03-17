@@ -177,6 +177,8 @@
 @property (weak, nonatomic) IBOutlet CustomProgressView *carbProgress;
 /* fat progress in footer */
 @property (weak, nonatomic) IBOutlet CustomProgressView *fatProgress;
+/* current protein value */
+@property (weak, nonatomic) IBOutlet UILabel *curProteinValue;
 /* protein progress view in footer */
 @property (weak, nonatomic) IBOutlet UIView *proteinProgessView;
 /* carb progress view in footer */

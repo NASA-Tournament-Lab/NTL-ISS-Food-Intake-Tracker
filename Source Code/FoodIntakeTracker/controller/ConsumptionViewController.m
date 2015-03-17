@@ -51,7 +51,7 @@
 #define CARB_CALORIES_FACTOR 4.0
 #define FAT_CALORIES_FACTOR 9.0
 
-#define MAX_GM_KG 2.5f
+#define MAX_GM_KG 2.2f
 #define PROGRESSBAR_WIDTH 100
 
 #define DOCUMENTS_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
@@ -571,6 +571,7 @@
     
     CGFloat weight = appDelegate.loggedInUser.weight != nil ? appDelegate.loggedInUser.weight.floatValue : 70.0f;
     self.proteinProgess.currentProgress = (proteinTotal / weight) / MAX_GM_KG;
+    self.curProteinValue.text = [NSString stringWithFormat:@"Current: %3.2f gm/kg", (proteinTotal / weight)];
     
     self.proteinProgess.lblCurrent.text = [NSString stringWithFormat:@"Protein gm/kg BW"];
     

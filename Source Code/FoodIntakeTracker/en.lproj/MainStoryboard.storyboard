@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="6254" systemVersion="13F34" targetRuntime="iOS.CocoaTouch.iPad" variant="6xAndEarlier" propertyAccessControl="none" initialViewController="ciN-Rv-ZGq">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="6751" systemVersion="13F34" targetRuntime="iOS.CocoaTouch.iPad" variant="6xAndEarlier" propertyAccessControl="none" initialViewController="ciN-Rv-ZGq">
     <dependencies>
         <deployment identifier="iOS"/>
         <development version="4600" identifier="xcode"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
     </dependencies>
     <scenes>
         <!--Navigation Controller-->
@@ -2062,6 +2062,13 @@ Sun,  21st April 2014</string>
                                                             <outlet property="progressView" destination="eJY-j9-CIQ" id="lSa-6i-3Um"/>
                                                         </connections>
                                                     </view>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Current: 2.2 gm/Kg" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="6gT-Nq-bpD">
+                                                        <rect key="frame" x="620" y="50" width="120" height="20"/>
+                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                                        <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="12"/>
+                                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             </view>
@@ -2381,6 +2388,7 @@ Sun,  21st April 2014</string>
                         <outlet property="carbPercentageLabel" destination="3vN-6n-Czj" id="RQH-bp-73K"/>
                         <outlet property="carbProgress" destination="Mej-OO-lNO" id="iNC-7y-f8f"/>
                         <outlet property="consumptionCopyPopup" destination="Vpy-Wp-MBq" id="KBm-dk-96L"/>
+                        <outlet property="curProteinValue" destination="6gT-Nq-bpD" id="lYn-bQ-p3P"/>
                         <outlet property="dateListView" destination="MWh-Av-qQd" id="TX9-eU-vhX"/>
                         <outlet property="deletePopup" destination="sWt-09-OMx" id="TBW-e5-Rm5"/>
                         <outlet property="fatPercentageLabel" destination="IOZ-8V-4il" id="DeP-aY-jX9"/>
@@ -5328,7 +5336,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker.png" id="mFz-7O-cF6">
-                                        <rect key="frame" x="-1" y="14.999999318804063" width="369" height="378"/>
+                                        <rect key="frame" x="-1" y="14.999998559608491" width="369" height="378"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker-arrow.png" id="a2G-PT-vR1">

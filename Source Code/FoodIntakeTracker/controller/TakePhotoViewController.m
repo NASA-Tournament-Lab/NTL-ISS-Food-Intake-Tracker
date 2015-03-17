@@ -382,9 +382,11 @@
     
     [self.popover dismissPopoverAnimated:YES];
     
-    if ([self recognize:chosenImage]) {
+    /*if ([self recognize:chosenImage]) {
         return;
-    }
+    }*/
+    
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.7]];
     
     self.txtFoodName.text = @"";
     self.lblFoodCategory.text = @"Select Food Category";
