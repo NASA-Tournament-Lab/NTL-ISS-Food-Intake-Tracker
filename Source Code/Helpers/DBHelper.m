@@ -83,7 +83,7 @@ static dispatch_once_t onceToken = 0;
 	NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
     if (coordinator != nil) {
         NSManagedObjectContext *newManagedObjectContext = [NSManagedObjectContext new];
-        [newManagedObjectContext setPersistentStoreCoordinator: coordinator];
+        [newManagedObjectContext setPersistentStoreCoordinator:coordinator];
         [newManagedObjectContext setMergePolicy:NSMergeByPropertyStoreTrumpMergePolicy];
         
         NSThread *currentThread = [NSThread currentThread];
@@ -131,32 +131,32 @@ static dispatch_once_t onceToken = 0;
 }
 
 + (void) mergeChanges:(NSNotification *)notif {
-    
     NSManagedObjectContext *mocThatSendNotification = [notif object];
-    
     NSThread *mainThread = [NSThread mainThread];
     NSString *mainThreadName = [mainThread name];
-    NSManagedObjectContext *mainThreadMoc = [mocs valueForKey:mainThreadName];
-    
-    if(mocThatSendNotification == mainThreadMoc) {
-        return;
-    }
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
+
+    dispatch_async(serialQueue, ^{
+        NSManagedObjectContext *mainThreadMoc = [mocs valueForKey:mainThreadName];
+        
+        if(mocThatSendNotification == mainThreadMoc) {
+            return;
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
 #ifdef INFO_LOGON
-        NSLog(@"Merge changes back to main thread");
+            NSLog(@"Merge changes back to main thread");
 #endif
-        @try {
-            [mainThreadMoc mergeChangesFromContextDidSaveNotification:notif];
-        }
-        @catch (NSException *exception) {
-            NSLog(@"****    [DbHelper mergeChanges:] exception: %@", exception);
-        }
-        @finally {
-            
-        }
+            @try {
+                [mainThreadMoc mergeChangesFromContextDidSaveNotification:notif];
+            }
+            @catch (NSException *exception) {
+                NSLog(@"****    [DbHelper mergeChanges:] exception: %@", exception);
+            }
+            @finally {
+                
+            }
+        });
     });
-    
 }
 
 #pragma mark Setup
