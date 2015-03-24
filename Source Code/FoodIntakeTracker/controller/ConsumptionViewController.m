@@ -182,77 +182,63 @@
     
     
     if (self.progressImage != nil) {
-        if (_currentProgress == 1) {
-            CGContextSetFillColorWithColor(context, self.fullColor.CGColor);
-            CGContextFillRect(context, CGRectMake(x + 1, y + 1, w - 2, h - 2));
-            CGContextStrokePath(context);
-        } else {
-            CGContextDrawImage(context, CGRectMake(x, y, w, h), self.backgoundImage.CGImage);
-
-            UIGraphicsBeginImageContext(CGSizeMake(w - 2, h - 2));
-            [self.progressImage drawInRect:CGRectMake(0, 0, w - 2, h - 2)];
-
-            CGContextClearRect (UIGraphicsGetCurrentContext(), CGRectMake((w - 2) * _currentProgress, 0,
-                                                                          (w - 2) * (1 - _currentProgress), h - 2));
-
-            CGContextStrokePath(UIGraphicsGetCurrentContext());
-            UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
-            UIGraphicsEndImageContext();
-
-            CGContextDrawImage(context, CGRectMake(x + 1, y + 1, (w - 2), h - 2), img.CGImage);
-        }
-    } else {
-        if (![self.progressView isHidden] && self.gmKg) {
-            CGFloat minProgress = 1.2f / MAX_GM_KG;
-            CGFloat maxProgress = 1.7f / MAX_GM_KG;
+        if (self.gmKg) {
+            CGFloat value = 3;
+            CGContextDrawImage(context, CGRectMake(x, y + value, w, h - value * 2), self.progressImage.CGImage);
             
-            self.progressView.layer.borderColor = [UIColor blackColor].CGColor;
-            self.progressView.layer.borderWidth = 1.0f;
-            self.progressView.layer.cornerRadius = 3.0f;
+            UIFont *font = [UIFont fontWithName:@"HelveticaNeue" size:10.0];
+            NSArray *array = @[@0.8, @1.2, @1.7, @2.0];
             
-            CGContextSetFillColorWithColor(context, [UIColor redColor].CGColor);
-            CGContextFillRect(context, CGRectMake(x + 1, y + 1, w - 2, h - 2));
-            CGContextStrokePath(context);
-            
-            CGContextSetFillColorWithColor(context, [UIColor greenColor].CGColor);
-            CGContextFillRect(context, CGRectMake(x + 1 + (w - 2) * minProgress, y + 1, (w - 2) * (maxProgress - minProgress), h - 2));
-            CGContextStrokePath(context);
-            
-            CGContextSetFillColorWithColor(context, [UIColor blackColor].CGColor);
-            CGContextFillRect(context, CGRectMake(x + 1, y + 3, w - 2, h - 6));
-            CGContextStrokePath(context);
-            
-            CGContextSetFillColorWithColor(context, [UIColor colorWithRed:252.f/255.f green:252.f/255.f
-                                                                     blue:252.f/255.f alpha:1.0f].CGColor);
-            CGContextFillRect(context, CGRectMake(x + 1, y + 4, w - 2, h - 8));
-            CGContextStrokePath(context);
-            
-            CGContextDrawImage(context, CGRectMake(x, y, w, h), self.backgoundImage.CGImage);
-            CGContextSetFillColorWithColor(context, self.fullColor.CGColor);
-            CGContextFillRect(context, CGRectMake(x + 1, y + 4, (w - 2) * _currentProgress, h - 8));
-            CGContextStrokePath(context);
-            
-            CGFloat xoff = (w - 2) / (MAX_GM_KG * 10.f);
-            int i = 1;
-            while (xoff < (w - 2)) {
+            for (NSNumber *number in array) {
+                CGFloat pos = x + w * ([number floatValue] / MAX_GM_KG);
                 CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
                 CGContextSetLineWidth(context, 1.0f);
-                CGContextMoveToPoint(context, x + 1 + xoff, y + h - 4); //start at this point
-                if (i % 5 == 0) {
-                    CGContextAddLineToPoint(context, x + 1 + xoff, y + h - 9); //draw to this point
-                } else {
-                    CGContextAddLineToPoint(context, x + 1 + xoff, y + h - 7); //draw to this point
-                }
+                CGContextMoveToPoint(context, pos, y + h - value); //start at this point
+                CGContextAddLineToPoint(context, pos, y + h + 1); //start at this point
                 CGContextStrokePath(context);
-                xoff += (w - 2) / (MAX_GM_KG * 10.f);
-                i++;
+                
+                NSString *str = [NSString stringWithFormat:@"%3.1f", [number floatValue]];
+                CGSize size = [str sizeWithAttributes:@{NSFontAttributeName: font}];
+                [str drawAtPoint:CGPointMake(pos - size.width / 2, y + h) withAttributes:@{NSFontAttributeName: font}];
             }
-        } else {
-            CGContextDrawImage(context, CGRectMake(x, y, w, h), self.backgoundImage.CGImage);
-            CGContextSetFillColorWithColor(context, self.fullColor.CGColor);
-            CGContextFillRect(context, CGRectMake(x + 1, y + 1, (w - 2) * _currentProgress, h - 2));
+            
+            CGFloat pos = x + _currentProgress * w - 3;
+            
+            NSString *str = [NSString stringWithFormat:@"%4.2f", _currentProgress * MAX_GM_KG];
+            CGSize size = [str sizeWithAttributes:@{NSFontAttributeName: font}];
+            [str drawAtPoint:CGPointMake(pos - 4, y - size.height) withAttributes:@{NSFontAttributeName: font}];
+            
+            CGRect rect = CGRectMake(pos, y + 1, 6, h - 2);
+            CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
+            CGContextSetLineWidth(context, 2.0f);
+            CGContextAddRect(context, rect);
             CGContextStrokePath(context);
+        } else {
+            if (_currentProgress == 1) {
+                CGContextSetFillColorWithColor(context, self.fullColor.CGColor);
+                CGContextFillRect(context, CGRectMake(x + 1, y + 1, w - 2, h - 2));
+                CGContextStrokePath(context);
+            } else {
+                CGContextDrawImage(context, CGRectMake(x, y, w, h), self.backgoundImage.CGImage);
+
+                UIGraphicsBeginImageContext(CGSizeMake(w - 2, h - 2));
+                [self.progressImage drawInRect:CGRectMake(0, 0, w - 2, h - 2)];
+
+                CGContextClearRect (UIGraphicsGetCurrentContext(), CGRectMake((w - 2) * _currentProgress, 0,
+                                                                              (w - 2) * (1 - _currentProgress), h - 2));
+
+                CGContextStrokePath(UIGraphicsGetCurrentContext());
+                UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
+                UIGraphicsEndImageContext();
+
+                CGContextDrawImage(context, CGRectMake(x + 1, y + 1, (w - 2), h - 2), img.CGImage);
+            }
         }
+    } else {
+        CGContextDrawImage(context, CGRectMake(x, y, w, h), self.backgoundImage.CGImage);
+        CGContextSetFillColorWithColor(context, self.fullColor.CGColor);
+        CGContextFillRect(context, CGRectMake(x + 1, y + 1, (w - 2) * _currentProgress, h - 2));
+        CGContextStrokePath(context);
     }
 }
 
@@ -363,7 +349,7 @@
     self.caloriesProgess.backgoundImage = [UIImage imageNamed:@"bg-progress.png"];
     self.sodiumProgress.backgoundImage = [UIImage imageNamed:@"bg-progress.png"];
     self.fluidProgress.backgoundImage = [UIImage imageNamed:@"bg-progress.png"];
-    self.proteinProgess.backgoundImage = nil;
+    self.proteinProgess.backgoundImage = [UIImage imageNamed:@"bg-progress.png"];
     /*self.carbProgress.backgoundImage = [UIImage imageNamed:@"bg-progress.png"];
     self.fatProgress.backgoundImage = [UIImage imageNamed:@"bg-progress.png"];*/
     
@@ -377,7 +363,7 @@
     self.caloriesProgess.progressImage = [UIImage imageNamed:@"bg-progress-red.png"];
     self.sodiumProgress.progressImage = [UIImage imageNamed:@"bg-progress-green.png"];
     self.fluidProgress.progressImage = [UIImage imageNamed:@"bg-progress-red.png"];
-    self.proteinProgess.progressImage = nil;
+    self.proteinProgess.progressImage = [UIImage imageNamed:@"bg_protein_bar.png"];
     /*self.proteinProgess.progressImage = [UIImage imageNamed:@"bg-progress-red.png"];
     self.carbProgress.progressImage = [UIImage imageNamed:@"bg-progress-red.png"];
     self.fatProgress.progressImage = [UIImage imageNamed:@"bg-progress-red.png"];*/
@@ -571,9 +557,9 @@
     
     CGFloat weight = appDelegate.loggedInUser.weight != nil ? appDelegate.loggedInUser.weight.floatValue : 70.0f;
     self.proteinProgess.currentProgress = (proteinTotal / weight) / MAX_GM_KG;
-    self.curProteinValue.text = [NSString stringWithFormat:@"Current: %3.2f gm/kg", (proteinTotal / weight)];
+    self.curProteinValue.text = [NSString stringWithFormat:@"%3.1f", (proteinTotal / weight)];
     
-    self.proteinProgess.lblCurrent.text = [NSString stringWithFormat:@"Protein gm/kg BW"];
+    self.proteinProgess.lblCurrent.text = [NSString stringWithFormat:@"g/kg BW"];
     
     [self setProgressViewColor:self.proteinProgess];
     [self.proteinProgess setGmKg:YES];
@@ -677,7 +663,7 @@
         [self.pieChart removeFromSuperview];
         self.pieChart = nil;
     }
-    self.pieChart = [[BNPieChart alloc] initWithFrame:CGRectMake(470, 0, 130, 130)];
+    self.pieChart = [[BNPieChart alloc] initWithFrame:CGRectMake(420, 0, 130, 130)];
     [self.pieChart addSlicePortion:proteinRatio withName:@"BLANK" andImage:[UIImage imageNamed:@"icon_protein_pie.png"]];
     [self.pieChart addSlicePortion:carbRatio withName:@"BLANK" andImage:[UIImage imageNamed:@"icon_carb_pie.png"]];
     [self.pieChart addSlicePortion:fatRatio withName:@"BLANK" andImage:[UIImage imageNamed:@"icon_fat_pie.png"]];

@@ -40,6 +40,7 @@
 		4BE639761AAF620C0019B988 /* icon_protein_pie.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BE639731AAF620C0019B988 /* icon_protein_pie.png */; };
 		4BE639771AAF620C0019B988 /* icon_fat_pie.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BE639741AAF620C0019B988 /* icon_fat_pie.png */; };
 		4BE639781AAF620C0019B988 /* icon_carb_pie.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BE639751AAF620C0019B988 /* icon_carb_pie.png */; };
+		4BF6BA961AC10AEB00DDE1AE /* bg_protein_bar.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BF6BA951AC10AEB00DDE1AE /* bg_protein_bar.png */; };
 		4D0F2DF117BD2D0600B86759 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DF167F517BD216000D3633F /* CoreData.framework */; };
 		4D0F2DF217BD2D0600B86759 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7C40724175FFA1F00C3649E /* UIKit.framework */; };
 		4D0F2DF317BD2D0600B86759 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7C40726175FFA1F00C3649E /* Foundation.framework */; };
@@ -573,6 +574,7 @@
 		4BE639731AAF620C0019B988 /* icon_protein_pie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_protein_pie.png; sourceTree = "<group>"; };
 		4BE639741AAF620C0019B988 /* icon_fat_pie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_fat_pie.png; sourceTree = "<group>"; };
 		4BE639751AAF620C0019B988 /* icon_carb_pie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_carb_pie.png; sourceTree = "<group>"; };
+		4BF6BA951AC10AEB00DDE1AE /* bg_protein_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bg_protein_bar.png; sourceTree = "<group>"; };
 		4D0F2D7D17BD23A000B86759 /* FoodIntakeTrackerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodIntakeTrackerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D0F2DBB17BD255900B86759 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		4D4884B117C3CC7B006851A9 /* CustomTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTableViewController.h; sourceTree = "<group>"; };
@@ -1967,6 +1969,7 @@
 		E7C4074917600F1700C3649E /* images */ = {
 			isa = PBXGroup;
 			children = (
+				4BF6BA951AC10AEB00DDE1AE /* bg_protein_bar.png */,
 				4DAB06AB17C04317009F8E91 /* bg_carb.png */,
 				4DAB06AC17C04317009F8E91 /* bg_fat.png */,
 				4DAB06AD17C04317009F8E91 /* bg_protein.png */,
@@ -2411,6 +2414,7 @@
 				E71B9AA2176D6B5A00CFEE35 /* icon-help-setting.png in Resources */,
 				E71B9AA4176D715400CFEE35 /* bg-gray-header.png in Resources */,
 				E7396BF8176EE3320051E0DB /* icon@72x72.png in Resources */,
+				4BF6BA961AC10AEB00DDE1AE /* bg_protein_bar.png in Resources */,
 				E7396BF9176EE3320051E0DB /* icon@144x144.png in Resources */,
 				E788604417743C6A0035E475 /* icon-data-active.png in Resources */,
 				E788604517743C6A0035E475 /* icon-data.png in Resources */,

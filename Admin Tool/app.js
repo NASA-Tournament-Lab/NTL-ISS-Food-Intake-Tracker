@@ -353,6 +353,15 @@ app.get('/import', function(req, res) {
         });
 });
 
+app.get('/instructions', function(req, res) {
+    req.flash('currentSelectedTab', '4');
+    res.render('instructions', {
+            message: 'Instructions'
+        }, function(err, html) {
+            res.send(html);
+        });
+});
+
 // Show foods / users new
 app.get('/food', function(req, res) {
     req.flash('currentSelectedTab', '1');
