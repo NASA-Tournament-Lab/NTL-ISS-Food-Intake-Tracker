@@ -1920,36 +1920,36 @@ Sun,  21st April 2014</string>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <subviews>
                                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="         100% of Calories" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="O8o-11-5Oz">
-                                                        <rect key="frame" x="287" y="16" width="150" height="30"/>
+                                                        <rect key="frame" x="257" y="13" width="150" height="30"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <color key="backgroundColor" red="1" green="0.89411764709999997" blue="0.89411764709999997" alpha="1" colorSpace="calibratedRGB"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="         100% of Calories" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="IOZ-8V-4il">
-                                                        <rect key="frame" x="287" y="82" width="150" height="30"/>
+                                                        <rect key="frame" x="257" y="82" width="150" height="30"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <color key="backgroundColor" red="0.97647058823529409" green="0.97647058823529409" blue="0.85098039215686272" alpha="1" colorSpace="calibratedRGB"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="         100% of Calories" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="3vN-6n-Czj">
-                                                        <rect key="frame" x="287" y="49" width="150" height="30"/>
+                                                        <rect key="frame" x="257" y="49" width="150" height="30"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                         <color key="backgroundColor" red="0.99607843137254903" green="0.88627450980392153" blue="0.78823529411764703" alpha="1" colorSpace="calibratedRGB"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="icon_fat.png" id="NfY-n8-Oe6">
-                                                        <rect key="frame" x="287" y="71" width="49" height="49"/>
+                                                        <rect key="frame" x="257" y="71" width="49" height="49"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     </imageView>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="icon_carb.png" id="EvE-cL-k9h">
-                                                        <rect key="frame" x="287" y="39" width="49" height="49"/>
+                                                        <rect key="frame" x="257" y="39" width="49" height="49"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     </imageView>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="icon_protein.png" id="OQb-au-Nxp">
-                                                        <rect key="frame" x="287" y="7" width="49" height="49"/>
+                                                        <rect key="frame" x="257" y="3" width="49" height="49"/>
                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     </imageView>
                                                     <view contentMode="scaleToFill" id="gjo-fK-OOJ" userLabel="Custom Progress View - calories" customClass="CustomProgressView">
@@ -1967,15 +1967,8 @@ Sun,  21st April 2014</string>
                                                                 <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
-                                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Protein gm/kg BW" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="NlC-eK-DjL">
-                                                                <rect key="frame" x="605" y="5" width="115" height="16"/>
-                                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                                                <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="13"/>
-                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                                                <nil key="highlightedColor"/>
-                                                            </label>
                                                             <view contentMode="scaleToFill" id="gLf-op-hpS" userLabel="View - calories progress">
-                                                                <rect key="frame" x="607" y="24" width="110" height="17"/>
+                                                                <rect key="frame" x="560" y="10" width="150" height="25"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                             </view>
@@ -1983,6 +1976,13 @@ Sun,  21st April 2014</string>
                                                                 <rect key="frame" x="130" y="14" width="95" height="21"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
+                                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="g/kg BW" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="NlC-eK-DjL">
+                                                                <rect key="frame" x="547" y="32" width="41" height="15"/>
+                                                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="10"/>
                                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
@@ -2015,7 +2015,7 @@ Sun,  21st April 2014</string>
                                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                             </view>
                                                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="100 grams eaten" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="HVf-Zh-hc1">
-                                                                <rect key="frame" x="130" y="16" width="95" height="21"/>
+                                                                <rect key="frame" x="130" y="15" width="95" height="21"/>
                                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
                                                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -2062,13 +2062,6 @@ Sun,  21st April 2014</string>
                                                             <outlet property="progressView" destination="eJY-j9-CIQ" id="lSa-6i-3Um"/>
                                                         </connections>
                                                     </view>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Current: 2.2 gm/Kg" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="6gT-Nq-bpD">
-                                                        <rect key="frame" x="620" y="50" width="120" height="20"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                                        <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="12"/>
-                                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
                                                 </subviews>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             </view>
@@ -2388,7 +2381,6 @@ Sun,  21st April 2014</string>
                         <outlet property="carbPercentageLabel" destination="3vN-6n-Czj" id="RQH-bp-73K"/>
                         <outlet property="carbProgress" destination="Mej-OO-lNO" id="iNC-7y-f8f"/>
                         <outlet property="consumptionCopyPopup" destination="Vpy-Wp-MBq" id="KBm-dk-96L"/>
-                        <outlet property="curProteinValue" destination="6gT-Nq-bpD" id="lYn-bQ-p3P"/>
                         <outlet property="dateListView" destination="MWh-Av-qQd" id="TX9-eU-vhX"/>
                         <outlet property="deletePopup" destination="sWt-09-OMx" id="TBW-e5-Rm5"/>
                         <outlet property="fatPercentageLabel" destination="IOZ-8V-4il" id="DeP-aY-jX9"/>
@@ -5336,7 +5328,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker.png" id="mFz-7O-cF6">
-                                        <rect key="frame" x="-1" y="14.999998559608491" width="369" height="378"/>
+                                        <rect key="frame" x="-1" y="15" width="369" height="377.99999771348223"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker-arrow.png" id="a2G-PT-vR1">

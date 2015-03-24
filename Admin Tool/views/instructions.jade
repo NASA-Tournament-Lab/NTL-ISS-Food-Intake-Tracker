@@ -1,0 +1,123 @@
+div
+	p <strong>1- Add food</strong>
+	p To add new food using the bulk upload feature of the Admin Tool, you need to create a CSV file, with the following format.
+	p
+		table(style="padding-top:10px;padding-bottom:10px;")
+			thead
+				tr
+					th Food Product Name
+					th Category
+					th Origin
+					th Barcode
+					th Fluid
+					th Energy
+					th Sodium
+					th Protein
+					th Carb
+					th Fat
+					th Profile Image
+					th Deleted
+					th 1
+			tbody
+				tr
+					td Artic Char Jerky Chips
+					td Meat / Fish
+					td CSA Foods
+					td
+					td 4.38
+					td 114.2
+					td 599
+					td 17
+					td 2
+					td 4
+					td
+					td NO
+					td
+				tr
+					td Planters Nutrition Sustaining Energy Mix Choc Nut
+					td Dessert & Snacks
+					td NASA Foods
+					td 2900001861
+					td 0
+					td 250
+					td 115
+					td 10
+					td 19
+					td 17
+					td
+					td NO
+					td
+	p The example above will add two food entries to the existing database. <strong>All other existing food entries will remain the same.</strong>
+	p <strong>2- Update food</strong>
+	p To update an existing food entry, use the same format as above, but only with the updated food.
+	p
+		table(style="padding-top:10px;padding-bottom:10px;")
+			thead
+				tr
+					th Food Product Name
+					th Category
+					th Origin
+					th Barcode
+					th Fluid
+					th Energy
+					th Sodium
+					th Protein
+					th Carb
+					th Fat
+					th Profile Image
+					th Deleted
+					th 1
+			tbody
+				tr
+					td Planters Nutrition Sustaining Energy Mix Choc Nut
+					td Dessert & Snacks
+					td NASA Foods
+					td <strong>029000018611</strong>
+					td 0
+					td 250
+					td 115
+					td 10
+					td 19
+					td 17
+					td
+					td NO
+					td
+	p The example above will update one food entry. <strong>All other existing food entries will remain the same.</strong>
+	p <strong>3- Delete food</strong>
+	p To delete an existing food entry, , use the same format as above, but change the "Deleted" value to <strong>YES</strong>.
+	p
+		table(style="padding-top:10px;padding-bottom:10px;")
+			thead
+				tr
+					th Food Product Name
+					th Category
+					th Origin
+					th Barcode
+					th Fluid
+					th Energy
+					th Sodium
+					th Protein
+					th Carb
+					th Fat
+					th Profile Image
+					th Deleted
+					th 1
+			tbody
+				tr
+					td Artic Char Jerky Chips
+					td Meat / Fish
+					td CSA Foods
+					td
+					td 4.38
+					td 114.2
+					td 599
+					td 17
+					td 2
+					td 4
+					td
+					td <strong>YES</strong>
+					td
+	p The example above will delete one food entry. <strong>All other existing food entries will remain the same.</strong>
+	p(style="padding-top:10px")
+	p Obs1: The admin tool will keep the food entry in the database.
+	p Obs2: The iPad app will remove the food entry from its database to prevent user from adding new food. Any food record using the deleted food will be marked with a red color in the food’s name.
