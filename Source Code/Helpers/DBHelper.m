@@ -132,13 +132,13 @@ static dispatch_once_t onceToken = 0;
 
 + (void) mergeChanges:(NSNotification *)notif {
     NSManagedObjectContext *mocThatSendNotification = [notif object];
-    NSThread *mainThread = [NSThread mainThread];
-    NSString *mainThreadName = [mainThread name];
 
     dispatch_async(serialQueue, ^{
+        NSThread *mainThread = [NSThread mainThread];
+        NSString *mainThreadName = [mainThread name];
         NSManagedObjectContext *mainThreadMoc = [mocs valueForKey:mainThreadName];
         
-        if(mocThatSendNotification == mainThreadMoc) {
+        if (mocThatSendNotification == mainThreadMoc) {
             return;
         }
         

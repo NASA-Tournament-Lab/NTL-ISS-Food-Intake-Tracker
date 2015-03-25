@@ -180,14 +180,13 @@
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    
     if (self.progressImage != nil) {
         if (self.gmKg) {
             CGFloat value = 3;
             CGContextDrawImage(context, CGRectMake(x, y + value, w, h - value * 2), self.progressImage.CGImage);
             
             UIFont *font = [UIFont fontWithName:@"HelveticaNeue" size:10.0];
-            NSArray *array = @[@0.8, @1.2, @1.7, @2.0];
+            NSArray *array = @[@0.5, @0.8, @1.2, @1.7, @2.0];
             
             for (NSNumber *number in array) {
                 CGFloat pos = x + w * ([number floatValue] / MAX_GM_KG);
@@ -559,7 +558,7 @@
     self.proteinProgess.currentProgress = (proteinTotal / weight) / MAX_GM_KG;
     self.curProteinValue.text = [NSString stringWithFormat:@"%3.1f", (proteinTotal / weight)];
     
-    self.proteinProgess.lblCurrent.text = [NSString stringWithFormat:@"g/kg BW"];
+    self.proteinProgess.lblCurrent.text = [NSString stringWithFormat:@"Protein (g/kg BW)"];
     
     [self setProgressViewColor:self.proteinProgess];
     [self.proteinProgess setGmKg:YES];
@@ -663,7 +662,7 @@
         [self.pieChart removeFromSuperview];
         self.pieChart = nil;
     }
-    self.pieChart = [[BNPieChart alloc] initWithFrame:CGRectMake(420, 0, 130, 130)];
+    self.pieChart = [[BNPieChart alloc] initWithFrame:CGRectMake(440, 0, 130, 130)];
     [self.pieChart addSlicePortion:proteinRatio withName:@"BLANK" andImage:[UIImage imageNamed:@"icon_protein_pie.png"]];
     [self.pieChart addSlicePortion:carbRatio withName:@"BLANK" andImage:[UIImage imageNamed:@"icon_carb_pie.png"]];
     [self.pieChart addSlicePortion:fatRatio withName:@"BLANK" andImage:[UIImage imageNamed:@"icon_fat_pie.png"]];

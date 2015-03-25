@@ -31,3 +31,8 @@ a.button {
     width:50%;
     overflow:hidden;
 }
+.inst_table, .inst_table th, .inst_table td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
