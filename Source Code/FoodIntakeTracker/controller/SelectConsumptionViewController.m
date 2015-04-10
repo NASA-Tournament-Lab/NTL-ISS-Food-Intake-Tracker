@@ -158,7 +158,7 @@
     self.optionListView.selectIndex = 0;
     
     selectCategoryIndex = [NSMutableDictionary dictionary];
-    [selectCategoryIndex setObject:[NSMutableArray array] forKey:@0];
+    [selectCategoryIndex setObject:@0 forKey:@0];
     [selectCategoryIndex setObject:[NSMutableArray array] forKey:@1];
     [selectCategoryIndex setObject:[NSMutableArray array] forKey:@2];
     [selectCategoryIndex setObject:@-1 forKey:@3];
@@ -1124,7 +1124,8 @@
         if (sec == 1 || sec == 2) {
             found = [[selectCategoryIndex objectForKey:[NSNumber numberWithInt:sec]] containsObject:[NSNumber numberWithInt:row]];
         } else {
-            found = ([[selectCategoryIndex objectForKey:[NSNumber numberWithInt:sec]] intValue] == row);
+            NSNumber *n = [selectCategoryIndex objectForKey:[NSNumber numberWithInt:sec]];
+            found = (n != nil &&  n.intValue == row);
         }
         if(found){
             cell.textLabel.textColor = [UIColor whiteColor];
