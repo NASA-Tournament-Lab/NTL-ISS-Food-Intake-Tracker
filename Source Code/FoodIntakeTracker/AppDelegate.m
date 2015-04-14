@@ -319,6 +319,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingBeginEvent object:nil];
         
         status = SyncStatusFinished;
+        
         return;
     }
     

@@ -25,7 +25,6 @@
 #import <UIKit/UIKit.h>
 #import "CustomTabBarViewController.h"
 #import "TakeBaseViewController.h"
-#import "Tesseract.h"
 
 @class Food;
 
@@ -41,8 +40,6 @@
  */
 @interface TakePhotoViewController : TakeBaseViewController <UIPickerViewDataSource, UIPickerViewDataSource, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIPopoverControllerDelegate, UIAlertViewDelegate>{
     NSMutableArray *categories;
-    /* Represents the Tesseract used in this controller. */
-    Tesseract *tesseract;
 }
 
 /* the note label at bottom */

@@ -92,7 +92,7 @@
     sortByOptionArray = [NSMutableArray arrayWithObjects:
                          @"Alphabetically (A to Z)",
                          @"Alphabetically (Z to A)",
-                         @"Nutrient Content (kcal)",
+                         @"Nutrient Content (Cal)",
                          @"Nutrient Content (sodium)",
                          @"Nutrient Content (water)",
                          @"Nutrient Content (protein)",

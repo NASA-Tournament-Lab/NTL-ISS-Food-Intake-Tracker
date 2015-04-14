@@ -178,7 +178,7 @@
  * @param picker the UIImagePickerController
  * @param info the information
  */
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+/*- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
     photoImage.image = chosenImage;
     self.processView.hidden = NO;
@@ -229,7 +229,8 @@
         [self.popover dismissPopoverAnimated:YES];
     }
     [tesseract clear];
-}
+}*/
+
 /**
  * This method will be called when the picture taking is cancelled.
  * @param picker the UIImagePickerController

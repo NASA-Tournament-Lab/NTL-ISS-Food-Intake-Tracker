@@ -21,7 +21,6 @@
 
 #import <UIKit/UIKit.h>
 #import "TakePhotoViewController.h"
-#import "Tesseract.h"
 
 /**
  * controller for scan Label view.
@@ -34,10 +33,7 @@
  * @since 1.0
  */
 @interface TakeLabelViewController : TakeBaseViewController
-<UISearchBarDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIPopoverControllerDelegate> {
-    /* Represents the Tesseract used in this controller. */
-    Tesseract *tesseract;
-}
+<UISearchBarDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate, UIPopoverControllerDelegate>
 
 /* the note label at bottom */
 @property (weak, nonatomic) IBOutlet UILabel *lblNoteBottom;

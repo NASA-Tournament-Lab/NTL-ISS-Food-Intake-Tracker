@@ -121,70 +121,73 @@
     [self.view addSubview:previewView];
     scanner = [[MTBBarcodeScanner alloc] initWithPreviewView:previewView];
     
-    if (![MTBBarcodeScanner scanningIsAvailable]) {
-        [self.btnTake setEnabled:YES];
-        [self.lblTakeButtonTitle setTextColor:[UIColor colorWithRed:0.2 green:0.43 blue:0.62 alpha:1]];
-        
-        return;
-    }
-    
-    [scanner startScanningWithResultBlock:^(NSArray *codes) {
-        AVMetadataMachineReadableCodeObject *code = [codes firstObject];
-        NSString *result = code.stringValue;
-        
-        if ([code.type isEqualToString:AVMetadataObjectTypeEAN13Code]) {
-            if ([result hasPrefix:@"0"] && [result length] > 1) {
-                result = [result substringFromIndex:1];
-            }
-        }
-        
-        AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
-        FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
-        NSError *error;
-        
-        NSLog(@"Barcode scan results: %@", result);
-        
-        FoodProduct* foodProduct = [foodProductService getFoodProductByBarcode:appDelegate.loggedInUser
-                                                                       barcode:result
-                                                                         error:&error];
-        if (error) {
-            if ([error code] == EntityNotFoundErrorCode) {
-                [Helper showAlert:@"Not Found" message:error.userInfo[NSLocalizedDescriptionKey]];
-            }
-            else {
-                [Helper displayError:error];
-                return;
-            }
-        }
-        else {
-            [resultFoods addObject:foodProduct];
-            
-            self.resultView.hidden = NO;
-            self.imgFood.image = [Helper loadImage:foodProduct.productProfileImage];
-            self.lblFoodName.text = foodProduct.name;
-            self.lblFoodCategory.text = [DataHelper convertStringWrapperNSSetToNSString:foodProduct.categories withSeparator:@", "];
-            self.lblCalories.text = [NSString stringWithFormat:@"%@",foodProduct.energy];
-            self.lblSodium.text = [NSString stringWithFormat:@"%@",foodProduct.sodium];
-            self.lblFluid.text = [NSString stringWithFormat:@"%@",foodProduct.fluid];
-            self.lblProtein.text = [NSString stringWithFormat:@"%@",foodProduct.protein];
-            self.lblCarb.text = [NSString stringWithFormat:@"%@",foodProduct.carb];
-            self.lblFat.text = [NSString stringWithFormat:@"%@",foodProduct.fat];
-            
-            [self buildResults];
-            
-            [self.view bringSubviewToFront:self.resultView];
-            self.lblTakeButtonTitle.text = @"Scan Another Barcode";
+    [MTBBarcodeScanner requestCameraPermissionWithSuccess:^(BOOL success) {
+        if (success) {            
+            [scanner startScanningWithResultBlock:^(NSArray *codes) {
+                AVMetadataMachineReadableCodeObject *code = [codes firstObject];
+                NSString *result = code.stringValue;
+                
+                if ([code.type isEqualToString:AVMetadataObjectTypeEAN13Code]) {
+                    if ([result hasPrefix:@"0"] && [result length] > 1) {
+                        result = [result substringFromIndex:1];
+                    }
+                }
+                
+                AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
+                FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
+                NSError *error;
+                
+                NSLog(@"Barcode scan results: %@", result);
+                
+                FoodProduct* foodProduct = [foodProductService getFoodProductByBarcode:appDelegate.loggedInUser
+                                                                               barcode:result
+                                                                                 error:&error];
+                if (error) {
+                    if ([error code] == EntityNotFoundErrorCode) {
+                        [Helper showAlert:@"Not Found" message:error.userInfo[NSLocalizedDescriptionKey]];
+                    }
+                    else {
+                        [Helper displayError:error];
+                        return;
+                    }
+                }
+                else {
+                    [resultFoods addObject:foodProduct];
+                    
+                    self.resultView.hidden = NO;
+                    self.imgFood.image = [Helper loadImage:foodProduct.productProfileImage];
+                    self.lblFoodName.text = foodProduct.name;
+                    self.lblFoodCategory.text = [DataHelper convertStringWrapperNSSetToNSString:foodProduct.categories withSeparator:@", "];
+                    self.lblCalories.text = [NSString stringWithFormat:@"%@",foodProduct.energy];
+                    self.lblSodium.text = [NSString stringWithFormat:@"%@",foodProduct.sodium];
+                    self.lblFluid.text = [NSString stringWithFormat:@"%@",foodProduct.fluid];
+                    self.lblProtein.text = [NSString stringWithFormat:@"%@",foodProduct.protein];
+                    self.lblCarb.text = [NSString stringWithFormat:@"%@",foodProduct.carb];
+                    self.lblFat.text = [NSString stringWithFormat:@"%@",foodProduct.fat];
+                    
+                    [self buildResults];
+                    
+                    [self.view bringSubviewToFront:self.resultView];
+                    self.lblTakeButtonTitle.text = @"Scan Another Barcode";
+                    [self.lblTakeButtonTitle setTextColor:[UIColor colorWithRed:0.2 green:0.43 blue:0.62 alpha:1]];
+                    [self.btnResults setEnabled:YES];
+                }
+                
+                [self.btnTake setEnabled:YES];
+                [[self.view viewWithTag:9999] removeFromSuperview];
+                
+                [scanner stopScanning];
+                
+                scanner = nil;
+            }];
+        } else {
+            [self.btnTake setEnabled:YES];
             [self.lblTakeButtonTitle setTextColor:[UIColor colorWithRed:0.2 green:0.43 blue:0.62 alpha:1]];
-            [self.btnResults setEnabled:YES];
+            
+            return;
         }
-        
-        [self.btnTake setEnabled:YES];
-        [[self.view viewWithTag:9999] removeFromSuperview];
-        
-        [scanner stopScanning];
-        
-        scanner = nil;
     }];
+     
 }
 
 /**

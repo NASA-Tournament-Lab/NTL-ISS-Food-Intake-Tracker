@@ -20,7 +20,6 @@
 //
 
 #import "BaseCommunicationDataService.h"
-#import "Reachability.h"
 #import "LoggingHelper.h"
 
 @implementation BaseCommunicationDataService
