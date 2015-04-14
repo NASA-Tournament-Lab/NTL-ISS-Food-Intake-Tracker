@@ -8,8 +8,19 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
+typedef NS_ENUM(NSUInteger, MTBCamera) {
+    MTBCameraBack,
+    MTBCameraFront
+};
 
 @interface MTBBarcodeScanner : NSObject
+
+/**
+ *  YES if the scanner should use the front camera.
+ */
+@property (nonatomic, assign) MTBCamera camera;
 
 /**
  *  Initialize a scanner that will feed the camera input
@@ -38,11 +49,26 @@
                                 previewView:(UIView *)previewView;
 
 /**
- *  Returns whether barcode scanning is supported on this device.
+ *  Returns whether the camera exists in this device.
  *
- *  @return YES if barcode scanning is supported on this device.
+ *  @return YES if the device has a camera.
  */
-+ (BOOL)scanningIsAvailable;
++ (BOOL)cameraIsPresent;
+
+/**
+ *  Returns whether scanning is prohibited by the user of the device.
+ *
+ *  @return YES if the user has prohibited access to (or is prohibited from accessing) the camera.
+ */
++ (BOOL)scanningIsProhibited;
+
+/**
+ *  Request permission to access the camera on the device.
+ *
+ *  The success block will return YES if the user granted permission, has granted permission in the past, or if the device is running iOS 7.
+ *  The success block will return NO if the user denied permission, is restricted from the camera, or if there is no camera present.
+ */
++ (void)requestCameraPermissionWithSuccess:(void (^)(BOOL success))successBlock;
 
 /**
  *  Start scanning for barcodes. The camera input will be added as a sublayer
@@ -63,5 +89,11 @@
  *  @return YES if the scanner is currently scanning for barcodes
  */
 - (BOOL)isScanning;
+
+/**
+ *  If using the front camera, switch to the back, or visa-versa.
+ *  If this method is called when isScanning=NO, it has no effect
+ */
+- (void)flipCamera;
 
 @end

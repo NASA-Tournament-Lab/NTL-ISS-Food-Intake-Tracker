@@ -7,10 +7,16 @@
 //
 
 #import "PGCoreData.h"
+#import "Reachability.h"
+#import "Helper.h"
 
 static PGCoreData *instance;
+static Reachability* reach;
+static NSString* reachHostName = @"";
 
-@implementation PGCoreData 
+@implementation PGCoreData {
+    BOOL canConnect;
+}
 
 @synthesize pgConnection = _pgConnection;
 
@@ -22,6 +28,14 @@ static PGCoreData *instance;
     return instance;
 }
 
+- (id)init {
+    self = [super init];
+    if (self) {
+        canConnect = YES;
+    }
+    return self;
+}
+
 - (BOOL)connect {
     [self disconnect];
     
@@ -30,6 +44,62 @@ static PGCoreData *instance;
     NSString *username = [standardUserDefaults objectForKey:@"user_preference"];
     NSString *database = [standardUserDefaults objectForKey:@"database_preference"];
     NSString *password = [standardUserDefaults objectForKey:@"password_preference"];
+    
+    if (![reachHostName isEqualToString:ipAddress]) {
+        reachHostName = [NSString stringWithString:ipAddress];
+        
+        if (reach) {
+            [reach stopNotifier];
+            
+            // wait 500ms
+            [NSThread sleepForTimeInterval:0.5];
+        }
+        
+        // Allocate a reachability object
+        reach = [Reachability reachabilityWithHostname:reachHostName];
+        
+        // Tell the reachability that we DON'T want to be reachable on 3G/EDGE/CDMA
+        reach.reachableOnWWAN = NO;
+        
+        // Update connect flag
+        reach.reachableBlock = ^(Reachability*reach) {
+            @synchronized(self) {
+                canConnect = YES;
+            }
+            
+            [Helper showAlert:@"Success" message:@"The device has re-established the connection to the database server."];
+        };
+        
+        // Update connect flag and disconnect from server (this actualy is a clean up of the
+        // libary.
+        reach.unreachableBlock = ^(Reachability*reach) {
+            @synchronized(self) {
+                canConnect = NO;
+                
+                [self.pgConnection disconnect];
+            }
+            
+            [Helper showAlert:@"Error" message:@"The device has lost connection to the database server. \n"
+             "Don’t worry! You can still use the ISS FIT app and we will attempt to sync with the central food repository"
+             " when it is available."];
+        };
+        
+        // Start the notifier, which will cause the reachability object to retain itself!
+        [reach startNotifier];
+        
+        // Wait 500ms
+        [NSThread sleepForTimeInterval:0.5];
+        
+        // query status at first try
+        canConnect = [reach isReachable];
+    }
+    
+    @synchronized(self) {
+        if (!canConnect) {
+            NSLog(@"UNREACHABLE");
+            return NO;
+        }
+    }
     
     NSError *connError = nil;
     NSURL *url = [NSURL URLWithHost:ipAddress ssl:YES username:username password:password database:database params:nil];

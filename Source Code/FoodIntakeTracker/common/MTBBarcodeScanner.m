@@ -18,13 +18,6 @@
 @property (strong, nonatomic) AVCaptureSession *session;
 
 /*!
- @property captureDevice
- @abstract
- Object that represents the physical camera on the device.
- */
-@property (strong, nonatomic) AVCaptureDevice *captureDevice;
-
-/*!
  @property capturePreviewLayer
  @abstract
  The layer used to view the camera input. This layer is added to the
@@ -129,65 +122,122 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 
 #pragma mark - Scanning
 
-+ (BOOL)scanningIsAvailable {
++ (BOOL)cameraIsPresent {
     return [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
 }
 
++ (BOOL)scanningIsProhibited {
+    switch ([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo]) {
+        case AVAuthorizationStatusDenied:
+        case AVAuthorizationStatusRestricted:
+            return YES;
+            break;
+            
+        default:
+            return NO;
+            break;
+    }
+}
+
++ (void)requestCameraPermissionWithSuccess:(void (^)(BOOL success))successBlock {
+    if (![self cameraIsPresent]) {
+        successBlock(NO);
+        return;
+    }
+    
+    switch ([AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo]) {
+        case AVAuthorizationStatusAuthorized:
+            successBlock(YES);
+            break;
+            
+        case AVAuthorizationStatusDenied:
+        case AVAuthorizationStatusRestricted:
+            successBlock(NO);
+            break;
+            
+        case AVAuthorizationStatusNotDetermined:
+            [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo
+                                     completionHandler:^(BOOL granted) {
+                                         
+                                         dispatch_async(dispatch_get_main_queue(), ^{
+                                             successBlock(granted);
+                                         });
+                                         
+                                     }];
+            break;
+    }
+}
+
 - (void)startScanningWithResultBlock:(void (^)(NSArray *codes))resultBlock {
-	NSAssert([MTBBarcodeScanner scanningIsAvailable], @"Scanning is not available on this device. \
-			 Check scanningIsAvailable: method before calling startScanningWithResultBlock:");
-	self.resultBlock = resultBlock;
-	
-	if (!self.hasExistingSession){
-		self.captureDevice = [self newCaptureDevice];
-		self.session = [self newSession];
-		self.hasExistingSession = YES;
-	}
-	
-	[self.session startRunning];
-	[self.previewView.layer addSublayer:self.capturePreviewLayer];
+    NSAssert([MTBBarcodeScanner cameraIsPresent], @"Attempted to start scanning on a device with no camera. Check requestCameraPermissionWithSuccess: method before calling startScanningWithResultBlock:");
+    NSAssert(![MTBBarcodeScanner scanningIsProhibited], @"Scanning is prohibited on this device. \
+             Check requestCameraPermissionWithSuccess: method before calling startScanningWithResultBlock:");
+    
+    self.resultBlock = resultBlock;
+    
+    if (!self.hasExistingSession) {
+        AVCaptureDevice *captureDevice = [self newCaptureDeviceWithCamera:self.camera];
+        self.session = [self newSessionWithCaptureDevice:captureDevice];
+        self.hasExistingSession = YES;
+    }
+    
+    [self.session startRunning];
+    self.capturePreviewLayer.cornerRadius = self.previewView.layer.cornerRadius;
+    [self.previewView.layer addSublayer:self.capturePreviewLayer];
     [self refreshVideoOrientation];
 }
 
 - (void)stopScanning {
-	if ([MTBBarcodeScanner scanningIsAvailable] && self.hasExistingSession) {
-		
-		self.hasExistingSession = NO;
-		[self.capturePreviewLayer removeFromSuperlayer];
-		
-		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-			
-			for(AVCaptureInput *input1 in self.session.inputs) {
-				[self.session removeInput:input1];
-			}
-			
-			for(AVCaptureOutput *output1 in self.session.outputs) {
-				[self.session removeOutput:output1];
-			}
-			
-			[self.session stopRunning];
-			self.session = nil;
-			self.resultBlock = nil;
-			self.capturePreviewLayer = nil;
-			self.captureDevice = nil;
-		});
-	}
+    if (self.hasExistingSession) {
+        
+        self.hasExistingSession = NO;
+        [self.capturePreviewLayer removeFromSuperlayer];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            
+            for(AVCaptureInput *input in self.session.inputs) {
+                [self.session removeInput:input];
+            }
+            
+            for(AVCaptureOutput *output in self.session.outputs) {
+                [self.session removeOutput:output];
+            }
+            
+            [self.session stopRunning];
+            self.session = nil;
+            self.resultBlock = nil;
+            self.capturePreviewLayer = nil;
+        });
+    }
 }
 
 - (BOOL)isScanning {
     return [self.session isRunning];
 }
 
+- (void)flipCamera {
+    if (self.isScanning) {
+        if (self.camera == MTBCameraFront) {
+            self.camera = MTBCameraBack;
+        } else {
+            self.camera = MTBCameraFront;
+        }
+    }
+}
+
 #pragma mark - AVCaptureMetadataOutputObjects Delegate
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputMetadataObjects:(NSArray *)metadataObjects fromConnection:(AVCaptureConnection *)connection {
+    
     NSMutableArray *codes = [[NSMutableArray alloc] init];
+    
     for (AVMetadataObject *metaData in metadataObjects) {
         AVMetadataMachineReadableCodeObject *barCodeObject = (AVMetadataMachineReadableCodeObject *)[self.capturePreviewLayer transformedMetadataObjectForMetadataObject:(AVMetadataMachineReadableCodeObject *)metaData];
         if (barCodeObject) {
             [codes addObject:barCodeObject];
         }
     }
+    
     if (self.resultBlock) {
         self.resultBlock(codes);
     }
@@ -224,75 +274,114 @@ CGFloat const kFocalPointOfInterestY = 0.5;
 
 #pragma mark - Session Configuration
 
-- (AVCaptureSession *)newSession {
-	AVCaptureSession *newSession = nil;
-	NSError *inputError = nil;
-	newSession = [[AVCaptureSession alloc] init];
-	AVCaptureDevice *captureDevice = self.captureDevice;
-	AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice
-																		error:&inputError];
-	
-	if (input) {
-		// Set an optimized preset for barcode scanning
-		[newSession setSessionPreset:AVCaptureSessionPreset640x480];
-		[newSession addInput:input];
-		
-		AVCaptureMetadataOutput *captureOutput = [[AVCaptureMetadataOutput alloc] init];
-		[captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
-		[newSession addOutput:captureOutput];
-		captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
-		
-		self.capturePreviewLayer = nil;
-		self.capturePreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:newSession];
-		self.capturePreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-		self.capturePreviewLayer.frame = self.previewView.bounds;
-		
-		[newSession commitConfiguration];
-	} else {
-		NSLog(@"Error adding AVCaptureDeviceInput to AVCaptureSession: %@", inputError);
-	}
-	
-	return newSession;
+- (AVCaptureSession *)newSessionWithCaptureDevice:(AVCaptureDevice *)captureDevice {
+    AVCaptureSession *newSession = [[AVCaptureSession alloc] init];
+    AVCaptureDeviceInput *input = [self deviceInputForCaptureDevice:captureDevice];
+    
+    // Set an optimized preset for barcode scanning
+    [newSession setSessionPreset:AVCaptureSessionPresetHigh];
+    [newSession addInput:input];
+    
+    AVCaptureMetadataOutput *captureOutput = [[AVCaptureMetadataOutput alloc] init];
+    [captureOutput setMetadataObjectsDelegate:self queue:dispatch_get_main_queue()];
+    [newSession addOutput:captureOutput];
+    captureOutput.metadataObjectTypes = self.metaDataObjectTypes;
+    
+    self.capturePreviewLayer = nil;
+    self.capturePreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:newSession];
+    self.capturePreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+    self.capturePreviewLayer.frame = self.previewView.bounds;
+    
+    [newSession commitConfiguration];
+    
+    return newSession;
 }
 
-- (AVCaptureDevice *)newCaptureDevice {
-	
-	AVCaptureDevice *newCaptureDevice = nil;
-	NSError *lockError = nil;
-	newCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-	if ([newCaptureDevice lockForConfiguration:&lockError] == YES) {
-		
-		// Prioritize the focus on objects near to the device
-		if ([newCaptureDevice respondsToSelector:@selector(isAutoFocusRangeRestrictionSupported)] &&
-			newCaptureDevice.isAutoFocusRangeRestrictionSupported) {
-			newCaptureDevice.autoFocusRangeRestriction = AVCaptureAutoFocusRangeRestrictionNear;
-		}
-		
-		// Focus on the center of the image
-		if ([newCaptureDevice respondsToSelector:@selector(isFocusPointOfInterestSupported)] &&
-			newCaptureDevice.isFocusPointOfInterestSupported) {
-			newCaptureDevice.focusPointOfInterest = CGPointMake(kFocalPointOfInterestX, kFocalPointOfInterestY);
-		}
-		
-		[newCaptureDevice unlockForConfiguration];
-	}
-	
-	return newCaptureDevice;
+- (AVCaptureDeviceInput *)deviceInputForCaptureDevice:(AVCaptureDevice *)captureDevice {
+    NSError *inputError = nil;
+    AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:captureDevice
+                                                                        error:&inputError];
+    if (!input) {
+        NSLog(@"Error adding AVCaptureDeviceInput to AVCaptureSession: %@", inputError);
+    }
+    
+    return input;
+}
+
+- (AVCaptureDevice *)newCaptureDeviceWithCamera:(MTBCamera)camera {
+    
+    AVCaptureDevice *newCaptureDevice = nil;
+    NSError *lockError = nil;
+    
+    NSArray *videoDevices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
+    AVCaptureDevicePosition position = [self devicePositionForCamera:camera];
+    for (AVCaptureDevice *device in videoDevices) {
+        if (device.position == position) {
+            newCaptureDevice = device;
+            break;
+        }
+    }
+
+    // If the front camera is not available, use the back camera
+    if (!newCaptureDevice) {
+        newCaptureDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    }
+
+    if ([newCaptureDevice lockForConfiguration:&lockError] == YES) {
+        
+        // Prioritize the focus on objects near to the device
+        if ([newCaptureDevice respondsToSelector:@selector(isAutoFocusRangeRestrictionSupported)] &&
+            newCaptureDevice.isAutoFocusRangeRestrictionSupported) {
+            newCaptureDevice.autoFocusRangeRestriction = AVCaptureAutoFocusRangeRestrictionNear;
+        }
+        
+        // Focus on the center of the image
+        if ([newCaptureDevice respondsToSelector:@selector(isFocusPointOfInterestSupported)] &&
+            newCaptureDevice.isFocusPointOfInterestSupported) {
+            newCaptureDevice.focusPointOfInterest = CGPointMake(kFocalPointOfInterestX, kFocalPointOfInterestY);
+        }
+        
+        [newCaptureDevice unlockForConfiguration];
+    }
+    
+    return newCaptureDevice;
+}
+
+- (AVCaptureDevicePosition)devicePositionForCamera:(MTBCamera)camera {
+    switch (camera) {
+        case MTBCameraFront:
+            return AVCaptureDevicePositionFront;
+        case MTBCameraBack:
+            return AVCaptureDevicePositionBack;
+        default:
+            return AVCaptureDevicePositionUnspecified;
+            break;
+    }
 }
 
 #pragma mark - Default Values
 
 - (NSArray *)defaultMetaDataObjectTypes {
-    return @[AVMetadataObjectTypeQRCode,
-             AVMetadataObjectTypeUPCECode,
-             AVMetadataObjectTypeCode39Code,
-             AVMetadataObjectTypeCode39Mod43Code,
-             AVMetadataObjectTypeEAN13Code,
-             AVMetadataObjectTypeEAN8Code,
-             AVMetadataObjectTypeCode93Code,
-             AVMetadataObjectTypeCode128Code,
-             AVMetadataObjectTypePDF417Code,
-             AVMetadataObjectTypeAztecCode];
+    NSMutableArray *types = [@[AVMetadataObjectTypeQRCode,
+                               AVMetadataObjectTypeUPCECode,
+                               AVMetadataObjectTypeCode39Code,
+                               AVMetadataObjectTypeCode39Mod43Code,
+                               AVMetadataObjectTypeEAN13Code,
+                               AVMetadataObjectTypeEAN8Code,
+                               AVMetadataObjectTypeCode93Code,
+                               AVMetadataObjectTypeCode128Code,
+                               AVMetadataObjectTypePDF417Code,
+                               AVMetadataObjectTypeAztecCode] mutableCopy];
+    
+    if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_7_1) {
+        [types addObjectsFromArray:@[
+                                     AVMetadataObjectTypeInterleaved2of5Code,
+                                     AVMetadataObjectTypeITF14Code,
+                                     AVMetadataObjectTypeDataMatrixCode
+                                     ]];
+    }
+    
+    return types;
 }
 
 #pragma mark - Helper Methods
@@ -304,5 +393,23 @@ CGFloat const kFocalPointOfInterestY = 0.5;
                                                object:nil];
 }
 
+#pragma mark - Setters
+
+- (void)setCamera:(MTBCamera)camera {
+    
+    if (self.isScanning && camera != _camera) {
+        
+        for (AVCaptureInput *input in self.session.inputs) {
+            [self.session removeInput:input];
+        }
+        
+        AVCaptureDevice *captureDevice = [self newCaptureDeviceWithCamera:camera];
+        AVCaptureDeviceInput *input = [self deviceInputForCaptureDevice:captureDevice];
+        [self.session addInput:input];
+        
+    }
+    
+    _camera = camera;
+}
 
 @end
