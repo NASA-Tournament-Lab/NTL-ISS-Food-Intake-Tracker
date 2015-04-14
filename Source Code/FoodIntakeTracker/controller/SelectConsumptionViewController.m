@@ -158,7 +158,7 @@
     self.optionListView.selectIndex = 0;
     
     selectCategoryIndex = [NSMutableDictionary dictionary];
-    [selectCategoryIndex setObject:@0 forKey:@0];
+    [selectCategoryIndex setObject:@-1 forKey:@0];
     [selectCategoryIndex setObject:[NSMutableArray array] forKey:@1];
     [selectCategoryIndex setObject:[NSMutableArray array] forKey:@2];
     [selectCategoryIndex setObject:@-1 forKey:@3];
@@ -174,6 +174,7 @@
     
     // Set last used food product filter if needed
     if (appDelegate.loggedInUser.useLastUsedFoodProductFilter.boolValue && appDelegate.loggedInUser.lastUsedFoodProductFilter) {
+        BOOL noFilter = YES;
         if ([appDelegate.loggedInUser.lastUsedFoodProductFilter.categories count] > 0) {
             StringWrapper *foodProductCategory =
             [[appDelegate.loggedInUser.lastUsedFoodProductFilter.categories allObjects] objectAtIndex:0];
@@ -182,6 +183,7 @@
             if (foodProductCategoryIndex < categoriesList.count) {
                 NSMutableArray *array = [selectCategoryIndex objectForKey:@1];
                 [array addObject:[NSNumber numberWithInt:foodProductCategoryIndex]];
+                noFilter = NO;
             }
         }
         if ([appDelegate.loggedInUser.lastUsedFoodProductFilter.origins count] > 0) {
@@ -192,17 +194,21 @@
             if (foodProductOriginIndex < origins.count) {
                 NSMutableArray *array = [selectCategoryIndex objectForKey:@2];
                 [array addObject:[NSNumber numberWithInt:foodProductOriginIndex]];
+                noFilter = NO;
             }
         }
-        int favoriteWithinTimePeriod =
-        [appDelegate.loggedInUser.lastUsedFoodProductFilter.favoriteWithinTimePeriod intValue];
+        int favoriteWithinTimePeriod = [appDelegate.loggedInUser.lastUsedFoodProductFilter.favoriteWithinTimePeriod intValue];
         if (favoriteWithinTimePeriod == 7) {
             [selectCategoryIndex setObject:@1 forKey:@3];
+            noFilter = NO;
         } else if (favoriteWithinTimePeriod == 30) {
             [selectCategoryIndex setObject:@2 forKey:@3];
+            noFilter = NO;
         }
-        self.optionListView.selectIndex =
-        [self getSortOptionFromFilter:appDelegate.loggedInUser.lastUsedFoodProductFilter.sortOption.intValue];
+        self.optionListView.selectIndex = [self getSortOptionFromFilter:appDelegate.loggedInUser.lastUsedFoodProductFilter.sortOption.intValue];
+        if (noFilter) {
+            [selectCategoryIndex setObject:@0 forKey:@0];
+        }
     } else {
         [selectCategoryIndex setObject:@0 forKey:@0];
     }
@@ -237,6 +243,10 @@
     if (appDelegate.loggedInUser.useLastUsedFoodProductFilter.boolValue &&
         appDelegate.loggedInUser.lastUsedFoodProductFilter) {
         filter = appDelegate.loggedInUser.lastUsedFoodProductFilter;
+        [filter.categories removeAllObjects];
+        [filter.origins removeAllObjects];
+        
+        filter.synchronized = @NO;        
         context = [DBHelper currentThreadMoc];
     } else {
         filter = [foodProductService buildFoodProductFilter:&error];
@@ -245,8 +255,6 @@
     }
     
     filter.name = self.searchBar.text;
-    filter.categories = [NSSet set];
-    filter.origins = [NSSet set];
     filter.favoriteWithinTimePeriod = @0;
     
     if ([[selectCategoryIndex objectForKey:@1] count] > 0) {
@@ -286,10 +294,11 @@
     }
     index = [[selectCategoryIndex objectForKey:@4] intValue];
     if (index != -1) {
-        filter.categories = [DataHelper convertNSStringToNSSet:@"Vitamins / Supplements" withEntityDescription:
-                             [NSEntityDescription entityForName:@"StringWrapper"
-                                         inManagedObjectContext:[DBHelper currentThreadMoc]]
-                                        inManagedObjectContext:context withSeparator:@";"];
+        NSSet *ct = [DataHelper convertNSStringToNSSet:@"Vitamins / Supplements" withEntityDescription:
+                     [NSEntityDescription entityForName:@"StringWrapper"
+                                 inManagedObjectContext:[DBHelper currentThreadMoc]]
+                                inManagedObjectContext:context withSeparator:@";"];
+        filter.categories = [ct mutableCopy];
     }
     
     // Save last used food product filter
@@ -576,10 +585,10 @@
         self.lblSortBy.text = [self.optionListView.options objectAtIndex:index];
         [self hideSortByOption];
         
-        if ([[selectCategoryIndex objectForKey:@1] count] > 0) {
-            [selectCategoryIndex setObject:[NSMutableArray array] forKey:@1];
-            [self loadFoods];
-        }
+        // if ([[selectCategoryIndex objectForKey:@1] count] > 0) {
+        // [selectCategoryIndex setObject:[NSMutableArray array] forKey:@1];
+        // [self loadFoods];
+        // }
     }
 
     selectIndex = index;
@@ -1244,12 +1253,12 @@
             UIImageView *img = [[UIImageView alloc] initWithFrame:v.frame];
             img.image = [UIImage imageNamed:@"bg-gray-header.png"];
             [v addSubview:img];
-            UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(10, 0, width, 32)];
+            UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(64, 0, width, 32)];
             lbl.backgroundColor = [UIColor clearColor];
             lbl.textColor = [UIColor colorWithRed:0.27 green:0.27 blue:0.27 alpha:1];
             lbl.text = [foodKeys objectAtIndex:section];
             lbl.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:16];
-            lbl.textAlignment = NSTextAlignmentCenter;
+            lbl.textAlignment = NSTextAlignmentLeft;
             [v addSubview:lbl];
             img.autoresizingMask = UIViewAutoresizingFlexibleWidth;
             lbl.autoresizingMask = UIViewAutoresizingFlexibleWidth;
@@ -1367,9 +1376,9 @@
         self.btnChange.selected = NO;
         self.lblSortTitle.text = @"Sort By:";
         self.optionListView.delegate = self;
-        self.optionListView.selectIndex = 0;
+        /*self.optionListView.selectIndex = 0;
         self.optionListView.options = sortByOptionArray;
-        self.lblSortBy.text = [self.optionListView.options objectAtIndex:0];
+        self.lblSortBy.text = [self.optionListView.options objectAtIndex:0];*/
         [self.optionListView.listTable reloadData];
 
         [tableView reloadData];

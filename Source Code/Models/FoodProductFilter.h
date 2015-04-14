@@ -39,10 +39,10 @@
 @property (nonatomic, strong) NSNumber * sortOption;
 
 //Represents the food categories. The categories will be used to do IN matching for the food product category.
-@property (nonatomic, strong) NSSet *categories;
+@property (nonatomic, strong) NSMutableSet *categories;
 
 //Represents the food origins. The origins will be used to do IN matching for the food product origin.
-@property (nonatomic, strong) NSSet *origins;
+@property (nonatomic, strong) NSMutableSet *origins;
 
 //Represents whether food product is adhoc only or not
 @property (nonatomic, strong) NSNumber *adhocOnly;

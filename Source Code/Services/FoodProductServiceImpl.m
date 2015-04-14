@@ -69,6 +69,7 @@
     filter.sortOption = @(A_TO_Z);
     filter.removed = @NO;
     filter.adhocOnly = @NO;
+    filter.synchronized = @NO;
     
     [LoggingHelper logMethodExit:methodName returnValue:filter];
     return filter;
@@ -318,13 +319,17 @@
     }
     
     // Save filter and update user
+    
+    filter.synchronized = @NO;
+    
+    
     if (!filter.managedObjectContext) {
-        filter.synchronized = @NO;
-        NSSet *origins = filter.origins;
-        NSSet *categories = filter.categories;
+        NSMutableSet *origins = filter.origins;
+        NSMutableSet *categories = filter.categories;
         filter.origins = nil;
         filter.categories = nil;
         [self.managedObjectContext insertObject:filter];
+        
         // Save changes in the managedObjectContext
         [self.managedObjectContext save:error];
         
@@ -334,10 +339,11 @@
         for (StringWrapper *s in categories) {
             [self.managedObjectContext insertObject:s];
         }
-        filter.origins = origins;
-        filter.categories = categories;
+        filter.origins = [NSMutableSet setWithSet:origins];
+        filter.categories = [NSMutableSet setWithSet:categories];
         [self.managedObjectContext save:error];
     }
+    
     if (user) {
         if (user.lastUsedFoodProductFilter != nil && ![filter isEqual:user.lastUsedFoodProductFilter]) {
             user.lastUsedFoodProductFilter.synchronized = @NO;
@@ -347,6 +353,7 @@
         user.lastUsedFoodProductFilter = filter;
         user.synchronized = @NO;
     }
+    
     [self.managedObjectContext save:error];
     [LoggingHelper logError:methodName error:*error];
     [self.managedObjectContext unlock];

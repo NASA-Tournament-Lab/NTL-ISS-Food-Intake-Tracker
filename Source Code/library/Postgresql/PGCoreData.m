@@ -67,7 +67,7 @@ static NSString* reachHostName = @"";
                 canConnect = YES;
             }
             
-            [Helper showAlert:@"Success" message:@"The device has re-established the connection to the database server."];
+            [Helper showAlert:@"Success" message:@"The device has re-established the connection to the intranet."];
         };
         
         // Update connect flag and disconnect from server (this actualy is a clean up of the
@@ -79,8 +79,8 @@ static NSString* reachHostName = @"";
                 [self.pgConnection disconnect];
             }
             
-            [Helper showAlert:@"Error" message:@"The device has lost connection to the database server. \n"
-             "Don’t worry! You can still use the ISS FIT app and we will attempt to sync with the central food repository"
+            [Helper showAlert:@"Error" message:@"The device has lost connection to the intranet.\n"
+             "You can still use the ISS FIT app and we will attempt to sync with the central food repository"
              " when it is available."];
         };
         

@@ -101,6 +101,7 @@
                 existingUser.useLastUsedFoodProductFilter = user.useLastUsedFoodProductFilter;
                 if (user.lastUsedFoodProductFilter != nil) {
                     existingUser.lastUsedFoodProductFilter = user.lastUsedFoodProductFilter;
+                    existingUser.lastUsedFoodProductFilter.synchronized = @NO;
                 }
                 existingUser.dailyTargetFluid = user.dailyTargetFluid;
                 existingUser.dailyTargetEnergy = user.dailyTargetEnergy;
@@ -108,6 +109,7 @@
                 existingUser.maxPacketsPerFoodProductDaily = user.maxPacketsPerFoodProductDaily;
                 existingUser.profileImage = user.profileImage;
                 existingUser.removed = user.removed;
+                existingUser.synchronized = @NO;
             }
             
             // Save changes in the managedObjectContext

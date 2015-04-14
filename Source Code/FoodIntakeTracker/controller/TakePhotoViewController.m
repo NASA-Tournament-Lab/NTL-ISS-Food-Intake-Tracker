@@ -165,7 +165,7 @@
         stringWrapper.value = self.lblFoodCategory.text;
         stringWrapper.synchronized = @NO;
         stringWrapper.removed = @NO;
-        adhocFoodProduct.categories = [NSSet setWithObject:stringWrapper];
+        adhocFoodProduct.categories = [NSMutableSet setWithObject:stringWrapper];
         
         NSString *imagePath = [Helper saveImage:UIImageJPEGRepresentation(self.imgFood.image, 0.9)];
         adhocFoodProduct.productProfileImage = imagePath;
@@ -235,7 +235,7 @@
         }
         
         adhocFoodProduct.name = self.txtFoodName.text;
-        adhocFoodProduct.categories = [NSSet set];
+        adhocFoodProduct.categories = [NSMutableSet set];
         
         CGFloat r = self.imgFood.image.size.width / self.imgFood.image.size.height;
         UIImage *resized = [self resizeImage:self.imgFood.image newSize:CGSizeMake(r * 800, 800)];
@@ -399,7 +399,7 @@
     self.resultsView.hidden = YES;
     [self.btnResults setSelected:NO];
 }
-
+/*
 -(BOOL) recognize:(UIImage *)image {
     [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.4]];
     
@@ -431,11 +431,11 @@
         NSArray *results = [foodProductService filterFoodProducts:appDelegate.loggedInUser filter:filter error:&error];
         
         if (error || results.count == 0) {
-            /* if ([error code] == EntityNotFoundErrorCode) {
+            // if ([error code] == EntityNotFoundErrorCode) {
                 [Helper showAlert:@"Not Found" message:error.userInfo[NSLocalizedDescriptionKey]];
             } else {
                 [Helper displayError:error];
-            } */
+            } //
             succeeded = NO;
         } else {
             FoodProduct *foodProduct = [results objectAtIndex:0];
@@ -470,7 +470,7 @@
     
     [tesseract clear];
     return succeeded;
-}
+}*/
 
 /*!
  * This method will be called when the picture taking is cancelled.
