@@ -49,7 +49,7 @@
     
     self.lblResultTitle.font = [UIFont fontWithName:@"Bebas" size:24];
     
-    self.lblFoodAddedTitile.font = [UIFont fontWithName:@"Bebas" size:20];
+    self.lblFoodAddedTitile.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:20];
     
     self.imgFood.layer.borderWidth = 1;
     self.imgFood.layer.borderColor = [UIColor colorWithRed:0.54 green:0.79 blue:1 alpha:1].CGColor;
@@ -165,7 +165,7 @@
         [v addSubview:btn];
         if([selectFoods containsObject:item]){
             UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(82, 22, 29, 29)];
-            img.image = [UIImage imageNamed:@"btn-checkmark.png"];
+            img.image = [UIImage imageNamed:@"btn-chmark.png"];
             img.tag = 10;
             [v addSubview:img];
         }

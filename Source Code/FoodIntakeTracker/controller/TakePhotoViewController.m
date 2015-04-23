@@ -47,6 +47,8 @@
     [self.preview insertSubview:photoImage belowSubview:self.imgCenter];
     
     [self.scrollView setContentSize:CGSizeMake(560, 54)];
+    
+    [self take:self.takeButton];
 }
 
 /**
@@ -64,7 +66,6 @@
  */
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    [self take:self.takeButton];
 }
 
 /**
@@ -211,30 +212,29 @@
  * @param sender the button.
  */
 - (IBAction)addToConsumption:(id)sender {
-    if(self.resultView.hidden == NO){
+    if (self.resultView.hidden == NO) {
         [self.txtFoodName resignFirstResponder];
+        
         // Validate the food name
+        NSString *foodName = @"Intake From Photo";
         self.txtFoodName.text = [self.txtFoodName.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         self.txtFoodComment.text = [self.txtFoodComment.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        if (self.txtFoodName.text.length == 0) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                            message:@"Please enter food name"
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
-            [alert show];
-            return;
+        if (self.txtFoodName.text.length > 0) {
+            foodName = self.txtFoodName.text;
         }
+        
+        NSError *error = nil;
+        
         AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
         FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
-        NSError *error;
-        AdhocFoodProduct *adhocFoodProduct = [foodProductService buildAdhocFoodProduct:&error];
         
+        AdhocFoodProduct *adhocFoodProduct = [foodProductService buildAdhocFoodProduct:&error];        
         if ([Helper displayError:error]) {
             return;
         }
         
-        adhocFoodProduct.name = self.txtFoodName.text;
+        adhocFoodProduct.name = foodName;
+        adhocFoodProduct.quantity = @1;
         adhocFoodProduct.categories = [NSMutableSet set];
         
         CGFloat r = self.imgFood.image.size.width / self.imgFood.image.size.height;
@@ -259,6 +259,7 @@
         }
         
         [resultFoods addObject:adhocFoodProduct];
+        
         [self buildResults];
         
         self.btnResults.enabled = YES;
@@ -291,6 +292,7 @@
         self.resultViewFound.hidden = YES;
         self.foodAddedPopup.hidden = NO;
     }
+    
     [self addSelectedFoodsToConsumption];
 }
 
@@ -299,9 +301,28 @@
  * @param sender the button.
  */
 - (IBAction)cancelTake:(id)sender{
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Cancel" message:@"Would like to cancel photo?" delegate:self
+    /*UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Cancel" message:@"Would like to cancel photo?" delegate:self
                                               cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil];
-    [alertView show];
+    [alertView show];*/
+    
+    [self.popover dismissPopoverAnimated:YES];
+    
+    // self.imgCenter.hidden = NO;
+    self.takeButton.hidden = NO;
+    self.lblTakeButtonTitle.hidden = NO;
+    self.lblTakeButtonTitle.text = @"Take Photo";
+    [self.txtFoodName resignFirstResponder];
+    
+    [clearCover removeFromSuperview];
+    clearCover = nil;
+    self.resultView.hidden = YES;
+    self.resultViewFound.hidden = YES;
+    self.foodAddedPopup.hidden = YES;
+    self.btnAdd.hidden = YES;
+    self.resultsView.hidden = YES;
+    [self.btnResults setSelected:NO];
+    
+    [self viewSummary:nil];
 }
 
 /**
@@ -477,14 +498,27 @@
  * @param picker the UIImagePickerController
  */
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [self cancelTake:nil];
+    [self.popover dismissPopoverAnimated:YES];
+    
+    // self.imgCenter.hidden = NO;
+    self.takeButton.hidden = NO;
+    self.lblTakeButtonTitle.hidden = NO;
+    self.lblTakeButtonTitle.text = @"Take Photo";
+    [self.txtFoodName resignFirstResponder];
+    
+    [clearCover removeFromSuperview];
+    clearCover = nil;
+    self.resultView.hidden = YES;
+    self.resultViewFound.hidden = YES;
+    self.foodAddedPopup.hidden = YES;
+    self.btnAdd.hidden = YES;
+    self.resultsView.hidden = YES;
+    [self.btnResults setSelected:NO];
 }
 
 #pragma mark - PopoverControllerDelegate
 
 - (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
-    [self cancelTake:nil];
-
     return NO;
 }
 

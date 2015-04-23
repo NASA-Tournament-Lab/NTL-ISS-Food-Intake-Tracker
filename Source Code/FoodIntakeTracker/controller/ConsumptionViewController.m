@@ -306,11 +306,12 @@
     if (appDelegate.loggedInUser.fullName.length > 0){
         NSArray *names = [appDelegate.loggedInUser.fullName componentsSeparatedByString:@" "];
         // F2Finish change - Display name
-        [str appendFormat:@"    %@", names[0]];
+        [str appendFormat:@"  %@", names[0]];
         for (int i = 1; i < names.count; i++) {
-           [str appendFormat:@"   %@", names[i]];
+           [str appendFormat:@"  %@", names[i]];
         }
     }
+    [str appendFormat:@" "];
     
     if (self.lblHeaderTitle != nil) {
         CGRect textRect = [str boundingRectWithSize:self.lblHeaderTitle.frame.size
@@ -318,7 +319,7 @@
                                           attributes:@{NSFontAttributeName:self.lblHeaderTitle.font}
                                              context:nil];
         CGSize size1 = textRect.size;
-        [str appendString:@"           daily    intake    report"];
+        [str appendString:@"    Daily Intake Report"];
         self.lblHeaderTitle.text = [NSString stringWithString:str];
         [self.lblHeaderTitle sizeToFit];
         
@@ -334,7 +335,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.lblHeaderTitle.font = [UIFont fontWithName:@"Bebas" size:24];
+    self.lblHeaderTitle.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:24];
     
     selectedItems = [[NSMutableArray alloc] init];
     copyItems = [[NSMutableArray alloc] init];
@@ -342,7 +343,7 @@
     // F2Finish change
     contentOffset = [[NSMutableDictionary alloc] init];
     
-    self.lblFooterTitle.font = [UIFont fontWithName:@"Bebas" size:20];
+    self.lblFooterTitle.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:20];
     self.lblMonth.font = [UIFont fontWithName:@"Bebas" size:16];
     
     self.caloriesProgess.backgoundImage = [UIImage imageNamed:@"bg-progress.png"];
@@ -610,9 +611,9 @@
     
     NSInteger diffDays = [Helper daysFromToday:date];
     if (diffDays != 0) {
-        self.lblFooterTitle.text = [NSString stringWithFormat:@"GMT    %+d    Nutrient    Intake    Total", diffDays];
+        self.lblFooterTitle.text = [NSString stringWithFormat:@"GMT %+d Nutrient Intake Total", diffDays];
     } else {
-        self.lblFooterTitle.text = @"Today's    Nutrient    Intake    Progress";
+        self.lblFooterTitle.text = @"Today's Nutrient Intake Progress";
     }
     
     [self.foodTableView reloadData];
@@ -1322,6 +1323,7 @@
         AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
         FoodConsumptionRecordServiceImpl *recordService = appDelegate.foodConsumptionRecordService;
         NSError *error;
+        
         for (FoodProduct *product in voiceSearch.selectedFoodProducts) {
             FoodConsumptionRecord *record = [recordService buildFoodConsumptionRecord:&error];
             if ([Helper displayError:error]) return;
@@ -1930,25 +1932,17 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (voiceSearch) {
         NSString *name = @"Intake From Voice";
+        NSError *error = nil;
         
         AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
         FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
-        NSError *error;
-        FoodProduct *foodProduct = [foodProductService getFoodProductByName:appDelegate.loggedInUser
-                                                                       name:name
-                                                                      error:&error];
-        if (foodProduct) {
-            [voiceSearch.selectedFoodProducts addObject:foodProduct];
-        } else {
-            error = nil;
-            AdhocFoodProduct *product = [foodProductService buildAdhocFoodProduct:&error];
-            product.quantity = @1;
-            product.name = name;
-            [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser
-                                            product:product
-                                              error:&error];
-            [voiceSearch.selectedFoodProducts addObject:product];
-        }
+        AdhocFoodProduct *product = [foodProductService buildAdhocFoodProduct:&error];
+        product.quantity = @1;
+        product.name = name;
+        [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser
+                                        product:product
+                                          error:&error];
+        [voiceSearch.selectedFoodProducts addObject:product];
         
         [self hideVoice:nil];
     }

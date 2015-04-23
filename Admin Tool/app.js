@@ -267,7 +267,8 @@ app.get('/foods', function (req, res) {
             if (value.removed == 0) {
                 var obj = {
                     "id": row.id,
-                    "name": value.name
+                    "name": value.name,
+                    "origin": value.origin
                 };
                 rows.push(obj);
             }
@@ -326,11 +327,13 @@ app.get('/reports', function(req, res) {
         for (var i = 0; i < result.rows.length; i++) {
             var row = result.rows[i];
             var value = JSON.parse(row.value);
-            var obj = {
-                "id": row.id,
-                "name": value.fullName
-            };
-            rows.push(obj);
+            if (value.removed == 0) {
+                var obj = {
+                    "id": row.id,
+                    "name": value.fullName
+                };
+                rows.push(obj);
+            }                
         }
         console.log('REPORTS ' + JSON.stringify(rows));
 
@@ -408,8 +411,10 @@ app.post('/food', function(req, res) {
             for (var i = 0; i < results.rows.length; i++) {
                 var row = results.rows[i];
                 var value = JSON.parse(row.value);
-                if (value.name.trim() === newValue["name"].trim()) {
-                    callback("Food already exists");
+                console.log("==>  " + JSON.stringify(value));
+                if (value.name != null && value.name.trim() === newValue["name"].trim() &&
+                    value.origin != null && value.origin.trim() ==  newValue["origin"].trim()) {
+                    callback("Food with name " + value.name + " and origin " + value.origin + " already exists!");
                     return;
                 }
             }

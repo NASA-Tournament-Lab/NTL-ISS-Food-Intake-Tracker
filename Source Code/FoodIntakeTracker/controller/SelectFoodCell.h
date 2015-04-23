@@ -92,6 +92,10 @@
 /* is only fat view visible */
 @property (unsafe_unretained, nonatomic) BOOL viewFatOnly;
 
+/* is unique */
+@property (unsafe_unretained, nonatomic) BOOL isUnique;
+
 /* the food item */
 @property (weak, nonatomic) FoodProduct *food;
+
 @end
