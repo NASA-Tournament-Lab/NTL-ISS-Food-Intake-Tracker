@@ -155,10 +155,10 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         self.synchronizationService = [[SynchronizationServiceImpl alloc] initWithConfiguration:self.configuration];
         self.dataUpdateService = [[DataUpdateServiceImpl alloc] initWithConfiguration:self.configuration];
         
-        self.additionalFilesDirectory = [self.configuration valueForKey:@"LocalFileSystemDirectory"];
-        self.tesseractDataPath = [self.configuration valueForKey:@"TesseractDataPath"];
-        self.helpData = [self.configuration objectForKey:@"HelpData"];
-        self.summaryGenerationFrequency = [self.configuration objectForKey:@"SummaryGenerationFrequency"];
+        NSDictionary *localConf = [NSMutableDictionary dictionaryWithDictionary:[NSDictionary dictionaryWithContentsOfFile:configBundle]];
+        self.additionalFilesDirectory = [localConf valueForKey:@"LocalFileSystemDirectory"];
+        self.helpData = [localConf objectForKey:@"HelpData"];
+        self.summaryGenerationFrequency = [localConf objectForKey:@"SummaryGenerationFrequency"];
         
         if (!changed) {
             [self performSelector:@selector(initialLoad) withObject:nil afterDelay:0.5];

@@ -50,12 +50,6 @@
 /* the window */
 @property (strong, nonatomic) TouchWindow *window;
 
-
-/*!
- @discussion Represents Tesseract data path.
- */
-@property (strong, nonatomic) NSString *tesseractDataPath;
-
 /*!
  @discussion Represents the local file system directory to save additional files (images, voice recordings).
  */
