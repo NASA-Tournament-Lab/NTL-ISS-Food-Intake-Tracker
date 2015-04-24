@@ -519,7 +519,8 @@
 #pragma mark - PopoverControllerDelegate
 
 - (BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController {
-    return NO;
+    [self cancelTake:nil];
+    return YES;
 }
 
 - (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
