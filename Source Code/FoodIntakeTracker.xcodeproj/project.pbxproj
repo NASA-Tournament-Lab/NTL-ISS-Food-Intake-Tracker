@@ -2531,10 +2531,7 @@
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FoodIntakeTracker/FoodIntakeTracker-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					"library/zxing/iphone/ZXingWidget/Classes/**",
-					library/zxing/cpp/core/src,
-				);
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "FoodIntakeTracker/FoodIntakeTracker-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
@@ -2559,10 +2556,7 @@
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FoodIntakeTracker/FoodIntakeTracker-Prefix.pch";
-				HEADER_SEARCH_PATHS = (
-					"library/zxing/iphone/ZXingWidget/Classes/**",
-					library/zxing/cpp/core/src,
-				);
+				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "FoodIntakeTracker/FoodIntakeTracker-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
