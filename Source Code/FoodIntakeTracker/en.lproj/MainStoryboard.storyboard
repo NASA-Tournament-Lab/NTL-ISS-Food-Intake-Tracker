@@ -6242,10 +6242,6 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                 <rect key="frame" x="0.0" y="45" width="768" height="879"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="xoY-E6-mDq">
-                                <rect key="frame" x="0.0" y="46" width="768" height="879"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Try to avoid shadows and glare while scanning." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="gRL-Lp-gqv">
                                 <rect key="frame" x="148" y="801" width="475" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -6296,7 +6292,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
                             <view hidden="YES" contentMode="scaleToFill" id="lcJ-6u-OL2" userLabel="View - result">
-                                <rect key="frame" x="0.0" y="0.0" width="768" height="1004"/>
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="925"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-result-panel.png" id="ywA-ZZ-GXd">
@@ -6304,7 +6300,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" id="pXq-52-lWQ">
-                                        <rect key="frame" x="169" y="189" width="430" height="406"/>
+                                        <rect key="frame" x="169" y="189" width="430" height="327"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     </imageView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="fF4-Mn-crR">
@@ -6692,7 +6688,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="XWp-NK-qVi">
-                                        <rect key="frame" x="15" y="88" width="193" height="43"/>
+                                        <rect key="frame" x="10" y="88" width="203" height="43"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="16"/>
                                         <state key="normal" title="View Daliy Intake Report" backgroundImage="btn-blue.png">
@@ -6707,7 +6703,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="Lrm-Rw-jl8">
-                                        <rect key="frame" x="226" y="88" width="193" height="43"/>
+                                        <rect key="frame" x="223" y="88" width="203" height="43"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="16"/>
                                         <state key="normal" title="Scan Another Barcode" backgroundImage="btn-blue.png">
@@ -6737,7 +6733,6 @@ Unfortunately, the nutritional content will not be immediately available in the 
                         <outlet property="btnTake" destination="xWH-Bz-ruV" id="8eq-jb-0jv"/>
                         <outlet property="foodAddedPopup" destination="Aqn-MZ-9UU" id="gg5-SG-7nj"/>
                         <outlet property="footer" destination="SyX-6N-7vs" id="hHl-vP-UWQ"/>
-                        <outlet property="imgBG" destination="xoY-E6-mDq" id="hZS-7a-G2E"/>
                         <outlet property="imgBracket" destination="6IZ-4H-PAx" id="dlV-bG-9wK"/>
                         <outlet property="imgFood" destination="pXq-52-lWQ" id="2AU-K0-jAK"/>
                         <outlet property="lblCalories" destination="XHW-vc-Xeb" id="isV-NI-9F3"/>

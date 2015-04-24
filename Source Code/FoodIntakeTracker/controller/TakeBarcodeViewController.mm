@@ -28,6 +28,8 @@
 
 #import "MTBBarcodeScanner.h"
 
+#define BARCODE_VIEW_TAG 9999
+
 @implementation TakeBarcodeViewController
 
 /**
@@ -86,28 +88,10 @@
     [self.btnTake setEnabled:NO];
     [self.lblTakeButtonTitle setTextColor:[UIColor colorWithRed:0.6 green:0.6 blue:0.6 alpha:1]];
     
-    self.imgBG.hidden = YES;
     self.imgBracket.hidden = YES;
     self.scanLine.hidden = YES;
     self.lblNoteBottom.hidden = YES;
     self.prgProcess.progress = 0;
-    //self.processView.hidden = NO;
-    //[self.view bringSubviewToFront:self.processView];
-    
-    /*ZXingWidgetController *widController = [[ZXingWidgetController alloc] initWithDelegate:self
-                                                                                showCancel:YES
-                                                                                  OneDMode:NO
-                                                                               showLicense:NO];    
-    
-    
-    NSMutableSet *readers = [[NSMutableSet alloc ] init];
-    
-    MultiFormatReader* reader = [[MultiFormatReader alloc] init];
-    [readers addObject:reader];
-    
-    widController.readers = readers;
-    
-    [self presentModalViewController:widController animated:YES];*/
 
     [self startScan];
 }
@@ -115,13 +99,21 @@
 - (void)startScan {
     UIView *previewView = [[UIView alloc] initWithFrame:CGRectMake(84, 100, 600, 750)];
     [previewView setBackgroundColor:[UIColor clearColor]];
-    [previewView setTag:9999];
+    [previewView setTag:BARCODE_VIEW_TAG];
     [self.view addSubview:previewView];
     scanner = [[MTBBarcodeScanner alloc] initWithPreviewView:previewView];
     
     [MTBBarcodeScanner requestCameraPermissionWithSuccess:^(BOOL success) {
-        if (success) {            
+        if (success) {
+            isBusy = NO;
             [scanner startScanningWithResultBlock:^(NSArray *codes) {
+                [scanner stopScanning];
+                
+                if (isBusy) {
+                    return;
+                }
+                isBusy = YES;
+                
                 AVMetadataMachineReadableCodeObject *code = [codes firstObject];
                 NSString *result = code.stringValue;
                 
@@ -148,8 +140,7 @@
                         [Helper displayError:error];
                         return;
                     }
-                }
-                else {
+                } else {
                     [resultFoods addObject:foodProduct];
                     
                     self.resultView.hidden = NO;
@@ -172,10 +163,8 @@
                 }
                 
                 [self.btnTake setEnabled:YES];
-                [[self.view viewWithTag:9999] removeFromSuperview];
                 
-                [scanner stopScanning];
-                
+                [[self.view viewWithTag:BARCODE_VIEW_TAG] removeFromSuperview];
                 scanner = nil;
             }];
         } else {
@@ -236,6 +225,7 @@
     self.lblProtein.text = [NSString stringWithFormat:@"%@",foodProduct.protein];
     self.lblCarb.text = [NSString stringWithFormat:@"%@",foodProduct.carb];
     self.lblFat.text = [NSString stringWithFormat:@"%@",foodProduct.fat];
+
     [self.scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     [self buildResults];
     
