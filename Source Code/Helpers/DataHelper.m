@@ -339,4 +339,23 @@
     return YES;
 }
 
+
++ (BOOL) checkNameUnique:(NSArray *) array withFood:(FoodProduct *) currentFood {
+    NSUInteger index = [array indexOfObjectPassingTest:^(id obj, NSUInteger idx, BOOL *stop) {
+        FoodProduct *food = obj;
+        if ([obj isKindOfClass:[FoodConsumptionRecord class]]) {
+            food = [obj foodProduct];
+        }
+        if ([food.name isEqualToString:currentFood.name] &&
+            ![food.uuid isEqualToString:currentFood.uuid]) {
+            *stop = YES;  // keeps us from returning multiple students with same name
+            return YES;
+        } else
+            return NO;
+    }];
+    
+    return index == NSNotFound;
+}
+
+
 @end

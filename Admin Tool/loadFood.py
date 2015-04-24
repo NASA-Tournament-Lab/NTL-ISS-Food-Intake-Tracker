@@ -76,12 +76,13 @@ try:
                     continue
 
                 foodName = xstr(row[0]).strip()
-                if not foodName:
+                origin = xstr(row[2]).strip()
+                if not foodName or not origin:
                     continue
 
                 food[u"name"] = foodName
                 food[u"categories"] = checkCategories(cur, row[1].strip())
-                food[u"origin"] = row[2].strip()
+                food[u"origin"] = origin
                 food[u"barcode"] = row[3].strip()
                 food[u"fluid"] = float(row[4])
                 food[u"energy"] = float(row[5])
@@ -94,7 +95,7 @@ try:
                 food[u"active"] = 1
                 food[u"synchronized"] = 1
 
-                foodMatch = next((l for l in foods if l.get(u"name","").strip() == foodName), None)
+                foodMatch = next((l for l in foods if l.get(u"name","").strip() == foodName and l.get(u"origin","").strip() == origin), None)
                 if foodMatch is None:
                     found = False
                     id = None

@@ -21,7 +21,6 @@
 
 #import <UIKit/UIKit.h>
 #import "TakePhotoViewController.h"
-#import "ZXingWidgetController.h"
 
 @class MTBBarcodeScanner;
 
@@ -35,8 +34,9 @@
  * @version 1.1
  * @since 1.0
  */
-@interface TakeBarcodeViewController : TakeBaseViewController<UISearchBarDelegate, ZXingDelegate> {
+@interface TakeBarcodeViewController : TakeBaseViewController<UISearchBarDelegate> {
     MTBBarcodeScanner *scanner;
+    BOOL isBusy;
 }
 
 /* the note label at top */
@@ -45,8 +45,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblNoteBottom;
 /* the photo image */
 @property (weak, nonatomic) IBOutlet UIImageView *imgPhoto;
-/* the background image view */
-@property (weak, nonatomic) IBOutlet UIImageView *imgBG;
 /* the scan line image view */
 @property (weak, nonatomic) IBOutlet UIView *scanLine;
 /* the bracket image view */

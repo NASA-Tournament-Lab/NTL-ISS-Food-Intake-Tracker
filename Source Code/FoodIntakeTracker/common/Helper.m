@@ -82,13 +82,17 @@ static NSArray *monthNameArray = nil;
  * @return the file path
  */
 + (NSString *)saveImage2:(UIImage *)image {
-    CGSize newSize = CGSizeMake(480, 300);
-    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
-    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
+    if (image.size.width > 480) {
+        CGSize newSize = CGSizeMake(480, 480);
+        UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+        [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+        UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
     
-    return [Helper saveImage:UIImageJPEGRepresentation(newImage, 0.9)];
+        return [Helper saveImage:UIImageJPEGRepresentation(newImage, 0.9)];
+    }
+    
+    return [Helper saveImage:UIImageJPEGRepresentation(image, 0.9)];
 }
 
 /*!

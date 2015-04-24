@@ -168,7 +168,6 @@
     self.registerUserNamePanel.hidden = NO;
     self.registerPhotoPanel.hidden = YES;
     self.registerFinishPanel.hidden = YES;
-    
 }
 
 /**
@@ -222,6 +221,8 @@
     [self.txtPassword resignFirstResponder];
     [self.txtUserName resignFirstResponder];
     self.loginGridView.imgPhotoCover.frame = CGRectMake(0, 0, 320, 0);
+    self.loginGridView.layer.borderColor = [UIColor darkGrayColor].CGColor;
+    self.loginGridView.layer.borderWidth = 1.0f;
     [self.loginGridView setNeedsDisplay];
 }
 
@@ -541,9 +542,11 @@
     self.btnRetakePhoto.hidden = NO;
     self.lblTakeingPhoto.hidden = YES;
     self.loginGridView.imgPhotoCover.frame = CGRectMake(0, 0, 320, 200);
+    self.loginGridView.imgTakePhoto.frame = CGRectMake(70, 10, 180, 180);
+    self.loginGridView.imgTakePhoto.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    self.loginGridView.imgTakePhoto.layer.borderWidth = 1.0f;
     [self.loginGridView setNeedsDisplay];
-
-    
+   
     [self.popover dismissPopoverAnimated:YES];
 }
 

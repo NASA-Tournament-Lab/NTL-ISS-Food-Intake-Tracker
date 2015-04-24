@@ -453,7 +453,7 @@
     NSArray *result = [self.managedObjectContext executeFetchRequest:request error:error];
     [LoggingHelper logError:methodName error:*error];
     
-    //return food product if user is nil and name matches; or return adhoc food product if user is not nil and name matches
+    // return food product if user is nil and name matches; or return adhoc food product if user is not nil and name matches
     FoodProduct *ret = nil;
     if (result.count > 0) {
         for (FoodProduct *p in result) {

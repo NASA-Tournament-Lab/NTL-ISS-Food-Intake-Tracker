@@ -33,7 +33,8 @@
 - (void)drawRect:(CGRect)rect{
     if(self.food){
         NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];        
-        self.lblName.text = self.food.name;
+        self.lblName.text = self.isUnique ? self.food.name : [NSString stringWithFormat:@"%@ - %@", self.food.name,
+                                                              self.food.origin];
         
         self.lblCalories.text = [NSString stringWithFormat:@"%@", self.food.energy];
         self.lblSodium.text = [NSString stringWithFormat:@"%@", self.food.sodium];
@@ -41,8 +42,7 @@
         self.lblProtein.text = [NSString stringWithFormat:@"%@", self.food.protein];
         self.lblCarb.text = [NSString stringWithFormat:@"%@", self.food.carb];
         self.lblFat.text = [numberFormatter stringFromNumber:self.food.fat];
-    }
-    else{
+    } else {
         self.lblName.text = @"";        
         self.lblCalories.text = @"";
         self.lblSodium.text = @"";

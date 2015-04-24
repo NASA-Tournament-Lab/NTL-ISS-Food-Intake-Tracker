@@ -21,7 +21,6 @@ DROP TABLE public.media;
 DROP TABLE public.devices;
 DROP TABLE public.data;
 DROP FUNCTION public.bytea_import(p_path text, OUT p_result bytea);
-DROP EXTENSION plpgsql;
 DROP SCHEMA public;
 --
 -- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
@@ -37,21 +36,6 @@ ALTER SCHEMA public OWNER TO postgres;
 --
 
 COMMENT ON SCHEMA public IS 'standard public schema';
-
-
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
---
-
-CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
 
 SET search_path = public, pg_catalog;
 

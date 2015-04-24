@@ -90,4 +90,6 @@
 + (BOOL)convertJSONToObject:(NSString *) theId jsonValue:(NSDictionary *) dict name:(NSString *) name
                     managegObjectContext:(NSManagedObjectContext *) managedObjectContext;
 
++ (BOOL) checkNameUnique:(NSArray *) array withFood:(FoodProduct *) currentFood;
+
 @end

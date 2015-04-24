@@ -23,12 +23,12 @@
 #import "TakePhotoViewController.h"
 #import "Helper.h"
 #import "DataHelper.h"
-
-#import <MultiFormatReader.h>
 #import "AppDelegate.h"
 #import "FoodProductServiceImpl.h"
 
 #import "MTBBarcodeScanner.h"
+
+#define BARCODE_VIEW_TAG 9999
 
 @implementation TakeBarcodeViewController
 
@@ -88,28 +88,10 @@
     [self.btnTake setEnabled:NO];
     [self.lblTakeButtonTitle setTextColor:[UIColor colorWithRed:0.6 green:0.6 blue:0.6 alpha:1]];
     
-    self.imgBG.hidden = YES;
     self.imgBracket.hidden = YES;
     self.scanLine.hidden = YES;
     self.lblNoteBottom.hidden = YES;
     self.prgProcess.progress = 0;
-    //self.processView.hidden = NO;
-    //[self.view bringSubviewToFront:self.processView];
-    
-    /*ZXingWidgetController *widController = [[ZXingWidgetController alloc] initWithDelegate:self
-                                                                                showCancel:YES
-                                                                                  OneDMode:NO
-                                                                               showLicense:NO];    
-    
-    
-    NSMutableSet *readers = [[NSMutableSet alloc ] init];
-    
-    MultiFormatReader* reader = [[MultiFormatReader alloc] init];
-    [readers addObject:reader];
-    
-    widController.readers = readers;
-    
-    [self presentModalViewController:widController animated:YES];*/
 
     [self startScan];
 }
@@ -117,13 +99,21 @@
 - (void)startScan {
     UIView *previewView = [[UIView alloc] initWithFrame:CGRectMake(84, 100, 600, 750)];
     [previewView setBackgroundColor:[UIColor clearColor]];
-    [previewView setTag:9999];
+    [previewView setTag:BARCODE_VIEW_TAG];
     [self.view addSubview:previewView];
     scanner = [[MTBBarcodeScanner alloc] initWithPreviewView:previewView];
     
     [MTBBarcodeScanner requestCameraPermissionWithSuccess:^(BOOL success) {
-        if (success) {            
+        if (success) {
+            isBusy = NO;
             [scanner startScanningWithResultBlock:^(NSArray *codes) {
+                [scanner stopScanning];
+                
+                if (isBusy) {
+                    return;
+                }
+                isBusy = YES;
+                
                 AVMetadataMachineReadableCodeObject *code = [codes firstObject];
                 NSString *result = code.stringValue;
                 
@@ -150,8 +140,7 @@
                         [Helper displayError:error];
                         return;
                     }
-                }
-                else {
+                } else {
                     [resultFoods addObject:foodProduct];
                     
                     self.resultView.hidden = NO;
@@ -174,10 +163,8 @@
                 }
                 
                 [self.btnTake setEnabled:YES];
-                [[self.view viewWithTag:9999] removeFromSuperview];
                 
-                [scanner stopScanning];
-                
+                [[self.view viewWithTag:BARCODE_VIEW_TAG] removeFromSuperview];
                 scanner = nil;
             }];
         } else {
@@ -238,6 +225,7 @@
     self.lblProtein.text = [NSString stringWithFormat:@"%@",foodProduct.protein];
     self.lblCarb.text = [NSString stringWithFormat:@"%@",foodProduct.carb];
     self.lblFat.text = [NSString stringWithFormat:@"%@",foodProduct.fat];
+
     [self.scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     [self buildResults];
     
@@ -250,66 +238,6 @@
     //[self dismissModalViewControllerAnimated:NO];
     [self dismissViewControllerAnimated:NO completion:nil];
     [self.searchBar resignFirstResponder];
-}
-
-#pragma mark - ZXingDelegate methods
-/*!
- * This method will be called when the barcode is recognized.
- * @param controller the ZXingWidgetController
- * @param result the result barcode
- */
-- (void)zxingController:(ZXingWidgetController *)controller didScanResult:(NSString *)result {
-    AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
-    FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
-    NSError *error;
-    
-    NSLog(@"Barcode scan results: %@", result);
-    
-    FoodProduct* foodProduct = [foodProductService getFoodProductByBarcode:appDelegate.loggedInUser
-                                                                   barcode:result
-                                                                     error:&error];
-    if (error) {
-        if ([error code] == EntityNotFoundErrorCode) {
-            [Helper showAlert:@"Not Found" message:error.userInfo[NSLocalizedDescriptionKey]];
-        }
-        else {
-            [Helper displayError:error];
-            return;
-        }
-    }
-    else {
-        [resultFoods addObject:foodProduct];
-        
-        self.resultView.hidden = NO;
-        self.imgFood.image = [Helper loadImage:foodProduct.productProfileImage];
-        self.lblFoodName.text = foodProduct.name;
-        self.lblFoodCategory.text = [DataHelper convertStringWrapperNSSetToNSString:foodProduct.categories withSeparator:@", "];
-        self.lblCalories.text = [NSString stringWithFormat:@"%@",foodProduct.energy];
-        self.lblSodium.text = [NSString stringWithFormat:@"%@",foodProduct.sodium];
-        self.lblFluid.text = [NSString stringWithFormat:@"%@",foodProduct.fluid];
-        self.lblProtein.text = [NSString stringWithFormat:@"%@",foodProduct.protein];
-        self.lblCarb.text = [NSString stringWithFormat:@"%@",foodProduct.carb];
-        self.lblFat.text = [NSString stringWithFormat:@"%@",foodProduct.fat];
-
-        [self buildResults];
-        
-        [self.view bringSubviewToFront:self.resultView];
-        self.lblTakeButtonTitle.text = @"Scan Another Barcode";
-        [self.lblTakeButtonTitle setTextColor:[UIColor colorWithRed:0.2 green:0.43 blue:0.62 alpha:1]];
-        [self.btnResults setEnabled:YES];
-    }
-    
-    [self.btnTake setEnabled:YES];
-    //[self dismissModalViewControllerAnimated:NO];
-}
-
-/*!
- * This method will be called when the scanning is cancelled.
- * @param controller the ZXingWidgetController
- */
-- (void)zxingControllerDidCancel:(ZXingWidgetController *)controller {
-    //[self dismissModalViewControllerAnimated:NO];
-    [self.btnTake setEnabled:YES];
 }
 
 @end

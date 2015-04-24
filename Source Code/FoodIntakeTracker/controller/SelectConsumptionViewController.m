@@ -101,8 +101,11 @@
             break;
         }
     }*/
-    self.lblTitle.font = [UIFont fontWithName:@"Bebas" size:24];
-    self.lblSubTitle.font = [UIFont fontWithName:@"Bebas" size:17];
+    self.lblTitle.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:24];
+    self.lblTitle.text = @"Food Inventory";
+    self.lblSubTitle.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:17];
+    self.lblSubTitle.text = @"Categories";
+    
     self.lblInfoTitle.font = [UIFont fontWithName:@"Bebas" size:20];
     
     self.btnChange.hidden = YES;
@@ -901,7 +904,7 @@
         [v addSubview:img];
         UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(20, 153, 147, 17)];
         lbl.backgroundColor = [UIColor clearColor];
-        lbl.font = [UIFont fontWithName:@"Helvetica Neue" size:15];
+        lbl.font = [UIFont fontWithName:@"HelveticaNeue" size:15];
         lbl.text = item.name;
         lbl.textColor = [UIColor colorWithRed:0.27 green:0.27 blue:0.27 alpha:1];
         [v addSubview:lbl];
@@ -961,6 +964,7 @@
 }
 
 #pragma mark - UISearchBarDelegate methods
+
 /**
  * called when keyboard search button pressed. Perform filtering here. Just leave empty now.
  * @param searchBar the searchBar.
@@ -1033,7 +1037,11 @@
             AdhocFoodProduct *product = result[i];
             NSString *productName = [product.name uppercaseString];
             if ([searchText isEqualToString:@""] || [productName rangeOfString:[searchText uppercaseString]].location != NSNotFound) {
-                [suggestions addObject:product.name];
+                if ([DataHelper checkNameUnique:result withFood:product]) {
+                    [suggestions addObject:product.name];
+                } else {
+                    [suggestions addObject:[NSString stringWithFormat:@"%@ - %@", product.name, product.origin]];
+                }
             }
         }
         self.suggestionTableView.suggestions = suggestions;
@@ -1136,12 +1144,11 @@
             NSNumber *n = [selectCategoryIndex objectForKey:[NSNumber numberWithInt:sec]];
             found = (n != nil &&  n.intValue == row);
         }
-        if(found){
+        if (found) {
             cell.textLabel.textColor = [UIColor whiteColor];
             cell.contentView.backgroundColor = [UIColor colorWithRed:0.27 green:0.27 blue:0.27 alpha:1];
             [cell viewWithTag:100].hidden = YES;
-        }
-        else{
+        } else {
             cell.textLabel.textColor = [UIColor colorWithRed:0.2 green:0.43 blue:0.62 alpha:1];
             cell.contentView.backgroundColor = [UIColor clearColor];
             [cell viewWithTag:100].hidden = NO;
@@ -1159,23 +1166,25 @@
         }
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
         return cell;
-    }
-    else{
+    } else {
         SelectFoodCell *cell = (SelectFoodCell *)[tableView
                                                   dequeueReusableCellWithIdentifier:@"SelectFoodCellIdentifier"];
         FoodProduct *item = nil;
         BOOL isLast = NO;
-        if(selectIndex < 2){
+        if (selectIndex < 2) {
             item = [[foodDict valueForKey:[foodKeys objectAtIndex:indexPath.section]]
                     objectAtIndex:indexPath.row];
-            if(indexPath.row == [[foodDict valueForKey:[foodKeys objectAtIndex:indexPath.section]] count] - 1){
+            if (indexPath.row == [[foodDict valueForKey:[foodKeys objectAtIndex:indexPath.section]] count] - 1){
                 isLast = YES;
             }
-        }
-        else{
+            
+            cell.isUnique = [DataHelper checkNameUnique:[foodDict valueForKey:[foodKeys objectAtIndex:indexPath.section]]
+                                         withFood:item];
+        } else {
             item = [foodList objectAtIndex:indexPath.row];
+            cell.isUnique = [DataHelper checkNameUnique:foodList withFood:item];
         }
-        if(self.rightTable.frame.size.width > 454){
+        if (self.rightTable.frame.size.width > 454) {
             cell.scrollView.frame = CGRectMake(245, 0, 285, 54);
         }
         cell.food = item;

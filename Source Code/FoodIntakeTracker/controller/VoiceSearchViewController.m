@@ -48,7 +48,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.lblTitle.font = [UIFont fontWithName:@"Bebas" size:24];
+    self.lblTitle.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:24];
+    self.lblTitle.text = @"Record Food Intake";
+    
     // Initialize OpenEars
     pocketsphinxController = [[PocketsphinxController alloc] init];
     pocketsphinxController.returnNbest = TRUE;
@@ -177,7 +179,7 @@
         [v addSubview:img];
         UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(20, 128, 100, 17)];
         lbl.backgroundColor = [UIColor clearColor];
-        lbl.font = [UIFont fontWithName:@"Helvetica Neue" size:15];
+        lbl.font = [UIFont fontWithName:@"HelveticaNeue" size:15];
         lbl.text = product.name;
         lbl.textColor = [UIColor colorWithRed:0.27 green:0.27 blue:0.27 alpha:1];
         [v addSubview:lbl];

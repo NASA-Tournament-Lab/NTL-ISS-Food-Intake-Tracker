@@ -191,7 +191,7 @@
     /* A boolean value indicates help page is showing or not */
     BOOL isShowingHelp;
     /* the help item array */
-    NSDictionary *helpItems;
+    NSMutableDictionary *helpItems;
     /* the setting navigation item array */
     NSMutableArray *settingItems;
     /* the select index of navigation table. */
@@ -205,11 +205,6 @@
 @end
 
 @implementation HelpSettingViewController
-
-// sort help items array
-NSComparisonResult helpItemsSorter(NSString *helpA, NSString *helpB, void * context) {
-    return [helpA compare:helpB];
-}
 
 /**
  * called when help setting page will appear. We set default view here.
@@ -250,10 +245,23 @@ NSComparisonResult helpItemsSorter(NSString *helpA, NSString *helpB, void * cont
                               barMetrics:UIBarMetricsDefault];
     
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-    helpItems = [NSDictionary dictionaryWithDictionary:appDelegate.helpData];
-    helpTitles = [helpItems allKeys];
+    helpItems = [NSMutableDictionary dictionaryWithDictionary:appDelegate.helpData];
+    helpTitles = [helpItems keysSortedByValueUsingComparator:^(id a, id b) {
+        int first = [self itemHelp:a];
+        int second = [self itemHelp:b];
+        
+        if ( first < second ) {
+            return (NSComparisonResult)NSOrderedAscending;
+        } else if ( first > second ) {
+            return (NSComparisonResult)NSOrderedDescending;
+        } else {
+            return (NSComparisonResult)NSOrderedSame;
+        }
+    }];
+    
+    /*helpTitles = [helpItems allKeys];
     helpTitles = [NSArray arrayWithArray:[[helpItems allKeys] sortedArrayUsingFunction:helpItemsSorter
-                                                                               context:(__bridge void *)(self)]];
+                                                                               context:(__bridge void *)(self)]];*/
     
     //init setting options
     settingItems = [[NSMutableArray alloc] initWithObjects:
@@ -272,6 +280,17 @@ NSComparisonResult helpItemsSorter(NSString *helpA, NSString *helpB, void * cont
     self.settingFilter.delegate = self;
     [self.settingFilter setNeedsDisplay];
     [[NSNotificationCenter defaultCenter] postNotificationName:AutoLogoutRenewEvent object:nil];
+}
+
+- (int)itemHelp:(id) item {
+    NSString *str = item;
+    int value = 0;
+    NSArray *array = [str componentsSeparatedByString:@"-"];
+    for (int i = 0; i < 3; i++) {
+        int x = [[array objectAtIndex:i] integerValue];
+        value += pow(10, 3 - i) * x;
+    }
+    return value;
 }
 
 /**
