@@ -2265,7 +2265,7 @@ Sun,  21st April 2014</string>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
-                            <view contentMode="scaleToFill" id="ixN-hp-XWH" userLabel="View - option popup">
+                            <view hidden="YES" contentMode="scaleToFill" id="ixN-hp-XWH" userLabel="View - option popup">
                                 <rect key="frame" x="456" y="152" width="305" height="225"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
@@ -5313,7 +5313,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker.png" id="mFz-7O-cF6">
-                                        <rect key="frame" x="-1" y="15" width="369" height="378"/>
+                                        <rect key="frame" x="-1" y="14.999999318804063" width="369" height="378"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker-arrow.png" id="a2G-PT-vR1">
