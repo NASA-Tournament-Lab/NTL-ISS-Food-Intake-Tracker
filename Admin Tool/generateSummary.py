@@ -66,7 +66,10 @@ try:
     for record in cur:
         obj = json.loads(record[2])
         obj[u"id"] = record[0]
-        if record[1] == "User":
+        removed = obj.get(u"removed", "")
+        if not removed:
+            continue
+        if record[1] == "User" and obj[u"removed"] == 0:
             if selected is None:
                 users.append(obj)
             elif obj[u"id"] in selected.split(','):
@@ -89,6 +92,10 @@ try:
 
     # Loop over all users in database
     for user in users:
+        fullName = xstr(user[u"fullName"]).strip()
+        if not fullName:
+            continue
+
         # Create directories - if necessary
         directory = user[u"fullName"]
         if not os.path.exists(directory):

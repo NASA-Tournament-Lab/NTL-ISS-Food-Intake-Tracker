@@ -694,7 +694,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <imageView userInteractionEnabled="NO" tag="20" contentMode="scaleToFill" image="icon-logout.png" id="Sso-2u-hU6">
-                                                <rect key="frame" x="42" y="11" width="22" height="33"/>
+                                                <rect key="frame" x="37" y="11" width="33" height="34"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             </imageView>
                                         </subviews>
@@ -2339,25 +2339,25 @@ Sun,  21st April 2014</string>
                                             <segue destination="nQs-7Y-wf1" kind="push" identifier="" id="bWL-WM-SBI"/>
                                         </connections>
                                     </button>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Scan Barcode" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="mtM-JO-rjA">
-                                        <rect key="frame" x="77" y="102" width="176" height="29"/>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Scan Barcode" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="mtM-JO-rjA">
+                                        <rect key="frame" x="64" y="102" width="176" height="29"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="17"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="btn-snap.png" id="HiP-JM-gMD">
+                                    <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" image="btn-snap.png" id="HiP-JM-gMD">
                                         <rect key="frame" x="38" y="43" width="28" height="29"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Snap A Photo" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ndH-b1-cfP">
-                                        <rect key="frame" x="77" y="43" width="176" height="29"/>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Snap A Photo" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ndH-b1-cfP">
+                                        <rect key="frame" x="64" y="43" width="176" height="29"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="17"/>
                                         <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="btn-scan.png" id="Pcc-Rv-ubg">
+                                    <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" image="btn-scan.png" id="Pcc-Rv-ubg">
                                         <rect key="frame" x="38" y="108" width="28" height="23"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
@@ -5313,7 +5313,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker.png" id="mFz-7O-cF6">
-                                        <rect key="frame" x="-1" y="15" width="369" height="377.99999677047117"/>
+                                        <rect key="frame" x="-1" y="15" width="369" height="377.99999931880404"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker-arrow.png" id="a2G-PT-vR1">
@@ -6907,7 +6907,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
         <image name="icon-fluid.png" width="49" height="49"/>
         <image name="icon-help-setting.png" width="34" height="35"/>
         <image name="icon-logo.png" width="182" height="181"/>
-        <image name="icon-logout.png" width="22" height="33"/>
+        <image name="icon-logout.png" width="34" height="34"/>
         <image name="icon-photo-list.png" width="128" height="128"/>
         <image name="icon-photo-take.png" width="152" height="185"/>
         <image name="icon-photo.png" width="46" height="50"/>
