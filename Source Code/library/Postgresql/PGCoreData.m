@@ -65,23 +65,23 @@ static NSString* reachHostName = @"";
         reach.reachableBlock = ^(Reachability*reach) {
             @synchronized(self) {
                 canConnect = YES;
+                
+                [Helper showAlert:@"Success" message:@"The device has re-established the connection to the intranet."];
             }
-            
-            [Helper showAlert:@"Success" message:@"The device has re-established the connection to the intranet."];
         };
         
         // Update connect flag and disconnect from server (this actualy is a clean up of the
-        // libary.
+        // library.
         reach.unreachableBlock = ^(Reachability*reach) {
             @synchronized(self) {
                 canConnect = NO;
                 
-                [self.pgConnection disconnect];
+                [self.pgConnection performSelectorInBackground:@selector(disconnect) withObject:nil];
+                
+                [Helper showAlert:@"Error" message:@"The device has lost connection to the intranet.\n"
+                 "You can still use the ISS FIT app and we will attempt to sync with the central food repository"
+                 " when it is available."];
             }
-            
-            [Helper showAlert:@"Error" message:@"The device has lost connection to the intranet.\n"
-             "You can still use the ISS FIT app and we will attempt to sync with the central food repository"
-             " when it is available."];
         };
         
         // Start the notifier, which will cause the reachability object to retain itself!

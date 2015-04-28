@@ -694,7 +694,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <imageView userInteractionEnabled="NO" tag="20" contentMode="scaleToFill" image="icon-logout.png" id="Sso-2u-hU6">
-                                                <rect key="frame" x="42" y="11" width="22" height="33"/>
+                                                <rect key="frame" x="42" y="11" width="33" height="34"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             </imageView>
                                         </subviews>
