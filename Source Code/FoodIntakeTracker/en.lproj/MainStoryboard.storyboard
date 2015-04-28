@@ -694,7 +694,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <imageView userInteractionEnabled="NO" tag="20" contentMode="scaleToFill" image="icon-logout.png" id="Sso-2u-hU6">
-                                                <rect key="frame" x="42" y="11" width="33" height="34"/>
+                                                <rect key="frame" x="37" y="11" width="33" height="34"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             </imageView>
                                         </subviews>
@@ -5313,7 +5313,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker.png" id="mFz-7O-cF6">
-                                        <rect key="frame" x="-1" y="14.999999318804063" width="369" height="378"/>
+                                        <rect key="frame" x="-1" y="15" width="369" height="377.99999931880404"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker-arrow.png" id="a2G-PT-vR1">
