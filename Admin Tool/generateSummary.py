@@ -66,17 +66,19 @@ try:
     for record in cur:
         obj = json.loads(record[2])
         obj[u"id"] = record[0]
-        removed = obj.get(u"removed", "")
-        if not removed:
+        removed = obj.get(u"removed", None)
+        if removed is None:
             continue
-        if record[1] == "User" and obj[u"removed"] == 0:
+        if record[1] == "User" and removed == 0:
             if selected is None:
                 users.append(obj)
             elif obj[u"id"] in selected.split(','):
                 users.append(obj)
         elif record[1] in ("FoodProduct", "AdhocFoodProduct"):
-            foods.append(obj)
-        elif record[1] == "FoodConsumptionRecord" and obj[u"removed"] == 0:
+            name = obj.get(u"name", None)
+            if name is not None:
+                foods.append(obj)
+        elif record[1] == "FoodConsumptionRecord" and removed == 0:
             timestamp = datetime.strptime(obj[u"timestamp"][:-6], "%Y-%m-%d %H:%M:%S")
             if timestamp >= sDate and timestamp < eDate: # select only records inside this date
                 records.append(obj)
@@ -116,32 +118,38 @@ try:
         recordMatch = (l for l in records if l[u"user"] == user[u"id"])
         for record in recordMatch:
             food = next((l for l in foods if l[u"id"] == record[u"foodProduct"]), None)
-            row = []
-            row.append(user[u"fullName"])
-            row.append(record[u"timestamp"])
-            row.append(food[u"name"])
-            row.append(record[u"quantity"])
-            row.append(xstr(record.get(u"comment", "")) .replace ("\n", " "))
+            if food is None:
+                print "No food found for user " + user[u"fullName"] + " at " + record[u"timestamp"]
+                continue
+            try:
+                row = []
+                row.append(user[u"fullName"])
+                row.append(record[u"timestamp"])
+                row.append(food[u"name"])
+                row.append(record[u"quantity"])
+                row.append(xstr(record.get(u"comment", "")) .replace ("\n", " "))
 
-            imagesToSave = []
-            for image in filter(None, record.get(u"images", "").split(";")):
-                cur.execute("SELECT value FROM data WHERE id='" + image + "';")
-                obj = json.loads(cur.fetchone()[0])
-                match = next((l for l in medias if l[u"filename"] == obj[u'value']), None)
-                open("media/" + match[u"filename"], 'wb').write(str(match[u"data"]))
-                imagesToSave.append(match[u"filename"])
-            row.append(";".join(imagesToSave))
+                imagesToSave = []
+                for image in filter(None, record.get(u"images", "").split(";")):
+                    cur.execute("SELECT value FROM data WHERE id='" + image + "';")
+                    obj = json.loads(cur.fetchone()[0])
+                    match = next((l for l in medias if l[u"filename"] == obj[u'value']), None)
+                    open("media/" + match[u"filename"], 'wb').write(str(match[u"data"]))
+                    imagesToSave.append(match[u"filename"])
+                row.append(";".join(imagesToSave))
 
-            voicesToSave = []
-            for voice in filter(None, record.get(u"voiceRecordings", "").split(";")):
-                cur.execute("SELECT value FROM data WHERE id='" + voice + "';")
-                obj = json.loads(cur.fetchone()[0])
-                match = next((l for l in medias if l[u"filename"] == obj[u'value']), None)
-                open("media/" + match[u"filename"], 'wb').write(str(match[u"data"]))
-                voicesToSave.append(match[u"filename"])
-            row.append(";".join(voicesToSave))
+                voicesToSave = []
+                for voice in filter(None, record.get(u"voiceRecordings", "").split(";")):
+                    cur.execute("SELECT value FROM data WHERE id='" + voice + "';")
+                    obj = json.loads(cur.fetchone()[0])
+                    match = next((l for l in medias if l[u"filename"] == obj[u'value']), None)
+                    open("media/" + match[u"filename"], 'wb').write(str(match[u"data"]))
+                    voicesToSave.append(match[u"filename"])
+                row.append(";".join(voicesToSave))
 
-            wr.writerow(row)
+                wr.writerow(row)
+            except Exception as err:
+                print err
         myfile.close()
         os.chdir("../")
 
@@ -162,5 +170,4 @@ try:
 except getopt.GetoptError as err:
     # print help information and exit:
     print(err) # will print something like "option -a not recognized"
-
 

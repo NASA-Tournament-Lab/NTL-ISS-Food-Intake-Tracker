@@ -319,6 +319,7 @@ app.get('/users', function (req, res) {
 
 // report
 app.get('/reports', function(req, res) {
+    req.flash('currentSelectedTab', '2');
     pgclient.query("SELECT id, name, value FROM data WHERE name = 'User'", function(err, result) {
         if(err) {
             return console.error('error running query', err);
@@ -679,6 +680,7 @@ app.post('/reports', function(req, res) {
             var users = req.body.users instanceof Array ? req.body.users : new Array(req.body.users);
             args.push('--selected=' + users.join(","));
         } else {
+            req.flash('error', "Please select an user");
             res.redirect('/');
             return;
         }
