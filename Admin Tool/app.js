@@ -245,13 +245,25 @@ app.get('/', function (req, res) {
     var currentSelectedTab = req.flash('currentSelectedTab');
     var message = req.flash('message');
     var error = req.flash('error');
-    res.render('index', {
-        tabsData: JSON.stringify({
-            selectedTab: currentSelectedTab.length > 0 ? new Number(currentSelectedTab) : 0,
-            message: message || "",
-            error: error || ""
-        })
-    });
+
+    var currentSession = req.session;
+
+    if (currentSession == null || currentSession.loggedIn == null || !currentSession.loggedIn) {
+        res.render('login', {
+            tabsData: JSON.stringify({
+                message: message || "",
+                error: error || ""
+            })
+        });
+    } else {
+        res.render('index', {
+            tabsData: JSON.stringify({
+                selectedTab: currentSelectedTab.length > 0 ? new Number(currentSelectedTab) : 0,
+                message: message || "",
+                error: error || ""
+            })
+        });
+    }
 });
 
 // List foods / users
@@ -334,7 +346,7 @@ app.get('/reports', function(req, res) {
                     "name": value.fullName
                 };
                 rows.push(obj);
-            }                
+            }
         }
         console.log('REPORTS ' + JSON.stringify(rows));
 
@@ -377,6 +389,38 @@ app.get('/user', function(req, res) {
     req.flash('currentSelectedTab', '0');
     res.render('new', { message: "New user", action: "/user", keys: userKeys, titles: userTitles, defaultValues: defaultValues,
                         uuid: uuid.v4() });
+});
+
+// Login
+app.post('/login', function(req, res) {
+    var currentSession = req.session;
+
+    var username = req.body.username;
+    var password = req.body.password;
+    if (undefined == username || username.trim().length == 0) {
+        req.flash('error', 'Username cannot be empty');
+        res.redirect('/');
+        return;
+    }
+    if (undefined == password || password.trim().length == 0) {
+        req.flash('error', 'Password cannot be empty');
+        res.redirect('/');
+    }
+
+    pgclient.query("SELECT login('" + username + "', '" + password + "') is NULL as check", function(err, result) {
+        if(err || result.rows.length == 0) {
+            return console.error('error running query', err);
+        }
+
+        console.log("Result: " + result.rows[0].check);
+        if (result.rows[0].check) {
+            req.flash('error', 'Wrong username or password');
+            res.redirect('/');
+        } else {
+            currentSession.loggedIn = true;
+            res.redirect('/');
+        }
+    });
 });
 
 // Create new food / user
