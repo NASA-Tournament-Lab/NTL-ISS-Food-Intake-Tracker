@@ -384,7 +384,7 @@
     }
     
     listening = NO;
-    self.dateListView.currentDate = [NSDate date];
+    [self calendarDidSelect:[NSDate date]];
     self.dateListView.delegate = self;
     
     self.bottomScrollView.contentSize = CGSizeMake(1536, 125);

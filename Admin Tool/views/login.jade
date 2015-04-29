@@ -1,0 +1,49 @@
+html
+	head
+		title ISS FIT - Admin Tool
+		link(rel='stylesheet', href='/css/style.css')
+		link(rel='stylesheet', href='/css/jquery.dataTables.css')
+		link(rel='stylesheet', href='/css/jquery-ui.css')
+		script(type='text/javascript', src='/js/jquery.min.js')
+		script(type='text/javascript', src='/js/jquery-ui.min.js')
+		script(type='text/javascript', src='/js/jquery.dataTables.min.js')
+		script.
+			var load_data = !{tabsData};
+		script.
+			$(document).ready(function() {
+				$('#dialog').dialog({
+					autoOpen: false,
+					modal: true
+				});
+				if (undefined != load_data.error && load_data.error.length > 0) {
+					$('#message').text(load_data.error);
+					$('#dialog').dialog('option', 'title', 'Error');
+					$('#dialog').dialog('open');
+				} else if (undefined != load_data.message && load_data.message.length > 0) {
+					$('#message').text(load_data.message);
+					$('#dialog').dialog('option', 'title', 'Success');
+					$('#dialog').dialog('open');
+				}
+			});
+	body
+		.head
+			#sides
+				#left
+					img(src='/images/logo.png', alt='', style='float: left;height:144px;')
+				#right
+					h1(style='float: left;height:144px;') ISS FIT - Admin Tool
+		.container
+			div(id='dialog')
+				p(id='message')
+			h1 Hello!
+			p.subheading Please Login To Your Account
+			form(action='/login',method='post')
+				p
+				label Username
+				input(type="text", name="username", id='user-tf').span4.required
+				p
+				label Password
+				input(type="password", name="password", id='pass-tf').span4.required
+				p
+				input(type='submit',value='Login', class="goButton")
+

@@ -14,13 +14,19 @@ DROP RULE syncdata_update_rule ON public.data;
 DROP RULE syncdata_rule ON public.data;
 DROP RULE syncdata_media_rule ON public.media;
 DROP INDEX public.syncdata_deviceid_idx;
+ALTER TABLE ONLY public.users DROP CONSTRAINT users_pkey;
+ALTER TABLE ONLY public.users DROP CONSTRAINT users_email_key;
 ALTER TABLE ONLY public.media DROP CONSTRAINT media_pkey;
 ALTER TABLE ONLY public.data DROP CONSTRAINT data_pkey;
+DROP TABLE public.users;
 DROP TABLE public.sync_data;
 DROP TABLE public.media;
 DROP TABLE public.devices;
 DROP TABLE public.data;
+DROP FUNCTION public.login(_username text, _pwd text, OUT _email text);
 DROP FUNCTION public.bytea_import(p_path text, OUT p_result bytea);
+DROP EXTENSION pgcrypto;
+DROP EXTENSION plpgsql;
 DROP SCHEMA public;
 --
 -- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
@@ -36,6 +42,35 @@ ALTER SCHEMA public OWNER TO postgres;
 --
 
 COMMENT ON SCHEMA public IS 'standard public schema';
+
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+--
+-- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
+
 
 SET search_path = public, pg_catalog;
 
@@ -63,6 +98,23 @@ end;$$;
 
 
 ALTER FUNCTION public.bytea_import(p_path text, OUT p_result bytea) OWNER TO postgres;
+
+--
+-- Name: login(text, text); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION login(_username text, _pwd text, OUT _email text) RETURNS text
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $$
+BEGIN
+ SELECT email INTO _email FROM users
+ WHERE users.username = lower(_username)
+ AND pwdhash = crypt(_pwd, users.pwdhash);
+END;
+$$;
+
+
+ALTER FUNCTION public.login(_username text, _pwd text, OUT _email text) OWNER TO postgres;
 
 SET default_tablespace = '';
 
@@ -122,6 +174,19 @@ CREATE TABLE sync_data (
 ALTER TABLE public.sync_data OWNER TO postgres;
 
 --
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+--
+
+CREATE TABLE users (
+    username text NOT NULL,
+    email character varying(90) NOT NULL,
+    pwdhash text NOT NULL
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
 -- Name: data_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
 --
 
@@ -135,6 +200,22 @@ ALTER TABLE ONLY data
 
 ALTER TABLE ONLY media
     ADD CONSTRAINT media_pkey PRIMARY KEY (filename);
+
+
+--
+-- Name: users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_email_key UNIQUE (email);
+
+
+--
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (username);
 
 
 --
@@ -173,6 +254,14 @@ REVOKE ALL ON SCHEMA public FROM PUBLIC;
 REVOKE ALL ON SCHEMA public FROM postgres;
 GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- Name: users; Type: ACL; Schema: public; Owner: postgres
+--
+
+REVOKE ALL ON TABLE users FROM PUBLIC;
+REVOKE ALL ON TABLE users FROM postgres;
 
 
 --
