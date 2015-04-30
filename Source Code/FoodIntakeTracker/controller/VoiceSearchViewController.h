@@ -22,9 +22,6 @@
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 
-#import <OpenEars/PocketsphinxController.h>
-#import <OpenEars/OpenEarsEventsObserver.h>
-
 #import "ConsumptionViewController.h"
 
 /**
@@ -38,13 +35,7 @@
  * @version 1.1
  * @since 1.0
  */
-@interface VoiceSearchViewController : UIViewController <OpenEarsEventsObserverDelegate> {
-    /* Represents the OpenEarsEventsObserver used in this controller. */
-    OpenEarsEventsObserver *openEarsEventsObserver;
-
-    /* Represents the PocketsphinxController used in this controller. */
-    PocketsphinxController *pocketsphinxController;
-}
+@interface VoiceSearchViewController : UIViewController
 
 /* sub title label */
 @property (weak, nonatomic) ConsumptionViewController *consumptionViewController;

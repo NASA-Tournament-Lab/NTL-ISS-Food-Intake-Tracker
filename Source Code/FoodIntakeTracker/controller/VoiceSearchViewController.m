@@ -51,12 +51,6 @@
     self.lblTitle.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:24];
     self.lblTitle.text = @"Record Food Intake";
     
-    // Initialize OpenEars
-    pocketsphinxController = [[PocketsphinxController alloc] init];
-    pocketsphinxController.returnNbest = TRUE;
-    pocketsphinxController.nBestNumber = 9;
-    openEarsEventsObserver = [[OpenEarsEventsObserver alloc] init];
-    [openEarsEventsObserver setDelegate:self];
     // Retrieve language model paths
     //AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     //SpeechRecognitionServiceImpl *srService = appDelegate.speechRecognitionService;
@@ -227,15 +221,15 @@
     self.noResultsMessageLabel.hidden = YES;
     self.topDivider.hidden = YES;
     // Retrieve language model paths
-    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-    SpeechRecognitionServiceImpl *srService = appDelegate.speechRecognitionService;
-    NSError *error;
-    NSDictionary *dict = [srService getFoodProductLanguageModelPaths:&error];
-    if ([Helper displayError:error]) return;
+    //AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    //SpeechRecognitionServiceImpl *srService = appDelegate.speechRecognitionService;
+    //NSError *error;
+    //NSDictionary *dict = [srService getFoodProductLanguageModelPaths:&error];
+    //if ([Helper displayError:error]) return;
     // start listening for speech
-    [pocketsphinxController startListeningWithLanguageModelAtPath:[dict valueForKey:@"LMPath"]
+    /*[pocketsphinxController startListeningWithLanguageModelAtPath:[dict valueForKey:@"LMPath"]
                                                  dictionaryAtPath:[dict valueForKey:@"DictionaryPath"]
-                                              languageModelIsJSGF:FALSE];
+                                              languageModelIsJSGF:FALSE];*/
 }
 
 /**
@@ -243,7 +237,7 @@
  * @param sender the button.
  */
 - (IBAction)Analyze:(id)sender {
-    [pocketsphinxController stopListening];
+    // [pocketsphinxController stopListening];
     [self.btnSpeak setEnabled:NO];
     self.lblSubTitle.text = @"Analyzing...";
     [self performSelector:@selector(showResult) withObject:nil afterDelay:2];
@@ -295,7 +289,7 @@
     [self showResult];
     
     // Stop listening
-    [pocketsphinxController performSelector:@selector(stopListening) withObject:nil afterDelay:0.1];
+    //[pocketsphinxController performSelector:@selector(stopListening) withObject:nil afterDelay:0.1];
 }
 
 // An optional delegate method of OpenEarsEventsObserver which informs that Pocketsphinx is now listening for speech.
