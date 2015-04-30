@@ -229,7 +229,7 @@
         record.protein = product.protein;
         record.carb = product.carb;
         record.fat = product.fat;
-        record.timestamp = [self.customTabBarController currentSelectedDate];
+        record.timestamp = [Helper convertDateTimeToDate:[self.customTabBarController currentSelectedDate] time:[NSDate date]];
         [recordService addFoodConsumptionRecord:appDelegate.loggedInUser record:record error:&error];
         record.foodProduct = product;
         [recordService saveFoodConsumptionRecord:record error:&error];

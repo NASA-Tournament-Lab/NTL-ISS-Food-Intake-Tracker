@@ -1334,22 +1334,7 @@
             record.foodProduct.protein = product.protein;
             record.foodProduct.carb = product.carb;
             record.foodProduct.fat = product.fat;
-            
-            NSCalendar *calendar = [NSCalendar currentCalendar];
-            [calendar setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
-            NSDateComponents *components = [calendar components:(NSYearCalendarUnit |
-                                                                 NSMonthCalendarUnit |
-                                                                 NSDayCalendarUnit |
-                                                                 NSHourCalendarUnit |
-                                                                 NSMinuteCalendarUnit)
-                                                       fromDate:self.dateListView.currentDate];
-            [components setCalendar:calendar];
-            NSDateComponents *currentDateComponents = [calendar components:(NSHourCalendarUnit |
-                                                                            NSMinuteCalendarUnit)
-                                                                  fromDate:record.timestamp];
-            components.hour = [currentDateComponents hour];
-            components.minute = [currentDateComponents minute];
-            record.timestamp = [components date];
+            record.timestamp = [Helper convertDateTimeToDate:self.dateListView.currentDate time:[NSDate date]];
             
             if (recorderFilePath) {
                 StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
@@ -1631,16 +1616,7 @@
     FoodConsumptionRecord *record = [recordService buildFoodConsumptionRecord:&error];
     if ([Helper displayError:error]) return;
     
-    NSCalendar *calendar = [NSCalendar currentCalendar];
-    [calendar setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
-    NSDateComponents *components = [calendar components:(NSYearCalendarUnit |
-                                                         NSMonthCalendarUnit |
-                                                         NSDayCalendarUnit |
-                                                         NSHourCalendarUnit |
-                                                         NSMinuteCalendarUnit)
-                                               fromDate:self.dateListView.currentDate];
-    [components setCalendar:calendar];
-    record.timestamp = [components date];
+    record.timestamp = [Helper convertDateTimeToDate:self.dateListView.currentDate time:[NSDate date]];
     
     FoodProduct *foodProduct = [foodProductService getFoodProductByName:appDelegate.loggedInUser
                                                                    name:name

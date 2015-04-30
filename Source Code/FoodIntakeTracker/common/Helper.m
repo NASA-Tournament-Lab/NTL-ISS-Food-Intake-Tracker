@@ -149,6 +149,23 @@ static NSArray *monthNameArray = nil;
 }
 
 /*!
+ @discussion This method shows an alert to the user.
+ @param title The message title.
+    message The message body.
+    delegate The alert delegate
+ */
++(void)showAlert:(NSString *)title message:(NSString *)message delegate:(id)delegate {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
+                                                        message:message
+                                                       delegate:delegate
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+    });
+}
+
+/*!
  @discussion This method displays error to the user.
  @param error The error.
  @return YES  if the error is displayed. NO if there's no error.

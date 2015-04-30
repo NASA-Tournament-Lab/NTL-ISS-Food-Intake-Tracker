@@ -16,6 +16,8 @@ static NSString* reachHostName = @"";
 
 @implementation PGCoreData {
     BOOL canConnect;
+    
+    BOOL alertShow;
 }
 
 @synthesize pgConnection = _pgConnection;
@@ -61,12 +63,18 @@ static NSString* reachHostName = @"";
         // Tell the reachability that we DON'T want to be reachable on 3G/EDGE/CDMA
         reach.reachableOnWWAN = NO;
         
+        alertShow = false;
+        
         // Update connect flag
         reach.reachableBlock = ^(Reachability*reach) {
             @synchronized(self) {
                 canConnect = YES;
                 
-                [Helper showAlert:@"Success" message:@"The device has re-established the connection to the intranet."];
+                if (!alertShow) {
+                    alertShow = YES;
+                    [Helper showAlert:@"Success" message:@"The device has re-established the connection to the intranet."
+                             delegate:self];
+                }
             }
         };
         
@@ -78,9 +86,12 @@ static NSString* reachHostName = @"";
                 
                 [self.pgConnection performSelectorInBackground:@selector(disconnect) withObject:nil];
                 
-                [Helper showAlert:@"Error" message:@"The device has lost connection to the intranet.\n"
-                 "You can still use the ISS FIT app and we will attempt to sync with the central food repository"
-                 " when it is available."];
+                if (!alertShow) {
+                    alertShow = YES;
+                    [Helper showAlert:@"Error" message:@"The device has lost connection to the intranet.\n"
+                     "You can still use the ISS FIT app and we will attempt to sync with the central food repository"
+                     " when it is available." delegate:self];
+                }
             }
         };
         
@@ -404,5 +415,12 @@ static NSString* reachHostName = @"";
 -(PGResult* )execute:(NSString* )query format:(PGClientTupleFormat)format error:(NSError** )error {
     return [self execute:query format:format values:nil error:error];
 }
+
+#pragma mark - UIAlertViewDelegate methods
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    alertShow = NO;
+}
+
 
 @end
