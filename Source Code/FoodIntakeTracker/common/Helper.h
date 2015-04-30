@@ -73,6 +73,14 @@
 +(void)showAlert:(NSString *)title message:(NSString *)message;
 
 /*!
+ @discussion This method shows an alert to the user.
+ @param title The message title.
+    message The message body.
+    delegate The alert delegate
+ */
++(void)showAlert:(NSString *)title message:(NSString *)message delegate:(id) delegate;
+
+/*!
  @discussion This method displays error to the user.
  @param error The error.
  @return YES  if the error is displayed. NO if there's no error.
