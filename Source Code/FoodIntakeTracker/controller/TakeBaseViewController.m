@@ -221,7 +221,7 @@
         record.protein = product.protein;
         record.carb = product.carb;
         record.fat = product.fat;
-        record.timestamp = selectedDate;
+        record.timestamp = [Helper convertDateTimeToDate:consumptionViewController.dateListView.currentDate time:[NSDate date]];
         record.comment = self.txtFoodComment.text;
         
         if (product.images.count > 0) {
