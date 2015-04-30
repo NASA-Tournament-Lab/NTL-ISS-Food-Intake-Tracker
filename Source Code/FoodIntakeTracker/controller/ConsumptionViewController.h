@@ -20,9 +20,6 @@
 
 #import <UIKit/UIKit.h>
 #import "CalendarViewController.h"
-#import <OpenEars/OpenEarsEventsObserver.h>
-#import <OpenEars/PocketsphinxController.h>
-
 #import <AVFoundation/AVFoundation.h>
 
 @class Food;
@@ -126,8 +123,7 @@
  * @since 1.0
  */
 @interface ConsumptionViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate,
-    UIGestureRecognizerDelegate, UIPopoverControllerDelegate, AVAudioRecorderDelegate,
-    OpenEarsEventsObserverDelegate, CalendarViewDelegate, DateListViewDelegate>
+    UIGestureRecognizerDelegate, UIPopoverControllerDelegate, AVAudioRecorderDelegate, CalendarViewDelegate, DateListViewDelegate>
 
 /* the tab bar controller */
 @property (weak, nonatomic) CustomTabBarViewController *customTabBarController;
@@ -219,12 +215,6 @@
 
 /* Represent the AdhocFoodProduct to add. */
 @property (strong, nonatomic) AdhocFoodProduct *adhocFoodProductToAdd;
-
-/* Represents the OpenEarsEventsObserver used in this controller. */
-@property (strong, nonatomic) OpenEarsEventsObserver *openEarsEventsObserver;
-
-/* Represents the PocketsphinxController used in this controller. */
-@property (strong, nonatomic) PocketsphinxController *pocketsphinxController;
 
 /* Represents the language model paths for general English. */
 @property (strong, nonatomic) NSDictionary *lmPaths;

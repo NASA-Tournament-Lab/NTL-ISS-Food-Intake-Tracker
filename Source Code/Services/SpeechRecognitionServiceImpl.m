@@ -21,7 +21,6 @@
 
 #import "SpeechRecognitionServiceImpl.h"
 #import "LoggingHelper.h"
-#import <OpenEars/LanguageModelGenerator.h>
 
 @implementation SpeechRecognitionServiceImpl
 
@@ -79,14 +78,14 @@
     }
     
     //Generate language model
-    LanguageModelGenerator *lmGenerator = [[LanguageModelGenerator alloc] init];
+    /*LanguageModelGenerator *lmGenerator = [[LanguageModelGenerator alloc] init];
     NSError *generateError = [lmGenerator generateLanguageModelFromArray:names
                                                           withFilesNamed:foodProductLanguageModelFileName];
     [LoggingHelper logError:methodName error:generateError];
     if (generateError && generateError.code != noErr) {
         *error = generateError;
         [LoggingHelper logError:methodName error:*error];
-    }
+    }*/
     
     [LoggingHelper logMethodExit:methodName returnValue:nil];
     return YES;

@@ -1,0 +1,352 @@
+diff --git a/src/Frameworks/PGClientKit/NSURL+PGAdditions.h b/src/Frameworks/PGClientKit/NSURL+PGAdditions.h
+index c2698ac..f8ed82a 100644
+--- a/src/Frameworks/PGClientKit/NSURL+PGAdditions.h
++++ b/src/Frameworks/PGClientKit/NSURL+PGAdditions.h
+@@ -54,6 +54,24 @@
+  *  @param ssl      If YES, SSL communication will be required, or else it is preferred.
+  *  @param database Name of the database to connect to, or nil
+  *  @param username Username to authenticate against. When nil, does not pass username
++ *  @param password Password to authenticate against. When nil, does not pass username
++ *  @param params   Additional parameters for the connection
++ *
++ *  @return An NSURL object
++ */
+++(id)URLWithHost:(NSString* )host ssl:(BOOL)ssl username:(NSString* )username password:(NSString* )password
++        database:(NSString* )database params:(NSDictionary* )params;
++
++/**
++ *  NSURL helper function to generate PostgreSQL connection URL's. The URL
++ *  which is generated will allow connection to a PostgeSQL instance on a
++ *  remote host on a non-standard port, addressed by name, IP4 or IP6 address.
++ *
++ *  @param host     Hostname, IP4 or IP6 address. If nil, localhost is assumed.
++ *  @param port     The port number to connect to. Uses the default port if this is 0
++ *  @param ssl      If YES, SSL communication will be required, or else it is preferred.
++ *  @param database Name of the database to connect to, or nil
++ *  @param username Username to authenticate against. When nil, does not pass username
+  *  @param params   Additional parameters for the connection
+  *
+  *  @return An NSURL object
+@@ -61,6 +79,24 @@
+ +(id)URLWithHost:(NSString* )host port:(NSUInteger)port ssl:(BOOL)ssl username:(NSString* )username database:(NSString* )database params:(NSDictionary* )params;
+ 
+ /**
++ *  NSURL helper function to generate PostgreSQL connection URL's. The URL
++ *  which is generated will allow connection to a PostgeSQL instance on a
++ *  remote host on a non-standard port, addressed by name, IP4 or IP6 address.
++ *
++ *  @param host     Hostname, IP4 or IP6 address. If nil, localhost is assumed.
++ *  @param port     The port number to connect to. Uses the default port if this is 0
++ *  @param ssl      If YES, SSL communication will be required, or else it is preferred.
++ *  @param database Name of the database to connect to, or nil
++ *  @param username Username to authenticate against. When nil, does not pass username
++ *  @param password Password to authenticate against. When nil, does not pass username
++ *  @param params   Additional parameters for the connection
++ *
++ *  @return An NSURL object
++ */
+++(id)URLWithHost:(NSString* )host port:(NSUInteger)port ssl:(BOOL)ssl username:(NSString* )username password:(NSString* )password
++         database:(NSString* )database params:(NSDictionary* )params;
++
++/**
+  *  NSURL helper function to generate a URL from a dictionary of postgresql
+  *  parameters. The parameters that can be provided are described in the
+  *  postgresql manual, but the following are used: user, host, hostaddr, dbname
+@@ -117,6 +153,40 @@
+  */
+ -(id)initWithHost:(NSString* )host ssl:(BOOL)ssl username:(NSString* )username database:(NSString* )database params:(NSDictionary* )params;
+ 
++
++/**
++ *  NSURL helper function to generate PostgreSQL connection URL's. The URL
++ *  which is generated will allow connection to a PostgeSQL instance on a
++ *  remote host on a non-standard port, addressed by name, IP4 or IP6 address.
++ *
++ *  @param host     Hostname, IP4 or IP6 address. If nil, localhost is assumed.
++ *  @param port     The port number to connect to. Uses the default port if this is 0
++ *  @param ssl      If YES, SSL communication will be required, or else it is preferred.
++ *  @param database Name of the database to connect to, or nil
++ *  @param username Username to authenticate against. When nil, does not pass username
++ *  @param params   Additional parameters for the connection
++ *
++ *  @return An NSURL object
++ */
++-(id)initWithHost:(NSString* )host port:(NSUInteger)port ssl:(BOOL)ssl username:(NSString* )username database:(NSString* )database params:(NSDictionary* )params;
++
++/**
++ *  NSURL helper function to generate PostgreSQL connection URL's. The URL
++ *  which is generated will allow connection to a PostgeSQL instance on a
++ *  remote host on a non-standard port, addressed by name, IP4 or IP6 address.
++ *
++ *  @param host     Hostname, IP4 or IP6 address. If nil, localhost is assumed.
++ *  @param ssl      If YES, SSL communication will be required, or else it is preferred.
++ *  @param database Name of the database to connect to, or nil
++ *  @param username Username to authenticate against. When nil, does not pass username
++ *  @param password Password to authenticate against. When nil, does not pass username
++ *  @param params   Additional parameters for the connection
++ *
++ *  @return An NSURL object
++ */
++-(id)initWithHost:(NSString* )host ssl:(BOOL)ssl username:(NSString* )username password:(NSString* )password
++         database:(NSString* )database params:(NSDictionary* )params;
++
+ /**
+  *  NSURL helper function to generate PostgreSQL connection URL's. The URL
+  *  which is generated will allow connection to a PostgeSQL instance on a
+@@ -127,11 +197,13 @@
+  *  @param ssl      If YES, SSL communication will be required, or else it is preferred.
+  *  @param database Name of the database to connect to, or nil
+  *  @param username Username to authenticate against. When nil, does not pass username
++ *  @param password Password to authenticate against. When nil, does not pass username
+  *  @param params   Additional parameters for the connection
+  *
+  *  @return An NSURL object
+  */
+--(id)initWithHost:(NSString* )host port:(NSUInteger)port ssl:(BOOL)ssl username:(NSString* )username  database:(NSString* )database params:(NSDictionary* )params;
++-(id)initWithHost:(NSString* )host port:(NSUInteger)port ssl:(BOOL)ssl username:(NSString* )username password:(NSString* )password
++         database:(NSString* )database params:(NSDictionary* )params;
+ 
+ /**
+  *  NSURL helper function to generate a URL from a dictionary of postgresql
+diff --git a/src/Frameworks/PGClientKit/NSURL+PGAdditions.m b/src/Frameworks/PGClientKit/NSURL+PGAdditions.m
+index 461f4d7..c02dd59 100644
+--- a/src/Frameworks/PGClientKit/NSURL+PGAdditions.m
++++ b/src/Frameworks/PGClientKit/NSURL+PGAdditions.m
+@@ -8,7 +8,7 @@
+ // PRIVATE METHODS
+ 
+ +(NSString* )_pg_urlencode:(NSString* )string {
+-	return (NSString* )CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(__bridge CFStringRef)string,NULL,(__bridge CFStringRef)@"!*'();:@&=+$,/?%#[]",kCFStringEncodingUTF8));
++	return (NSString* )CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault,(CFStringRef)string,NULL,(CFStringRef)@"!*'();:@&=+$,/?%#[]",kCFStringEncodingUTF8));
+ }
+ 
+ +(NSString* )_pg_urlencode_params:(NSDictionary* )params {
+@@ -46,7 +46,14 @@
+ 	if(user==nil || [user length]==0) {
+ 		return @"";
+ 	}
+-	return [[self _pg_urlencode:user] stringByAppendingString:@"@"];
++	return [self _pg_urlencode:user];
++}
++
+++(NSString* )_pg_urlencode_password:(NSString* )password {
++	if(password==nil || [password length]==0) {
++		return @"@";
++	}
++	return [NSString stringWithFormat:@":%@@", [self _pg_urlencode:password]];
+ }
+ 
+ +(NSString* )_pg_urlencode_host:(NSString* )host {
+@@ -114,6 +121,14 @@
+ 	return [[NSURL alloc] initWithHost:host port:port ssl:ssl username:username database:database params:params];
+ }
+ 
+++(id)URLWithHost:(NSString* )host ssl:(BOOL)ssl username:(NSString* )username password:(NSString *) password database:(NSString* )database params:(NSDictionary* )params {
++	return [[NSURL alloc] initWithHost:host ssl:ssl username:username password:password database:database params:params];
++}
++
+++(id)URLWithHost:(NSString* )host port:(NSUInteger)port ssl:(BOOL)ssl username:(NSString* )username password:(NSString *) password database:(NSString* )database params:(NSDictionary* )params {
++	return [[NSURL alloc] initWithHost:host port:port ssl:ssl username:username password:password database:database params:params];
++}
++
+ +(id)URLWithPostgresqlParams:(NSDictionary* )params {
+ 	return [[NSURL alloc] initWithPostgresqlParams:params];
+ }
+@@ -133,16 +148,25 @@
+ 	return [self initWithSocketPath:nil port:0 database:database username:username params:params];
+ }
+ 
++-(id)initWithHost:(NSString* )host port:(NSUInteger)port ssl:(BOOL)ssl username:(NSString* )username password:(NSString *)password database:(NSString *)database params:(NSDictionary *)params {
++    NSString* method = [PGConnection defaultURLScheme];
++    NSString* sslenc = ssl ? @"s" : @"";
++    NSString* dbenc = [NSURL _pg_urlencode_database:[database stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
++    NSString* hostenc = [NSURL _pg_urlencode_host:[host stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
++    NSString* passwordenc = [NSURL _pg_urlencode_password:[password stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
++    NSString* portenc = [NSURL _pg_urlencode_port:port];
++    NSString* queryenc = [NSURL _pg_urlencode_params:params];
++    NSString* userenc = [NSURL _pg_urlencode_user:[username stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
++    NSParameterAssert(method && dbenc && queryenc && sslenc && hostenc && portenc && userenc);
++    return [self initWithString:[NSString stringWithFormat:@"%@%@://%@%@%@%@/%@%@",method,sslenc,userenc,passwordenc,hostenc,portenc,dbenc,queryenc]];
++}
++
++-(id)initWithHost:(NSString* )host ssl:(BOOL)ssl username:(NSString* )username password:(NSString *)password database:(NSString *)database params:(NSDictionary *)params {
++    return [self initWithHost:host port:0 ssl:ssl username:username password:password database:database params:params];
++}
++
+ -(id)initWithHost:(NSString* )host port:(NSUInteger)port ssl:(BOOL)ssl username:(NSString* )username database:(NSString* )database params:(NSDictionary* )params {
+-	NSString* method = [PGConnection defaultURLScheme];
+-	NSString* sslenc = ssl ? @"s" : @"";
+-	NSString* dbenc = [NSURL _pg_urlencode_database:[database stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
+-	NSString* hostenc = [NSURL _pg_urlencode_host:[host stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
+-	NSString* portenc = [NSURL _pg_urlencode_port:port];
+-	NSString* queryenc = [NSURL _pg_urlencode_params:params];
+-	NSString* userenc = [NSURL _pg_urlencode_user:[username stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]]];
+-	NSParameterAssert(method && dbenc && queryenc && sslenc && hostenc && portenc && userenc);
+-	return [self initWithString:[NSString stringWithFormat:@"%@%@://%@%@%@/%@%@",method,sslenc,userenc,hostenc,portenc,dbenc,queryenc]];
++    return [self initWithHost:host port:port ssl:ssl username:username password:nil database:database params:params];
+ }
+ 
+ -(id)initWithHost:(NSString* )host ssl:(BOOL)ssl username:(NSString* )username database:(NSString* )database params:(NSDictionary* )params {
+diff --git a/src/Frameworks/PGClientKit/PGClientKit+Private.h b/src/Frameworks/PGClientKit/PGClientKit+Private.h
+index 113936f..8d1aa00 100644
+--- a/src/Frameworks/PGClientKit/PGClientKit+Private.h
++++ b/src/Frameworks/PGClientKit/PGClientKit+Private.h
+@@ -1,5 +1,5 @@
+ 
+-//#include "libpq-fe.h"
++#include "libpq-fe.h"
+ #import "PGClientParams.h"
+ #import "PGConverters.h"
+ 
+diff --git a/src/Frameworks/PGClientKit/PGClientKit.h b/src/Frameworks/PGClientKit/PGClientKit.h
+index 257373e..f266637 100644
+--- a/src/Frameworks/PGClientKit/PGClientKit.h
++++ b/src/Frameworks/PGClientKit/PGClientKit.h
+@@ -1,16 +1,6 @@
+ 
+ #import <Foundation/Foundation.h>
+ 
+-////////////////////////////////////////////////////////////////////////////////
+-
+-//! Project version number for PGClientKit_ios.
+-FOUNDATION_EXPORT double PGClientKit_iosVersionNumber;
+-
+-//! Project version string for PGClientKit_ios.
+-FOUNDATION_EXPORT const unsigned char PGClientKit_iosVersionString[];
+-
+-////////////////////////////////////////////////////////////////////////////////
+-
+ // typedefs
+ typedef enum {
+ 	PGConnectionStatusDisconnected = 0,
+diff --git a/src/Frameworks/PGClientKit/PGClientParams.h b/src/Frameworks/PGClientKit/PGClientParams.h
+index 11ce423..5585288 100644
+--- a/src/Frameworks/PGClientKit/PGClientParams.h
++++ b/src/Frameworks/PGClientKit/PGClientParams.h
+@@ -1,5 +1,5 @@
+ 
+-#include <libpq-fe.h>
++#include "libpq-fe.h"
+ 
+ typedef struct {
+ 	NSUInteger size;
+diff --git a/src/Frameworks/PGClientKit/PGConnection.h b/src/Frameworks/PGClientKit/PGConnection.h
+index 0f8ecae..162a402 100644
+--- a/src/Frameworks/PGClientKit/PGConnection.h
++++ b/src/Frameworks/PGClientKit/PGConnection.h
+@@ -54,7 +54,7 @@ extern NSString* PGClientErrorDomain;
+ /**
+  *  The currently set delegate
+  */
+-@property (weak, nonatomic) id<PGConnectionDelegate> delegate;
++@property (strong, nonatomic) id<PGConnectionDelegate> delegate;
+ 
+ /**
+  *  Tag for the connection object
+diff --git a/src/Frameworks/PGClientKit/PGConnection.m b/src/Frameworks/PGClientKit/PGConnection.m
+index 5ffda1c..f543fd3 100644
+--- a/src/Frameworks/PGClientKit/PGConnection.m
++++ b/src/Frameworks/PGClientKit/PGConnection.m
+@@ -1,7 +1,7 @@
+ 
+ #import "PGClientKit.h"
+ #import "PGClientKit+Private.h"
+-#include <pg_config.h>
++#include "pg_config.h"
+ 
+ NSString* PGConnectionSchemes = @"pgsql pgsqls postgresql postgresqls";
+ NSString* PGConnectionDefaultEncoding = @"utf8";
+@@ -65,7 +65,7 @@ PGKVPairs* makeKVPairs(NSDictionary* dict) {
+ }
+ 
+ +(NSString* )defaultURLScheme {
+-	return [[self allURLSchemes] objectAtIndex:0];
++	return [[self allURLSchemes] objectAtIndex:2];
+ }
+ 
+ ////////////////////////////////////////////////////////////////////////////////
+@@ -224,7 +224,7 @@ PGKVPairs* makeKVPairs(NSDictionary* dict) {
+ 	if(format) {
+ 		va_list args;
+ 		va_start(args,format);
+-		reason = [[NSString alloc] initWithFormat:format arguments:args];
++		reason = format;
+ 		va_end(args);
+ 	}
+ 	// return the error
+@@ -439,7 +439,7 @@ PGKVPairs* makeKVPairs(NSDictionary* dict) {
+ 		return NO;
+ 	}
+ 	// extract parameters
+-	NSDictionary* parameters = [self _connectionParametersForURL:url timeout:0];
++	NSDictionary* parameters = [self _connectionParametersForURL:url timeout:60];
+ 	if(parameters==nil) {
+ 		[_lock unlock];
+ 		[self raiseError:error code:PGClientErrorParameters url:url reason:nil];
+@@ -621,6 +621,10 @@ PGKVPairs* makeKVPairs(NSDictionary* dict) {
+ 			_paramSetBinary(params,i,data,(Oid)25);
+ 			continue;
+ 		}
++        if([obj isKindOfClass:[NSData class]]) {
++			_paramSetBinary(params,i,obj,(Oid)17);
++			continue;
++		}
+ 		// TODO - other kinds of parameters
+ 		NSLog(@"TODO: Turn %@ into arg",[obj class]);		
+ 		_paramSetNull(params,i);
+@@ -654,6 +658,8 @@ PGKVPairs* makeKVPairs(NSDictionary* dict) {
+ 		[_lock unlock];
+ 		return nil;
+ 	}
++    
++    [_lock unlock];
+ 	// return resultset
+ 	return [[PGResult alloc] initWithResult:theResult format:format];
+ }
+diff --git a/src/Frameworks/PGClientKit/PGConverters+Data2Object.m b/src/Frameworks/PGClientKit/PGConverters+Data2Object.m
+index ead4739..5ca12aa 100644
+--- a/src/Frameworks/PGClientKit/PGConverters+Data2Object.m
++++ b/src/Frameworks/PGClientKit/PGConverters+Data2Object.m
+@@ -59,7 +59,7 @@ void _pgdata2obj_cache_init() {
+ 		i++;
+ 	} while(t->name);
+ #ifdef DEBUG
+-	NSLog(@"pgdata2obj_cache_init: allocating %lu entries, %lu bytes for cache",(unsigned long)(_pgdata2obj_cache_max+1),sizeof(PGResultConverterType) * (_pgdata2obj_cache_max+1));
++	NSLog(@"pgdata2obj_cache_init: allocating %u entries, %lu bytes for cache",(_pgdata2obj_cache_max+1),sizeof(PGResultConverterType) * (_pgdata2obj_cache_max+1));
+ #endif
+ 	_pgdata2obj_cache = malloc((_pgdata2obj_cache_max+1) * sizeof(PGResultConverterType));
+ 	assert(_pgdata2obj_cache);
+@@ -145,7 +145,8 @@ id pgdata_text2obj(NSUInteger oid,const void* bytes,NSUInteger size,NSStringEnco
+ ////////////////////////////////////////////////////////////////////////////////
+ 
+ id _bin2obj_data(NSUInteger oid,const void* bytes,NSUInteger size,NSStringEncoding encoding) {
+-	return [NSData dataWithBytesNoCopy:(void* )bytes length:size freeWhenDone:NO];
++	//return [NSData dataWithBytesNoCopy:(void* )bytes length:size freeWhenDone:NO];
++    return [NSData dataWithBytes:(void *)bytes length:size];
+ }
+ 
+ ////////////////////////////////////////////////////////////////////////////////
+diff --git a/src/Frameworks/PGClientKit/PGConverters.h b/src/Frameworks/PGClientKit/PGConverters.h
+index 5c3045e..6f29346 100644
+--- a/src/Frameworks/PGClientKit/PGConverters.h
++++ b/src/Frameworks/PGClientKit/PGConverters.h
+@@ -1,6 +1,8 @@
+ 
+ #import <Foundation/Foundation.h>
+ 
++#define DEBUG 1
++
+ // initialize and destroy lookup cache
+ void pgdata2obj_init();
+ void pgdata2obj_destroy();
+diff --git a/src/Frameworks/PGClientKit/PGResult+TextTable.h b/src/Frameworks/PGClientKit/PGResult+TextTable.h
+index 8443a38..d9d671f 100644
+--- a/src/Frameworks/PGClientKit/PGResult+TextTable.h
++++ b/src/Frameworks/PGClientKit/PGResult+TextTable.h
+@@ -1,5 +1,5 @@
+ 
+-#import <PGClientKit/PGClientKit.h>
++#import "PGClientKit.h"
+ 
+ @interface PGResult (TextTable)
+ -(NSString* )tableWithWidth:(NSUInteger)lineWidth;

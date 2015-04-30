@@ -20,7 +20,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <OpenEars/PocketsphinxController.h>
 
 @class BaseCustomPickerView;
 

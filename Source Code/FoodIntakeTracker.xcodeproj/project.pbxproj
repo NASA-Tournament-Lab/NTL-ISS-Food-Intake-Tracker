@@ -13,7 +13,6 @@
 		4B0222401ADCC09900B0FF25 /* btn-delete-enabled-orange.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B02223F1ADCC09900B0FF25 /* btn-delete-enabled-orange.png */; };
 		4B044587196A2C6B005A7401 /* btn-water-active.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B044585196A2C6B005A7401 /* btn-water-active.png */; };
 		4B044588196A2C6B005A7401 /* btn-water.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B044586196A2C6B005A7401 /* btn-water.png */; };
-		4B0E784619944A8F00D8360B /* PGManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B0E784519944A8F00D8360B /* PGManagedObject.m */; };
 		4B26DC4A18FE3BAC001BE1B1 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4B26DC4918FE3BAC001BE1B1 /* Settings.bundle */; };
 		4B2C76D919908EA0009F8FB3 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B2C76B519908EA0009F8FB3 /* libcrypto.a */; };
 		4B2C76DA19908EA0009F8FB3 /* libpq.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B2C76B619908EA0009F8FB3 /* libpq.a */; };
@@ -27,14 +26,12 @@
 		4B2C76E219908EA0009F8FB3 /* PGResult+TextTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B2C76CA19908EA0009F8FB3 /* PGResult+TextTable.m */; };
 		4B2C76E319908EA0009F8FB3 /* PGResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B2C76CC19908EA0009F8FB3 /* PGResult.m */; };
 		4B2C76E419908EA0009F8FB3 /* PGStatement.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B2C76CE19908EA0009F8FB3 /* PGStatement.m */; };
-		4B2C76E519908EA0009F8FB3 /* PGCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B2C76D119908EA0009F8FB3 /* PGCoreData.m */; };
 		4B2C76E619908EA0009F8FB3 /* SSKeychain.strings in Resources */ = {isa = PBXBuildFile; fileRef = 4B2C76D319908EA0009F8FB3 /* SSKeychain.strings */; };
 		4B2C76E719908EA0009F8FB3 /* SSKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B2C76D619908EA0009F8FB3 /* SSKeychain.m */; };
 		4B2C76E819908EA0009F8FB3 /* SSKeychainQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B2C76D819908EA0009F8FB3 /* SSKeychainQuery.m */; };
 		4B2C773F19908FA9009F8FB3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B2C773E19908FA9009F8FB3 /* Security.framework */; };
 		4B626FB4192B70B00080634C /* ISSFoodIntakeTracker23.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4B626FB3192B70B00080634C /* ISSFoodIntakeTracker23.xcmappingmodel */; };
 		4BA6D2FA19DE2283007A52A9 /* libstdc++.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BA6D2F919DE2283007A52A9 /* libstdc++.6.dylib */; };
-		4BA6D2FD19DE2935007A52A9 /* MTBBarcodeScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BA6D2FC19DE2935007A52A9 /* MTBBarcodeScanner.m */; };
 		4BA9B52419688E2D006B3689 /* defaultUserIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BA9B52319688E2D006B3689 /* defaultUserIcon.png */; };
 		4BDD27991AEA1164006B3478 /* 1-10-Update-Your-Profile-Admin.html in Resources */ = {isa = PBXBuildFile; fileRef = 4BDD27981AEA1164006B3478 /* 1-10-Update-Your-Profile-Admin.html */; };
 		4BDD279B1AEA122A006B3478 /* 1-8-View-Users-Past-Consumption-Admin.html in Resources */ = {isa = PBXBuildFile; fileRef = 4BDD279A1AEA122A006B3478 /* 1-8-View-Users-Past-Consumption-Admin.html */; };
@@ -132,6 +129,9 @@
 		4BE639771AAF620C0019B988 /* icon_fat_pie.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BE639741AAF620C0019B988 /* icon_fat_pie.png */; };
 		4BE639781AAF620C0019B988 /* icon_carb_pie.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BE639751AAF620C0019B988 /* icon_carb_pie.png */; };
 		4BF6BA961AC10AEB00DDE1AE /* bg_protein_bar.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BF6BA951AC10AEB00DDE1AE /* bg_protein_bar.png */; };
+		4BF7B7241AF1BA1C00DCC514 /* PGCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF7B7201AF1BA1C00DCC514 /* PGCoreData.m */; };
+		4BF7B7251AF1BA1C00DCC514 /* PGManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF7B7231AF1BA1C00DCC514 /* PGManagedObject.m */; };
+		4BF7B7291AF1BEA700DCC514 /* MTBBarcodeScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF7B7281AF1BEA700DCC514 /* MTBBarcodeScanner.m */; };
 		4D0F2DF117BD2D0600B86759 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DF167F517BD216000D3633F /* CoreData.framework */; };
 		4D0F2DF217BD2D0600B86759 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7C40724175FFA1F00C3649E /* UIKit.framework */; };
 		4D0F2DF317BD2D0600B86759 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7C40726175FFA1F00C3649E /* Foundation.framework */; };
@@ -207,21 +207,6 @@
 		4DAB06C017C05ADD009F8E91 /* FLM.dic in Resources */ = {isa = PBXBuildFile; fileRef = 4DAB06BC17C05ADD009F8E91 /* FLM.dic */; };
 		4DAB06C117C05ADD009F8E91 /* GLM.arpa in Resources */ = {isa = PBXBuildFile; fileRef = 4DAB06BD17C05ADD009F8E91 /* GLM.arpa */; };
 		4DAB06C217C05ADD009F8E91 /* GLM.dic in Resources */ = {isa = PBXBuildFile; fileRef = 4DAB06BE17C05ADD009F8E91 /* GLM.dic */; };
-		4DF1679017BD20D500D3633F /* cmu07a.dic in Resources */ = {isa = PBXBuildFile; fileRef = 4DF1677017BD20D500D3633F /* cmu07a.dic */; };
-		4DF1679117BD20D500D3633F /* feat.params in Resources */ = {isa = PBXBuildFile; fileRef = 4DF1677217BD20D500D3633F /* feat.params */; };
-		4DF1679217BD20D500D3633F /* mdef in Resources */ = {isa = PBXBuildFile; fileRef = 4DF1677317BD20D500D3633F /* mdef */; };
-		4DF1679317BD20D500D3633F /* means in Resources */ = {isa = PBXBuildFile; fileRef = 4DF1677417BD20D500D3633F /* means */; };
-		4DF1679417BD20D500D3633F /* noisedict in Resources */ = {isa = PBXBuildFile; fileRef = 4DF1677517BD20D500D3633F /* noisedict */; };
-		4DF1679517BD20D500D3633F /* sendump in Resources */ = {isa = PBXBuildFile; fileRef = 4DF1677617BD20D500D3633F /* sendump */; };
-		4DF1679617BD20D500D3633F /* transition_matrices in Resources */ = {isa = PBXBuildFile; fileRef = 4DF1677717BD20D500D3633F /* transition_matrices */; };
-		4DF1679717BD20D500D3633F /* variances in Resources */ = {isa = PBXBuildFile; fileRef = 4DF1677817BD20D500D3633F /* variances */; };
-		4DF1679817BD20D500D3633F /* OpenEars.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DF1677917BD20D500D3633F /* OpenEars.framework */; };
-		4DF1679917BD20D500D3633F /* OpenEars1.dic in Resources */ = {isa = PBXBuildFile; fileRef = 4DF1677A17BD20D500D3633F /* OpenEars1.dic */; };
-		4DF1679A17BD20D500D3633F /* OpenEars1.gram in Resources */ = {isa = PBXBuildFile; fileRef = 4DF1677B17BD20D500D3633F /* OpenEars1.gram */; };
-		4DF1679B17BD20D500D3633F /* OpenEars1.languagemodel in Resources */ = {isa = PBXBuildFile; fileRef = 4DF1677C17BD20D500D3633F /* OpenEars1.languagemodel */; };
-		4DF1679C17BD20D500D3633F /* OpenEars2.gram in Resources */ = {isa = PBXBuildFile; fileRef = 4DF1677D17BD20D500D3633F /* OpenEars2.gram */; };
-		4DF1679D17BD20D500D3633F /* OpenEarsCorpus.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4DF1677E17BD20D500D3633F /* OpenEarsCorpus.txt */; };
-		4DF1679E17BD20D500D3633F /* Slt.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DF1677F17BD20D500D3633F /* Slt.framework */; };
 		4DF1679F17BD20D500D3633F /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF1678217BD20D500D3633F /* Reachability.m */; };
 		4DF167DC17BD20E100D3633F /* DataHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167A817BD20E100D3633F /* DataHelper.m */; };
 		4DF167DD17BD20E100D3633F /* LoggingHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167AA17BD20E100D3633F /* LoggingHelper.m */; };
@@ -457,8 +442,6 @@
 		4B02223F1ADCC09900B0FF25 /* btn-delete-enabled-orange.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-delete-enabled-orange.png"; sourceTree = "<group>"; };
 		4B044585196A2C6B005A7401 /* btn-water-active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-water-active.png"; sourceTree = "<group>"; };
 		4B044586196A2C6B005A7401 /* btn-water.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-water.png"; sourceTree = "<group>"; };
-		4B0E784419944A8F00D8360B /* PGManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PGManagedObject.h; path = Postgresql/PGManagedObject.h; sourceTree = "<group>"; };
-		4B0E784519944A8F00D8360B /* PGManagedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PGManagedObject.m; path = Postgresql/PGManagedObject.m; sourceTree = "<group>"; };
 		4B26DC4918FE3BAC001BE1B1 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = SOURCE_ROOT; };
 		4B2AF55E19985AFF001259C2 /* ISSFoodIntakeTracker 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ISSFoodIntakeTracker 4.xcdatamodel"; sourceTree = "<group>"; };
 		4B2C76B519908EA0009F8FB3 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = Postgresql/libcrypto.a; sourceTree = "<group>"; };
@@ -486,8 +469,6 @@
 		4B2C76CC19908EA0009F8FB3 /* PGResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGResult.m; sourceTree = "<group>"; };
 		4B2C76CD19908EA0009F8FB3 /* PGStatement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGStatement.h; sourceTree = "<group>"; };
 		4B2C76CE19908EA0009F8FB3 /* PGStatement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGStatement.m; sourceTree = "<group>"; };
-		4B2C76D019908EA0009F8FB3 /* PGCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PGCoreData.h; path = Postgresql/PGCoreData.h; sourceTree = "<group>"; };
-		4B2C76D119908EA0009F8FB3 /* PGCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PGCoreData.m; path = Postgresql/PGCoreData.m; sourceTree = "<group>"; };
 		4B2C76D419908EA0009F8FB3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/SSKeychain.strings; sourceTree = "<group>"; };
 		4B2C76D519908EA0009F8FB3 /* SSKeychain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SSKeychain.h; sourceTree = "<group>"; };
 		4B2C76D619908EA0009F8FB3 /* SSKeychain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSKeychain.m; sourceTree = "<group>"; };
@@ -579,8 +560,6 @@
 		4BA6D2F119DE2004007A52A9 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		4BA6D2F619DE2224007A52A9 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
 		4BA6D2F919DE2283007A52A9 /* libstdc++.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.dylib"; path = "usr/lib/libstdc++.6.dylib"; sourceTree = SDKROOT; };
-		4BA6D2FB19DE2935007A52A9 /* MTBBarcodeScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTBBarcodeScanner.h; sourceTree = "<group>"; };
-		4BA6D2FC19DE2935007A52A9 /* MTBBarcodeScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTBBarcodeScanner.m; sourceTree = "<group>"; };
 		4BA9B52319688E2D006B3689 /* defaultUserIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = defaultUserIcon.png; sourceTree = "<group>"; };
 		4BB5B81A19272C7800C67690 /* ISSFoodIntakeTracker 3.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ISSFoodIntakeTracker 3.xcdatamodel"; sourceTree = "<group>"; };
 		4BDD27981AEA1164006B3478 /* 1-10-Update-Your-Profile-Admin.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "1-10-Update-Your-Profile-Admin.html"; sourceTree = "<group>"; };
@@ -680,6 +659,12 @@
 		4BE639741AAF620C0019B988 /* icon_fat_pie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_fat_pie.png; sourceTree = "<group>"; };
 		4BE639751AAF620C0019B988 /* icon_carb_pie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_carb_pie.png; sourceTree = "<group>"; };
 		4BF6BA951AC10AEB00DDE1AE /* bg_protein_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bg_protein_bar.png; sourceTree = "<group>"; };
+		4BF7B7201AF1BA1C00DCC514 /* PGCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGCoreData.m; sourceTree = "<group>"; };
+		4BF7B7211AF1BA1C00DCC514 /* PGCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGCoreData.h; sourceTree = "<group>"; };
+		4BF7B7221AF1BA1C00DCC514 /* PGManagedObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PGManagedObject.h; sourceTree = "<group>"; };
+		4BF7B7231AF1BA1C00DCC514 /* PGManagedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGManagedObject.m; sourceTree = "<group>"; };
+		4BF7B7271AF1BEA700DCC514 /* MTBBarcodeScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTBBarcodeScanner.h; sourceTree = "<group>"; };
+		4BF7B7281AF1BEA700DCC514 /* MTBBarcodeScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTBBarcodeScanner.m; sourceTree = "<group>"; };
 		4D0F2D7D17BD23A000B86759 /* FoodIntakeTrackerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodIntakeTrackerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D0F2DBB17BD255900B86759 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		4D4884B117C3CC7B006851A9 /* CustomTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTableViewController.h; sourceTree = "<group>"; };
@@ -765,21 +750,6 @@
 		4DAB06BC17C05ADD009F8E91 /* FLM.dic */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FLM.dic; sourceTree = "<group>"; };
 		4DAB06BD17C05ADD009F8E91 /* GLM.arpa */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GLM.arpa; sourceTree = "<group>"; };
 		4DAB06BE17C05ADD009F8E91 /* GLM.dic */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GLM.dic; sourceTree = "<group>"; };
-		4DF1677017BD20D500D3633F /* cmu07a.dic */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cmu07a.dic; sourceTree = "<group>"; };
-		4DF1677217BD20D500D3633F /* feat.params */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = feat.params; sourceTree = "<group>"; };
-		4DF1677317BD20D500D3633F /* mdef */ = {isa = PBXFileReference; lastKnownFileType = text; path = mdef; sourceTree = "<group>"; };
-		4DF1677417BD20D500D3633F /* means */ = {isa = PBXFileReference; lastKnownFileType = text; path = means; sourceTree = "<group>"; };
-		4DF1677517BD20D500D3633F /* noisedict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = noisedict; sourceTree = "<group>"; };
-		4DF1677617BD20D500D3633F /* sendump */ = {isa = PBXFileReference; lastKnownFileType = text; path = sendump; sourceTree = "<group>"; };
-		4DF1677717BD20D500D3633F /* transition_matrices */ = {isa = PBXFileReference; lastKnownFileType = text; path = transition_matrices; sourceTree = "<group>"; };
-		4DF1677817BD20D500D3633F /* variances */ = {isa = PBXFileReference; lastKnownFileType = text; path = variances; sourceTree = "<group>"; };
-		4DF1677917BD20D500D3633F /* OpenEars.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OpenEars.framework; sourceTree = "<group>"; };
-		4DF1677A17BD20D500D3633F /* OpenEars1.dic */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OpenEars1.dic; sourceTree = "<group>"; };
-		4DF1677B17BD20D500D3633F /* OpenEars1.gram */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OpenEars1.gram; sourceTree = "<group>"; };
-		4DF1677C17BD20D500D3633F /* OpenEars1.languagemodel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OpenEars1.languagemodel; sourceTree = "<group>"; };
-		4DF1677D17BD20D500D3633F /* OpenEars2.gram */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OpenEars2.gram; sourceTree = "<group>"; };
-		4DF1677E17BD20D500D3633F /* OpenEarsCorpus.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OpenEarsCorpus.txt; sourceTree = "<group>"; };
-		4DF1677F17BD20D500D3633F /* Slt.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Slt.framework; sourceTree = "<group>"; };
 		4DF1678117BD20D500D3633F /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		4DF1678217BD20D500D3633F /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		4DF167A717BD20E100D3633F /* DataHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataHelper.h; sourceTree = "<group>"; };
@@ -1088,9 +1058,7 @@
 				E7C40727175FFA1F00C3649E /* Foundation.framework in Frameworks */,
 				4B2C76DB19908EA0009F8FB3 /* libssl.a in Frameworks */,
 				E7C40729175FFA1F00C3649E /* CoreGraphics.framework in Frameworks */,
-				4DF1679817BD20D500D3633F /* OpenEars.framework in Frameworks */,
 				4B2C76DA19908EA0009F8FB3 /* libpq.a in Frameworks */,
-				4DF1679E17BD20D500D3633F /* Slt.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1103,10 +1071,6 @@
 				4B2C76B519908EA0009F8FB3 /* libcrypto.a */,
 				4B2C76B619908EA0009F8FB3 /* libpq.a */,
 				4B2C76B719908EA0009F8FB3 /* libssl.a */,
-				4B2C76D019908EA0009F8FB3 /* PGCoreData.h */,
-				4B2C76D119908EA0009F8FB3 /* PGCoreData.m */,
-				4B0E784419944A8F00D8360B /* PGManagedObject.h */,
-				4B0E784519944A8F00D8360B /* PGManagedObject.m */,
 				4B2C76E919908ED8009F8FB3 /* include */,
 				4B2C76B819908EA0009F8FB3 /* PGClientKit */,
 				4B2C76D219908EA0009F8FB3 /* SSKeychain */,
@@ -1260,6 +1224,15 @@
 				4B2C773A19908ED8009F8FB3 /* x509v3.h */,
 			);
 			path = openssl;
+			sourceTree = "<group>";
+		};
+		4BF7B7261AF1BEA700DCC514 /* MTBBarcodeScanner */ = {
+			isa = PBXGroup;
+			children = (
+				4BF7B7271AF1BEA700DCC514 /* MTBBarcodeScanner.h */,
+				4BF7B7281AF1BEA700DCC514 /* MTBBarcodeScanner.m */,
+			);
+			path = MTBBarcodeScanner;
 			sourceTree = "<group>";
 		};
 		4D64992C17CD13DC00C15B72 /* BNPieChart */ = {
@@ -1422,45 +1395,16 @@
 			path = LanguageModels;
 			sourceTree = "<group>";
 		};
-		4DF1676A17BD20D500D3633F /* library */ = {
+		4DF1676A17BD20D500D3633F /* Third Party Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				4BF7B7261AF1BEA700DCC514 /* MTBBarcodeScanner */,
 				4B2C76B419908E90009F8FB3 /* Postgresql */,
 				4D64992C17CD13DC00C15B72 /* BNPieChart */,
-				4DF1676F17BD20D500D3633F /* OpenEars */,
 				4DF1678017BD20D500D3633F /* Reachability */,
 			);
-			path = library;
-			sourceTree = "<group>";
-		};
-		4DF1676F17BD20D500D3633F /* OpenEars */ = {
-			isa = PBXGroup;
-			children = (
-				4DF1677017BD20D500D3633F /* cmu07a.dic */,
-				4DF1677117BD20D500D3633F /* hub4wsj_sc_8k */,
-				4DF1677917BD20D500D3633F /* OpenEars.framework */,
-				4DF1677A17BD20D500D3633F /* OpenEars1.dic */,
-				4DF1677B17BD20D500D3633F /* OpenEars1.gram */,
-				4DF1677C17BD20D500D3633F /* OpenEars1.languagemodel */,
-				4DF1677D17BD20D500D3633F /* OpenEars2.gram */,
-				4DF1677E17BD20D500D3633F /* OpenEarsCorpus.txt */,
-				4DF1677F17BD20D500D3633F /* Slt.framework */,
-			);
-			path = OpenEars;
-			sourceTree = "<group>";
-		};
-		4DF1677117BD20D500D3633F /* hub4wsj_sc_8k */ = {
-			isa = PBXGroup;
-			children = (
-				4DF1677217BD20D500D3633F /* feat.params */,
-				4DF1677317BD20D500D3633F /* mdef */,
-				4DF1677417BD20D500D3633F /* means */,
-				4DF1677517BD20D500D3633F /* noisedict */,
-				4DF1677617BD20D500D3633F /* sendump */,
-				4DF1677717BD20D500D3633F /* transition_matrices */,
-				4DF1677817BD20D500D3633F /* variances */,
-			);
-			path = hub4wsj_sc_8k;
+			name = "Third Party Libraries";
+			path = ../library;
 			sourceTree = "<group>";
 		};
 		4DF1678017BD20D500D3633F /* Reachability */ = {
@@ -1596,7 +1540,6 @@
 				4BA6D2F919DE2283007A52A9 /* libstdc++.6.dylib */,
 				4BA6D2F619DE2224007A52A9 /* libstdc++.6.0.9.dylib */,
 				4BA6D2F119DE2004007A52A9 /* libstdc++.dylib */,
-				4DF1676A17BD20D500D3633F /* library */,
 				4B2C773E19908FA9009F8FB3 /* Security.framework */,
 				4D9FEAB817C015DD001F92B5 /* AddressBook.framework */,
 				4D9FEAB917C015DE001F92B5 /* AddressBookUI.framework */,
@@ -1639,6 +1582,7 @@
 		E7C4072B175FFA1F00C3649E /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				4DF1676A17BD20D500D3633F /* Third Party Libraries */,
 				4D9856E717DDACBD008B868C /* helpData */,
 				4DAB06BA17C05ADD009F8E91 /* LanguageModels */,
 				E7396BF6176EE3320051E0DB /* icon@72x72.png */,
@@ -1902,10 +1846,12 @@
 		E7FE3088176EF93800B19087 /* common */ = {
 			isa = PBXGroup;
 			children = (
-				4BA6D2FB19DE2935007A52A9 /* MTBBarcodeScanner.h */,
-				4BA6D2FC19DE2935007A52A9 /* MTBBarcodeScanner.m */,
 				E7FE3089176EF93800B19087 /* Helper.h */,
 				E7FE308A176EF93800B19087 /* Helper.m */,
+				4BF7B7211AF1BA1C00DCC514 /* PGCoreData.h */,
+				4BF7B7201AF1BA1C00DCC514 /* PGCoreData.m */,
+				4BF7B7221AF1BA1C00DCC514 /* PGManagedObject.h */,
+				4BF7B7231AF1BA1C00DCC514 /* PGManagedObject.m */,
 				4DF19F3D17C30FE200F8F744 /* Settings.h */,
 			);
 			path = common;
@@ -2217,25 +2163,12 @@
 				E764ECC71788708700E7A98E /* Tang.jpg in Resources */,
 				E764ECC81788708700E7A98E /* Tuna.jpg in Resources */,
 				E764ECCF1788739A00E7A98E /* Almond M&Ms.jpg in Resources */,
-				4DF1679017BD20D500D3633F /* cmu07a.dic in Resources */,
-				4DF1679117BD20D500D3633F /* feat.params in Resources */,
 				4BDD29881AEA16BB006B3478 /* image002.png in Resources */,
-				4DF1679217BD20D500D3633F /* mdef in Resources */,
 				4BDD29641AEA16BB006B3478 /* image055.png in Resources */,
-				4DF1679317BD20D500D3633F /* means in Resources */,
-				4DF1679417BD20D500D3633F /* noisedict in Resources */,
-				4DF1679517BD20D500D3633F /* sendump in Resources */,
 				4BDD294C1AEA16BB006B3478 /* image085.png in Resources */,
-				4DF1679617BD20D500D3633F /* transition_matrices in Resources */,
 				4BDD29501AEA16BB006B3478 /* image068.png in Resources */,
-				4DF1679717BD20D500D3633F /* variances in Resources */,
-				4DF1679917BD20D500D3633F /* OpenEars1.dic in Resources */,
 				4BDD29581AEA16BB006B3478 /* image076.png in Resources */,
 				4BDD295B1AEA16BB006B3478 /* image079.png in Resources */,
-				4DF1679A17BD20D500D3633F /* OpenEars1.gram in Resources */,
-				4DF1679B17BD20D500D3633F /* OpenEars1.languagemodel in Resources */,
-				4DF1679C17BD20D500D3633F /* OpenEars2.gram in Resources */,
-				4DF1679D17BD20D500D3633F /* OpenEarsCorpus.txt in Resources */,
 				4BDD29771AEA16BB006B3478 /* image035.png in Resources */,
 				4D507B9617BD3E0D00D774AD /* Configuration.plist in Resources */,
 				4DAB06B117C04317009F8E91 /* bg_carb.png in Resources */,
@@ -2355,13 +2288,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				E7C40731175FFA1F00C3649E /* main.m in Sources */,
-				4B2C76E519908EA0009F8FB3 /* PGCoreData.m in Sources */,
 				E7C40735175FFA1F00C3649E /* AppDelegate.m in Sources */,
 				E7C4075C176018F200C3649E /* LoginViewController.m in Sources */,
 				4B2C76E019908EA0009F8FB3 /* PGConverters+Object2Data.m in Sources */,
 				E70A6FD9176816B200712B47 /* HelpSettingViewController.m in Sources */,
 				E70A6FEA1768371B00712B47 /* CustomTabBarViewController.m in Sources */,
-				4BA6D2FD19DE2935007A52A9 /* MTBBarcodeScanner.m in Sources */,
 				E70A6FED176839B200712B47 /* ConsumptionViewController.m in Sources */,
 				E70A700E1768B24600712B47 /* CustomPickerViewController.m in Sources */,
 				4B626FB4192B70B00080634C /* ISSFoodIntakeTracker23.xcmappingmodel in Sources */,
@@ -2385,13 +2316,13 @@
 				E76D4FF417772E5A000EFFBB /* TakeLabelViewController.m in Sources */,
 				4B2C76DE19908EA0009F8FB3 /* PGConnection.m in Sources */,
 				E76D4FF717772EF8000EFFBB /* TakeBarcodeViewController.mm in Sources */,
+				4BF7B7291AF1BEA700DCC514 /* MTBBarcodeScanner.m in Sources */,
 				E76D50021777BC7F000EFFBB /* TakeBaseViewController.m in Sources */,
 				E76D50051777BF73000EFFBB /* UserApplicationDataViewController.m in Sources */,
 				4B2C76E219908EA0009F8FB3 /* PGResult+TextTable.m in Sources */,
 				E76D50081777BF8B000EFFBB /* ManageUserProfileViewController.m in Sources */,
 				4DF1679F17BD20D500D3633F /* Reachability.m in Sources */,
 				4DF167DC17BD20E100D3633F /* DataHelper.m in Sources */,
-				4B0E784619944A8F00D8360B /* PGManagedObject.m in Sources */,
 				4DF167DD17BD20E100D3633F /* LoggingHelper.m in Sources */,
 				4DF167DE17BD20E100D3633F /* AdhocFoodProduct.m in Sources */,
 				4DF167DF17BD20E100D3633F /* FoodConsumptionRecord.m in Sources */,
@@ -2403,6 +2334,7 @@
 				4DF167E517BD20E100D3633F /* SynchronizableModel.m in Sources */,
 				4BE31E39190EF4B600402D94 /* ISSFoodIntakeTracker.xcdatamodeld in Sources */,
 				4DF167E617BD20E100D3633F /* User.m in Sources */,
+				4BF7B7251AF1BA1C00DCC514 /* PGManagedObject.m in Sources */,
 				4B2C76E119908EA0009F8FB3 /* PGPasswordStore.m in Sources */,
 				4B2C76DF19908EA0009F8FB3 /* PGConverters+Data2Object.m in Sources */,
 				4DF167E717BD20E100D3633F /* BaseCommunicationDataService.m in Sources */,
@@ -2417,6 +2349,7 @@
 				4D64994717CD13DC00C15B72 /* BNAppStats.m in Sources */,
 				4D64994817CD13DC00C15B72 /* BNColor.m in Sources */,
 				4D64994917CD13DC00C15B72 /* BNPieChart.m in Sources */,
+				4BF7B7241AF1BA1C00DCC514 /* PGCoreData.m in Sources */,
 				4D64994A17CD13DC00C15B72 /* CArray.m in Sources */,
 				4B2C76E319908EA0009F8FB3 /* PGResult.m in Sources */,
 				4D64994B17CD13DC00C15B72 /* CodeTimestamps.m in Sources */,
