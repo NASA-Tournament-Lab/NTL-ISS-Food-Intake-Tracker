@@ -22,7 +22,12 @@ app.use(multer({ dest: '/tmp' }));
 app.use(express.static(__dirname + '/public'));
 
 app.use(cookieParser('secret'));
-app.use(session({cookie: { maxAge: 60000 }}));
+// app.use(session({cookie: { maxAge: 60000 }}));
+app.use(session({
+  resave: false, // don't save session if unmodified
+  saveUninitialized: false, // don't create session until something stored
+  secret: 'f541b79594f6e0d176058bd4e17874e397e89145'
+}));
 app.use(flash());
 
 app.set('views', './views');
@@ -241,6 +246,29 @@ var updateValue = function(req, res, remove) {
     });
 }
 
+function requiredAuthentication(req, res, next) {
+    var currentSession = req.session;
+    if (currentSession.loggedIn != null && currentSession.loggedIn) {
+        next();
+    } else {
+        req.session.error = 'Access denied!';
+        res.redirect('/login');
+    }
+}
+
+app.get('/login', function (req, res) {
+    var currentSelectedTab = req.flash('currentSelectedTab');
+    var message = req.flash('message');
+    var error = req.flash('error');
+
+    res.render('login', {
+        tabsData: JSON.stringify({
+            message: message || "",
+            error: error || ""
+        })
+    });
+});
+
 app.get('/', function (req, res) {
     var currentSelectedTab = req.flash('currentSelectedTab');
     var message = req.flash('message');
@@ -249,12 +277,7 @@ app.get('/', function (req, res) {
     var currentSession = req.session;
 
     if (currentSession == null || currentSession.loggedIn == null || !currentSession.loggedIn) {
-        res.render('login', {
-            tabsData: JSON.stringify({
-                message: message || "",
-                error: error || ""
-            })
-        });
+        res.redirect('/login');
     } else {
         res.render('index', {
             tabsData: JSON.stringify({
@@ -267,7 +290,7 @@ app.get('/', function (req, res) {
 });
 
 // List foods / users
-app.get('/foods', function (req, res) {
+app.get('/foods', requiredAuthentication, function (req, res) {
     pgclient.query("SELECT id, name, value FROM data WHERE name = 'FoodProduct'", function(err, result) {
         if(err) {
             return console.error('error running query', err);
@@ -299,7 +322,7 @@ app.get('/foods', function (req, res) {
     });
 });
 
-app.get('/users', function (req, res) {
+app.get('/users', requiredAuthentication, function (req, res) {
     pgclient.query("SELECT id, name, value FROM data WHERE name = 'User'", function(err, result) {
         if(err) {
             return console.error('error running query', err);
@@ -330,7 +353,7 @@ app.get('/users', function (req, res) {
 });
 
 // report
-app.get('/reports', function(req, res) {
+app.get('/reports', requiredAuthentication, function(req, res) {
     req.flash('currentSelectedTab', '2');
     pgclient.query("SELECT id, name, value FROM data WHERE name = 'User'", function(err, result) {
         if(err) {
@@ -359,7 +382,7 @@ app.get('/reports', function(req, res) {
     });
 });
 
-app.get('/import', function(req, res) {
+app.get('/import', requiredAuthentication, function(req, res) {
     req.flash('currentSelectedTab', '3');
     res.render('import', {
             message: 'Import csv file',
@@ -369,7 +392,7 @@ app.get('/import', function(req, res) {
         });
 });
 
-app.get('/instructions', function(req, res) {
+app.get('/instructions', requiredAuthentication, function(req, res) {
     req.flash('currentSelectedTab', '4');
     res.render('instructions', {
             message: 'Instructions'
@@ -379,13 +402,13 @@ app.get('/instructions', function(req, res) {
 });
 
 // Show foods / users new
-app.get('/food', function(req, res) {
+app.get('/food', requiredAuthentication, function(req, res) {
     req.flash('currentSelectedTab', '1');
     res.render('new', { message: "New food", action: "/food", keys: foodKeys, titles: foodTitles, defaultValues: {},
                         uuid: uuid.v4() });
 });
 
-app.get('/user', function(req, res) {
+app.get('/user', requiredAuthentication, function(req, res) {
     req.flash('currentSelectedTab', '0');
     res.render('new', { message: "New user", action: "/user", keys: userKeys, titles: userTitles, defaultValues: defaultValues,
                         uuid: uuid.v4() });
