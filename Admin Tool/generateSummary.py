@@ -38,11 +38,11 @@ try:
 
     if startDate is None:
         sDate = datetime.strptime("19700101", "%Y%m%d")
-        eDate = datetime.combine(datetime.utcnow().date() + timedelta(1), datetime.min.time())
+        eDate = datetime.combine(datetime.utcnow().date() + timedelta(180), datetime.min.time())
     else:
         sDate = datetime.strptime(startDate, "%Y%m%d")
         if endDate is None:
-            eDate = datetime.combine(sDate + timedelta(1), datetime.min.time())
+            eDate = datetime.combine(sDate + timedelta(180), datetime.min.time())
         else:
             eDate = datetime.strptime(endDate, "%Y%m%d")
 

@@ -1902,7 +1902,7 @@
 		E7C40719175FFA1F00C3649E /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastTestingUpgradeCheck = 0610;
+				LastTestingUpgradeCheck = 0630;
 				LastUpgradeCheck = 0620;
 				ORGANIZATIONNAME = topcoder;
 			};
