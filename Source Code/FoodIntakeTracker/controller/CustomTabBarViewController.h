@@ -74,6 +74,8 @@
 /* login user first name */
 @property (strong, nonatomic) IBOutlet UILabel *lastSyncLabel;
 
+/* disable tabbar */
+@property (nonatomic, assign) BOOL disabledTab;
 
 /**
  * add control for show and hide data and profile tab by user's role (Admin or not)

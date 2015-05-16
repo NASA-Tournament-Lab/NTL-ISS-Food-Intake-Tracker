@@ -175,6 +175,8 @@
  */
 - (void)hideProfileDeletedNoteView{
     self.profileDeletedNoteView.hidden = YES;
+    
+    self.customTabBarController.disabledTab = NO;
 }
 
 /**
@@ -201,6 +203,9 @@
     [self showPreviewProfile];
     self.deletePopupView.hidden = YES;
     self.profileDeletedNoteView.hidden = NO;
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:[NSDate date]];
+    
     [self performSelector:@selector(hideProfileDeletedNoteView) withObject:nil afterDelay:1];
 }
 
@@ -210,6 +215,7 @@
  */
 - (IBAction)hideDeletePopup:(id)sender {
     self.deletePopupView.hidden = YES;
+    self.customTabBarController.disabledTab = NO;
 }
 /**
  * show the delete confirm view view.
@@ -217,6 +223,7 @@
  */
 - (IBAction)showDeletePopup:(id)sender {
     self.deletePopupView.hidden = NO;
+    self.customTabBarController.disabledTab = YES;
 }
 
 /**
@@ -414,18 +421,28 @@
     }
     else if(self.profileTable.hidden == NO && self.txtFirstName.hidden == NO){
         // Validation
+        
+        if (self.txtFirstName.text.length > 35 || self.txtLastName.text.length > 35) {
+            [Helper showAlert:@"Error" message:@"Sorry, the name field values entered are too long."];
+            return;
+        }
+        
         if ([self.txtFirstName.text rangeOfString:@" "].location != NSNotFound ||
             [self.txtLastName.text rangeOfString:@" "].location != NSNotFound) {
             [Helper showAlert:@"Error" message:@"The names should not have spaces."];
             return;
         }
+        
         User *user = [users objectAtIndex:self.selectIndex];
         user.fullName = [NSString stringWithFormat:@"%@ %@", self.txtFirstName.text, self.txtLastName.text];
+        user.synchronized = @0;
         [userService saveUser:user error:&error];
         if ([Helper displayError:error]) return;
         [self showPreviewProfile];
         [self reloadUsers];
         [self resetSelection:user.fullName];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:[NSDate date]];
     }
     else if(self.btnTakePhoto.hidden) {
         [self showEditPhoto];
@@ -437,6 +454,8 @@
         if ([Helper displayError:error]) return;
         [self showPhotoPreview];
         [self reloadUsers];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:[NSDate date]];
     }
 }
 

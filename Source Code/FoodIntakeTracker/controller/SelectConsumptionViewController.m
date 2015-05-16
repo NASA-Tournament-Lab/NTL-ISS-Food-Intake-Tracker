@@ -481,8 +481,8 @@
     [UIView beginAnimations:@"swipeRight" context:nil];
     [UIView setAnimationDuration:0.5];
     [UIView setAnimationDelegate:self];
-    self.rightView.frame = CGRectMake(314, 98, 454, 835);
-    indexBar.frame = CGRectMake(429, 68.0, 20.0, 757);
+    self.rightView.frame = CGRectMake(314, 100, 454, 833);
+    indexBar.frame = CGRectMake(419, 100, 30.0, 723);
     leftCoverButton.alpha = 0;
     
     [UIView commitAnimations];
@@ -507,7 +507,7 @@
     btn.alpha = 0.1;
     
     self.rightView.frame = CGRectMake(138, 98, 630, 835);
-    indexBar.frame = CGRectMake(605, 68.0, 20.0, 757);
+    indexBar.frame = CGRectMake(595, 68.0, 30.0, 757);
     [UIView commitAnimations];
 }
 
@@ -902,10 +902,13 @@
         img.layer.borderWidth = 1;
         img.image = [Helper loadImage:item.productProfileImage];
         [v addSubview:img];
-        UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(20, 153, 147, 17)];
+        UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(18, 150, 127, 20)];
         lbl.backgroundColor = [UIColor clearColor];
         lbl.font = [UIFont fontWithName:@"HelveticaNeue" size:15];
         lbl.text = item.name;
+        lbl.numberOfLines = 1;
+        lbl.adjustsFontSizeToFitWidth = NO;
+        lbl.lineBreakMode = NSLineBreakByTruncatingTail;
         lbl.textColor = [UIColor colorWithRed:0.27 green:0.27 blue:0.27 alpha:1];
         [v addSubview:lbl];
         UIButton *btn = [[UIButton alloc] initWithFrame:img.frame];
@@ -1389,9 +1392,11 @@
         self.optionListView.options = sortByOptionArray;
         self.lblSortBy.text = [self.optionListView.options objectAtIndex:0];*/
         [self.optionListView.listTable reloadData];
-
+        
         [tableView reloadData];
         [self loadFoods];
+        
+        [self listviewDidSelect:self.optionListView.selectIndex];
     }
 }
 

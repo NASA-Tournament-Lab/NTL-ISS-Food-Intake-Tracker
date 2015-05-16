@@ -89,7 +89,7 @@
 /* the username textfield of register panel */
 @property (weak, nonatomic) IBOutlet UITextField *txtUserName;
 /* the password textfield of register panel */
-@property (weak, nonatomic) IBOutlet UITextField *txtPassword;
+@property (weak, nonatomic) IBOutlet UITextField *txtLastName;
 
 
 /* the take photo panel of register panel */

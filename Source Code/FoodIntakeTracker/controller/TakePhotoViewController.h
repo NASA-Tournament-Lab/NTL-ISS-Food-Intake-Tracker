@@ -44,8 +44,6 @@
 
 /* the note label at bottom */
 @property (weak, nonatomic) IBOutlet UILabel *lblNoteBottom;
-/* the tab bar controller */
-@property (weak, nonatomic) CustomTabBarViewController *customTabBarController;
 /* the category picker view */
 @property (weak, nonatomic) IBOutlet UIView *categoryPickerView;
 /* the category picker */
@@ -66,8 +64,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblFoodNameFound;
 /* the food category label */
 @property (weak, nonatomic) IBOutlet UILabel *lblFoodCategoryFound;
-/* the food comment text */
-@property (weak, nonatomic) IBOutlet UITextField *txtFoodComment;
 
 /* the calories label */
 @property (weak, nonatomic) IBOutlet UILabel *lblCaloriesFound;

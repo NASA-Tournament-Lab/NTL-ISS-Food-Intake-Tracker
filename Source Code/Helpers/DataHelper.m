@@ -81,41 +81,6 @@
 }
 
 /*!
- @discussion This method will get the device's identifier. It will fetch uniquely identifies a device to the app’s 
- vendor in iOS 6.0 and later, or fetch MAC address as the identifier previous iOS 6.0.
- @return The device's indentifier string.
- */
-+ (NSString *)getDeviceIdentifier {
-    NSString *reqSysVer = @"6.0";
-    // fetch uniquely identifies a device to the app’s vendor in iOS 6.0 and later
-    if(([[[UIDevice currentDevice] systemVersion] compare:reqSysVer options:NSNumericSearch] != NSOrderedAscending)) {
-        return [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-    }
-    // use mac address
-    else {
-        struct ifaddrs *ifap, *ifaptr;
-        unsigned char *ptr;
-        char macaddrstr[18];
-        
-        if (getifaddrs(&ifap) == 0) {
-            for(ifaptr = ifap; ifaptr != NULL; ifaptr = (ifaptr)->ifa_next) {
-                // mac address
-                if (!strcmp((ifaptr)->ifa_name, [@"en0" UTF8String]) && (((ifaptr)->ifa_addr)->sa_family == AF_LINK)) {
-                    ptr = (unsigned char *)LLADDR((struct sockaddr_dl *)(ifaptr)->ifa_addr);
-                    sprintf(macaddrstr, "%02x:%02x:%02x:%02x:%02x:%02x",
-                            *ptr, *(ptr+1), *(ptr+2), *(ptr+3), *(ptr+4), *(ptr+5));
-                    
-                    
-                }
-            }
-            freeifaddrs(ifap);
-        }
-        
-        return [DataHelper fillIncompletedHexAddress:[NSString stringWithUTF8String:macaddrstr]];
-    }
-}
-
-/*!
  @discussion This method will align and fill incompleted the MAC address.
  @param hexAddress The MAC address.
  @return Aligned MAC address
@@ -268,13 +233,29 @@
         NSAttributeDescription *attrDescription = (NSAttributeDescription *) obj;
         switch (attrDescription.attributeType) {
             case NSDateAttributeType:
-                [object setValue:[dateFormatter dateFromString:value] forKey:key];
+            {
+                value = [dateFormatter dateFromString:value];
+                if (value != nil) {
+                    [object setValue:value forKey:key];
+                }
                 break;
+            }
             case NSDecimalAttributeType:
                 break;
             case NSStringAttributeType:
                 [object setValue:[NSString stringWithFormat:@"%@", value] forKey:key];
                 break;
+            case NSInteger16AttributeType:
+            case NSInteger32AttributeType:
+            {
+                if ([value isKindOfClass:[NSString class]]) {
+                    NSNumberFormatter *f = [[NSNumberFormatter alloc] init];
+                    value = [f numberFromString:value];
+                    if (value == nil) {
+                        break;
+                    }
+                }
+            }
             default:
                 [object setValue:value forKey:key];
                 break;

@@ -295,8 +295,9 @@ static NSArray *monthNameArray = nil;
     
     int dayDiff = [difference day];
     int monthDiff = [difference month];
+    int yearDiff = [difference year];
     
-    return dayDiff + monthDiff * 31;
+    return dayDiff + monthDiff * 31 + yearDiff * 366;
 }
 
 @end
