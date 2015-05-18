@@ -87,7 +87,6 @@
  * It will only update the array when different month is set.
  */
 - (void)updateDateArray{
-    
     if(self.selectedDate == nil){
         self.selectedDate = [NSDate date];
     }
@@ -154,7 +153,7 @@
             }
         }
     }
-    self.totalRows = (curMonth.count + prevMonth.count + nextMonth.count) / 7;
+    self.totalRows = floor((curMonth.count + prevMonth.count + nextMonth.count) / 7.0f + 0.5f);
     [self setNeedsDisplay];
 }
 
@@ -171,13 +170,14 @@
                                                     NSWeekdayCalendarUnit)
                                           fromDate:self.selectedDate];
     int pos = info.day + prevMonth.count - 1;
-    BOOL isCurrentMonth = (info.month == monthInfo.month);
     int posX = pos % 7;
     int posY = pos / 7;
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     
-    if (isCurrentMonth) {
+    BOOL isCurrentMonth = (info.month == monthInfo.month);
+    BOOL isCurrentYear = (info.year == monthInfo.year);
+    if (isCurrentMonth && isCurrentYear) {
         CGContextSetRGBFillColor(context, 0.54, 0.79, 1, 1);
         CGContextFillRect(context, CGRectMake(posX * 48, posY * 40, 47, 39));
         CGContextStrokePath(context);
@@ -215,7 +215,7 @@
         [compsToAdd setDay:str.integerValue - 1];
         
         NSDate *finalDate = [gregorian dateByAddingComponents:compsToAdd toDate:firstDay options:0];
-        if ([Helper daysFromToday:finalDate] == 0) {
+        if ([Helper daysFromToday:finalDate] == 0 && isCurrentYear) {
             // paint current date
             CGContextSetRGBFillColor(context, 231./255., 245./255., 43./255., 1);
             CGContextFillRect(context, CGRectMake(x * 48, y * 40, 47, 39));
@@ -232,8 +232,8 @@
         CGContextStrokePath(context);
         CGContextSetRGBFillColor(context, 0.2, 0.2, 0.2, 1);
         
-        // check is selcted or not.
-        if (isCurrentMonth && posX == x && posY == y) {
+        // check is selected or not.
+        if (isCurrentMonth && isCurrentYear && posX == x && posY == y) {
             CGSize size = [str sizeWithAttributes:@{NSFontAttributeName : boldFont}];
             [str drawAtPoint:CGPointMake(x * 48 - size.width / 2 + 23, y * 40 - size.height / 2 + 20)
               withAttributes:@{NSFontAttributeName : boldFont}];
@@ -396,5 +396,10 @@
     [self setMonth:[NSDate date]];
     self.listView.selectedDate = [NSDate date];
     [self.listView setNeedsDisplay];
+    
+    if(self.delegate && [self.delegate respondsToSelector:@selector(calendarDidSelect:)]){
+        [self.delegate calendarDidSelect:self.listView.selectedDate];
+    }
+    [self.popController dismissPopoverAnimated:YES];
 }
 @end

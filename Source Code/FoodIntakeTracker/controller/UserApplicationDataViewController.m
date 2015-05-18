@@ -371,9 +371,9 @@
             img.image = [UIImage imageNamed:@"icon-arrow.png"];
             img.tag = 100;
             [cell addSubview:img];
-            UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 49, tableView.frame.size.width, 1)];
+            /*UIView *line = [[UIView alloc] initWithFrame:CGRectMake(0, 49, tableView.frame.size.width, 1)];
             [line setBackgroundColor:[UIColor lightGrayColor]];
-            [cell addSubview:line];
+            [cell addSubview:line];*/
             UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(52, 0, 211, 49)];
             lbl.backgroundColor = [UIColor clearColor];
             lbl.tag = 101;

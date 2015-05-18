@@ -309,6 +309,10 @@
         [str appendFormat:@"  %@", names[0]];
         for (int i = 1; i < names.count; i++) {
            [str appendFormat:@"  %@", names[i]];
+            if (str.length > 33) {
+                int len = str.length - 30;
+                [str replaceCharactersInRange:NSMakeRange(30, len) withString:@"..."];
+            }
         }
     }
     [str appendFormat:@" "];
@@ -371,14 +375,13 @@
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     if (appDelegate.loggedInUser) {
         self.caloriesProgess.lblTotal.text =
-        [NSString stringWithFormat:@"/ %@ Calories", appDelegate.loggedInUser.dailyTargetEnergy];
+        [NSString stringWithFormat:@"/ %@ Cal", appDelegate.loggedInUser.dailyTargetEnergy];
         self.sodiumProgress.lblTotal.text =
         [NSString stringWithFormat:@"/ %@ mg", appDelegate.loggedInUser.dailyTargetSodium];
         self.fluidProgress.lblTotal.text =
         [NSString stringWithFormat:@"/ %@ mL", appDelegate.loggedInUser.dailyTargetFluid];
-    }
-    else {
-        self.caloriesProgess.lblTotal.text = [NSString stringWithFormat:@"/ %d Calories", MAX_CALORIES];
+    } else {
+        self.caloriesProgess.lblTotal.text = [NSString stringWithFormat:@"/ %d Cal", MAX_CALORIES];
         self.sodiumProgress.lblTotal.text = [NSString stringWithFormat:@"/ %d mg", MAX_SODIUM];
         self.fluidProgress.lblTotal.text = [NSString stringWithFormat:@"/ %d mL", MAX_FLUID];
     }
@@ -578,11 +581,11 @@
         [self redrawPieChartWithProtein:0.333 carb:0.333 fat:0.334];
     }
     
-    self.proteinPercentageLabel.text = [NSString stringWithFormat:@"        %4.0f%% of Calories",
+    self.proteinPercentageLabel.text = [NSString stringWithFormat:@"        %4.0f%% of Cal",
                                             floor(proteinCalories * 100)];
-    self.carbPercentageLabel.text = [NSString stringWithFormat:@"        %4.0f%% of Calories",
+    self.carbPercentageLabel.text = [NSString stringWithFormat:@"        %4.0f%% of Cal",
                                            floor(carbCalories * 100)];
-    self.fatPercentageLabel.text = [NSString stringWithFormat:@"        %4.0f%% of Calories",
+    self.fatPercentageLabel.text = [NSString stringWithFormat:@"        %4.0f%% of Cal",
                                           floor(fatCalories * 100)];
 
     self.caloriesProgess.lblPercent.text = [NSString stringWithFormat:@"%.0f%%",
@@ -1771,14 +1774,14 @@
     cell.btnComment.hidden = YES;
     if(item.comment.length > 0){
         cell.btnComment.hidden = NO;
-    } else if (item.voiceRecordings.count > 0) {
+    }/* else if (item.voiceRecordings.count > 0) {
         for (StringWrapper *itemVoice in [item.voiceRecordings allObjects]) {
             if (itemVoice && itemVoice.value && itemVoice.value.length > 0) {
                 cell.btnComment.hidden = NO;
                 break;
             }
         }
-    }
+    }*/
     if(cell.editing){
         cell.deleteView.hidden = NO;
     }

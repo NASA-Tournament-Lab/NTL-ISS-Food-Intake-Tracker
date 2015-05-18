@@ -136,27 +136,35 @@
  * @param sender the button.
  */
 - (IBAction)takeAnotherPhoto:(id)sender {
-    if(self.resultView.hidden == NO){
+    if (self.resultView.hidden == NO){
         [self.txtFoodName resignFirstResponder];
+        
+        // Validate the food name
+        NSString *foodName = @"Intake From Photo";
         self.txtFoodName.text = [self.txtFoodName.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        self.txtFoodComment.text = [self.txtFoodComment.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if (self.txtFoodName.text.length > 0) {
+            foodName = self.txtFoodName.text;
+        }
+        
+        NSError *error = nil;
         
         AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
         FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
-        NSError *error;
         
-        if (self.txtFoodName.text.length == 0){
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
-                                                            message:@"Please enter food name and select food category"
-                                                           delegate:nil
-                                                  cancelButtonTitle:@"OK"
-                                                  otherButtonTitles:nil];
-            [alert show];
+        AdhocFoodProduct *adhocFoodProduct = [foodProductService buildAdhocFoodProduct:&error];
+        if ([Helper displayError:error]) {
             return;
         }
         
-        AdhocFoodProduct *adhocFoodProduct = [foodProductService buildAdhocFoodProduct:&error];
-        if ([Helper displayError:error]) return;
-        adhocFoodProduct.name = self.txtFoodName.text;
+        adhocFoodProduct.name = foodName;
+        adhocFoodProduct.quantity = @1;
+        adhocFoodProduct.categories = [NSMutableSet set];
+        
+        CGFloat r = self.imgFood.image.size.width / self.imgFood.image.size.height;
+        UIImage *resized = [self resizeImage:self.imgFood.image newSize:CGSizeMake(r * 800, 800)];
+        NSString *imagePath = [Helper saveImage:UIImageJPEGRepresentation(resized, 0.9)];
+        adhocFoodProduct.productProfileImage = imagePath;
         
         StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
                                                                               entityForName:@"StringWrapper"
@@ -167,9 +175,6 @@
         stringWrapper.synchronized = @NO;
         stringWrapper.removed = @NO;
         adhocFoodProduct.categories = [NSMutableSet setWithObject:stringWrapper];
-        
-        NSString *imagePath = [Helper saveImage:UIImageJPEGRepresentation(self.imgFood.image, 0.9)];
-        adhocFoodProduct.productProfileImage = imagePath;
         
         stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
                                                                entityForName:@"StringWrapper"
@@ -182,7 +187,11 @@
         adhocFoodProduct.images = [NSSet setWithObject:stringWrapper];
         
         [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser product:adhocFoodProduct error:&error];
-        if ([Helper displayError:error]) return;
+        
+        if ([Helper displayError:error]) {
+            return;
+        }
+        
         [resultFoods addObject:adhocFoodProduct];
         [self buildResults];
         [self.btnResults setEnabled:YES];

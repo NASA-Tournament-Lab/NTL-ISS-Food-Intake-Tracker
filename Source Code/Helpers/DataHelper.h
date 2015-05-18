@@ -56,14 +56,6 @@
  */
 + (NSString *)convertStringWrapperNSSetToNSString:(NSSet *)set withSeparator:(NSString *)separator;
 
-
-/*!
- @discussion This method will get the device's identifier. It will fetch uniquely identifies a device to the app’s
- vendor in iOS 6.0 and later, or fetch MAC address as the identifier previous iOS 6.0.
- @return The device's indentifier string.
- */
-+ (NSString *)getDeviceIdentifier;
-
 /*!
  @discussion This method will build a FoodProductSortOption from string.
  @param str The string representation of FoodProductSortOption

@@ -259,4 +259,11 @@
     self.txtFood.text = val;
     [self.txtFood resignFirstResponder];
 }
+
+#pragma mark - UIPopoverControllerDelegate
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+    self.suggestionTableView = nil;
+}
+
 @end

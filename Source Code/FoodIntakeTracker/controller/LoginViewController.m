@@ -162,7 +162,7 @@
  */
 - (IBAction)showRegister {
     self.txtUserName.text = @"";
-    self.txtPassword.text = @"";
+    self.txtLastName.text = @"";
     self.loginPanel.hidden = YES;
     self.registerPanel.hidden = NO;
     self.registerUserNamePanel.hidden = NO;
@@ -179,7 +179,7 @@
     self.loginPanel.hidden = NO;
     self.loginSelectedPanel.hidden = YES;
     self.loginListPanel.hidden = NO;
-    [self.txtPassword resignFirstResponder];
+    [self.txtLastName resignFirstResponder];
     [self.txtUserName resignFirstResponder];
 }
 /**
@@ -189,20 +189,20 @@
 - (IBAction)showRegisterPhotoPanel:(id)sender{
     // Validation
     self.txtUserName.text = [self.txtUserName.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    self.txtPassword.text = [self.txtPassword.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    self.txtLastName.text = [self.txtLastName.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     
-    if (![Helper checkStringIsValid:self.txtUserName.text] || ![Helper checkStringIsValid:self.txtPassword.text]) {
-        [Helper showAlert:@"Error" message:@"Please enter the first and last names"];
+    if (![Helper checkStringIsValid:self.txtUserName.text] || ![Helper checkStringIsValid:self.txtLastName.text]) {
+        [Helper showAlert:@"Error" message:@"Please enter your first & last name"];
         return;
     }
     
-    if (self.txtUserName.text.length > 35 || self.txtPassword.text.length > 35) {
+    if (self.txtUserName.text.length > 35 || self.txtLastName.text.length > 35) {
         [Helper showAlert:@"Error" message:@"Sorry, the name field values entered are too long."];
         return;
     }
     
     if ([self.txtUserName.text rangeOfString:@" "].location != NSNotFound ||
-        [self.txtPassword.text rangeOfString:@" "].location != NSNotFound) {
+        [self.txtLastName.text rangeOfString:@" "].location != NSNotFound) {
         [Helper showAlert:@"Error" message:@"The names should not have spaces."];
         return;
     }
@@ -218,7 +218,7 @@
     self.btnFinish.hidden = YES;
     self.btnRetakePhoto.hidden = YES;
     self.prgTakingPhoto.hidden = YES;
-    [self.txtPassword resignFirstResponder];
+    [self.txtLastName resignFirstResponder];
     [self.txtUserName resignFirstResponder];
     self.loginGridView.imgPhotoCover.frame = CGRectMake(0, 0, 320, 0);
     self.loginGridView.layer.borderColor = [UIColor darkGrayColor].CGColor;
@@ -281,7 +281,7 @@
     User *user = [userService buildUser:&error];
     if ([Helper displayError:error]) return;
     
-    user.fullName = [self.txtUserName.text stringByAppendingFormat:@" %@", self.txtPassword.text];
+    user.fullName = [self.txtUserName.text stringByAppendingFormat:@" %@", self.txtLastName.text];
     user.profileImage = imagePath;
     user.dailyTargetEnergy = [appDelegate.configuration objectForKey:@"DailyTargetCalories"];
     user.dailyTargetSodium = [appDelegate.configuration objectForKey:@"DailyTargetSodium"];
@@ -564,10 +564,10 @@
  */
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     if ([textField isEqual:self.txtUserName]) {
-        [self.txtPassword becomeFirstResponder];
+        [self.txtLastName becomeFirstResponder];
     }
-    else if ([textField isEqual:self.txtPassword]) {
-        [self.txtPassword resignFirstResponder];
+    else if ([textField isEqual:self.txtLastName]) {
+        [self.txtLastName resignFirstResponder];
     }
     return YES;
 }

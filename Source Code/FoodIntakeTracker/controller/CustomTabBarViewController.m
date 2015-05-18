@@ -42,12 +42,18 @@
 
 @implementation CustomTabBarViewController
 
+@synthesize disabledTab;
+
 /**
  * overwrite this method to load view controllers here and define default values.
  */
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    // set enable
+    disabledTab = NO;
+    
     UIStoryboard*  sb = self.storyboard;
     
     helpSettingController = [sb instantiateViewControllerWithIdentifier:@"HelpSettingView"];
@@ -105,6 +111,10 @@
  * action for logout button.
  */
 - (void)logout{
+    if (disabledTab) {
+        return;
+    }
+    
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     UserServiceImpl *userService = appDelegate.userService;
     if (appDelegate.loggedInUser) {
@@ -120,7 +130,7 @@
  * set the consumption view as active view.
  */
 - (void)setConsumptionActive{
-    if(self.activeTab == 1){
+    if(self.activeTab == 1 || disabledTab) {
         return;
     }
     
@@ -176,9 +186,10 @@
  * set the help setting view as active view.
  */
 - (void)setHelpSettingActive{
-    if(self.activeTab == 4){
+    if (self.activeTab == 4 || disabledTab) {
         return;
     }
+    
     self.activeTab = 4;
     
     [self.view bringSubviewToFront:helpSettingController.view];
@@ -214,7 +225,7 @@
  * set user data view as active view.
  */
 - (void)setUserDataActive{
-    if(self.activeTab == 3){
+    if (self.activeTab == 3 || disabledTab) {
         return;
     }
     
@@ -245,10 +256,10 @@
  * set profile view as active view
  */
 - (void)setProfileActive{
-    
-    if(self.activeTab == 2){
+    if (self.activeTab == 2 || disabledTab) {
         return;
     }
+    
     self.activeTab = 2;
     
     [self.view bringSubviewToFront:manageUserProfile.view];
@@ -275,7 +286,7 @@
 /**
  * add control for show and hide data and profile tab by user's role (Admin or not)
  */
-- (void)setAdmin:(BOOL)isAdmin{
+- (void)setAdmin:(BOOL)isAdmin {
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     admin = isAdmin;
     if(userApplicationData == nil && isAdmin){

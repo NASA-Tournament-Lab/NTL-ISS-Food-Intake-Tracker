@@ -132,10 +132,6 @@
 		4BF7B7241AF1BA1C00DCC514 /* PGCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF7B7201AF1BA1C00DCC514 /* PGCoreData.m */; };
 		4BF7B7251AF1BA1C00DCC514 /* PGManagedObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF7B7231AF1BA1C00DCC514 /* PGManagedObject.m */; };
 		4BF7B7291AF1BEA700DCC514 /* MTBBarcodeScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF7B7281AF1BEA700DCC514 /* MTBBarcodeScanner.m */; };
-		4D0F2DF117BD2D0600B86759 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DF167F517BD216000D3633F /* CoreData.framework */; };
-		4D0F2DF217BD2D0600B86759 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7C40724175FFA1F00C3649E /* UIKit.framework */; };
-		4D0F2DF317BD2D0600B86759 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7C40726175FFA1F00C3649E /* Foundation.framework */; };
-		4D0F2DF417BD2D0600B86759 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D0F2DBB17BD255900B86759 /* SenTestingKit.framework */; };
 		4D4884B317C3CC7C006851A9 /* CustomTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D4884B217C3CC7B006851A9 /* CustomTableViewController.m */; };
 		4D4884B817C3F4CB006851A9 /* pie_placeholder.png in Resources */ = {isa = PBXBuildFile; fileRef = 4D4884B717C3F4CB006851A9 /* pie_placeholder.png */; };
 		4D507B9617BD3E0D00D774AD /* Configuration.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4D507B9517BD3E0D00D774AD /* Configuration.plist */; };
@@ -425,16 +421,6 @@
 		E7FE308B176EF93800B19087 /* Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = E7FE308A176EF93800B19087 /* Helper.m */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		4D0F2DBF17BD265B00B86759 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E7C40719175FFA1F00C3649E /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = E7C40720175FFA1F00C3649E;
-			remoteInfo = FoodIntakeTracker;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		4B0222391ADCB91100B0FF25 /* btn-green.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-green.png"; sourceTree = "<group>"; };
 		4B02223B1ADCBFE800B0FF25 /* btn-orange.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-orange.png"; sourceTree = "<group>"; };
@@ -665,7 +651,6 @@
 		4BF7B7231AF1BA1C00DCC514 /* PGManagedObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PGManagedObject.m; sourceTree = "<group>"; };
 		4BF7B7271AF1BEA700DCC514 /* MTBBarcodeScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTBBarcodeScanner.h; sourceTree = "<group>"; };
 		4BF7B7281AF1BEA700DCC514 /* MTBBarcodeScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTBBarcodeScanner.m; sourceTree = "<group>"; };
-		4D0F2D7D17BD23A000B86759 /* FoodIntakeTrackerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FoodIntakeTrackerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D0F2DBB17BD255900B86759 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		4D4884B117C3CC7B006851A9 /* CustomTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTableViewController.h; sourceTree = "<group>"; };
 		4D4884B217C3CC7B006851A9 /* CustomTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomTableViewController.m; sourceTree = "<group>"; };
@@ -1024,17 +1009,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		4D0F2D7917BD23A000B86759 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				4D0F2DF117BD2D0600B86759 /* CoreData.framework in Frameworks */,
-				4D0F2DF217BD2D0600B86759 /* UIKit.framework in Frameworks */,
-				4D0F2DF317BD2D0600B86759 /* Foundation.framework in Frameworks */,
-				4D0F2DF417BD2D0600B86759 /* SenTestingKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		E7C4071E175FFA1F00C3649E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1526,7 +1500,6 @@
 			isa = PBXGroup;
 			children = (
 				E7C40721175FFA1F00C3649E /* FoodIntakeTracker.app */,
-				4D0F2D7D17BD23A000B86759 /* FoodIntakeTrackerTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1860,25 +1833,6 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		4D0F2D7C17BD23A000B86759 /* FoodIntakeTrackerTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 4D0F2D8E17BD23A000B86759 /* Build configuration list for PBXNativeTarget "FoodIntakeTrackerTests" */;
-			buildPhases = (
-				4D0F2D7817BD23A000B86759 /* Sources */,
-				4D0F2D7917BD23A000B86759 /* Frameworks */,
-				4D0F2D7A17BD23A000B86759 /* Resources */,
-				4D0F2D7B17BD23A000B86759 /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				4D0F2DC017BD265B00B86759 /* PBXTargetDependency */,
-			);
-			name = FoodIntakeTrackerTests;
-			productName = FoodIntakeTrackerTests;
-			productReference = 4D0F2D7D17BD23A000B86759 /* FoodIntakeTrackerTests.octest */;
-			productType = "com.apple.product-type.bundle.ocunit-test";
-		};
 		E7C40720175FFA1F00C3649E /* FoodIntakeTracker */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E7C40744175FFA1F00C3649E /* Build configuration list for PBXNativeTarget "FoodIntakeTracker" */;
@@ -1919,19 +1873,11 @@
 			projectRoot = "";
 			targets = (
 				E7C40720175FFA1F00C3649E /* FoodIntakeTracker */,
-				4D0F2D7C17BD23A000B86759 /* FoodIntakeTrackerTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		4D0F2D7A17BD23A000B86759 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		E7C4071F175FFA1F00C3649E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2259,30 +2205,7 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		4D0F2D7B17BD23A000B86759 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
-		4D0F2D7817BD23A000B86759 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		E7C4071D175FFA1F00C3649E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2366,14 +2289,6 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXTargetDependency section */
-		4D0F2DC017BD265B00B86759 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = E7C40720175FFA1F00C3649E /* FoodIntakeTracker */;
-			targetProxy = 4D0F2DBF17BD265B00B86759 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
 /* Begin PBXVariantGroup section */
 		4B2C76D319908EA0009F8FB3 /* SSKeychain.strings */ = {
 			isa = PBXVariantGroup;
@@ -2402,50 +2317,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		4D0F2D8C17BD23A000B86759 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/FoodIntakeTracker.app/FoodIntakeTracker";
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
-					"\"$(SRCROOT)/library/OpenEars\"",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "FoodIntakeTrackerTests/FoodIntakeTrackerTests-Prefix.pch";
-				INFOPLIST_FILE = "FoodIntakeTrackerTests/FoodIntakeTrackerTests-Info.plist";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MOMC_NO_INVERSE_RELATIONSHIP_WARNINGS = YES;
-				MOMC_SUPPRESS_INVERSE_TRANSIENT_ERROR = YES;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Debug;
-		};
-		4D0F2D8D17BD23A000B86759 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/FoodIntakeTracker.app/FoodIntakeTracker";
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
-					"\"$(SRCROOT)/library/OpenEars\"",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "FoodIntakeTrackerTests/FoodIntakeTrackerTests-Prefix.pch";
-				INFOPLIST_FILE = "FoodIntakeTrackerTests/FoodIntakeTrackerTests-Info.plist";
-				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				MOMC_NO_INVERSE_RELATIONSHIP_WARNINGS = YES;
-				MOMC_SUPPRESS_INVERSE_TRANSIENT_ERROR = YES;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Release;
-		};
 		E7C40742175FFA1F00C3649E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2513,10 +2384,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/library/OpenEars\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FoodIntakeTracker/FoodIntakeTracker-Prefix.pch";
@@ -2529,7 +2397,7 @@
 				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2538,10 +2406,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"$(SRCROOT)/library/OpenEars\"",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FoodIntakeTracker/FoodIntakeTracker-Prefix.pch";
@@ -2554,7 +2419,7 @@
 				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -2562,15 +2427,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		4D0F2D8E17BD23A000B86759 /* Build configuration list for PBXNativeTarget "FoodIntakeTrackerTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				4D0F2D8C17BD23A000B86759 /* Debug */,
-				4D0F2D8D17BD23A000B86759 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		E7C4071C175FFA1F00C3649E /* Build configuration list for PBXProject "FoodIntakeTracker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
