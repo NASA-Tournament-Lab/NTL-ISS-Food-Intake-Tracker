@@ -182,6 +182,7 @@
     
     if (self.progressImage != nil) {
         if (self.gmKg) {
+            w -= 8;
             CGFloat value = 3;
             CGContextDrawImage(context, CGRectMake(x, y + value, w, h - value * 2), self.progressImage.CGImage);
             
@@ -203,7 +204,7 @@
             
             CGFloat pos = x + _currentProgress * w - 3;
             
-            NSString *str = [NSString stringWithFormat:@"%4.2f", _currentProgress * MAX_GM_KG];
+            NSString *str = [NSString stringWithFormat:@"%3.1f", _currentProgress * MAX_GM_KG];
             CGSize size = [str sizeWithAttributes:@{NSFontAttributeName: font}];
             [str drawAtPoint:CGPointMake(pos - 4, y - size.height) withAttributes:@{NSFontAttributeName: font}];
             
@@ -904,10 +905,13 @@
         newProduct.protein = product.protein;
         newProduct.carb = product.carb;
         newProduct.fat = product.fat;
+        newProduct.productProfileImage = product.productProfileImage;
         [newProduct addCategories:product.categories];
         
-        [foodService deleteAdhocFoodProduct:product error:&error];
-        if ([Helper displayError:error]) return;
+        if (![product.name hasPrefix:@"Intake"]) {
+            [foodService deleteAdhocFoodProduct:product error:&error];
+            if ([Helper displayError:error]) return;
+        }
         
         foodDetail.foodConsumptionRecord.foodProduct = nil;
         [recordService saveFoodConsumptionRecord:foodDetail.foodConsumptionRecord error:&error];
@@ -916,6 +920,7 @@
         [foodService addAdhocFoodProduct:appDelegate.loggedInUser product:newProduct error:&error];
         if ([Helper displayError:error]) return;
         
+        newProduct.user = product.user;
         foodDetail.foodConsumptionRecord.foodProduct = newProduct;
     }
     
@@ -947,6 +952,7 @@
         stringWrapper.value = recorderFilePath;
         stringWrapper.synchronized = @NO;
         stringWrapper.removed = @NO;
+        
         [foodDetail.foodConsumptionRecord addVoiceRecordingsObject:stringWrapper];
     }
     
@@ -1148,6 +1154,12 @@
     FoodConsumptionRecordServiceImpl *recordService = appDelegate.foodConsumptionRecordService;
     NSError *error;
     for (FoodConsumptionRecord *record in selectedItems) {
+        // clear from copy
+        [copyItems removeObject:record];
+        if (copyItems.count == 0) {
+            [self.btnPaste setEnabled:NO];
+        }
+        
         // F2Finish change
         [contentOffset removeObjectForKey:record.objectID];
         

@@ -1106,12 +1106,23 @@
         return [[categories valueForKey:[categoriesKeys objectAtIndex:section]] count];
     }
     else{
+        int count = 0;
         if(selectIndex < 2){
-            return [[foodDict valueForKey:[foodKeys objectAtIndex:section]] count];
+            count = [[foodDict valueForKey:[foodKeys objectAtIndex:section]] count];
+        } else{
+            count = foodList.count;
         }
-        else{
-            return foodList.count;
+        if (selectIndex >= 2 && selectIndex <= 7 && count > 1) {
+            if (![self.btnReverseSort isEnabled]) {
+                [self.btnReverseSort setSelected:NO];
+            }
+            
+            [self.btnReverseSort setEnabled:YES];
+        } else {
+            [self.btnReverseSort setEnabled:NO];
         }
+
+        return count;
     }
 }
 
@@ -1188,7 +1199,7 @@
             cell.isUnique = [DataHelper checkNameUnique:foodList withFood:item];
         }
         if (self.rightTable.frame.size.width > 454) {
-            cell.scrollView.frame = CGRectMake(245, 0, 285, 54);
+            cell.scrollView.frame = CGRectMake(285, 0, 285, 54);
         }
         cell.food = item;
         cell.btnCheck.tag = indexPath.row + indexPath.section * MAXROWS;

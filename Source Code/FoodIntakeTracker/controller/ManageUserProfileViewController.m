@@ -176,7 +176,7 @@
 - (void)hideProfileDeletedNoteView{
     self.profileDeletedNoteView.hidden = YES;
     
-    self.customTabBarController.disabledTab = NO;
+    [self.customTabBarController toggleEnableTab];
 }
 
 /**
@@ -215,7 +215,8 @@
  */
 - (IBAction)hideDeletePopup:(id)sender {
     self.deletePopupView.hidden = YES;
-    self.customTabBarController.disabledTab = NO;
+    
+    [self.customTabBarController toggleEnableTab];
 }
 /**
  * show the delete confirm view view.
@@ -223,7 +224,8 @@
  */
 - (IBAction)showDeletePopup:(id)sender {
     self.deletePopupView.hidden = NO;
-    self.customTabBarController.disabledTab = YES;
+    
+    [self.customTabBarController toggleEnableTab];
 }
 
 /**

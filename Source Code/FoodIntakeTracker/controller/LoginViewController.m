@@ -467,9 +467,9 @@
     if(arr.count > 0){
         [str appendString:[arr objectAtIndex:0]];
     }
-    if(arr.count > 1){
+    for (int i = 1; i < arr.count; i++){
         [str appendString:@"    "];
-        [str appendString:[arr objectAtIndex:1]];
+        [str appendString:[arr objectAtIndex:i]];
     }
     self.lblSelectedUsername.text = str;
     self.loginListPanel.hidden = YES;
