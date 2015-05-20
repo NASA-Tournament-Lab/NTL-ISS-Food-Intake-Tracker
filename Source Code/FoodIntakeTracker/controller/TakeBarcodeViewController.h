@@ -34,7 +34,7 @@
  * @version 1.1
  * @since 1.0
  */
-@interface TakeBarcodeViewController : TakeBaseViewController<UISearchBarDelegate> {
+@interface TakeBarcodeViewController : TakeBaseViewController<UISearchBarDelegate, UIAlertViewDelegate> {
     MTBBarcodeScanner *scanner;
     BOOL isBusy;
 }

@@ -117,9 +117,47 @@
     copy.comment = @"";
     [self.managedObjectContext insertObject:copy];
     [self.managedObjectContext save:error];
-    copy.images = record.images;
     copy.foodProduct = record.foodProduct;
-    copy.voiceRecordings = record.voiceRecordings;
+    
+    NSMutableSet *set = [NSMutableSet set];
+    for (StringWrapper *wrapper in record.images) {
+        StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
+                                                                              entityForName:@"StringWrapper"
+                                                                              inManagedObjectContext:
+                                                                              self.managedObjectContext]
+                                              insertIntoManagedObjectContext:nil];
+        stringWrapper.value = [NSString stringWithString:wrapper.value];
+        stringWrapper.synchronized = @NO;
+        stringWrapper.removed = @NO;
+        
+        [set addObject:stringWrapper];
+        
+        [self.managedObjectContext insertObject:stringWrapper];
+    }
+    [self.managedObjectContext save:error];
+    
+    copy.images = [NSSet setWithSet:set];
+    
+    set = [NSMutableSet set];
+    for (StringWrapper *wrapper in record.voiceRecordings) {
+        StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
+                                                                              entityForName:@"StringWrapper"
+                                                                              inManagedObjectContext:
+                                                                              self.managedObjectContext]
+                                              insertIntoManagedObjectContext:nil];
+        stringWrapper.value = [NSString stringWithString:wrapper.value];
+        stringWrapper.synchronized = @NO;
+        stringWrapper.removed = @NO;
+        
+        [set addObject:stringWrapper];
+        [self.managedObjectContext insertObject:stringWrapper];
+        
+        [self.managedObjectContext insertObject:stringWrapper];
+    }
+    [self.managedObjectContext save:error];
+    
+    copy.voiceRecordings = [NSSet setWithSet:set];
+    
     copy.user = record.user;
     [self.managedObjectContext save:error];
     [LoggingHelper logError:methodName error:*error];

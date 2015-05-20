@@ -132,9 +132,12 @@
                 FoodProduct* foodProduct = [foodProductService getFoodProductByBarcode:appDelegate.loggedInUser
                                                                                barcode:result
                                                                                  error:&error];
+
+                self.resultView.hidden = YES;
                 if (error) {
                     if ([error code] == EntityNotFoundErrorCode) {
-                        [Helper showAlert:@"Not Found" message:error.userInfo[NSLocalizedDescriptionKey]];
+                        [Helper showAlert:@"Not Found" message:error.userInfo[NSLocalizedDescriptionKey]
+                                 delegate:self];
                     }
                     else {
                         [Helper displayError:error];

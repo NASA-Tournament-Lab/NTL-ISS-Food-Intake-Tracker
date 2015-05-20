@@ -42,18 +42,13 @@
 
 @implementation CustomTabBarViewController
 
-@synthesize disabledTab;
-
 /**
  * overwrite this method to load view controllers here and define default values.
  */
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    // set enable
-    disabledTab = NO;
-    
+        
     UIStoryboard*  sb = self.storyboard;
     
     helpSettingController = [sb instantiateViewControllerWithIdentifier:@"HelpSettingView"];
@@ -111,10 +106,6 @@
  * action for logout button.
  */
 - (void)logout{
-    if (disabledTab) {
-        return;
-    }
-    
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     UserServiceImpl *userService = appDelegate.userService;
     if (appDelegate.loggedInUser) {
@@ -130,7 +121,7 @@
  * set the consumption view as active view.
  */
 - (void)setConsumptionActive{
-    if(self.activeTab == 1 || disabledTab) {
+    if(self.activeTab == 1) {
         return;
     }
     
@@ -182,11 +173,19 @@
     return consumptionController;
 }
 
+- (void)toggleEnableTab {
+    self.btnHelp.userInteractionEnabled = !self.btnHelp.userInteractionEnabled;
+    self.btnConsumption.userInteractionEnabled = !self.btnConsumption.userInteractionEnabled;
+    self.btnData.userInteractionEnabled = !self.btnData.userInteractionEnabled;
+    self.btnProfile.userInteractionEnabled = !self.btnProfile.userInteractionEnabled;
+    self.btnLogout.userInteractionEnabled = !self.btnLogout.userInteractionEnabled;
+}
+
 /**
  * set the help setting view as active view.
  */
 - (void)setHelpSettingActive{
-    if (self.activeTab == 4 || disabledTab) {
+    if (self.activeTab == 4) {
         return;
     }
     
@@ -225,7 +224,7 @@
  * set user data view as active view.
  */
 - (void)setUserDataActive{
-    if (self.activeTab == 3 || disabledTab) {
+    if (self.activeTab == 3) {
         return;
     }
     
@@ -256,7 +255,7 @@
  * set profile view as active view
  */
 - (void)setProfileActive{
-    if (self.activeTab == 2 || disabledTab) {
+    if (self.activeTab == 2) {
         return;
     }
     

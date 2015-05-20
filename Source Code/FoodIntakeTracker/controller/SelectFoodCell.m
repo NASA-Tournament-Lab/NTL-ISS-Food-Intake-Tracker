@@ -128,7 +128,9 @@
         self.viewCarb.hidden = NO;
         self.viewFat.hidden = NO;
         
-        [self.lblName sizeToFit];
+        CGRect frame = self.lblName.frame;
+        frame.size.width = 290 - frame.origin.x;
+        self.lblName.frame = frame;
     };
     
     if(rect.size.width > 454){
@@ -136,12 +138,12 @@
         self.scrollView.userInteractionEnabled = YES;
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.5];
-        self.scrollView.frame = CGRectMake(245, 0, 285, 54);
+        self.scrollView.frame = CGRectMake(285, 0, 285, 54);
         [UIView commitAnimations];
     }
     else{
         self.scrollView.userInteractionEnabled = NO;
-        if(self.scrollView.frame.origin.x == 245){
+        if(self.scrollView.frame.origin.x == 285){
             [UIView beginAnimations:nil context:nil];
             [UIView setAnimationDuration:0.5];
             self.scrollView.frame = nutrientFrame;

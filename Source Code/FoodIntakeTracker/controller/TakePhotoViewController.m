@@ -49,6 +49,18 @@
     [self.scrollView setContentSize:CGSizeMake(560, 54)];
     
     [self take:self.takeButton];
+    
+    
+    // register for keyboard notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    // register for keyboard notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
 }
 
 /**
@@ -566,6 +578,31 @@
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return newImage;
+}
+
+
+- (void)keyboardWillShow:(NSNotification *) n{
+    //Keyboard becomes visible
+    UIScrollView *scrollView = (UIScrollView *) [self.resultView viewWithTag:100];
+    
+    NSDictionary* info = [n userInfo];
+    CGSize kbSize = [[info objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    UIEdgeInsets contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height, 0.0);
+    scrollView.contentInset = contentInsets;
+    scrollView.scrollIndicatorInsets = contentInsets;
+    
+    // If active text field is hidden by keyboard, scroll it so it's visible
+    // Your application might not need or want this behavior.
+    CGPoint scrollPoint = CGPointMake(0.0, 120.0f);
+    [scrollView setContentOffset:scrollPoint animated:YES];
+}
+
+- (void)keyboardWillHide:(NSNotification *)n {
+    UIScrollView *scrollView = (UIScrollView *) [self.resultView viewWithTag:100];
+    
+    UIEdgeInsets contentInsets = UIEdgeInsetsZero;
+    scrollView.contentInset = contentInsets;
+    scrollView.scrollIndicatorInsets = contentInsets;
 }
 
 @end
