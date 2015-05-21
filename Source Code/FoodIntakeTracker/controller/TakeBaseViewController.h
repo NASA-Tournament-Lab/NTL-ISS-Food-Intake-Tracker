@@ -35,7 +35,7 @@
  * @version 1.1
  * @since 1.0
  */
-@interface TakeBaseViewController : UIViewController<UITextFieldDelegate> {
+@interface TakeBaseViewController : UIViewController<UITextFieldDelegate, UITextViewDelegate> {
     /* the update progress timer */
     NSTimer *updateProcessTimer;
     /* the photo image view */
@@ -116,7 +116,7 @@
 /* the food name text input */
 @property (weak, nonatomic) IBOutlet UITextField *txtFoodName;
 /* the food comment text */
-@property (weak, nonatomic) IBOutlet UITextField *txtFoodComment;
+@property (weak, nonatomic) IBOutlet UITextView *txtFoodComment;
 /* the food added popup view */
 @property (weak, nonatomic) IBOutlet UIView *foodAddedPopup;
 /* the title label food added popup view */

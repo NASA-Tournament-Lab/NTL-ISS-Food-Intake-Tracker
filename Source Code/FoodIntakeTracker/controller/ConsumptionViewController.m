@@ -372,20 +372,24 @@
     /*self.proteinProgess.progressImage = [UIImage imageNamed:@"bg-progress-red.png"];
     self.carbProgress.progressImage = [UIImage imageNamed:@"bg-progress-red.png"];
     self.fatProgress.progressImage = [UIImage imageNamed:@"bg-progress-red.png"];*/
-
+    
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     if (appDelegate.loggedInUser) {
         self.caloriesProgess.lblTotal.text =
-        [NSString stringWithFormat:@"/ %@ Cal", appDelegate.loggedInUser.dailyTargetEnergy];
+        [NSString stringWithFormat:@"| %@ Cal", appDelegate.loggedInUser.dailyTargetEnergy];
         self.sodiumProgress.lblTotal.text =
-        [NSString stringWithFormat:@"/ %@ mg", appDelegate.loggedInUser.dailyTargetSodium];
+        [NSString stringWithFormat:@"| %@ mg", appDelegate.loggedInUser.dailyTargetSodium];
         self.fluidProgress.lblTotal.text =
-        [NSString stringWithFormat:@"/ %@ mL", appDelegate.loggedInUser.dailyTargetFluid];
+        [NSString stringWithFormat:@"| %@ mL", appDelegate.loggedInUser.dailyTargetFluid];
     } else {
-        self.caloriesProgess.lblTotal.text = [NSString stringWithFormat:@"/ %d Cal", MAX_CALORIES];
-        self.sodiumProgress.lblTotal.text = [NSString stringWithFormat:@"/ %d mg", MAX_SODIUM];
-        self.fluidProgress.lblTotal.text = [NSString stringWithFormat:@"/ %d mL", MAX_FLUID];
+        self.caloriesProgess.lblTotal.text = [NSString stringWithFormat:@"| %d Cal", MAX_CALORIES];
+        self.sodiumProgress.lblTotal.text = [NSString stringWithFormat:@"| %d mg", MAX_SODIUM];
+        self.fluidProgress.lblTotal.text = [NSString stringWithFormat:@"| %d mL", MAX_FLUID];
     }
+    
+    [self.caloriesProgess.lblTotal sizeToFit];
+    [self.sodiumProgress.lblTotal sizeToFit];
+    [self.fluidProgress.lblTotal sizeToFit];
     
     listening = NO;
     [self calendarDidSelect:[NSDate date]];
@@ -513,11 +517,30 @@
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     [numberFormatter setPositiveFormat:@"#.##"];
     self.fluidProgress.lblCurrent.text = [numberFormatter stringFromNumber:[NSNumber numberWithFloat:fluidTotal]];
-    
-    self.proteinProgess.lblCurrent.text = [NSString stringWithFormat:@"%d kCal", (int) (proteinTotal * PROTEIN_CALORIES_FACTOR)];
-    self.carbProgress.lblCurrent.text = [NSString stringWithFormat:@"%d kCal", (int) (carbTotal * CARB_CALORIES_FACTOR)];
-    self.fatProgress.lblCurrent.text = [NSString stringWithFormat:@"%d kCal", (int) (fatTotal * FAT_CALORIES_FACTOR)];
 
+    [self.caloriesProgess.lblCurrent sizeToFit];
+    [self.sodiumProgress.lblCurrent sizeToFit];
+    [self.fluidProgress.lblCurrent sizeToFit];
+    
+    int x = self.caloriesProgess.lblCurrent.frame.origin.x + self.caloriesProgess.lblCurrent.frame.size.width;
+    CGRect frame = self.caloriesProgess.lblTotal.frame;
+    frame.origin.x = x + 2;
+    self.caloriesProgess.lblTotal.frame = frame;
+    
+    x = self.sodiumProgress.lblCurrent.frame.origin.x + self.sodiumProgress.lblCurrent.frame.size.width;
+    frame = self.sodiumProgress.lblTotal.frame;
+    frame.origin.x = x + 2;
+    self.sodiumProgress.lblTotal.frame = frame;
+    
+    x = self.fluidProgress.lblCurrent.frame.origin.x + self.fluidProgress.lblCurrent.frame.size.width;
+    frame = self.fluidProgress.lblTotal.frame;
+    frame.origin.x = x + 2;
+    self.fluidProgress.lblTotal.frame = frame;
+    
+    self.proteinProgess.lblCurrent.text = [NSString stringWithFormat:@"%d Cal", (int) (proteinTotal * PROTEIN_CALORIES_FACTOR)];
+    self.carbProgress.lblCurrent.text = [NSString stringWithFormat:@"%d Cal", (int) (carbTotal * CARB_CALORIES_FACTOR)];
+    self.fatProgress.lblCurrent.text = [NSString stringWithFormat:@"%d Cal", (int) (fatTotal * FAT_CALORIES_FACTOR)];
+    
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     
     float caloriesProgessPercentage = caloriesTotal * 1.0f / [appDelegate.loggedInUser.dailyTargetEnergy intValue];
@@ -529,12 +552,6 @@
     self.fluidProgress.currentProgress = fluidProgressPercentage;
     
     int maxConsumption = [appDelegate.loggedInUser.dailyTargetEnergy intValue];
-    /*if (carbTotal > maxConsumption) {
-        maxConsumption = carbTotal;
-    }
-    if (fatTotal > maxConsumption) {
-        maxConsumption = fatTotal;
-    }*/
     
     self.proteinProgess.lblPercent.text = [NSString stringWithFormat:@"%10d g", proteinTotal];
     self.carbProgress.lblPercent.text = [NSString stringWithFormat:@"%10d g", carbTotal];

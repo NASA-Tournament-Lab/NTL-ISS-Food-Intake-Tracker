@@ -229,10 +229,9 @@
 - (void)loadFoods{
     // Clear selected foods
     //[self.selectFoods removeAllObjects];
-    if(self.selectFoods.count == 0){
+    if (self.selectFoods.count == 0){
         [self.btnAdd setEnabled:NO];
-    }
-    else{
+    } else{
         [self.btnAdd setEnabled:YES];
     }
     
@@ -257,6 +256,7 @@
         if ([Helper displayError:error]) return;
     }
     
+    // Filter the food products
     filter.name = self.searchBar.text;
     filter.favoriteWithinTimePeriod = @0;
     
@@ -310,7 +310,6 @@
         if ([Helper displayError:error]) return;
     }
     
-    // Filter the food products
     NSArray *result = [foodProductService filterFoodProducts:appDelegate.loggedInUser filter:filter error:&error];
     if ([Helper displayError:error]) return;
     [foodKeys removeAllObjects];
@@ -345,7 +344,7 @@
             [foodDict removeObjectForKey:key];
             [foodKeys removeObject:key];
         }
-    }
+    }    
     
     [indexBar removeFromSuperview];
     indexBar = [[CustomIndexBar alloc] initWithFrame:CGRectMake(419,
@@ -991,9 +990,13 @@
  * hide the clear cover.
  * @param searchBar the searchBar.
  */
-- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar{
+- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {
     [clearCover removeFromSuperview];
     clearCover = nil;
+    
+    // Reload the foods
+    [self loadFoods];
+    [self listviewDidSelect:self.optionListView.selectIndex];
     
     if (self.suggestionTableView) {
         [self.suggestionTableView.popController dismissPopoverAnimated:YES];
@@ -1033,13 +1036,14 @@
     if (![searchText isEqualToString:@""]) {
         filter.name = searchText;
     }
-    NSArray *result = [foodProductService filterFoodProducts:appDelegate.loggedInUser filter:filter error:&error];
+    NSArray *result = [foodProductService filterFoodProducts:filter error:&error];
     if (self.suggestionTableView) {
         NSMutableArray *suggestions = [NSMutableArray array];
         for (int i = 0; i < result.count; i++) {
             AdhocFoodProduct *product = result[i];
             NSString *productName = [product.name uppercaseString];
-            if ([searchText isEqualToString:@""] || [productName rangeOfString:[searchText uppercaseString]].location != NSNotFound) {
+            if ([searchText isEqualToString:@""] ||
+                [productName rangeOfString:[searchText uppercaseString]].location != NSNotFound) {
                 if ([DataHelper checkNameUnique:result withFood:product]) {
                     [suggestions addObject:product.name];
                 } else {

@@ -83,6 +83,14 @@
 
 /*!
  @discussion Filter food product for a user according to given filter.
+ * @param filter The filter.
+ * @param error The reference to an NSError object which will be filled if any error occurs.
+ * @return The array of FoodProduct entities matching the filter.
+ */
+-(NSArray *)filterFoodProducts:(FoodProductFilter *)filter error:(NSError **)error;
+
+/*!
+ @discussion Filter food product for a user according to given filter.
  * @param user The user performing the filtering. The filter will be saved under this user.
  * @param filter The filter.
  * @param error The reference to an NSError object which will be filled if any error occurs.
