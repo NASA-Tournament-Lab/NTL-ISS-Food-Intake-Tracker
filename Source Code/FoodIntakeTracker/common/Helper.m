@@ -288,16 +288,12 @@ static NSArray *monthNameArray = nil;
     c.second = 1;
     NSDate *t = [c date];
     
-    NSDateComponents *difference = [calendar components:(NSYearCalendarUnit |
-                                                         NSMonthCalendarUnit |
-                                                         NSDayCalendarUnit)
+    NSDateComponents *difference = [calendar components:NSDayCalendarUnit
                                                fromDate:f toDate:t options:0];
     
     int dayDiff = [difference day];
-    int monthDiff = [difference month];
-    int yearDiff = [difference year];
     
-    return dayDiff + monthDiff * 31 + yearDiff * 366;
+    return dayDiff;
 }
 
 @end

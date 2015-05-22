@@ -269,6 +269,15 @@
         [foodProductService deleteAdhocFoodProduct:product error:&error];
         if ([Helper displayError:error]) return;
     }
+    
+    if(selectFoods.count == 0){
+        [self.btnAdd setEnabled:NO];
+        [self.btnDelete setEnabled:NO];
+    }
+    else{
+        [self.btnAdd setEnabled:YES];
+        [self.btnDelete setEnabled:YES];
+    }
 }
 
 /**
