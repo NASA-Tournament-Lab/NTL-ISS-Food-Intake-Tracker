@@ -23,6 +23,7 @@
 //
 
 #import "FoodProductServiceImpl.h"
+#import "AppDelegate.h"
 #import "LoggingHelper.h"
 
 @implementation FoodProductServiceImpl
@@ -161,6 +162,158 @@
     
     [LoggingHelper logMethodExit:methodName returnValue:nil];
     return YES;
+}
+
+-(NSArray *)filterFoodProducts:(FoodProductFilter *)filter error:(NSError **)error {
+    NSString *methodName = [NSString stringWithFormat:@"%@.filterFoodProducts:filter:error:",
+                            NSStringFromClass(self.class)];
+    if(filter == nil){
+        if(error) {
+            *error = [NSError errorWithDomain:@"FoodProductServiceImpl" code:IllegalArgumentErrorCode
+                                     userInfo:@{NSUnderlyingErrorKey: @"filter should not be nil"}];
+            [LoggingHelper logError:methodName error:*error];
+        }
+        return nil;
+    }
+    
+    [LoggingHelper logMethodEntrance:methodName paramNames:@[@"filter"] params:@[filter]];
+    
+    
+    // Prepare fetch predicate string
+    NSMutableString *predicateString = [NSMutableString stringWithString:@"(removed == NO)"];
+    NSMutableArray *arguments = [NSMutableArray array];
+    if (filter.name) {
+        [predicateString appendString:@" AND (name LIKE[c] %@)"];
+        [arguments addObject:[NSString stringWithFormat:@"*%@*", filter.name]];
+    }
+    if (filter.origins && filter.origins.count) {
+        [predicateString appendString:@" AND (origin IN %@)"];
+        NSMutableArray *originsArray = [NSMutableArray arrayWithCapacity:filter.origins.count];
+        for(StringWrapper *stringWrapper in filter.origins) {
+            [originsArray addObject:stringWrapper.value];
+        }
+        [arguments addObject:originsArray];
+    }
+    if (filter.categories && filter.categories.count) {
+        [predicateString appendString:@" AND ("];
+        int i = 0;
+        for(StringWrapper *stringWrapper in filter.categories) {
+            if (i == filter.categories.count - 1) {
+                [predicateString appendString:@" (SUBQUERY(categories, $x, $x.value == %@).@count > 0) "];
+            } else {
+                [predicateString appendString:@" (SUBQUERY(categories, $x, $x.value == %@).@count > 0) OR "];
+            }
+            i++;
+            [arguments addObject:[NSString stringWithFormat:@"%@", stringWrapper.value]];
+        }
+        [predicateString appendString:@")"];
+    }
+    
+    [self.managedObjectContext lock];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateString argumentArray:arguments];
+    NSEntityDescription *description = [NSEntityDescription entityForName:@"FoodProduct"
+                                                   inManagedObjectContext:[self managedObjectContext]];
+    [request setEntity:description];
+    [request setPredicate:predicate];
+    
+    // Set sort descriptor
+    int option = [filter.sortOption integerValue];
+    if (option == A_TO_Z) {
+        [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"name"
+                                                                    ascending:YES]]];
+    } else if (option == Z_TO_A) {
+        [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"name"
+                                                                    ascending:NO]]];
+    } else if (option == ENERGY_HIGH_TO_LOW) {
+        [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"energy"
+                                                                    ascending:NO]]];
+    } else if (option == ENERGY_LOW_TO_HIGH) {
+        [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"energy"
+                                                                    ascending:YES]]];
+    } else if (option == FLUID_HIGH_TO_LOW) {
+        [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"fluid"
+                                                                    ascending:NO]]];
+    } else if (option == FLUID_LOW_TO_HIGH) {
+        [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"fluid"
+                                                                    ascending:YES]]];
+    } else if (option == SODIUM_HIGH_TO_LOW) {
+        [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"sodium"
+                                                                    ascending:NO]]];
+    } else if (option == SODIUM_LOW_TO_HIGH) {
+        [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"sodium"
+                                                                    ascending:YES]]];
+    } else if (option == PROTEIN_LOW_TO_HIGH) {
+        [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"protein"
+                                                                    ascending:NO]]];
+    } else if (option == PROTEIN_LOW_TO_HIGH) {
+        [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"protein"
+                                                                    ascending:YES]]];
+    } else if (option == CARB_LOW_TO_HIGH) {
+        [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"carb"
+                                                                    ascending:NO]]];
+    } else if (option == CARB_LOW_TO_HIGH) {
+        [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"carb"
+                                                                    ascending:YES]]];
+    } else if (option == FAT_LOW_TO_HIGH) {
+        [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"fat"
+                                                                    ascending:NO]]];
+    } else if (option == FAT_LOW_TO_HIGH) {
+        [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"fat"
+                                                                    ascending:YES]]];
+    }
+    
+    // Execute fetch request and filter
+    NSArray *result = [[self managedObjectContext] executeFetchRequest:request error:error];
+    [LoggingHelper logError:methodName error:*error];
+    
+    // Filter results by user and whether filter is adhoc only
+    AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
+    result = [self filterResult:result user:appDelegate.loggedInUser adhocOnly:[filter.adhocOnly boolValue]];
+    
+    // Sort by consumption frequency
+    if (option == FREQUENCY_HIGH_TO_LOW) {
+        result = [result sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
+            return [self compareFoodProduct:a secondProduct:b error:error];
+        }];
+    } else if (option == FREQUENCY_LOW_TO_HIGH) {
+        result = [result sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
+            return [self compareFoodProduct:b secondProduct:a error:error];
+        }];
+    }
+    
+    // Filter by favorite within time period
+    if (filter.favoriteWithinTimePeriod && filter.favoriteWithinTimePeriod.intValue > 0) {
+        NSMutableArray *temp = [NSMutableArray arrayWithArray:result];
+        // Filter by favorite status
+        NSMutableArray *toRemove = [NSMutableArray array];
+        for (FoodProduct* item in result) {
+            NSFetchRequest *request = [[NSFetchRequest alloc] init];
+            description = [NSEntityDescription  entityForName:@"FoodConsumptionRecord"
+                                       inManagedObjectContext:[self managedObjectContext]];
+            predicate = [NSPredicate predicateWithFormat:@"(foodProduct == %@) AND (timestamp >= %@)",
+                         item, [NSDate dateWithTimeIntervalSinceNow:-(24 * 3600 * filter.favoriteWithinTimePeriod.intValue)]];
+            [request setEntity:description];
+            [request setPredicate:predicate];
+            
+            NSArray *tmp = [[self managedObjectContext] executeFetchRequest:request error:error];
+            unsigned int count = tmp.count;
+            [LoggingHelper logError:methodName error:*error];
+            if (*error) {
+                [LoggingHelper logMethodExit:methodName returnValue:nil];
+                return nil;
+            }
+            if (count == 0) {
+                [toRemove addObject:item];
+            }
+        }
+        [temp removeObjectsInArray:toRemove];
+        result = [NSArray arrayWithArray:temp];
+    }
+
+    [self.managedObjectContext unlock];
+    [LoggingHelper logMethodExit:methodName returnValue:result];
+    return result;
 }
 
 -(NSArray *)filterFoodProducts:(User *)user filter:(FoodProductFilter *)filter error:(NSError **)error {

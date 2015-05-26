@@ -45,8 +45,8 @@
 		<string>1-5-2-Voice-Recording</string>
 		<key>Scan a Barcode</key>
 		<string>1-5-3-Scan-Barcode</string>
-		<key>Take a Photo</key>
-		<string>1-5-4-Take-Photo</string>
+		<key>Snap Photo</key>
+		<string>1-5-4-Snap-Photo</string>
 		<key>Manually Enter a Food</key>
 		<string>1-5-5-Manually-Enter-Food</string>
 		<key>Add Drinking Water</key>

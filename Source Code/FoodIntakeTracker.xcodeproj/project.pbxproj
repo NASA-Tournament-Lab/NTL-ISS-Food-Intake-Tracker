@@ -157,7 +157,7 @@
 		4D98574B17DDACBD008B868C /* 1-5-1-Food-Inventory.html in Resources */ = {isa = PBXBuildFile; fileRef = 4D9856EB17DDACBD008B868C /* 1-5-1-Food-Inventory.html */; };
 		4D98574C17DDACBD008B868C /* 1-5-2-Voice-Recording.html in Resources */ = {isa = PBXBuildFile; fileRef = 4D9856EC17DDACBD008B868C /* 1-5-2-Voice-Recording.html */; };
 		4D98574D17DDACBD008B868C /* 1-5-3-Scan-Barcode.html in Resources */ = {isa = PBXBuildFile; fileRef = 4D9856ED17DDACBD008B868C /* 1-5-3-Scan-Barcode.html */; };
-		4D98574F17DDACBD008B868C /* 1-5-4-Take-Photo.html in Resources */ = {isa = PBXBuildFile; fileRef = 4D9856EF17DDACBD008B868C /* 1-5-4-Take-Photo.html */; };
+		4D98574F17DDACBD008B868C /* 1-5-4-Snap-Photo.html in Resources */ = {isa = PBXBuildFile; fileRef = 4D9856EF17DDACBD008B868C /* 1-5-4-Snap-Photo.html */; };
 		4D98575017DDACBD008B868C /* 1-5-5-Manually-Enter-Food.html in Resources */ = {isa = PBXBuildFile; fileRef = 4D9856F017DDACBD008B868C /* 1-5-5-Manually-Enter-Food.html */; };
 		4D98575117DDACBD008B868C /* 1-6-1-View-Consumption.html in Resources */ = {isa = PBXBuildFile; fileRef = 4D9856F117DDACBD008B868C /* 1-6-1-View-Consumption.html */; };
 		4D98575217DDACBD008B868C /* 1-6-2-Modify-Tracked-Foods.html in Resources */ = {isa = PBXBuildFile; fileRef = 4D9856F217DDACBD008B868C /* 1-6-2-Modify-Tracked-Foods.html */; };
@@ -689,7 +689,7 @@
 		4D9856EB17DDACBD008B868C /* 1-5-1-Food-Inventory.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "1-5-1-Food-Inventory.html"; sourceTree = "<group>"; };
 		4D9856EC17DDACBD008B868C /* 1-5-2-Voice-Recording.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "1-5-2-Voice-Recording.html"; sourceTree = "<group>"; };
 		4D9856ED17DDACBD008B868C /* 1-5-3-Scan-Barcode.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "1-5-3-Scan-Barcode.html"; sourceTree = "<group>"; };
-		4D9856EF17DDACBD008B868C /* 1-5-4-Take-Photo.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "1-5-4-Take-Photo.html"; sourceTree = "<group>"; };
+		4D9856EF17DDACBD008B868C /* 1-5-4-Snap-Photo.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "1-5-4-Snap-Photo.html"; sourceTree = "<group>"; };
 		4D9856F017DDACBD008B868C /* 1-5-5-Manually-Enter-Food.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "1-5-5-Manually-Enter-Food.html"; sourceTree = "<group>"; };
 		4D9856F117DDACBD008B868C /* 1-6-1-View-Consumption.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "1-6-1-View-Consumption.html"; sourceTree = "<group>"; };
 		4D9856F217DDACBD008B868C /* 1-6-2-Modify-Tracked-Foods.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "1-6-2-Modify-Tracked-Foods.html"; sourceTree = "<group>"; };
@@ -1251,7 +1251,7 @@
 				4D9856EB17DDACBD008B868C /* 1-5-1-Food-Inventory.html */,
 				4D9856EC17DDACBD008B868C /* 1-5-2-Voice-Recording.html */,
 				4D9856ED17DDACBD008B868C /* 1-5-3-Scan-Barcode.html */,
-				4D9856EF17DDACBD008B868C /* 1-5-4-Take-Photo.html */,
+				4D9856EF17DDACBD008B868C /* 1-5-4-Snap-Photo.html */,
 				4D9856F017DDACBD008B868C /* 1-5-5-Manually-Enter-Food.html */,
 				4BDD279C1AEA12B6006B3478 /* 1-5-6-Add-Drinking-Water.html */,
 				4D9856F117DDACBD008B868C /* 1-6-1-View-Consumption.html */,
@@ -2173,7 +2173,7 @@
 				4BDD29811AEA16BB006B3478 /* image045.png in Resources */,
 				4D98574C17DDACBD008B868C /* 1-5-2-Voice-Recording.html in Resources */,
 				4D98574D17DDACBD008B868C /* 1-5-3-Scan-Barcode.html in Resources */,
-				4D98574F17DDACBD008B868C /* 1-5-4-Take-Photo.html in Resources */,
+				4D98574F17DDACBD008B868C /* 1-5-4-Snap-Photo.html in Resources */,
 				4BE639761AAF620C0019B988 /* icon_protein_pie.png in Resources */,
 				4BDD29511AEA16BB006B3478 /* image069.png in Resources */,
 				4BDD298D1AEA16BB006B3478 /* image007.png in Resources */,

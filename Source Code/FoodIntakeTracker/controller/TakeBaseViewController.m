@@ -22,9 +22,10 @@
 //  F2Finish - NASA iPad App Updates
 //
 
+#import <QuartzCore/QuartzCore.h>
 #import "TakeBaseViewController.h"
 #import "Helper.h"
-#import <QuartzCore/QuartzCore.h>
+#import "DBHelper.h"
 #import "AppDelegate.h"
 #import "FoodConsumptionRecordServiceImpl.h"
 #import "Settings.h"
@@ -131,16 +132,23 @@
         [self.btnAdd setEnabled:YES];
     }
 }
+
 /**
  * fill the content of foods according got foods.
  */
-- (void)buildResults{
-    UIScrollView *scroll = [[UIScrollView alloc] initWithFrame:self.resultsContentScrollView.frame];
+- (void)buildResults {
+    UIScrollView *scroll = self.resultsContentScrollView;
     scroll.contentSize = CGSizeMake(120 * resultFoods.count, 152);
-    for(int i = 0; i < resultFoods.count; i++){
-        FoodProduct *item = [resultFoods objectAtIndex:i];
+    for (int i = 0; i < resultFoods.count; i++) {
         int x = i * 120;
+        if ([scroll viewWithTag:(i+1)*1000] != nil) {
+            continue;
+        }
+        
+        FoodProduct *item = [resultFoods objectAtIndex:i];
         UIView *v = [[UIView alloc] initWithFrame:CGRectMake(x, 0, 120, 152)];
+        v.tag = (i+1)*1000;
+        
         UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 104, 95)];
         img.layer.borderColor = [UIColor colorWithRed:0.54 green:0.79 blue:1 alpha:1].CGColor;
         img.layer.borderWidth = 1;
@@ -171,9 +179,9 @@
         }
         [scroll addSubview:v];
     }
-    [self.resultsContentScrollView.superview insertSubview:scroll belowSubview:self.resultsContentScrollView];
-    [self.resultsContentScrollView removeFromSuperview];
-    self.resultsContentScrollView = scroll;
+    //[self.resultsContentScrollView.superview insertSubview:scroll belowSubview:self.resultsContentScrollView];
+    //[self.resultsContentScrollView removeFromSuperview];
+    //self.resultsContentScrollView = scroll;
 }
 
 /**
@@ -267,7 +275,7 @@
  * Leave empty for base class.
  * @param sender the button.
  */
-- (IBAction)take:(id)sender{
+- (IBAction)take:(id)sender {
     
 }
 
@@ -281,6 +289,35 @@
     [self.customTabBarController.btnConsumption setImage:[UIImage imageNamed:@"icon-tab-active.png"]
                                                 forState:UIControlStateNormal];
     self.customTabBarController.activeTab = 1;
+    
+    // delete temporary objects
+    NSManagedObjectContext *ctx = [DBHelper currentThreadMoc];
+    [ctx lock];
+    for (FoodProduct *food in resultFoods) {
+        for (StringWrapper *wrapper in food.categories) {
+            [ctx deleteObject:wrapper];
+        }
+        for (StringWrapper *wrapper in food.images) {
+            [self removeImage:wrapper.value];
+            
+            [ctx deleteObject:wrapper];
+        }
+        
+        [ctx deleteObject:food];
+    }
+    [ctx save:nil];
+    [ctx unlock];
+}
+
+- (BOOL)removeImage:(NSString *)fileName {
+    AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsPath = [paths objectAtIndex:0];
+    NSString *additionalFileDirectory = [documentsPath stringByAppendingPathComponent:appDelegate.additionalFilesDirectory];
+    
+    NSError *error;
+    NSString *filePath = [additionalFileDirectory stringByAppendingFormat:@"/%@", fileName];
+    return [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
 }
 
 /**
@@ -311,6 +348,7 @@
     NSString *animationId;
     if(self.btnResults.selected){
         [self.btnResults setSelected:NO];
+        self.resultView.hidden = NO;
         self.resultsView.frame = CGRectMake(0, 0, self.resultsView.frame.size.width, 170);
         frame = CGRectMake(0, 170, self.resultsView.frame.size.width, 0);
         animationId = @"hideResults";
@@ -318,6 +356,7 @@
     }
     else{
         [self.btnResults setSelected:YES];
+        self.resultView.hidden = YES;
         self.resultsView.hidden = NO;
         self.resultsView.frame = CGRectMake(0, 170, self.resultsView.frame.size.width, 0);
         frame = CGRectMake(0, 0, self.resultsView.frame.size.width, 170);
@@ -337,7 +376,7 @@
  * @param segue The segue object containing information about the view controllers involved in the segue.
  * @param sender The object that initiated the segue.
  */
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if([segue.destinationViewController respondsToSelector:@selector(setCustomTabBarController:)]){
         [segue.destinationViewController setCustomTabBarController:self.customTabBarController];
         self.customTabBarController.imgConsumption.image = [UIImage imageNamed:@"icon-consumption"];
@@ -346,7 +385,7 @@
     }
 }
 
--(BOOL) textFieldShouldReturn:(UITextField *)textField{
+-(BOOL) textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
     return YES;
 }
