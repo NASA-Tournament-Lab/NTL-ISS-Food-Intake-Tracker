@@ -361,6 +361,18 @@
     [self.rightTable reloadData];
     
     [self listGridValueChanged:nil];
+    
+    int count = 0;
+    if (selectIndex < 2) {
+        for (int section = 0; section < foodKeys.count; section++) {
+            count += [[foodDict valueForKey:[foodKeys objectAtIndex:section]] count];
+        }
+    } else{
+        count = foodList.count;
+    }
+    
+    [self.rightTable setHidden:count == 0];
+    [self.noRightTable setHidden:count > 0];
 }
 
 /**
@@ -1125,6 +1137,9 @@
         } else {
             [self.btnReverseSort setEnabled:NO];
         }
+        
+        [self.rightTable setHidden:count == 0];
+        [self.noRightTable setHidden:count > 0];
 
         return count;
     }

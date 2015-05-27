@@ -191,9 +191,10 @@
             if([dataFile hasSuffix:self.imageFileNameSuffix] || [dataFile hasSuffix:self.voiceRecordingFileNameSuffix]) {
                 NSString *localDataFile = [[DataHelper getAbsoulteLocalDirectory:self.localFileSystemDirectory]
                                            stringByAppendingPathComponent:dataFile];
-                [data writeToFile:localDataFile options:NSDataWritingAtomic error:&e];
-                [LoggingHelper logError:methodName error:e];
-                CHECK_ERROR_AND_RETURN(e, error, @"Cannot save file to local folder.", DataUpdateErrorCode, YES, NO);
+                if (![data writeToFile:localDataFile options:NSDataWritingAtomic error:&e]) {                    
+                    [LoggingHelper logError:methodName error:e];
+                    CHECK_ERROR_AND_RETURN(e, error, @"Cannot save file to local folder.", DataUpdateErrorCode, YES, NO);
+                }
             }
             
             // Update progress

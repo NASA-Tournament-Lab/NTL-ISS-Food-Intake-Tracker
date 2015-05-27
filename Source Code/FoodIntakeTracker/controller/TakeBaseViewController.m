@@ -23,12 +23,16 @@
 //
 
 #import <QuartzCore/QuartzCore.h>
+
 #import "TakeBaseViewController.h"
+
 #import "Helper.h"
 #import "DBHelper.h"
 #import "AppDelegate.h"
 #import "FoodConsumptionRecordServiceImpl.h"
 #import "Settings.h"
+
+#import "CustomBadge.h"
 
 @implementation TakeBaseViewController
 
@@ -110,25 +114,20 @@
  * @param btn the button.
  */
 - (void)clickPhoto:(UIButton *)btn{
-    int row = btn.tag;
+    NSInteger row = btn.tag;
     FoodProduct *item = [resultFoods objectAtIndex:row];
-    if([selectFoods containsObject:item]){
+    UIImageView *v = (UIImageView *) [btn.superview viewWithTag:row + 1000];
+    if ([selectFoods containsObject:item]) {
         [selectFoods removeObject:item];
-        UIView *v = [btn.superview viewWithTag:10];
-        [v removeFromSuperview];
-    }
-    else{
+        v.image = nil;
+    } else {
         [selectFoods addObject:item];
-        
-        UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(82, 22, 29, 29)];
-        img.image = [UIImage imageNamed:@"btn-checkmark.png"];
-        img.tag = 10;
-        [btn.superview addSubview:img];
+        v.image = [UIImage imageNamed:@"btn-checkmark.png"];
     }
-    if(selectFoods.count == 0){
+    
+    if (selectFoods.count == 0) {
         [self.btnAdd setEnabled:NO];
-    }
-    else{
+    } else {
         [self.btnAdd setEnabled:YES];
     }
 }
@@ -141,43 +140,56 @@
     scroll.contentSize = CGSizeMake(120 * resultFoods.count, 152);
     for (int i = 0; i < resultFoods.count; i++) {
         int x = i * 120;
-        if ([scroll viewWithTag:(i+1)*1000] != nil) {
-            continue;
-        }
         
         FoodProduct *item = [resultFoods objectAtIndex:i];
-        UIView *v = [[UIView alloc] initWithFrame:CGRectMake(x, 0, 120, 152)];
-        v.tag = (i+1)*1000;
         
-        UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 104, 95)];
-        img.layer.borderColor = [UIColor colorWithRed:0.54 green:0.79 blue:1 alpha:1].CGColor;
-        img.layer.borderWidth = 1;
-        img.image = [Helper loadImage:item.productProfileImage];
-        [v addSubview:img];
-        
-        UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(15, 111, 105, 41)];
-        lbl.backgroundColor = [UIColor clearColor];
-        lbl.font = [UIFont fontWithName:@"HelveticaNeue-Regular" size:15];
-        lbl.text = item.name;
-        lbl.textColor = [UIColor colorWithRed:0.27 green:0.27 blue:0.27 alpha:1];
-        lbl.lineBreakMode = NSLineBreakByClipping;
-        [v addSubview:lbl];
-        
-        UIImageView *imgCover = [[UIImageView alloc] initWithFrame:CGRectMake(70, 111, 50, 41)];
-        imgCover.image = [UIImage imageNamed:@"bg-white-cover.png"];
-        [v addSubview:imgCover];
-        
-        UIButton *btn = [[UIButton alloc] initWithFrame:img.frame];
-        btn.tag = i;
-        [btn addTarget:self action:@selector(clickPhoto:) forControlEvents:UIControlEventTouchUpInside];
-        [v addSubview:btn];
-        if([selectFoods containsObject:item]){
-            UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(82, 22, 29, 29)];
-            img.image = [UIImage imageNamed:@"btn-chmark.png"];
-            img.tag = 10;
+        UIView *v = [scroll viewWithTag:i + 1000];
+        if (v == nil) {
+            v = [[UIView alloc] initWithFrame:CGRectMake(x, 0, 120, 152)];
+            v.tag = i + 10000;
+            
+            UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(15, 15, 104, 95)];
+            img.tag = 999;
+            img.layer.borderColor = [UIColor colorWithRed:0.54 green:0.79 blue:1 alpha:1].CGColor;
+            img.layer.borderWidth = 1;
+            img.image = [Helper loadImage:item.productProfileImage];
             [v addSubview:img];
+            
+            UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(15, 111, 105, 41)];
+            lbl.backgroundColor = [UIColor clearColor];
+            lbl.font = [UIFont fontWithName:@"HelveticaNeue-Regular" size:15];
+            lbl.text = item.name;
+            lbl.textColor = [UIColor colorWithRed:0.27 green:0.27 blue:0.27 alpha:1];
+            lbl.lineBreakMode = NSLineBreakByClipping;
+            [v addSubview:lbl];
+            
+            UIImageView *imgCover = [[UIImageView alloc] initWithFrame:CGRectMake(70, 111, 50, 41)];
+            imgCover.image = [UIImage imageNamed:@"bg-white-cover.png"];
+            [v addSubview:imgCover];
+            
+            UIButton *btn = [[UIButton alloc] initWithFrame:img.frame];
+            btn.tag = i;
+            [btn addTarget:self action:@selector(clickPhoto:) forControlEvents:UIControlEventTouchUpInside];
+            [v addSubview:btn];
+            
+            UIImageView *imgCheck = [[UIImageView alloc] initWithFrame:CGRectMake(17, 22, 29, 29)];
+            imgCheck.tag = i + 1000;
+            [v addSubview:imgCheck];
+            
+            CustomBadge *badge = [CustomBadge customBadgeWithString:[item.quantity stringValue]
+                                                          withStyle:[BadgeStyle oldStyle]];
+            badge.frame = CGRectMake(87, 20, 27, 27);
+            [v addSubview:badge];
+            
+            [scroll addSubview:v];
         }
-        [scroll addSubview:v];
+        
+        UIImageView *view = (UIImageView *) [v viewWithTag:i + 1000];
+        if ([selectFoods containsObject:item]) {
+            view.image = [UIImage imageNamed:@"btn-checkmark.png"];
+        } else {
+            view.image = nil;
+        }
     }
     //[self.resultsContentScrollView.superview insertSubview:scroll belowSubview:self.resultsContentScrollView];
     //[self.resultsContentScrollView removeFromSuperview];
@@ -346,15 +358,14 @@
     }
     CGRect frame;
     NSString *animationId;
-    if(self.btnResults.selected){
+    if (self.btnResults.selected) {
         [self.btnResults setSelected:NO];
         self.resultView.hidden = NO;
         self.resultsView.frame = CGRectMake(0, 0, self.resultsView.frame.size.width, 170);
         frame = CGRectMake(0, 170, self.resultsView.frame.size.width, 0);
         animationId = @"hideResults";
         [self.btnAdd setHidden:YES];
-    }
-    else{
+    } else {
         [self.btnResults setSelected:YES];
         self.resultView.hidden = YES;
         self.resultsView.hidden = NO;

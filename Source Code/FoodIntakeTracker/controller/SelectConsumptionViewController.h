@@ -63,6 +63,8 @@
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 /* the right table view */
 @property (weak, nonatomic) IBOutlet UITableView *rightTable;
+/* the no data view */
+@property (weak, nonatomic) IBOutlet UIView *noRightTable;
 /* the grid view */
 @property (weak, nonatomic) IBOutlet UIView *gridView;
 /* the info pop view */

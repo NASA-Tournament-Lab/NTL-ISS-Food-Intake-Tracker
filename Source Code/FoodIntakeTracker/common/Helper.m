@@ -72,8 +72,10 @@ static NSArray *monthNameArray = nil;
     NSString *dateString = [defaultFormatter stringFromDate:[NSDate date]];
     NSString *fileName = [NSString stringWithFormat:@"%@.jpg", dateString];
     NSString *filePath = [additionalFileDirectory stringByAppendingFormat:@"/%@", fileName];
-    [data writeToFile:filePath atomically:YES];
-    return fileName;
+    if ([data writeToFile:filePath atomically:YES]) {
+        return fileName;
+    }
+    return nil;
 }
 
 /*
@@ -117,8 +119,10 @@ static NSArray *monthNameArray = nil;
     NSString *dateString = [defaultFormatter stringFromDate:[NSDate date]];
     NSString *fileName = [NSString stringWithFormat:@"%@.aac", dateString];
     NSString *filePath = [additionalFileDirectory stringByAppendingFormat:@"/%@", fileName];
-    [data writeToFile:filePath atomically:YES];
-    return fileName;
+    if ([data writeToFile:filePath atomically:YES]) {
+        return fileName;
+    }
+    return nil;
 }
 
 /*!

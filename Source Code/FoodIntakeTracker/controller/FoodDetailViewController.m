@@ -82,6 +82,8 @@
     [self.scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     self.commentInstructionLabel.text = @"";
     [[NSNotificationCenter defaultCenter] postNotificationName:AutoLogoutRenewEvent object:nil];
+    
+    self.btnVoicePlay.enabled = ([self.foodConsumptionRecord.voiceRecordings count] > 0);
 }
 
 /**
