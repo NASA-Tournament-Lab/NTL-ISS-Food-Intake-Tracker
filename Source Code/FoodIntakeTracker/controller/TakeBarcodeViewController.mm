@@ -144,12 +144,18 @@
                         return;
                     }
                 } else {
-                    [resultFoods addObject:foodProduct];
+                    if ([resultFoods containsObject:foodProduct]) {
+                        float value = [foodProduct.quantity floatValue];
+                        foodProduct.quantity = [NSNumber numberWithFloat:value + 1.0f];
+                    } else {
+                        [resultFoods addObject:foodProduct];
+                    }
                     
                     self.resultView.hidden = NO;
                     self.imgFood.image = [Helper loadImage:foodProduct.productProfileImage];
                     self.lblFoodName.text = foodProduct.name;
-                    self.lblFoodCategory.text = [DataHelper convertStringWrapperNSSetToNSString:foodProduct.categories withSeparator:@", "];
+                    self.lblFoodCategory.text = [DataHelper convertStringWrapperNSSetToNSString:foodProduct.categories
+                                                                                  withSeparator:@", "];
                     self.lblCalories.text = [NSString stringWithFormat:@"%@",foodProduct.energy];
                     self.lblSodium.text = [NSString stringWithFormat:@"%@",foodProduct.sodium];
                     self.lblFluid.text = [NSString stringWithFormat:@"%@",foodProduct.fluid];

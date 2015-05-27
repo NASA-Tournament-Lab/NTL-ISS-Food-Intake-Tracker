@@ -65,6 +65,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblCarb;
 /* the voice button */
 @property (weak, nonatomic) IBOutlet UIButton *btnVoice;
+/* the voice button */
+@property (weak, nonatomic) IBOutlet UIButton *btnVoicePlay;
 /* the comment instruction label */
 @property (weak, nonatomic) IBOutlet UILabel *commentInstructionLabel;
 

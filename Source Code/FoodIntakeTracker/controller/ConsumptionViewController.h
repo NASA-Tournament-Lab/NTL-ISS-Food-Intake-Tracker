@@ -82,6 +82,10 @@
 @interface CustomProgressView : UIView{
     /* the current progress */
     float _currentProgress;
+    
+    /* original frame */
+    CGRect originalFrame;
+    CGRect interFrame;
 }
 /* the background image */
 @property (nonatomic, strong) UIImage *backgoundImage;

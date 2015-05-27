@@ -56,6 +56,102 @@
 
 #define DOCUMENTS_FOLDER [NSHomeDirectory() stringByAppendingPathComponent:@"Documents"]
 
+@interface Looper : NSObject <AVAudioPlayerDelegate> {
+    AVAudioPlayer* player;
+    NSArray* fileNameQueue;
+    int index;
+    FoodDetailViewController *foodDetail;
+}
+
+@property (nonatomic, retain) NSArray* fileNameQueue;
+@property (nonatomic, retain) FoodDetailViewController *foodDetail;
+
+- (id)initWithFileNameQueue:(NSArray*)queue;
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag;
+- (void)start;
+- (void)stop;
+
+@end
+
+@implementation Looper
+
+@synthesize fileNameQueue, foodDetail;
+
+- (id)initWithFileNameQueue:(NSArray*)queue {
+    if ((self = [super init])) {
+        self.fileNameQueue = queue;
+    }
+    return self;
+}
+
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
+    if (index < fileNameQueue.count) {
+        [self play:index];
+    } else {
+        //reached end of queue
+        foodDetail.btnVoice.enabled = YES;
+        foodDetail.btnVoicePlay.enabled = YES;
+        
+        foodDetail.commentInstructionLabel.text = @"Player stopped";
+    }
+}
+
+- (void)start {
+    index = 0;
+    [self play:0];
+}
+
+- (void)play:(int)i {
+    AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsPath = [paths objectAtIndex:0];
+    NSString *additionalFileDirectory = [documentsPath stringByAppendingPathComponent:appDelegate.additionalFilesDirectory];
+    
+    NSString *filePath = @"";
+    id filename = [self.fileNameQueue objectAtIndex:i];
+    if ([filename isKindOfClass:[NSString class]]) {
+        filePath = [additionalFileDirectory stringByAppendingFormat:@"/%@", filename];
+    } else if ([filename isKindOfClass:[StringWrapper class]]) {
+        StringWrapper *wrapper = (StringWrapper *) filename;
+        filePath = [additionalFileDirectory stringByAppendingFormat:@"/%@", [wrapper value]];
+    } else {
+        [Helper showAlert:@"Error" message:@"Could not find audio file"];
+        
+        return;
+    }
+    
+    if (![[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        [Helper showAlert:@"Error" message:@"Could not find audio file"];
+        return;
+    }
+    
+    player = [[AVAudioPlayer alloc] initWithContentsOfURL:[NSURL URLWithString:filePath] error:nil];
+    player.delegate = self;
+    [player prepareToPlay];
+    BOOL played = [player play];
+    if (!played) {
+        // error while trying to play
+        foodDetail.btnVoice.enabled = YES;
+        foodDetail.btnVoicePlay.enabled = YES;
+        
+        [Helper showAlert:@"Error" message:@"Could not play audio."];
+        return;
+    }
+    
+    index++;
+    
+    foodDetail.commentInstructionLabel.text = [NSString stringWithFormat:@"Playing recording (%d of %d)", index,
+                                               self.fileNameQueue.count];
+}
+
+- (void)stop {
+    if (player && player.playing) {
+        [player stop];
+    }
+}
+
+@end
+
 @implementation DateListView
 
 /**
@@ -242,6 +338,77 @@
     }
 }
 
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    originalFrame = self.frame;
+    if (event.type == UIEventTypeTouches) {
+        [self performSelector:@selector(longTap) withObject:nil afterDelay:0.5];
+    }
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(longTap) object:nil];
+    
+    self.layer.cornerRadius = 0.0f;
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        self.transform = CGAffineTransformIdentity;
+        self.frame = interFrame;
+    } completion:^(BOOL finished) {
+        self.backgroundColor = [UIColor clearColor];
+        self.frame = originalFrame;
+        
+        [self setNeedsDisplay];
+    }];
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    [self touchesEnded:touches withEvent:event];
+}
+
+- (void)longTap {
+    [self.superview bringSubviewToFront:self];
+    self.layer.cornerRadius = 5.0f;
+    self.backgroundColor = [UIColor colorWithWhite:252.f/255.f alpha:0.9];
+    
+    
+    float scale = 1.2f;
+    float deltaWidth = 40.0f;
+    float newWidth = (originalFrame.size.width + deltaWidth);
+    CGRect newFrame;
+    
+    if (originalFrame.origin.x < 50) {
+        interFrame = CGRectMake(originalFrame.origin.x, originalFrame.origin.y,
+                              newWidth, originalFrame.size.height);
+    } else if (originalFrame.origin.x > 350) {
+        interFrame = CGRectMake(originalFrame.origin.x - deltaWidth, originalFrame.origin.y,
+                              newWidth, originalFrame.size.height);
+    } else {
+        interFrame = CGRectMake(originalFrame.origin.x - deltaWidth / 2.f, originalFrame.origin.y,
+                              newWidth, originalFrame.size.height);
+    }
+    
+    if (originalFrame.origin.x < 50) {
+        newFrame = CGRectMake(interFrame.origin.x, interFrame.origin.y - 10,
+                              interFrame.size.width * scale, interFrame.size.height * scale);
+    } else if (originalFrame.origin.x > 350) {
+        newFrame = CGRectMake(interFrame.origin.x - (interFrame.size.width * (scale - 1.0f)), interFrame.origin.y - 10,
+                              interFrame.size.width * scale, interFrame.size.height * scale);
+    } else {
+        newFrame = CGRectMake(interFrame.origin.x - (interFrame.size.width * (scale - 1.0f)) / 2.0f, interFrame.origin.y - 10,
+                              interFrame.size.width * scale, interFrame.size.height * scale);
+    }
+    
+    self.frame = interFrame;
+    [self setNeedsDisplay];
+    
+    [UIView animateWithDuration:0.5 animations:^{
+        self.transform = CGAffineTransformScale(CGAffineTransformIdentity, scale, scale);
+        self.frame = newFrame;
+    } completion:^(BOOL finished) {
+        [self setNeedsDisplay];
+    }];
+}
+
 @end
 
 @interface ConsumptionViewController (){
@@ -272,6 +439,7 @@
     /* Audio record objects */
     NSString *recorderFilePath;
     AVAudioRecorder *recorder;
+    Looper *looper;
 }
 
 @end
@@ -879,12 +1047,19 @@
  * hide food detail view.
  */
 - (void)hideFoodDetail{
+    if (looper) {
+        [looper stop];
+    }
+    
     [clearCover removeFromSuperview];
     clearCover = nil;
     [foodDetail.view removeFromSuperview];
     foodDetail = nil;
+    
     [self updateProgress];
     [self stopCommentDictation];
+    
+    recorderFilePath = nil;
 }
 
 /**
@@ -982,6 +1157,7 @@
     clearCover = nil;
     [foodDetail.view removeFromSuperview];
     foodDetail = nil;
+    recorderFilePath = nil;
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
 }
@@ -1013,6 +1189,10 @@
     [foodDetail.btnVoice addTarget:self
                            action:@selector(startCommentDictation:)
                  forControlEvents:UIControlEventTouchUpInside];
+    
+    [foodDetail.btnVoicePlay addTarget:self
+                            action:@selector(playVoiceRecordings:)
+                  forControlEvents:UIControlEventTouchUpInside];
 }
 
 #pragma mark - Calendar
@@ -1490,6 +1670,25 @@
 }
 
 /**
+ * This method will play all voice recordings.
+ * @param sender the button.
+ */
+- (IBAction)playVoiceRecordings:(id)sender {
+    foodDetail.btnVoice.enabled = NO;
+    foodDetail.btnVoicePlay.enabled = NO;
+    
+    NSMutableArray *array = [NSMutableArray arrayWithArray:[foodDetail.foodConsumptionRecord.voiceRecordings allObjects]];
+    if (recorderFilePath != nil) {
+        [array addObject:recorderFilePath];
+    }
+    
+    looper = [[Looper alloc] initWithFileNameQueue:array];
+    looper.foodDetail = foodDetail;
+    
+    [looper start];
+}
+
+/**
  * This method will be called when the "mic" icon is clicked to turn on the comment dictation.
  * @param sender the button.
  */
@@ -1508,6 +1707,7 @@
         
         if (foodDetail) {
             foodDetail.btnSave.enabled = NO;
+            foodDetail.btnVoicePlay.enabled = NO;
         }
         if (_addFood) {
             _addFood.btnDone.enabled = NO;
@@ -1957,6 +2157,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (foodDetail) {
         foodDetail.btnSave.enabled = YES;
+        foodDetail.btnVoicePlay.enabled = YES;
     }
     if (_addFood) {
         _addFood.btnDone.enabled = YES;
