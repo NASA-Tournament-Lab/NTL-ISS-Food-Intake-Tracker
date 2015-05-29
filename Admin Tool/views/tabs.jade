@@ -17,6 +17,6 @@ div
 					td(style="text-align:left") #{row.name}					
 					if (tableId == 'foodTable')
 						td(style="text-align:left") #{row.origin}
-					td
+					td(style='text-align:center')
 						form(action=action + '/' + row.id,method='get')
-							input(type='submit',value='Go', class="goButton")
+							input(type='submit',value='Go', class="goButton", style='margin: 0')

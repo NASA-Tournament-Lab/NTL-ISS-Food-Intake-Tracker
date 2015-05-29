@@ -53,6 +53,7 @@ try:
 
     # Connect to an existing database
     conn = psycopg2.connect("dbname=" + database + " user=" + user + " host=127.0.0.1")
+    conn.autocommit = False
     # Open a cursor to perform database operations
     cur = conn.cursor()
 
@@ -112,13 +113,17 @@ try:
                     data = json.dumps(food)
                     cur.execute("UPDATE data SET value = %s, modifieddate = 'now', modifiedby = 'file_load' WHERE id = %s;", (data, foodMatch[u"id"]))
 
-            cur.execute("COMMIT;")
         except csv.Error as e:
-            sys.exit('file %s, line %d: %s' % (filename, reader.line_num, e))
-
-    cur.execute("COMMIT;")
+            conn.rollback()            
+            cur.close()
+            conn.close()
+            exc_info = sys.exc_info()
+            
+            raise exc_info[1], None, exc_info[2]
 
     # Close communication with the database
+    conn.commit()
+
     cur.close()
     conn.close()
 except getopt.GetoptError as err:

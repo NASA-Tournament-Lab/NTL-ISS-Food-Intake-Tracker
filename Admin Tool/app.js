@@ -14,7 +14,9 @@ var lwip = require('lwip');
 
 var app = express();
 
-app.use( bodyParser.json() );       // to support JSON-encoded bodies
+var maxAge = 60 * 60 * 1000;
+
+app.use( bodyParser.json() );		// to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({
   extended: true
 })); // to support URL-encoded bodies
@@ -26,7 +28,8 @@ app.use(cookieParser('secret'));
 app.use(session({
   resave: false, // don't save session if unmodified
   saveUninitialized: false, // don't create session until something stored
-  secret: 'f541b79594f6e0d176058bd4e17874e397e89145'
+  secret: 'f541b79594f6e0d176058bd4e17874e397e89145',
+  cookie: { maxAge: maxAge }
 }));
 app.use(flash());
 
@@ -36,50 +39,50 @@ app.set('view engine', 'jade');
 var server, pgclient, conString = "postgres://postgres:12345@localhost/nasadb", MAX_SIZE = 1024;
 
 var foodKeys = ["name", "barcode", "energy", "sodium", "fluid", "protein", "carb", "fat", "categories", "origin",
-                "productProfileImage"];
+				"productProfileImage"];
 var foodTitles = ["Name", "Barcode", "Energy", "Sodium", "Fluid", "Protein", "Carb", "Fat", "Categories", "Country Origin",
-                  "Food Image"];
+				  "Food Image"];
 
 var userKeys = ["fullName", "dailyTargetEnergy", "dailyTargetSodium", "dailyTargetFluid",
-                "dailyTargetProtein", "dailyTargetCarb", "dailyTargetFat", "weight", "admin", "profileImage"];
+				"dailyTargetProtein", "dailyTargetCarb", "dailyTargetFat", "weight", "admin", "profileImage"];
 var userTitles = ["Name", "Daily Target - Energy", "Daily Target - Sodium", "Daily Target - Fluid",
-                  "Daily Target - Protein", "Daily Target - Carb", "Daily Target - Fat", "Weight",
-                  "Admin", "Profile Image"];
+				  "Daily Target - Protein", "Daily Target - Carb", "Daily Target - Fat", "Weight",
+				  "Admin", "Profile Image"];
 var defaultValues = { "dailyTargetEnergy": "3500", "dailyTargetSodium": "3500", "dailyTargetFluid": "2500",
-                      "dailyTargetProtein": "100", "dailyTargetCarb": "500", "dailyTargetFat": "60" };
+					  "dailyTargetProtein": "100", "dailyTargetCarb": "500", "dailyTargetFat": "60" };
 
 /**
  * Return an Object sorted by it's Key
  */
 var sortObjectByKey = function(obj, sortKeys){
-    var keys = [];
-    var sorted_obj = {};
+	var keys = [];
+	var sorted_obj = {};
 
-    for(var key in obj){
-        if(obj.hasOwnProperty(key)){
-            keys.push(key);
-        }
-    }
+	for(var key in obj){
+		if(obj.hasOwnProperty(key)){
+			keys.push(key);
+		}
+	}
 
-    // sort keys
-    keys.sort(function(a, b) {
-        return sortKeys.indexOf(a)-sortKeys.indexOf(b);
-    });
+	// sort keys
+	keys.sort(function(a, b) {
+		return sortKeys.indexOf(a)-sortKeys.indexOf(b);
+	});
 
-    // create new array based on Sorted Keys
-    for (var i = 0; i < keys.length; i++) {
-        var key = keys[i];
-        sorted_obj[key] = obj[key];
-    }
+	// create new array based on Sorted Keys
+	for (var i = 0; i < keys.length; i++) {
+		var key = keys[i];
+		sorted_obj[key] = obj[key];
+	}
 
-    return sorted_obj;
+	return sorted_obj;
 };
 
 /**
  * Get first key in object.
  */
 var firstKey = function(obj) {
-    for (var a in obj) return a;
+	for (var a in obj) return a;
 }
 
 // Speed up calls to hasOwnProperty
@@ -87,764 +90,857 @@ var hasOwnProperty = Object.prototype.hasOwnProperty;
 
 var isEmpty = function(obj) {
 
-    // null and undefined are "empty"
-    if (obj == null) return true;
+	// null and undefined are "empty"
+	if (obj == null) return true;
 
-    // Assume if it has a length property with a non-zero value
-    // that that property is correct.
-    if (obj.length > 0)    return false;
-    if (obj.length === 0)  return true;
+	// Assume if it has a length property with a non-zero value
+	// that that property is correct.
+	if (obj.length > 0)	   return false;
+	if (obj.length === 0)  return true;
 
-    // Otherwise, does it have any properties of its own?
-    // Note that this doesn't handle
-    // toString and valueOf enumeration bugs in IE < 9
-    for (var key in obj) {
-        if (hasOwnProperty.call(obj, key)) return false;
-    }
+	// Otherwise, does it have any properties of its own?
+	// Note that this doesn't handle
+	// toString and valueOf enumeration bugs in IE < 9
+	for (var key in obj) {
+		if (hasOwnProperty.call(obj, key)) return false;
+	}
 
-    return true;
+	return true;
 }
 
 /**
  * Update value column in data table.
  */
 var updateValue = function(req, res, remove) {
-    var newValue = {};
-    for (var key in req.body) {
-        if (req.body.hasOwnProperty(key)) {
-            var value = req.body[key];
-            if (isFinite(String(value).trim() || NaN) && key != "barcode") {
-                newValue[key] = new Number(value);
-            } else {
-                newValue[key] = value;
-            }
-        }
-    }
-    if (remove) {
-        newValue["removed"] = 1;
-    }
+	var newValue = {};
+	for (var key in req.body) {
+		if (req.body.hasOwnProperty(key)) {
+			var value = req.body[key];
+			if (isFinite(String(value).trim() || NaN) && key != "barcode") {
+				newValue[key] = new Number(value);
+			} else {
+				newValue[key] = value;
+			}
+		}
+	}
+	if (remove) {
+		newValue["removed"] = 1;
+	}
 
-    var queryFunctions = [];
+	var queryFunctions = [];
 
-    // add category
-    var tmpCategory = newValue["categories"];
-    if (undefined != tmpCategory && tmpCategory.length > 0) {
-        var categories = tmpCategory instanceof Array ? tmpCategory : new Array(tmpCategory);
-        var catIds = [];
-        for (var i = 0; i < categories.length; i++) {
-            if (/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(categories[i])) {
-                catIds.push(categories[i]);
-                console.log("Pushing existing " + categories[i]);
-                continue;
-            }
+	if (undefined != req.files) {
+		var key = firstKey(req.files);
+		var image = req.files[key];
+		if (undefined != image) {
+		    var originalName = image.originalname.replace(/\.[^\.]+$/, '.jpg');
+			newValue[key] = originalName;
+			var deleteQuery = escape("DELETE FROM media WHERE filename = %L", originalName);
+			queryFunctions.push(function(callback) {
+				console.log("Query (Media): " + deleteQuery);
+				pgclient.query(deleteQuery, function(err, results) {
+					callback(err);
+				});
+			});
 
-            var catId = uuid.v4();
-            var data = {
+			queryFunctions.push(function(callback) {
+				try {
+					// obtain an image object:
+					lwip.open("/tmp/" + image.name, function(err, currentImage) {
+						if (undefined != err) {
+							console.log('Error ' + JSON.stringify(err));
+							callback('Error opening image file');
+						} else if (currentImage.width() > MAX_SIZE || currentImage.height() > MAX_SIZE) {
+							var rr = currentImage.width() > currentImage.height();
+							var newWidth = rr ? MAX_SIZE : Math.floor(currentImage.width() * (MAX_SIZE / currentImage.height()));
+							var newHeight = rr ? Math.floor(currentImage.height() * (MAX_SIZE / currentImage.width())) : MAX_SIZE;
+							console.log('Old size: ' + currentImage.width() + ' x ' + currentImage.height());
+							console.log('New size: ' + newWidth + ' x ' + newHeight);
+							currentImage.batch()
+								.resize(newWidth, newHeight)
+								.writeFile("/tmp/resized.jpg", function(err) {
+									var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
+															originalName, "/tmp/resized.jpg");
+									console.log("Query (Media): " + mediaQuery);
+									pgclient.query(mediaQuery, function(err, results) {
+										callback(err);
+									});
+								});
+						} else {
+							var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
+													 originalName, "/tmp/" + image.name);
+							console.log("Query (Media): " + mediaQuery);
+							pgclient.query(mediaQuery, function(err, results) {
+								callback(err);
+							});
+						}
+					});
+				} catch (err) {
+					console.log('Error ' + JSON.stringify(err));
+					callback('Error opening image file');
+				}
+			});			
+		}
+	}
+	
+	// add category
+	var tmpCategory = newValue["categories"];
+	if (undefined != tmpCategory && tmpCategory.length > 0) {
+		var categories = tmpCategory instanceof Array ? tmpCategory : new Array(tmpCategory);
+		var catIds = [];
+		var queryIds = [];
+		var queryCatData = [];
+		for (var i = 0; i < categories.length; i++) {
+			if (/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(categories[i])) {
+				catIds.push(categories[i]);
+				console.log("Pushing existing " + categories[i]);
+				continue;
+			}
+			
+			var id = uuid.v4();
+			
+			catIds.push(id);
+			queryIds.push(id);
+            queryCatData.push({
                 synchronized: 1,
                 value: categories[i],
                 removed: 0
-            };
-            var catQuery = escape("INSERT INTO data VALUES(%L, 'StringWrapper', %L, 'now', 'now', 'file_load');", catId,
-                                       JSON.stringify(data));
-            queryFunctions.push(function(callback) {
-                pgclient.query(catQuery, function(err, results) {
-                    console.log("Query (StringWrapper): " + catQuery);
-                    callback(err);
-                });
             });
-            catIds.push(catId);
-        }
-        newValue["categories"] = catIds.join(";");
-    } else if (undefined != newValue["categoriesId"]) {
-        newValue["categories"] = newValue["categoriesId"].replace(",", ";");
-    }
-    delete newValue["categoriesId"];
+            
+			queryFunctions.push(function(callback) {
+			    var catId = queryIds.pop();
+			    var data = queryCatData.pop();
+			    var catQuery = escape("INSERT INTO data VALUES(%L, 'StringWrapper', %L, 'now', 'now', 'file_load');", catId, JSON.stringify(data));
+				pgclient.query(catQuery, function(err, results) {
+					console.log("Query (StringWrapper): " + catQuery);
+					callback(err);
+				});
+			});
+		}
+		newValue["categories"] = catIds.join(";");
+	} else if (undefined != newValue["categoriesId"]) {
+		newValue["categories"] = newValue["categoriesId"].replace(",", ";");
+	}
+	delete newValue["categoriesId"];
 
-    if (undefined != req.files) {
-        var key = firstKey(req.files);
-        var image = req.files[key];
-        if (undefined != image) {
-            newValue[key] = image.originalname;
-            var deleteQuery = escape("DELETE FROM media WHERE filename = %L", image.originalname);
-            queryFunctions.push(function(callback) {
-                console.log("Query (Media): " + deleteQuery);
-                pgclient.query(deleteQuery, function(err, results) {
-                    callback(err);
-                });
-            });
+	console.log("Param: " + JSON.stringify(newValue));
 
-            queryFunctions.push(function(callback) {
-                // obtain an image object:
-                lwip.open("/tmp/" + image.name, function(err, currentImage) {
-                    if (currentImage.width() > MAX_SIZE || currentImage.height() > MAX_SIZE) {
-                        var rr = currentImage.width() > currentImage.height();
-                        var newWidth = rr ? MAX_SIZE : Math.floor(currentImage.width() * (MAX_SIZE / currentImage.height()));
-                        var newHeight = rr ? Math.floor(currentImage.height() * (MAX_SIZE / currentImage.width())) : MAX_SIZE;
-                        console.log('Old size: ' + currentImage.width() + ' x ' + currentImage.height());
-                        console.log('New size: ' + newWidth + ' x ' + newHeight);
-                        currentImage.batch()
-                            .resize(newWidth, newHeight)
-                            .writeFile("/tmp/resized.jpg", function(err) {
-                                var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
-                                                        image.originalname, "/tmp/resized.jpg");
-                                console.log("Query (Media): " + mediaQuery);
-                                pgclient.query(mediaQuery, function(err, results) {
-                                    callback(err);
-                                });
-                            });
-                    } else {
-                        var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
-                                                 image.originalname, "/tmp/" + image.name);
-                        console.log("Query (Media): " + mediaQuery);
-                        pgclient.query(mediaQuery, function(err, results) {
-                            callback(err);
-                        });
-                    }
-                });
-            });
-        }
-    }
+	queryFunctions.push(function(callback) {
+		pgclient.query("BEGIN", function(err, results) {
+			callback(err);
+		});
+	});
+	var query = escape("UPDATE data SET value = %L, modifieddate = 'now', modifiedby = 'file_load' WHERE id = %L",
+					   JSON.stringify(newValue), req.params.id);
+	queryFunctions.push(function(callback) {
+		console.log("Update query: " + query);
+		pgclient.query(query, function(err, results) {
+			callback(err);
+		});
+	});
 
-    console.log("Param: " + JSON.stringify(newValue));
+	queryFunctions.push(function(callback) {
+		pgclient.query("COMMIT", function(err, results) {
+			callback(err);
+		});
+	});
 
-    queryFunctions.push(function(callback) {
-        pgclient.query("BEGIN", function(err, results) {
-            callback(err);
-        });
-    });
-    var query = escape("UPDATE data SET value = %L, modifieddate = 'now', modifiedby = 'file_load' WHERE id = %L",
-                       JSON.stringify(newValue), req.params.id);
-    queryFunctions.push(function(callback) {
-        console.log("Update query: " + query);
-        pgclient.query(query, function(err, results) {
-            callback(err);
-        });
-    });
-
-    queryFunctions.push(function(callback) {
-        pgclient.query("COMMIT", function(err, results) {
-            callback(err);
-        });
-    });
-
-    var isFood = req.url.indexOf('food') != -1;
-    var message = "";
-    if (remove) {
-        message = isFood ?  "Food Deleted" : "User Profile Deleted";
-    } else {
-        message = isFood ?  "Food Edit Saved" : "User Profile Edit Saved";
-    }
-    async.waterfall(
-        queryFunctions,
-        function (err, result) {
-            if (err) {
-                req.flash('error', JSON.stringify(err));
-            } else {
-                req.flash('message', message);
-            }
-            res.redirect('/');
-    });
+	var isFood = req.url.indexOf('food') != -1;
+	var message = "";
+	if (remove) {
+		message = isFood ?	"Food Deleted" : "User Profile Deleted";
+	} else {
+		message = isFood ?	"Food Data Updated'" : "User Profile Updated";
+	}
+	async.waterfall(
+		queryFunctions,
+		function (err, result) {
+			if (err) {
+				req.flash('error', err);
+				res.redirect((isFood ? '/food/' : '/user/') + req.params.id);
+			} else {
+				req.flash('currentSelectedTab', isFood ? '1' : '0');
+				req.flash('message', message);				  
+				res.redirect('/');
+			}
+	});
 }
 
 function requiredAuthentication(req, res, next) {
-    var currentSession = req.session;
-    if (currentSession.loggedIn != null && currentSession.loggedIn) {
-        next();
-    } else {
-        req.session.error = 'Access denied!';
-        res.redirect('/login');
-    }
+	var currentSession = req.session;
+	if (currentSession.loggedIn != null && currentSession.loggedIn) {
+		next();
+	} else {
+		req.session.error = 'Access denied!';
+		res.redirect('/login');
+	}
 }
 
 app.get('/login', function (req, res) {
-    var currentSelectedTab = req.flash('currentSelectedTab');
-    var message = req.flash('message');
-    var error = req.flash('error');
+	var currentSelectedTab = req.flash('currentSelectedTab');
+	var message = req.flash('message');
+	var error = req.flash('error');
 
-    res.render('login', {
-        tabsData: JSON.stringify({
-            message: message || "",
-            error: error || ""
-        })
-    });
+	res.render('login', {
+		tabsData: JSON.stringify({
+			message: message || "",
+			error: error || ""
+		})
+	});
+});
+
+app.get('/logout', function (req, res) {
+    req.session.destroy(function() {       
+        res.redirect('/');
+    }); 
 });
 
 app.get('/', function (req, res) {
-    var currentSelectedTab = req.flash('currentSelectedTab');
-    var message = req.flash('message');
-    var error = req.flash('error');
+	var currentSelectedTab = req.flash('currentSelectedTab');
+	var message = req.flash('message');
+	var error = req.flash('error');
 
-    var currentSession = req.session;
+	var currentSession = req.session;
 
-    if (currentSession == null || currentSession.loggedIn == null || !currentSession.loggedIn) {
-        res.redirect('/login');
-    } else {
-        res.render('index', {
-            tabsData: JSON.stringify({
-                selectedTab: currentSelectedTab.length > 0 ? new Number(currentSelectedTab) : 0,
-                message: message || "",
-                error: error || ""
-            })
-        });
-    }
+	if (currentSession == null || currentSession.loggedIn == null || !currentSession.loggedIn) {
+		res.redirect('/login');
+	} else {
+		res.render('index', {
+			tabsData: JSON.stringify({
+				selectedTab: currentSelectedTab.length > 0 ? new Number(currentSelectedTab) : 0,
+				message: message || "",
+				error: error || ""
+			})
+		});
+	}
 });
 
 // List foods / users
-app.get('/foods', requiredAuthentication, function (req, res) {
-    pgclient.query("SELECT id, name, value FROM data WHERE name = 'FoodProduct'", function(err, result) {
-        if(err) {
-            return console.error('error running query', err);
-        }
-        var rows = [];
-        for (var i = 0; i < result.rows.length; i++) {
-            var row = result.rows[i];
-            var value = JSON.parse(row.value);
-            if (value.removed == 0) {
-                var obj = {
-                    "id": row.id,
-                    "name": value.name,
-                    "origin": value.origin
-                };
-                rows.push(obj);
-            }
-        }
 
-        res.render('tabs',
-            {
-                message: 'Food Data',
-                action: '/food',
-                rows: rows,
-                tableId: 'foodTable'
-            },
-            function(err, html) {
-                res.send(html);
-        });
-    });
+app.get('/foods', requiredAuthentication, function (req, res) {
+	pgclient.query("SELECT id, name, value FROM data WHERE name = 'FoodProduct'", function(err, result) {
+		if(err) {
+			return console.error('error running query', err);
+		}
+		var rows = [];
+		for (var i = 0; i < result.rows.length; i++) {
+			var row = result.rows[i];
+			var value = JSON.parse(row.value);
+			if (value.removed == 0) {
+				var obj = {
+					"id": row.id,
+					"name": value.name,
+					"origin": value.origin
+				};
+				rows.push(obj);
+			}
+		}
+
+		res.render('tabs',
+			{
+				message: 'Food Data',
+				action: '/food',
+				rows: rows,
+				tableId: 'foodTable'
+			},
+			function(err, html) {
+				res.send(html);
+		});
+	});
 });
 
 app.get('/users', requiredAuthentication, function (req, res) {
-    pgclient.query("SELECT id, name, value FROM data WHERE name = 'User'", function(err, result) {
-        if(err) {
-            return console.error('error running query', err);
-        }
-        var rows = [];
-        for (var i = 0; i < result.rows.length; i++) {
-            var row = result.rows[i];
-            var value = JSON.parse(row.value);
-            if (value.removed == 0) {
-                var obj = {
-                    "id": row.id,
-                    "name": value.fullName
-                };
-                rows.push(obj);
-            }
-        }
-        res.render('tabs',
-        {
-                message: 'User Data',
-                action: '/user',
-                rows: rows,
-                tableId: 'userTable'
-        },
-            function(err, html) {
-                res.send(html);
-        });
-    });
+	pgclient.query("SELECT id, name, value FROM data WHERE name = 'User'", function(err, result) {
+		if(err) {
+			return console.error('error running query', err);
+		}
+		var rows = [];
+		for (var i = 0; i < result.rows.length; i++) {
+			var row = result.rows[i];
+			var value = JSON.parse(row.value);
+			if (value.removed == 0) {
+				var obj = {
+					"id": row.id,
+					"name": value.fullName
+				};
+				rows.push(obj);
+			}
+		}
+		res.render('tabs',
+		{
+				message: 'User Data',
+				action: '/user',
+				rows: rows,
+				tableId: 'userTable'
+		},
+			function(err, html) {
+				res.send(html);
+		});
+	});
 });
 
 // report
 app.get('/reports', requiredAuthentication, function(req, res) {
-    req.flash('currentSelectedTab', '2');
-    pgclient.query("SELECT id, name, value FROM data WHERE name = 'User'", function(err, result) {
-        if(err) {
-            return console.error('error running query', err);
-        }
-        var rows = [];
-        for (var i = 0; i < result.rows.length; i++) {
-            var row = result.rows[i];
-            var value = JSON.parse(row.value);
-            if (value.removed == 0) {
-                var obj = {
-                    "id": row.id,
-                    "name": value.fullName
-                };
-                rows.push(obj);
-            }
-        }
-        console.log('REPORTS ' + JSON.stringify(rows));
+	pgclient.query("SELECT id, name, value FROM data WHERE name = 'User'", function(err, result) {
+		if(err) {
+			return console.error('error running query', err);
+		}
+		var rows = [];
+		for (var i = 0; i < result.rows.length; i++) {
+			var row = result.rows[i];
+			var value = JSON.parse(row.value);
+			if (value.removed == 0) {
+				var obj = {
+					"id": row.id,
+					"name": value.fullName
+				};
+				rows.push(obj);
+			}
+		}
+		console.log('REPORTS ' + JSON.stringify(rows));
 
-        res.render('reports', {
-            users: rows,
-            message: 'Select report'
-        }, function(err, html) {
-            res.send(html);
-        });
-    });
+		res.render('reports', {
+			users: rows,
+			message: 'Select reports'
+		}, function(err, html) {
+			res.send(html);
+		});
+	});
 });
 
 app.get('/import', requiredAuthentication, function(req, res) {
-    req.flash('currentSelectedTab', '3');
-    res.render('import', {
-            message: 'Import csv file',
-            functions: ['Load Food', 'Load User']
-        }, function(err, html) {
-            res.send(html);
-        });
+	res.render('import', {
+			message: 'Import csv file',
+			functions: ['Load Food', 'Load User']
+		}, function(err, html) {
+			res.send(html);
+		});
 });
 
 app.get('/instructions', requiredAuthentication, function(req, res) {
-    req.flash('currentSelectedTab', '4');
-    res.render('instructions', {
-            message: 'Instructions'
-        }, function(err, html) {
-            res.send(html);
-        });
+	res.render('instructions', {
+			message: 'Instructions'
+		}, function(err, html) {
+			res.send(html);
+		});
 });
 
 // Show foods / users new
-app.get('/food', requiredAuthentication, function(req, res) {
-    req.flash('currentSelectedTab', '1');
-    res.render('new', { message: "New food", action: "/food", keys: foodKeys, titles: foodTitles, defaultValues: {},
-                        uuid: uuid.v4() });
+app.get('/user', requiredAuthentication, function(req, res) {
+	req.flash('currentSelectedTab', '0');
+	res.render('new', { message: "New user", action: "/user", keys: userKeys, titles: userTitles, defaultValues: defaultValues,
+						uuid: uuid.v4() });
 });
 
-app.get('/user', requiredAuthentication, function(req, res) {
-    req.flash('currentSelectedTab', '0');
-    res.render('new', { message: "New user", action: "/user", keys: userKeys, titles: userTitles, defaultValues: defaultValues,
-                        uuid: uuid.v4() });
+app.get('/food', requiredAuthentication, function(req, res) {
+	req.flash('currentSelectedTab', '1');
+	res.render('new', { message: "New food", action: "/food", keys: foodKeys, titles: foodTitles, defaultValues: {},
+						uuid: uuid.v4() });
 });
 
 // Login
 app.post('/login', function(req, res) {
-    var currentSession = req.session;
+	var currentSession = req.session;
 
-    var username = req.body.username;
-    var password = req.body.password;
-    if (undefined == username || username.trim().length == 0) {
-        req.flash('error', 'Username cannot be empty');
-        res.redirect('/');
-        return;
-    }
-    if (undefined == password || password.trim().length == 0) {
-        req.flash('error', 'Password cannot be empty');
-        res.redirect('/');
-    }
+	var username = req.body.username;
+	var password = req.body.password;
+	if (undefined == username || username.trim().length == 0) {
+		req.flash('error', 'Username cannot be empty');
+		res.redirect('/');
+		return;
+	}
+	if (undefined == password || password.trim().length == 0) {
+		req.flash('error', 'Password cannot be empty');
+		res.redirect('/');
+	}
 
-    pgclient.query("SELECT login('" + username + "', '" + password + "') is NULL as check", function(err, result) {
-        if(err || result.rows.length == 0) {
-            return console.error('error running query', err);
-        }
+	pgclient.query("SELECT login('" + username + "', '" + password + "') is NULL as check", function(err, result) {
+		if(err || result.rows.length == 0) {
+			return console.error('error running query', err);
+		}
 
-        console.log("Result: " + result.rows[0].check);
-        if (result.rows[0].check) {
-            req.flash('error', 'Wrong username or password');
-            res.redirect('/');
-        } else {
-            currentSession.loggedIn = true;
-            res.redirect('/');
-        }
-    });
+		console.log("Result: " + result.rows[0].check);
+		if (result.rows[0].check) {
+			req.flash('error', 'Wrong username or password');
+			res.redirect('/');
+		} else {
+			currentSession.loggedIn = true;
+			res.redirect('/');
+		}
+	});
 });
 
 // Create new food / user
-app.post('/food', function(req, res) {
-    var id = req.body["id"];
-    var newValue = {};
-    for (var key in req.body) {
-        if (req.body.hasOwnProperty(key) && key != "id") {
-            var value = req.body[key];
-            if (isFinite(String(value).trim() || NaN) && key != "barcode") {
-                newValue[key] = new Number(value);
-            } else {
-                newValue[key] = value;
-            }
-        }
-    }
-    newValue["active"] = 1;
-    newValue["removed"] = 0;
-    newValue["synchronized"] = 1;
+app.post('/food', requiredAuthentication, function(req, res) {
+	var id = req.body["id"];
+	var newValue = {};
+	for (var key in req.body) {
+		if (req.body.hasOwnProperty(key) && key != "id") {
+			var value = req.body[key];
+			if (isFinite(String(value).trim() || NaN) && key != "barcode") {
+				newValue[key] = new Number(value);
+			} else {
+				newValue[key] = value;
+			}
+		}
+	}
+	newValue["active"] = 1;
+	newValue["removed"] = 0;
+	newValue["synchronized"] = 1;
 
-    var queryFunctions = [];
+	var queryFunctions = [];
 
-    if (undefined == newValue["name"] || newValue["name"].trim().length == 0) {
-        req.flash("error", "Name cannot be empty");
-        res.redirect('/');
-        return;
-    }
+	if (undefined == newValue["name"] || newValue["name"].trim().length == 0) {
+		req.flash("error", "Name cannot be empty");
+		res.redirect('/');
+		return;
+	}
 
-    // check food exists
-    queryFunctions.push(function(callback) {
-        pgclient.query("SELECT value FROM data WHERE name = 'FoodProduct'", function(err, results) {
-            if (err) callback(err);
-            for (var i = 0; i < results.rows.length; i++) {
-                var row = results.rows[i];
-                var value = JSON.parse(row.value);
-                console.log("==>  " + JSON.stringify(value));
-                if (value.name != null && value.name.trim() === newValue["name"].trim() &&
-                    value.origin != null && value.origin.trim() ==  newValue["origin"].trim()) {
-                    callback("Food with name " + value.name + " and origin " + value.origin + " already exists!");
-                    return;
-                }
-            }
-            callback(null);
-        });
-    });
+	// check food exists
+	queryFunctions.push(function(callback) {
+		pgclient.query("SELECT value FROM data WHERE name = 'FoodProduct'", function(err, results) {
+			if (err) {
+				callback(err);
+			} else {
+				for (var i = 0; i < results.rows.length; i++) {
+					var row = results.rows[i];
+					var value = JSON.parse(row.value);
+					// console.log("==>  " + JSON.stringify(value));
+					if (value.name != null && value.name.trim() === newValue["name"].trim() &&
+						value.origin != null && value.origin.trim() ==	newValue["origin"].trim()) {
+						callback("Food with name " + value.name + " and origin " + value.origin + " already exists!");
+						return;
+					}
+				}
+				callback(null);
+			}
+		});
+	});
 
-    // add category
-    var categories = newValue["categories"] instanceof Array ? newValue["categories"] : new Array(newValue["categories"]);
-    var catIds = [];
-    for (var i = 0; i < categories.length; i++) {
-        var catId = uuid.v4();
-        var data = {
+	// add category
+	var categories = newValue["categories"] instanceof Array ? newValue["categories"] : new Array(newValue["categories"]);
+	var tmpCategories = [];
+	var catIds = [];
+	for (var i = 0; i < categories.length; i++) {        
+		catIds.push(uuid.v4());
+		tmpCategories.push({
             synchronized: 1,
             value: categories[i],
             removed: 0
-        };
-        var catQuery = escape("INSERT INTO data VALUES(%L, 'StringWrapper', %L, 'now', 'now', 'file_load');", catId,
-                                   JSON.stringify(data));
-        queryFunctions.push(function(callback) {
-            console.log("Query (StringWrapper): " + catQuery);
-            pgclient.query(catQuery, function(err, results) {
-                callback(err);
-            });
         });
-        catIds.push(catId);
-    }
-    newValue["categories"] = catIds.join(";");
+        
+		queryFunctions.push(function(callback) {
+            var catId = catIds.pop();
+            var data = tmpCategories.pop();
+            var catQuery = escape("INSERT INTO data VALUES(%L, 'StringWrapper', %L, 'now', 'now', 'file_load');", catId, JSON.stringify(data));
+			console.log("Query (StringWrapper): " + catQuery);
+			pgclient.query(catQuery, function(err, results) {
+				callback(err);
+			});
+		});
+	}
+	newValue["categories"] = catIds.join(";");
 
-    if (undefined != req.files && undefined != req.files["productProfileImage"]) {
-        var productProfileImage = req.files["productProfileImage"];
-        newValue["productProfileImage"] = productProfileImage.originalname;
+	if (undefined != req.files && undefined != req.files["productProfileImage"]) {
+		var productProfileImage = req.files["productProfileImage"];
+		var originalName = productProfileImage.originalname.replace(/\.[^\.]+$/, '.jpg')
+		newValue["productProfileImage"] = originalName;
 
-        var deleteQuery = escape("DELETE FROM media WHERE filename = %L", productProfileImage.originalname);
-        queryFunctions.push(function(callback) {
-            console.log("Query (Media): " + deleteQuery);
-            pgclient.query(deleteQuery, function(err, results) {
-                callback(err);
-            });
-        });
+		var deleteQuery = escape("DELETE FROM media WHERE filename = %L", originalName);
+		queryFunctions.push(function(callback) {
+			console.log("Query (Media): " + deleteQuery);
+			pgclient.query(deleteQuery, function(err, results) {
+				callback(err);
+			});
+		});
 
-        // obtain an image object:
-        lwip.open("/tmp/" + productProfileImage.name, function(err, currentImage) {
-            if (currentImage.width() > MAX_SIZE || currentImage.height() > MAX_SIZE) {
-                var rr = currentImage.width() > currentImage.height();
-                var newWidth = rr ? MAX_SIZE : Math.floor(currentImage.width() * (MAX_SIZE / currentImage.height()));
-                var newHeight = rr ? Math.floor(currentImage.height() * (MAX_SIZE / currentImage.width())) : MAX_SIZE;
-                console.log('Old size: ' + currentImage.width() + ' x ' + currentImage.height());
-                console.log('New size: ' + newWidth + ' x ' + newHeight);
-                currentImage.batch()
-                    .resize(newWidth, newHeight)
-                    .writeFile("/tmp/resized.jpg", function(err) {
-                        var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
-                                                productProfileImage.originalname, "/tmp/resized.jpg");
-                        console.log("Query (Media): " + mediaQuery);
-                        pgclient.query(mediaQuery, function(err, results) {
-                            callback(err);
-                        });
-                    });
-            } else {
-                var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
-                                         productProfileImage.originalname, "/tmp/" + productProfileImage.name);
-                console.log("Query (Media): " + mediaQuery);
-                pgclient.query(mediaQuery, function(err, results) {
-                    callback(err);
-                });
-            }
-        });
-    }
+		// obtain an image object:
+		try {
+			lwip.open("/tmp/" + productProfileImage.name, function(err, currentImage) {
+				if (undefined != err) {
+					console.log('Error1 ' + JSON.stringify(err));
+					callback('Error opening image file');
+				} else if (currentImage.width() > MAX_SIZE || currentImage.height() > MAX_SIZE) {
+					var rr = currentImage.width() > currentImage.height();
+					var newWidth = rr ? MAX_SIZE : Math.floor(currentImage.width() * (MAX_SIZE / currentImage.height()));
+					var newHeight = rr ? Math.floor(currentImage.height() * (MAX_SIZE / currentImage.width())) : MAX_SIZE;
+					console.log('Old size: ' + currentImage.width() + ' x ' + currentImage.height());
+					console.log('New size: ' + newWidth + ' x ' + newHeight);
+					currentImage.batch()
+						.resize(newWidth, newHeight)
+						.writeFile("/tmp/resized.jpg", function(err) {
+							var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
+													originalName, "/tmp/resized.jpg");
+							console.log("Query (Media): " + mediaQuery);
+							pgclient.query(mediaQuery, function(err, results) {
+								callback(err);
+							});
+						});
+				} else {
+					var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
+											 originalName, "/tmp/" + productProfileImage.name);
+					console.log("Query (Media): " + mediaQuery);
+					pgclient.query(mediaQuery, function(err, results) {
+						callback(err);
+					});
+				}
+			});
+		} catch (err) {
+			console.log('Error2 ' + JSON.stringify(err));
+			callback(err);
+		}
+							
+	}
 
-    var query = escape("INSERT INTO data VALUES(%L, 'FoodProduct', %L, 'now', 'now', 'file_load');", id,
-                            JSON.stringify(newValue));
-    queryFunctions.push(function(callback) {
-        console.log("Query (FoodProduct): " + query);
-        pgclient.query(query, function(err, results) {
-            callback(err, results);
-        });
-    });
+	var query = escape("INSERT INTO data VALUES(%L, 'FoodProduct', %L, 'now', 'now', 'file_load');", id,
+							JSON.stringify(newValue));
+	queryFunctions.push(function(callback) {
+		console.log("Query (FoodProduct): " + query);
+		pgclient.query(query, function(err, results) {
+			callback(err, results);
+		});
+	});
 
-    async.waterfall(
-        queryFunctions,
-        function (err, result) {
-            if (err) {
-                req.flash('error', JSON.stringify(err));
-            } else {
-                req.flash('message', 'New Food Created');
-            }
-            res.redirect('/');
-    });
+	async.waterfall(
+		queryFunctions,
+		function (err, result) {
+			if (err) {
+				
+			} else {
+				req.flash('message', 'New Food Created');
+				res.redirect('/');
+			}
+	});
 });
 
-app.post('/user', function(req, res) {
-    var id = req.body["id"];
-    var newValue = {};
-    for (var key in req.body) {
-        if (req.body.hasOwnProperty(key) && key != "id") {
-            var value = req.body[key];
-            if (isFinite(String(value).trim() || NaN) && key != "barcode") {
-                newValue[key] = new Number(value);
-            } else {
-                newValue[key] = value;
-            }
-        }
-    }
-    newValue["active"] = 1;
-    newValue["removed"] = 0;
-    newValue["synchronized"] = 1;
+app.post('/user', requiredAuthentication, function(req, res) {
+	var id = req.body["id"];
+	var newValue = {};
+	for (var key in req.body) {
+		if (req.body.hasOwnProperty(key) && key != "id") {
+			var value = req.body[key];
+			if (isFinite(String(value).trim() || NaN) && key != "barcode") {
+				newValue[key] = new Number(value);
+			} else {
+				newValue[key] = value;
+			}
+		}
+	}
+	newValue["active"] = 1;
+	newValue["removed"] = 0;
+	newValue["synchronized"] = 1;
 
-    if (undefined == newValue["fullName"] || newValue["fullName"].trim().length == 0) {
-        req.flash("error", "Name cannot be empty");
-        res.redirect('/');
-        return;
-    }
+	if (undefined == newValue["fullName"] || newValue["fullName"].trim().length == 0) {
+		req.flash("error", "Name cannot be empty");
+		res.redirect('/');
+		return;
+	}
 
-    var queryFunctions = [];
-    if (undefined != req.files && undefined != req.files["profileImage"]) {
-        var profileImageFile = req.files["profileImage"];
-        newValue["profileImage"] = profileImageFile.originalname;
+	var queryFunctions = [];
+	
+	// check user exists
+	queryFunctions.push(function(callback) {
+		pgclient.query("SELECT value FROM data WHERE name = 'User'", function(err, results) {
+			if (err) {
+				callback(err);
+			} else {
+				for (var i = 0; i < results.rows.length; i++) {
+					var row = results.rows[i];
+					var value = JSON.parse(row.value);
+					if (value.fullName != null && value.fullName.trim() === newValue["fullName"].trim()) {
+						callback('User with name "' + value.fullName + '" already exists!');
+						return;
+					}
+				}
+				callback(null);
+			}
+		});
+	});
+	
+	// check image file
+	if (undefined != req.files && undefined != req.files["profileImage"]) {
+		var profileImageFile = req.files["profileImage"];
+		var originalName = profileImageFile.originalname.replace(/\.[^\.]+$/, '.jpg');
+		newValue["profileImage"] = originalName;
 
-        var deleteQuery = escape("DELETE FROM media WHERE filename = %L", profileImageFile.originalname);
-        queryFunctions.push(function(callback) {
-            console.log("Query (Media): " + deleteQuery);
-            pgclient.query(deleteQuery, function(err, results) {
-                callback(err);
-            });
-        });
+		var deleteQuery = escape("DELETE FROM media WHERE filename = %L", originalName);
+		queryFunctions.push(function(callback) {
+			console.log("Query (Media): " + deleteQuery);
+			pgclient.query(deleteQuery, function(err, results) {
+				callback(err);
+			});
+		});
 
-        // obtain an image object:
-        lwip.open("/tmp/" + profileImageFile.name, function(err, currentImage) {
-            if (currentImage.width() > MAX_SIZE || currentImage.height() > MAX_SIZE) {
-                var rr = currentImage.width() > currentImage.height();
-                var newWidth = rr ? MAX_SIZE : Math.floor(currentImage.width() * (MAX_SIZE / currentImage.height()));
-                var newHeight = rr ? Math.floor(currentImage.height() * (MAX_SIZE / currentImage.width())) : MAX_SIZE;
-                console.log('Old size: ' + currentImage.width() + ' x ' + currentImage.height());
-                console.log('New size: ' + newWidth + ' x ' + newHeight);
-                currentImage.batch()
-                    .resize(newWidth, newHeight)
-                    .writeFile("/tmp/resized.jpg", function(err) {
-                        var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
-                                                profileImageFile.originalname, "/tmp/resized.jpg");
-                        console.log("Query (Media): " + mediaQuery);
-                        pgclient.query(mediaQuery, function(err, results) {
-                            callback(err);
-                        });
-                    });
-            } else {
-                var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
-                                         profileImageFile.originalname, "/tmp/" + profileImageFile.name);
-                console.log("Query (Media): " + mediaQuery);
-                pgclient.query(mediaQuery, function(err, results) {
-                    callback(err);
-                });
-            }
-        });
-    }
+		try {
+			// obtain an image object:
+			lwip.open("/tmp/" + profileImageFile.name, function(err, currentImage) {
+				if (undefined != err) {
+					console.log('Error1 ' + JSON.stringify(err));
+					callback('Error opening image file');
+				} else if (currentImage.width() > MAX_SIZE || currentImage.height() > MAX_SIZE) {
+					var rr = currentImage.width() > currentImage.height();
+					var newWidth = rr ? MAX_SIZE : Math.floor(currentImage.width() * (MAX_SIZE / currentImage.height()));
+					var newHeight = rr ? Math.floor(currentImage.height() * (MAX_SIZE / currentImage.width())) : MAX_SIZE;
+					console.log('Old size: ' + currentImage.width() + ' x ' + currentImage.height());
+					console.log('New size: ' + newWidth + ' x ' + newHeight);
+					currentImage.batch()
+						.resize(newWidth, newHeight)
+						.writeFile("/tmp/resized.jpg", function(err) {
+							var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
+													originalName, "/tmp/resized.jpg");
+							console.log("Query (Media): " + mediaQuery);
+							pgclient.query(mediaQuery, function(err, results) {
+								callback(err);
+							});
+						});
+				} else {
+					var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
+											 originalName, "/tmp/" + profileImageFile.name);
+					console.log("Query (Media): " + mediaQuery);
+					pgclient.query(mediaQuery, function(err, results) {
+						callback(err);
+					});
+				}
+			});
+		} catch(err) {
+			console.log('Error2 ' + JSON.stringify(err));
+			callback(err);
+		}
+	}
 
-    var toSave = JSON.stringify(newValue);
-    var query = escape("INSERT INTO data VALUES(%L, 'User', %L, 'now', 'now', 'file_load');", id, toSave);
-    queryFunctions.push(function(callback) {
-        console.log("Query (User): " + query);
-        pgclient.query(query, function(err, results) {
-            callback(err, results);
-        });
-    });
+	var toSave = JSON.stringify(newValue);
+	var query = escape("INSERT INTO data VALUES(%L, 'User', %L, 'now', 'now', 'file_load');", id, toSave);
+	queryFunctions.push(function(callback) {
+		console.log("Query (User): " + query);
+		pgclient.query(query, function(err, results) {
+			callback(err, results);
+		});
+	});
 
-    async.waterfall(
-        queryFunctions,
-        function (err, result) {
-            if (err) {
-                req.flash('error', JSON.stringify(err));
-            } else {
-                req.flash('message', 'New User Profile Created');
-            }
+	async.waterfall(
+		queryFunctions,
+		function (err, result) {
+			if (err) {
+				req.flash('error', err);
+			} else {
+				req.flash('message', 'New User Profile Created');
+			}
             res.redirect('/');
-    });
+	});
 })
 
+var editObject = null;
+
 // Load food / user
-app.get('/food/:id', function(req, res) {
-    req.flash('currentSelectedTab', '1');
+app.get('/food/:id', requiredAuthentication, function(req, res) {
+	console.log("Param: " + req.params.id);
+	var error = req.flash('error');
+	
+	console.log('error : ' + error);
+	
+	if (undefined != error && error.length > 0) {
+		console.log('Rendering error');
+		res.render('edit', {
+			message: editObject.name,
+			action: '/food/' + req.params.id,
+			obj: sortObjectByKey(editObject, foodKeys),
+			editKeys: foodKeys,
+			titles: foodTitles,
+			dialogError: JSON.stringify({
+                error: error || ""
+            })
+		});
+		return;
+	}
+	
+	async.waterfall([
+		function(callback) {
+			pgclient.query("SELECT id, value FROM data WHERE name = 'StringWrapper';", function(err, result) {
+				if(err || result.rows.length == 0) {
+					return console.error('error running query', err);
+				}
+				var rows = {};
+				for (var i = 0; i < result.rows.length; i++) {
+					var row = result.rows[i];
+					var category = JSON.parse(row.value);
+					rows[row.id] = category.value;
+				}
 
-    console.log("Param: " + req.params.id);
-    async.waterfall([
-        function(callback) {
-            pgclient.query("SELECT id, value FROM data WHERE name = 'StringWrapper';", function(err, result) {
-                if(err || result.rows.length == 0) {
-                    return console.error('error running query', err);
-                }
-                var rows = {};
-                for (var i = 0; i < result.rows.length; i++) {
-                    var row = result.rows[i];
-                    var category = JSON.parse(row.value);
-                    rows[row.id] = category.value;
-                }
+				callback(null, rows);
+			});
+		},
+		function(categoryRows, callback) {
+			pgclient.query("SELECT id, value FROM data WHERE id = '" + req.params.id + "';", function(err, result) {
+				if(err || result.rows.length == 0) {
+					return console.error('error running query', err);
+				}
+				var row = result.rows[0];
+				
+				editObject = JSON.parse(row.value);
+				editObject["categories"] = editObject["categories"] || "";
 
-                callback(null, rows);
-            });
-        },
-        function(categoryRows, callback) {
-            pgclient.query("SELECT id, value FROM data WHERE id = '" + req.params.id + "';", function(err, result) {
-                if(err || result.rows.length == 0) {
-                    return console.error('error running query', err);
-                }
-                var row = result.rows[0];
-                var editObject = JSON.parse(row.value);
+				var categoriesId = editObject["categories"].split(";");
+				var categories = [];
+				for (var i = 0; i < categoriesId.length; i++) {
+					categories.push(categoryRows[categoriesId[i]]);
+				}
+				console.log('Categories ' + JSON.stringify(categories));
 
-                editObject["categories"] = editObject["categories"] || "";
+				editObject["categories"] = categories;
+				editObject["categoriesId"] = categoriesId;
 
-                var categoriesId = editObject["categories"].split(";");
-                var categories = [];
-                for (var i = 0; i < categoriesId.length; i++) {
-                    categories.push(categoryRows[categoriesId[i]]);
-                }
-                console.log('Categories ' + JSON.stringify(categories));
-
-                editObject["categories"] = categories;
-                editObject["categoriesId"] = categoriesId;
-
-                console.log("Result: " + JSON.stringify(editObject));
-                res.render('edit', { message: editObject.name, action: '/food/' + req.params.id,
-                        obj: sortObjectByKey(editObject, foodKeys), editKeys: foodKeys, titles: foodTitles });
-            });
-        }
-    ],
-        function (err, result) {
-            console.log('End');
-    });
+				console.log("Result: " + JSON.stringify(editObject));
+				res.render('edit', {
+						message: editObject.name,
+						action: '/food/' + req.params.id,
+						obj: sortObjectByKey(editObject, foodKeys),
+						editKeys: foodKeys,
+						titles: foodTitles,
+						dialogError: JSON.stringify({
+                            error: ""
+                        })
+				});
+			});
+		}
+	],
+		function (err, result) {
+			console.log('End');
+	});
 });
 
-app.get('/user/:id', function(req, res) {
-    req.flash('currentSelectedTab', '0');
+app.get('/user/:id', requiredAuthentication, function(req, res) {
+	console.log("Param: " + req.params.id);
+	pgclient.query("SELECT value FROM data WHERE id = '" + req.params.id + "';", function(err, result) {
+		if(err || result.rows.length == 0) {
+			return console.error('error running query', err);
+		}
 
-    console.log("Param: " + req.params.id);
-    pgclient.query("SELECT value FROM data WHERE id = '" + req.params.id + "';", function(err, result) {
-        if(err || result.rows.length == 0) {
-            return console.error('error running query', err);
-        }
-
-        console.log("Result: " + result.rows[0].value);
-        var editObject = JSON.parse(result.rows[0].value);
-        res.render('edit', { message: editObject.fullName, action: '/user/' + req.params.id,
-            obj: sortObjectByKey(editObject, userKeys), editKeys: userKeys, titles: userTitles });
-    });
+		console.log("Result: " + result.rows[0].value);
+		var editObject = JSON.parse(result.rows[0].value);
+		res.render('edit', { message: editObject.fullName, action: '/user/' + req.params.id,
+			obj: sortObjectByKey(editObject, userKeys), editKeys: userKeys, titles: userTitles });
+	});
 });
 
 // Update food / user
-app.post('/food/:id', function(req, res) {
-    updateValue(req, res, false);
+
+app.post('/user/:id', requiredAuthentication, function(req, res) {
+	updateValue(req, res, false);
 });
 
-app.post('/user/:id', function(req, res) {
-    updateValue(req, res, false);
+app.post('/food/:id', requiredAuthentication, function(req, res) {
+	updateValue(req, res, false);
 });
 
+app.post('/reports', requiredAuthentication, function(req, res) {
+	console.log('Body: ' + JSON.stringify(req.body));
 
-app.post('/reports', function(req, res) {
-    console.log('Body: ' + JSON.stringify(req.body));
+	var args = ['--database=nasadb', '--user=postgres'];
+	if (req.body.radioReport == "0") {
+		if (undefined != req.body.users && req.body.users.length > 0) {
+			var users = req.body.users instanceof Array ? req.body.users : new Array(req.body.users);
+			args.push('--selected=' + users.join(","));
+		} else {
+		    req.flash('currentSelectedTab', '2');
+			req.flash('error', "Please select a user");
+			res.redirect('/');
+			return;
+		}
+	}
 
-    var args = ['--database=nasadb', '--user=postgres'];
-    if (req.body.radioReport == "0") {
-        if (undefined != req.body.users && req.body.users.length > 0) {
-            var users = req.body.users instanceof Array ? req.body.users : new Array(req.body.users);
-            args.push('--selected=' + users.join(","));
-        } else {
-            req.flash('error', "Please select an user");
-            res.redirect('/');
-            return;
-        }
-    }
+	PythonShell.run('generateSummary.py', {
+		args: args,
+		mode: 'text',
+		pythonPath: '/usr/bin/python',
+		scriptPath: __dirname
+	}, function (err, results) {
+		if (err) throw err;
+		console.log('finished');
+		console.log(results);
 
-    PythonShell.run('generateSummary.py', {
-        args: args,
-        mode: 'text',
-        pythonPath: '/usr/bin/python',
-        scriptPath: __dirname
-    }, function (err, results) {
-        if (err) throw err;
-        console.log('finished');
-        console.log(results);
-
-        res.download(__dirname + '/reports/summary.zip', 'summary.zip', function (err) {
-            if (err) {
-                console.log('generateSummary.py error: ' + JSON.stringify(err));
-                res.status(err.status).end();
-            } else {
-                console.log('Sent');
-            }
-        });
-    });
+		res.download(__dirname + '/reports/summary.zip', 'summary.zip', function (err) {
+			if (err) {
+				console.log('generateSummary.py error: ' + JSON.stringify(err));
+				res.status(err.status).end();
+			} else {
+				console.log('Sent');
+			}
+		});
+	});
 });
 
-app.post('/import', function(req, res) {
-    console.log('Files: ' + JSON.stringify(req.files));
-    if (undefined != req.files && !isEmpty(req.files)) {
-        var functions = [];
-        if (undefined != req.files['userFileImport']) {
-            functions.push(function(callback) {
-               var userFileImport = req.files['userFileImport'];
-               var path = userFileImport['path'];
-               var args = ['--database=nasadb', '--user=postgres', '--filename=' + path];
-                PythonShell.run('loadUser.py', {
-                    args: args,
-                    mode: 'text',
-                    pythonPath: '/usr/bin/python',
-                    scriptPath: __dirname
-                }, function (err, results) {
-                    //console.log("User results: " + results);
-                    callback(err);
-                });
-            });
+app.post('/import', requiredAuthentication, function(req, res) {
+	req.flash('currentSelectedTab', '3');
+	
+	console.log('Files: ' + JSON.stringify(req.files));
+	if (undefined != req.files && !isEmpty(req.files)) {
+		var functions = [];
+		if (undefined != req.files['userFileImport']) {
+			functions.push(function(callback) {
+			   var userFileImport = req.files['userFileImport'];
+			   var path = userFileImport['path'];
+			   var args = ['--database=nasadb', '--user=postgres', '--filename=' + path];
+				PythonShell.run('loadUser.py', {
+					args: args,
+					mode: 'text',
+					pythonPath: '/usr/bin/python',
+					scriptPath: __dirname
+				}, function (err, results) {
+				    console.log("Food error: " + JSON.stringify(err));
+					callback('Error loading food.\nPlease check the CSV file format.');
+				});
+			});
 
-        }
-        if (undefined != req.files['foodFileImport']) {
-            functions.push(function(callback) {
-               var foodFileImport = req.files['foodFileImport'];
-                var path = foodFileImport['path'];
-                var args = ['--database=nasadb', '--user=postgres', '--filename=' + path];
-                PythonShell.run('loadFood.py', {
-                    args: args,
-                    mode: 'text',
-                    pythonPath: '/usr/bin/python',
-                    scriptPath: __dirname
-                }, function (err, results) {
-                    //console.log("Food results: " + results.length);
-                    callback(err);
-                });
-            });
-        }
+		}
+		if (undefined != req.files['foodFileImport']) {
+			functions.push(function(callback) {
+			   var foodFileImport = req.files['foodFileImport'];
+				var path = foodFileImport['path'];
+				var args = ['--database=nasadb', '--user=postgres', '--filename=' + path];
+				PythonShell.run('loadFood.py', {
+					args: args,
+					mode: 'text',
+					pythonPath: '/usr/bin/python',
+					scriptPath: __dirname
+				}, function (err, results) {
+					console.log("Food error: " + JSON.stringify(err));
+					callback('Error loading food.\nPlease check the CSV file format.');
+				});
+			});
+		}
 
-        async.waterfall(
-            functions,
-            function (err, result) {
-                if (err) {
-                    req.flash('error', JSON.stringify(err));
-                } else {
-                    req.flash('message', 'Bulk Upload Successful');
-                }
-                res.redirect('/');
-        });
-    } else {
-        req.flash('error', 'No file selected');
-        res.redirect('/');
-    }
+		async.waterfall(
+			functions,
+			function (err, result) {
+				if (err) {
+					req.flash('error', err);
+				} else {
+					req.flash('message', 'Bulk Upload Successful');
+				}
+				res.redirect('/');
+		});
+	} else {
+		req.flash('error', 'Please select a file');
+		res.redirect('/');
+	}
 });
 
 // Delete food/user
-app.get('/delete/food/:id', function(req, res) {
-    req.flash('currentSelectedTab', '1');
-    updateValue(req, res, true);
-});
 
 app.get('/delete/user/:id', function(req, res) {
-    req.flash('currentSelectedTab', '0');
-    updateValue(req, res, true);
+	updateValue(req, res, true);
+});
+
+app.get('/delete/food/:id', function(req, res) {
+	updateValue(req, res, true);
 });
 
 pg.connect(conString, function(err, client, done) {
-    if(err) {
-        return console.error('error fetching client from pool', err);
-    }
-    pgclient = client;
-    server = app.listen(8080, function() {
-        console.log('Listening on port %d', server.address().port);
-    });
+	if(err) {
+		return console.error('error fetching client from pool', err);
+	}
+	pgclient = client;
+	server = app.listen(8080, function() {
+		console.log('Listening on port %d', server.address().port);
+	});
 });

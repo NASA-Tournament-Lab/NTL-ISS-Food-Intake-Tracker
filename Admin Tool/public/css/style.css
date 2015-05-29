@@ -1,9 +1,6 @@
 .container {
     clear: both;
 }
-.goButton {
-    text-align: center;
-}
 body {
     font-family: Verdana, Arial, sans-serif;
 }
@@ -12,7 +9,7 @@ h3 {
     font-size: 18px;
     line-height: normal;
 }
-a.button {
+a.button, span.button {
     margin-left:10px;
     height:36px;
 }
@@ -34,5 +31,11 @@ a.button {
 .inst_table, .inst_table th, .inst_table td {
     border: 1px solid black;
     border-collapse: collapse;
+}
+.bottom {
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-bottom: 40px;
+    float: left;    
 }
 
