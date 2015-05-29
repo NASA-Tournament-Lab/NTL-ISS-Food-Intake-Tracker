@@ -25,25 +25,22 @@ html
 					$('#dialog').dialog('open');
 				}
 			});
-	body
-		.head
-			#sides
-				#left
-					img(src='/images/logo.png', alt='', style='float: left;height:144px;')
-				#right
-					h1(style='float: left;height:144px;') ISS FIT - Admin Tool
+	body(style='width:50%;margin-left:auto;margin-right:auto;text-align:center')
+		.head		 
+			p
+			img(src='/images/logo.png', alt='', style='height:144px;')
+			p
+			h1 ISS FIT - Admin Tool
 		.container
 			div(id='dialog')
 				p(id='message')
-			h1 Hello!
-			p.subheading Please Login To Your Account
 			form(action='/login',method='post')
 				p
 				label Username
-				input(type="text", name="username", id='user-tf').span4.required
+				input(type="text", name="username", id='user-tf', style='margin-left: 10px').span4.required
 				p
 				label Password
-				input(type="password", name="password", id='pass-tf').span4.required
+				input(type="password", name="password", id='pass-tf', style='margin-left: 10px').span4.required
 				p
 				input(type='submit',value='Login', class="goButton")
 

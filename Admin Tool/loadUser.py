@@ -33,6 +33,7 @@ try:
 
     # Connect to an existing database
     conn = psycopg2.connect("dbname=" + database + " user=" + user + " host=127.0.0.1")
+    conn.autocommit = False
     # Open a cursor to perform database operations
     cur = conn.cursor()
 
@@ -51,7 +52,8 @@ try:
         try:
             next(reader, None)  # skip the headers
             for row in reader:
-                if len(row) == 0:
+                rowLen = len(row)
+                if rowLen < 12:
                     continue
 
                 user = {}
@@ -88,13 +90,15 @@ try:
                     data = json.dumps(user)
                     cur.execute("UPDATE data SET value = %s, modifieddate = 'now', modifiedby = 'file_load' WHERE id = %s;", (data, userMatch[u"id"]))
 
-            cur.execute("COMMIT;")
         except csv.Error as e:
+            conn.rollback()            
             cur.close()
             conn.close()
-            sys.exit('file %s, line %d: %s' % (filename, reader.line_num, e))
+            exc_info = sys.exc_info()
+            
+            raise exc_info[1], None, exc_info[2]
 
-    cur.execute("COMMIT;")
+    conn.commit()
 
     # Close communication with the database
     cur.close()
