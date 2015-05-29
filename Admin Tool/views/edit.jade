@@ -6,8 +6,9 @@ html
 		link(rel='stylesheet', href='/css/theme.css')
 		script(type='text/javascript', src='/js/jquery.min.js')
 		script(type='text/javascript', src='/js/jquery-ui.min.js')
+		script(type='text/javascript', src='/js/jquery.validate.js')
 		script.
-			var dialog = !{dialog};
+			var d_err = !{mmmmm};
 		script.
 			$(document).ready(function() {								
 				$("input[type=submit], input[type=button], a.button, span.button" ).button();
@@ -21,11 +22,6 @@ html
 						}
 					}
 				});
-				if (undefined != dialog.error && dialog.error.length > 0) {
-					$('#message').text(dialog.error);
-					$('#dialog').dialog('option', 'title', 'Error');
-					$('#dialog').dialog('open');
-				}
 				var action = '!{action}';
 				$("#dialog-confirm").dialog({
 					autoOpen: false,
@@ -44,7 +40,16 @@ html
 				$("#delete-button").on("click", function(event) {				
 					$("#dialog-confirm").dialog('option', 'title', 'Confirmation');
 					$("#dialog-confirm").dialog('open');
-				});
+				});			
+
+				// create validation
+				$("#form").validate();
+				
+				if (undefined != d_err.error && d_err.error.length > 0) {
+					$('#message').text(d_err.error);
+					$('#dialog').dialog('option', 'title', 'Error');
+					$('#dialog').dialog('open');
+				}
 			});
 	body
 		.head
@@ -60,8 +65,9 @@ html
 				p.
 					Are you sure you want to delete current data?			
 			div
-				form(action=action, method='post', enctype='multipart/form-data')
+				form(id='form', action=action, method='post', enctype='multipart/form-data')
 					- var index = 0
+					- var numerics = ["energy", "sodium", "fluid", "protein", "carb", "fat", "dailyTargetEnergy", "dailyTargetSodium", "dailyTargetFluid", "dailyTargetProtein", "dailyTargetCarb", "dailyTargetFat", "weight"]
 					each key in editKeys
 						- var title = titles[index++]
 						h3!=title
@@ -93,11 +99,15 @@ html
 									div
 										ul
 											li Current image: #{value}
-									input(type='file', name=key, id=key, accept='image/jpeg, image/jpg')
+									input(type='file', name=key, id=key, accept='image/jpg, image/jpeg')
 								else
-									input(type='file', name=key, id=key, accept='image/jpeg, image/jpg')
+									input(type='file', name=key, id=key, accept='image/jpg, image/jpeg')
+							else if numerics.indexOf(key) != -1
+								input(type='digits', value=value, name=key, id=key, style='width:200px;' required)
+							else if key == 'barcode'
+								input(type='digits', value=value, name=key, id=key, style='width:200px;')
 							else
-								input(type='text', value=value, name=key, id=key, style="width:200px;")
+								input(type='text', value=value, name=key, id=key, style='width:200px;' required)
 					each value, key in obj
 						if editKeys.indexOf(key) == -1
 							input(type='hidden', value=value, name=key, id=key)

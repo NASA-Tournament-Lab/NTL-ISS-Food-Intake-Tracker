@@ -3,11 +3,16 @@ html
 		title!= title
 		link(rel='stylesheet', href='/css/style.css')
 		link(rel='stylesheet', href='/css/jquery-ui.css')
+		link(rel='stylesheet', href='/css/theme.css')
 		script(type='text/javascript', src='/js/jquery.min.js')
 		script(type='text/javascript', src='/js/jquery-ui.min.js')
+		script(type='text/javascript', src='/js/jquery.validate.js')
 		script.
 			$(document).ready(function() {
 				$( "input[type=submit], input[type=button], a.button" ).button();
+				
+				// create validation
+				$("#form").validate();
 			});
 	body
 		.head
@@ -19,8 +24,9 @@ html
 		.container(style="margin-left:20px;")
 			h1!= message
 			div
-				form(action=action, method='post', enctype='multipart/form-data')
+				form(id='form', action=action, method='post', enctype='multipart/form-data')
 					- var index = 0
+					- var numerics = ["energy", "sodium", "fluid", "protein", "carb", "fat", "dailyTargetEnergy", "dailyTargetSodium", "dailyTargetFluid", "dailyTargetProtein", "dailyTargetCarb", "dailyTargetFat", "weight"]						
 					each key in keys
 						- var title = titles[index++]
 						h3!=title
@@ -39,9 +45,13 @@ html
 								for originValue in origins
 									option(value=originValue) #{originValue}
 						else if key == 'productProfileImage' || key == 'profileImage'
-							input(type='file', name=key, id=key, accept='image/jpg,image/jpeg')
+							input(type='file', name=key, id=key, accept='image/jpg, image/jpeg')
+						else if numerics.indexOf(key) != -1
+							input(type='digits', value=defaultValues[key], name=key, id=key, style='width:200px;' required)
+						else if key == 'barcode'
+							input(type='digits', value=defaultValues[key], name=key, id=key, style='width:200px;')
 						else
-							input(type='text', value=defaultValues[key], name=key, id=key, style="width:200px;")
+							input(type='text', value=defaultValues[key], name=key, id=key, style='width:200px;' required)
 					input(type='hidden', value=uuid, key="id", name="id")
 					p
 						input(type='submit',value='Save')

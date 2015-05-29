@@ -746,9 +746,9 @@ app.get('/food/:id', requiredAuthentication, function(req, res) {
 			obj: sortObjectByKey(editObject, foodKeys),
 			editKeys: foodKeys,
 			titles: foodTitles,
-			dialog: JSON.stringify({
-				error: error || ""
-			})
+			dialogError: JSON.stringify({
+                error: error || ""
+            })
 		});
 		return;
 	}
@@ -796,7 +796,9 @@ app.get('/food/:id', requiredAuthentication, function(req, res) {
 						obj: sortObjectByKey(editObject, foodKeys),
 						editKeys: foodKeys,
 						titles: foodTitles,
-						dialog: ''
+						dialogError: JSON.stringify({
+                            error: ""
+                        })
 				});
 			});
 		}
