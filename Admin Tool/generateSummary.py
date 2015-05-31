@@ -114,17 +114,17 @@ try:
 
         # Create header
         wr.writerow(["Username", "Date Time", "Food Product", "Quantity", "Comments", "Images", "Voices"])
-
-        recordMatch = (l for l in records if l[u"user"] == user[u"id"])
+        
+        recordMatch = (l for l in records if l.get(u"user","") == user[u"id"])
         for record in recordMatch:
-            food = next((l for l in foods if l[u"id"] == record[u"foodProduct"]), None)
+            food = next((l for l in foods if l[u"id"] == record.get(u"foodProduct", "")), None)
             if food is None:
                 print "No food found for user " + user[u"fullName"] + " at " + record[u"timestamp"]
                 continue
             try:
                 row = []
                 row.append(user[u"fullName"])
-                row.append(record[u"timestamp"])
+                row.append(record[u"timestamp"][:-6])
                 row.append(food[u"name"])
                 row.append(record[u"quantity"])
                 row.append(xstr(record.get(u"comment", "")) .replace ("\n", " "))
@@ -149,7 +149,10 @@ try:
 
                 wr.writerow(row)
             except Exception as err:
-                print err
+                myfile.close()
+                exc_info = sys.exc_info()            
+                raise exc_info[1], None, exc_info[2]
+            
         myfile.close()
         os.chdir("../")
 

@@ -28,6 +28,11 @@ a.button, span.button {
     width:50%;
     overflow:hidden;
 }
+#image-data {
+    margin: 20px 0px;
+    width: 300px !important;
+    height: auto;
+}
 .inst_table, .inst_table th, .inst_table td {
     border: 1px solid black;
     border-collapse: collapse;
