@@ -7,8 +7,9 @@ html
 		script(type='text/javascript', src='/js/jquery.min.js')
 		script(type='text/javascript', src='/js/jquery-ui.min.js')
 		script(type='text/javascript', src='/js/jquery.validate.js')
+		script(type='text/javascript', src='/js/additional-methods.js')
 		script.
-			var d_err = !{mmmmm};
+			var data = !{data};
 		script.
 			$(document).ready(function() {								
 				$("input[type=submit], input[type=button], a.button, span.button" ).button();
@@ -45,8 +46,8 @@ html
 				// create validation
 				$("#form").validate();
 				
-				if (undefined != d_err.error && d_err.error.length > 0) {
-					$('#message').text(d_err.error);
+				if (undefined != data.error && data.error.length > 0) {
+					$('#message').text(data.error);
 					$('#dialog').dialog('option', 'title', 'Error');
 					$('#dialog').dialog('open');
 				}
@@ -94,18 +95,15 @@ html
 								select(id=key, name=key, style="width:200px;")
 									for originValue in origins
 										option(value=originValue, selected=value === originValue) #{originValue}
-							else if key == 'productProfileImage' || key == 'profileImage'
+							else if key == 'productProfileImage' || key == 'profileImage'									
+								input(type='file', name=key, id=key, accept='image/jpg, image/jpeg' extension="jpg")
 								if value
 									div
-										ul
-											li Current image: #{value}
-									input(type='file', name=key, id=key, accept='image/jpg, image/jpeg')
-								else
-									input(type='file', name=key, id=key, accept='image/jpg, image/jpeg')
+										<img id='image-data' src='data:image/jpeg;base64, !{image_jpg}' />
 							else if numerics.indexOf(key) != -1
-								input(type='digits', value=value, name=key, id=key, style='width:200px;' required)
+								input(type='text', value=value, name=key, id=key, style='width:200px;' required number)
 							else if key == 'barcode'
-								input(type='digits', value=value, name=key, id=key, style='width:200px;')
+								input(type='text', value=value, name=key, id=key, style='width:200px;' digits)
 							else
 								input(type='text', value=value, name=key, id=key, style='width:200px;' required)
 					each value, key in obj

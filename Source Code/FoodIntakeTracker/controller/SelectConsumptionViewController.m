@@ -101,6 +101,10 @@
             break;
         }
     }*/
+    
+    self.noRightTable.hidden = YES;
+    self.rightTable.hidden = NO;
+    
     self.lblTitle.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:24];
     self.lblTitle.text = @"Food Inventory";
     self.lblSubTitle.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:17];
@@ -146,12 +150,12 @@
     sortByOptionArray = [NSMutableArray arrayWithObjects:
                          @"Alphabetically (A to Z)",
                          @"Alphabetically (Z to A)",
-                         @"Nutrient Content (energy)",
-                         @"Nutrient Content (sodium)",
-                         @"Nutrient Content (water)",
-                         @"Nutrient Content (protein)",
-                         @"Nutrient Content (carb)",
-                         @"Nutrient Content (fat)",
+                         @"Nutrient Content (Calories)",
+                         @"Nutrient Content (Sodium)",
+                         @"Nutrient Content (Fluid)",
+                         @"Nutrient Content (Protein)",
+                         @"Nutrient Content (Carb)",
+                         @"Nutrient Content (Fat)",
                          @"Frequency (High To Low)",
                          @"Frequency (Low To High)",
                          nil];
@@ -369,6 +373,16 @@
         }
     } else{
         count = foodList.count;
+    }
+    
+    NSMutableArray *toRemove = [NSMutableArray array];
+    for (FoodProduct *product in self.selectFoods) {
+        if (![foodList containsObject:product]) {
+            [toRemove addObject:product];
+        }
+    }
+    if (toRemove.count > 0) {
+        [self.selectFoods removeObjectsInArray:toRemove];
     }
     
     [self.rightTable setHidden:count == 0];
@@ -1052,7 +1066,7 @@
     if (self.suggestionTableView) {
         NSMutableArray *suggestions = [NSMutableArray array];
         for (int i = 0; i < result.count; i++) {
-            AdhocFoodProduct *product = result[i];
+            FoodProduct *product = result[i];
             NSString *productName = [product.name uppercaseString];
             if ([searchText isEqualToString:@""] ||
                 [productName rangeOfString:[searchText uppercaseString]].location != NSNotFound) {
@@ -1063,6 +1077,7 @@
                 }
             }
         }
+        
         self.suggestionTableView.suggestions = suggestions;
         [self.suggestionTableView.theTableView reloadData];
     }

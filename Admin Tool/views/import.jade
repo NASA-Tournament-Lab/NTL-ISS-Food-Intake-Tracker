@@ -2,10 +2,10 @@
 	h2!= message
 div
 	form(action='/import',method='POST', enctype='multipart/form-data')
-		p User csv file:
+		p User CSV file:
 		p
 			input(type='file', id='userFileImport', name='userFileImport', accept='text/comma-separated-values, text/csv, application/csv')
-		p Food csv file:
+		p Food CSV file:
 		p
 			input(type='file', id='foodFileImport', name='foodFileImport', accept='text/comma-separated-values, text/csv, application/csv')
 		p

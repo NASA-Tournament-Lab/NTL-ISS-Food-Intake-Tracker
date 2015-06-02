@@ -50,6 +50,8 @@ var userTitles = ["Name", "Daily Target - Energy", "Daily Target - Sodium", "Dai
 				  "Admin", "Profile Image"];
 var defaultValues = { "dailyTargetEnergy": "3500", "dailyTargetSodium": "3500", "dailyTargetFluid": "2500",
 					  "dailyTargetProtein": "100", "dailyTargetCarb": "500", "dailyTargetFat": "60" };
+					  
+var currentNewValues = null;
 
 /**
  * Return an Object sorted by it's Key
@@ -133,7 +135,7 @@ var updateValue = function(req, res, remove) {
 		var key = firstKey(req.files);
 		var image = req.files[key];
 		if (undefined != image) {
-		    var originalName = image.originalname.replace(/\.[^\.]+$/, '.jpg');
+		    var originalName = image.originalname;
 			newValue[key] = originalName;
 			var deleteQuery = escape("DELETE FROM media WHERE filename = %L", originalName);
 			queryFunctions.push(function(callback) {
@@ -250,7 +252,7 @@ var updateValue = function(req, res, remove) {
 	if (remove) {
 		message = isFood ?	"Food Deleted" : "User Profile Deleted";
 	} else {
-		message = isFood ?	"Food Data Updated'" : "User Profile Updated";
+		message = isFood ?	"Food Data Updated" : "User Profile Updated";
 	}
 	async.waterfall(
 		queryFunctions,
@@ -301,6 +303,8 @@ app.get('/', function (req, res) {
 	var error = req.flash('error');
 
 	var currentSession = req.session;
+	
+    currentNewValues = null;
 
 	if (currentSession == null || currentSession.loggedIn == null || !currentSession.loggedIn) {
 		res.redirect('/login');
@@ -410,7 +414,7 @@ app.get('/reports', requiredAuthentication, function(req, res) {
 
 app.get('/import', requiredAuthentication, function(req, res) {
 	res.render('import', {
-			message: 'Import csv file',
+			message: 'Import CSV file',
 			functions: ['Load Food', 'Load User']
 		}, function(err, html) {
 			res.send(html);
@@ -427,15 +431,15 @@ app.get('/instructions', requiredAuthentication, function(req, res) {
 
 // Show foods / users new
 app.get('/user', requiredAuthentication, function(req, res) {
+	res.render('new', { message: "New user", action: "/user", keys: userKeys, titles: userTitles, defaultValues: currentNewValues || defaultValues,
+						uuid: uuid.v4(), error: req.flash('error') || '' });
 	req.flash('currentSelectedTab', '0');
-	res.render('new', { message: "New user", action: "/user", keys: userKeys, titles: userTitles, defaultValues: defaultValues,
-						uuid: uuid.v4() });
 });
 
 app.get('/food', requiredAuthentication, function(req, res) {
+	res.render('new', { message: "New food", action: "/food", keys: foodKeys, titles: foodTitles, defaultValues: currentNewValues || defaultValues,
+						uuid: uuid.v4(), error: req.flash('error') || '' });
 	req.flash('currentSelectedTab', '1');
-	res.render('new', { message: "New food", action: "/food", keys: foodKeys, titles: foodTitles, defaultValues: {},
-						uuid: uuid.v4() });
 });
 
 // Login
@@ -487,14 +491,10 @@ app.post('/food', requiredAuthentication, function(req, res) {
 	newValue["active"] = 1;
 	newValue["removed"] = 0;
 	newValue["synchronized"] = 1;
+	
+    console.log("==>  " + JSON.stringify(newValue));
 
 	var queryFunctions = [];
-
-	if (undefined == newValue["name"] || newValue["name"].trim().length == 0) {
-		req.flash("error", "Name cannot be empty");
-		res.redirect('/');
-		return;
-	}
 
 	// check food exists
 	queryFunctions.push(function(callback) {
@@ -505,10 +505,9 @@ app.post('/food', requiredAuthentication, function(req, res) {
 				for (var i = 0; i < results.rows.length; i++) {
 					var row = results.rows[i];
 					var value = JSON.parse(row.value);
-					// console.log("==>  " + JSON.stringify(value));
-					if (value.name != null && value.name.trim() === newValue["name"].trim() &&
+					if (value.name != null && value.name.trim().toLowerCase() === newValue["name"].trim().toLowerCase() &&
 						value.origin != null && value.origin.trim() ==	newValue["origin"].trim()) {
-						callback("Food with name " + value.name + " and origin " + value.origin + " already exists!");
+						callback('Food with name "' + value.name + '" and origin "' + value.origin + '" already exists');
 						return;
 					}
 				}
@@ -519,10 +518,14 @@ app.post('/food', requiredAuthentication, function(req, res) {
 
 	// add category
 	var categories = newValue["categories"] instanceof Array ? newValue["categories"] : new Array(newValue["categories"]);
-	var tmpCategories = [];
 	var catIds = [];
-	for (var i = 0; i < categories.length; i++) {        
-		catIds.push(uuid.v4());
+	var tmpCategories = [];
+	var tmpCatIds = [];
+	for (var i = 0; i < categories.length; i++) {   
+	    var tmpCatId = uuid.v4();
+	    
+	    catIds.push(tmpCatId);
+		tmpCatIds.push(tmpCatId);
 		tmpCategories.push({
             synchronized: 1,
             value: categories[i],
@@ -530,27 +533,26 @@ app.post('/food', requiredAuthentication, function(req, res) {
         });
         
 		queryFunctions.push(function(callback) {
-            var catId = catIds.pop();
+            var catId = tmpCatIds.pop();
             var data = tmpCategories.pop();
             var catQuery = escape("INSERT INTO data VALUES(%L, 'StringWrapper', %L, 'now', 'now', 'file_load');", catId, JSON.stringify(data));
 			console.log("Query (StringWrapper): " + catQuery);
 			pgclient.query(catQuery, function(err, results) {
-				callback(err);
+				callback('Error inserting category "' + data.value + '" into database');
 			});
 		});
 	}
-	newValue["categories"] = catIds.join(";");
 
 	if (undefined != req.files && undefined != req.files["productProfileImage"]) {
 		var productProfileImage = req.files["productProfileImage"];
-		var originalName = productProfileImage.originalname.replace(/\.[^\.]+$/, '.jpg')
+		var originalName = productProfileImage.originalname;		
 		newValue["productProfileImage"] = originalName;
 
 		var deleteQuery = escape("DELETE FROM media WHERE filename = %L", originalName);
 		queryFunctions.push(function(callback) {
 			console.log("Query (Media): " + deleteQuery);
 			pgclient.query(deleteQuery, function(err, results) {
-				callback(err);
+				callback('Error inserting media "' + originalName + '" into database');
 			});
 		});
 
@@ -573,7 +575,7 @@ app.post('/food', requiredAuthentication, function(req, res) {
 													originalName, "/tmp/resized.jpg");
 							console.log("Query (Media): " + mediaQuery);
 							pgclient.query(mediaQuery, function(err, results) {
-								callback(err);
+								callback('Error inserting media "' + originalName + '" into database');
 							});
 						});
 				} else {
@@ -581,33 +583,34 @@ app.post('/food', requiredAuthentication, function(req, res) {
 											 originalName, "/tmp/" + productProfileImage.name);
 					console.log("Query (Media): " + mediaQuery);
 					pgclient.query(mediaQuery, function(err, results) {
-						callback(err);
+						callback('Error inserting media "' + originalName + '" into database');
 					});
 				}
 			});
 		} catch (err) {
-			console.log('Error2 ' + JSON.stringify(err));
-			callback(err);
+			callback('Error opening image file');
 		}
-							
 	}
 
-	var query = escape("INSERT INTO data VALUES(%L, 'FoodProduct', %L, 'now', 'now', 'file_load');", id,
-							JSON.stringify(newValue));
 	queryFunctions.push(function(callback) {
-		console.log("Query (FoodProduct): " + query);
+	    newValue["categories"] = catIds.join(";");
+	    
+	    var query = escape("INSERT INTO data VALUES(%L, 'FoodProduct', %L, 'now', 'now', 'file_load');", id, JSON.stringify(newValue));		
+	    console.log("Query (FoodProduct): " + query);
 		pgclient.query(query, function(err, results) {
-			callback(err, results);
+			callback('Error inserting food "' + newValue.name + '" into database', results);
 		});
 	});
 
 	async.waterfall(
 		queryFunctions,
 		function (err, result) {
-			if (err) {
-				
+			if (err != null) {
+			    req.flash('error', err);
+			    currentNewValues = newValue;
+                res.redirect('/food');
 			} else {
-				req.flash('message', 'New Food Created');
+				req.flash('message', 'New Food Data Created');
 				res.redirect('/');
 			}
 	});
@@ -630,12 +633,6 @@ app.post('/user', requiredAuthentication, function(req, res) {
 	newValue["removed"] = 0;
 	newValue["synchronized"] = 1;
 
-	if (undefined == newValue["fullName"] || newValue["fullName"].trim().length == 0) {
-		req.flash("error", "Name cannot be empty");
-		res.redirect('/');
-		return;
-	}
-
 	var queryFunctions = [];
 	
 	// check user exists
@@ -647,7 +644,7 @@ app.post('/user', requiredAuthentication, function(req, res) {
 				for (var i = 0; i < results.rows.length; i++) {
 					var row = results.rows[i];
 					var value = JSON.parse(row.value);
-					if (value.fullName != null && value.fullName.trim() === newValue["fullName"].trim()) {
+					if (value.fullName != null && value.fullName.trim().toLowerCase() === newValue["fullName"].trim().toLowerCase()) {
 						callback('User with name "' + value.fullName + '" already exists!');
 						return;
 					}
@@ -660,7 +657,7 @@ app.post('/user', requiredAuthentication, function(req, res) {
 	// check image file
 	if (undefined != req.files && undefined != req.files["profileImage"]) {
 		var profileImageFile = req.files["profileImage"];
-		var originalName = profileImageFile.originalname.replace(/\.[^\.]+$/, '.jpg');
+		var originalName = profileImageFile.originalname;
 		newValue["profileImage"] = originalName;
 
 		var deleteQuery = escape("DELETE FROM media WHERE filename = %L", originalName);
@@ -720,12 +717,14 @@ app.post('/user', requiredAuthentication, function(req, res) {
 	async.waterfall(
 		queryFunctions,
 		function (err, result) {
-			if (err) {
-				req.flash('error', err);
+			if (err != null) {
+			    req.flash('error', typeof err == 'object' ? JSON.stringify(err) : err);			    
+			    currentNewValues = newValue;
+                res.redirect('/user');
 			} else {
 				req.flash('message', 'New User Profile Created');
+				res.redirect('/');
 			}
-            res.redirect('/');
 	});
 })
 
@@ -788,18 +787,22 @@ app.get('/food/:id', requiredAuthentication, function(req, res) {
 
 				editObject["categories"] = categories;
 				editObject["categoriesId"] = categoriesId;
-
-				console.log("Result: " + JSON.stringify(editObject));
-				res.render('edit', {
-						message: editObject.name,
-						action: '/food/' + req.params.id,
-						obj: sortObjectByKey(editObject, foodKeys),
-						editKeys: foodKeys,
-						titles: foodTitles,
-						dialogError: JSON.stringify({
-                            error: ""
-                        })
-				});
+				
+                console.log("Result: " + JSON.stringify(editObject));
+				
+				pgclient.query("SELECT encode(data, 'base64') AS value FROM media WHERE filename = '" + editObject["productProfileImage"] + "';", function(err, result) {
+				    var image_jpg = result.rows.length > 0 && result.rows[0] != null ? result.rows[0].value : '';
+				        
+                    res.render('edit', {
+                            message: editObject.name,
+                            action: '/food/' + req.params.id,
+                            obj: sortObjectByKey(editObject, foodKeys),
+                            editKeys: foodKeys,
+                            titles: foodTitles,
+                            image_jpg: image_jpg,
+                            dialogError: ''
+                    });
+                });
 			});
 		}
 	],
@@ -817,8 +820,20 @@ app.get('/user/:id', requiredAuthentication, function(req, res) {
 
 		console.log("Result: " + result.rows[0].value);
 		var editObject = JSON.parse(result.rows[0].value);
-		res.render('edit', { message: editObject.fullName, action: '/user/' + req.params.id,
-			obj: sortObjectByKey(editObject, userKeys), editKeys: userKeys, titles: userTitles });
+		
+		pgclient.query("SELECT encode(data, 'base64') AS value FROM media WHERE filename = '" + editObject["profileImage"] + "';", function(err, result) {		      
+            var image_jpg = result.rows.length > 0 && result.rows[0] != null ? result.rows[0].value : '';
+				        
+            res.render('edit', { 
+                    message: editObject.fullName, 
+                    action: '/user/' + req.params.id,
+                    obj: sortObjectByKey(editObject, userKeys),
+                    editKeys: userKeys, 
+                    titles: userTitles,
+                    image_jpg: image_jpg,
+                    dialogError: ''
+            });
+		});
 	});
 });
 
@@ -854,7 +869,10 @@ app.post('/reports', requiredAuthentication, function(req, res) {
 		pythonPath: '/usr/bin/python',
 		scriptPath: __dirname
 	}, function (err, results) {
-		if (err) throw err;
+		if (err) {
+		    console.log("Error: " + err.traceback);
+		    return;
+		}
 		console.log('finished');
 		console.log(results);
 
@@ -886,8 +904,12 @@ app.post('/import', requiredAuthentication, function(req, res) {
 					pythonPath: '/usr/bin/python',
 					scriptPath: __dirname
 				}, function (err, results) {
-				    console.log("Food error: " + JSON.stringify(err));
-					callback('Error loading food.\nPlease check the CSV file format.');
+				    if (err != null) {
+				        console.log("Food error: " + JSON.stringify(err));
+				        callback('Error loading food.\nPlease check the CSV file format.');
+				    } else {
+				        callback(null);
+				    }
 				});
 			});
 
@@ -903,8 +925,12 @@ app.post('/import', requiredAuthentication, function(req, res) {
 					pythonPath: '/usr/bin/python',
 					scriptPath: __dirname
 				}, function (err, results) {
-					console.log("Food error: " + JSON.stringify(err));
-					callback('Error loading food.\nPlease check the CSV file format.');
+					if (err != null) {
+					    console.log("Food error: " + JSON.stringify(err));
+					    callback('Error loading food.\nPlease check the CSV file format.');
+					} else {					    
+				        callback(null);
+				    }
 				});
 			});
 		}

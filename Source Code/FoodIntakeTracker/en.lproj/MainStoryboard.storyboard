@@ -3743,7 +3743,7 @@ Sun,  21st April 2014</string>
                                                 <rect key="frame" x="342" y="0.0" width="81" height="30"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
-                                                <state key="normal" title="Delete" backgroundImage="btn-red.png">
+                                                <state key="normal" title="Delete" backgroundImage="btn-orange.png">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                 </state>
@@ -3794,7 +3794,7 @@ Sun,  21st April 2014</string>
                                         <rect key="frame" x="183" y="489" width="192" height="43"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="17"/>
-                                        <state key="normal" title="YES" backgroundImage="btn-red.png">
+                                        <state key="normal" title="YES" backgroundImage="btn-orange.png">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -4586,8 +4586,8 @@ the nutritional value (Cal, Sodium, Fluids).</string>
                                         <rect key="frame" x="0.0" y="58" width="454" height="777"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Food Data Found" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="snw-Ka-HpO">
-                                                <rect key="frame" x="127" y="60" width="200" height="60"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="I'm sorry, but there are no foods that match your filter criteria." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="snw-Ka-HpO">
+                                                <rect key="frame" x="67" y="60" width="320" height="79"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="22"/>
@@ -5344,7 +5344,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker.png" id="mFz-7O-cF6">
-                                        <rect key="frame" x="-1" y="14.999999318804063" width="369" height="378"/>
+                                        <rect key="frame" x="-1" y="14.999998559608491" width="369" height="378"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker-arrow.png" id="a2G-PT-vR1">
@@ -6205,7 +6205,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                         <rect key="frame" x="147" y="109" width="128" height="45"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="18"/>
-                                        <state key="normal" title="Delete" backgroundImage="btn-red.png">
+                                        <state key="normal" title="Delete" backgroundImage="btn-orange.png">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -6589,7 +6589,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                         <rect key="frame" x="0.0" y="166" width="768" height="81"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Scan Barcode" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="rBd-Qo-kIQ">
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Scan Another Barcode" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="rBd-Qo-kIQ">
                                         <rect key="frame" x="305" y="223" width="159" height="21"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -6905,7 +6905,6 @@ Unfortunately, the nutritional content will not be immediately available in the 
         <image name="btn-photo.png" width="40" height="41"/>
         <image name="btn-play-audio.png" width="32" height="32"/>
         <image name="btn-prev-month.png" width="40" height="33"/>
-        <image name="btn-red.png" width="128" height="44"/>
         <image name="btn-register.png" width="186" height="51"/>
         <image name="btn-scan.png" width="28" height="23"/>
         <image name="btn-select.png" width="40" height="41"/>
