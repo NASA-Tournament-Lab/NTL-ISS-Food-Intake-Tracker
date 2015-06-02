@@ -7,6 +7,7 @@ html
 		script(type='text/javascript', src='/js/jquery.min.js')
 		script(type='text/javascript', src='/js/jquery-ui.min.js')
 		script(type='text/javascript', src='/js/jquery.validate.js')
+		script(type='text/javascript', src='/js/additional-methods.js')
 		script.
 			var data = !{data};
 		script.
@@ -94,17 +95,15 @@ html
 								select(id=key, name=key, style="width:200px;")
 									for originValue in origins
 										option(value=originValue, selected=value === originValue) #{originValue}
-							else if key == 'productProfileImage' || key == 'profileImage'
-								if value									
-									input(type='file', name=key, id=key, accept='image/jpg, image/jpeg')
+							else if key == 'productProfileImage' || key == 'profileImage'									
+								input(type='file', name=key, id=key, accept='image/jpg, image/jpeg' extension="jpg")
+								if value
 									div
 										<img id='image-data' src='data:image/jpeg;base64, !{image_jpg}' />
-								else
-									input(type='file', name=key, id=key, accept='image/jpg, image/jpeg')
 							else if numerics.indexOf(key) != -1
 								input(type='text', value=value, name=key, id=key, style='width:200px;' required number)
 							else if key == 'barcode'
-								input(type='text', value=value, name=key, id=key, style='width:200px;' )
+								input(type='text', value=value, name=key, id=key, style='width:200px;' digits)
 							else
 								input(type='text', value=value, name=key, id=key, style='width:200px;' required)
 					each value, key in obj

@@ -43,4 +43,6 @@ a.button, span.button {
     margin-bottom: 40px;
     float: left;    
 }
-
+label.error {
+    margin-left: 10px;
+}

@@ -7,6 +7,7 @@ html
 		script(type='text/javascript', src='/js/jquery.min.js')
 		script(type='text/javascript', src='/js/jquery-ui.min.js')
 		script(type='text/javascript', src='/js/jquery.validate.js')
+		script(type='text/javascript', src='/js/additional-methods.js')
 		script.
 			var data = '!{error}';
 		script.
@@ -53,7 +54,7 @@ html
 						h3!=title
 						if key == 'categories'
 							- var cats = ["Vegetables / Sides", "Meat / Fish", "Drink", "Dessert & Snacks", "Breakfast", "Fruit & Nuts"]						
-							select(id=key, name=key, style="width:200px;height:80px;", multiple="multiple")
+							select(id=key, name=key, style="width:200px;height:80px;", multiple="multiple" required)
 								for catValue in cats
 									if undefined == value || value.indexOf(catValue) == -1
 										option(value=catValue) #{catValue}
@@ -69,11 +70,11 @@ html
 								for originValue in origins
 									option(value=originValue, selected=value === originValue) #{originValue}
 						else if key == 'productProfileImage' || key == 'profileImage'
-							input(type='file', name=key, id=key, accept='image/jpg, image/jpeg')
+							input(type='file', name=key, id=key, accept='image/jpg, image/jpeg' extension="jpg")
 						else if numerics.indexOf(key) != -1
 							input(type='text', value=value, name=key, id=key, style='width:200px;' required number)
 						else if key == 'barcode'
-							input(type='text', value=value, name=key, id=key, style='width:200px;' )
+							input(type='text', value=value, name=key, id=key, style='width:200px;' digits)
 						else
 							input(type='text', value=value, name=key, id=key, style='width:200px;' required)
 					input(type='hidden', value=uuid, key="id", name="id")
