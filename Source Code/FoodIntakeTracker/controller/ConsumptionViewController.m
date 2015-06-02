@@ -1923,12 +1923,12 @@
         [self.btnCopy setEnabled:YES];
         [self.btnDelete setEnabled:YES];
     }
-    if(copyItems.count == 0){
+    /*if(copyItems.count == 0){
         [self.btnCopy setEnabled:NO];
     }
     else{
         [self.btnCopy setEnabled:YES];
-    }
+    }*/
     [self updateProgress];
     return self.foodConsumptionRecords.count;
 }

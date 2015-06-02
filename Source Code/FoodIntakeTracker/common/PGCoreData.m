@@ -72,7 +72,8 @@ static NSString* reachHostName = @"";
                 
                 if (!alertShow) {
                     alertShow = YES;
-                    [Helper showAlert:@"Success" message:@"The device has re-established the connection to the intranet."
+                    [Helper showAlert:@"Success" message:@"This iPad now has a network connection.\n"
+                     "Any food that you've entered will now be saved to the database."
                              delegate:self];
                 }
             }
@@ -88,9 +89,9 @@ static NSString* reachHostName = @"";
                 
                 if (!alertShow) {
                     alertShow = YES;
-                    [Helper showAlert:@"Error" message:@"The device has lost connection to the intranet.\n"
-                     "You can still use the ISS FIT app and we will attempt to sync with the central food repository"
-                     " when it is available." delegate:self];
+                    [Helper showAlert:@"Error" message:@"The iPad has lost its network connection.\n"
+                     "You can still use the ISS FIT app, and we will attempt to sync with the central food database when"
+                     "it's available." delegate:self];
                 }
             }
         };

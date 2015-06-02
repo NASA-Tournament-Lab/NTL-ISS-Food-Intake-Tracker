@@ -85,8 +85,10 @@
  * @param sender the button.
  */
 - (IBAction)take:(id)sender{
-    [self.btnTake setEnabled:NO];
-    [self.lblTakeButtonTitle setTextColor:[UIColor colorWithRed:0.6 green:0.6 blue:0.6 alpha:1]];
+    // [self.btnTake setEnabled:NO];
+    // [self.lblTakeButtonTitle setTextColor:[UIColor colorWithRed:0.6 green:0.6 blue:0.6 alpha:1]];
+    [self.btnTake setHidden:YES];
+    [self.lblTakeButtonTitle setHidden:YES];
     
     self.imgBracket.hidden = YES;
     self.scanLine.hidden = YES;
@@ -171,14 +173,15 @@
                     [self.btnResults setEnabled:YES];
                 }
                 
-                [self.btnTake setEnabled:YES];
+                [self.btnTake setHidden:NO];
+                [self.lblTakeButtonTitle setHidden:NO];
                 
                 [[self.view viewWithTag:BARCODE_VIEW_TAG] removeFromSuperview];
                 scanner = nil;
             }];
         } else {
-            [self.btnTake setEnabled:YES];
-            [self.lblTakeButtonTitle setTextColor:[UIColor colorWithRed:0.2 green:0.43 blue:0.62 alpha:1]];
+            [self.btnTake setHidden:NO];
+            [self.lblTakeButtonTitle setHidden:NO];
             
             return;
         }
@@ -239,7 +242,8 @@
     [self buildResults];
     
     [self.view bringSubviewToFront:self.resultView];
-    [self.btnTake setEnabled:YES];
+    [self.btnTake setHidden:NO];
+    [self.lblTakeButtonTitle setHidden:NO];
     self.lblTakeButtonTitle.text = @"Scan Another Barcode";
     [self.lblTakeButtonTitle setTextColor:[UIColor colorWithRed:0.2 green:0.43 blue:0.62 alpha:1]];
     [self.btnResults setEnabled:YES];
