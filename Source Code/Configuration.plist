@@ -43,7 +43,7 @@
 		<string>1-5-1-Food-Inventory</string>
 		<key>Voice Recording</key>
 		<string>1-5-2-Voice-Recording</string>
-		<key>Scan a Barcode</key>
+		<key>Scan Barcode</key>
 		<string>1-5-3-Scan-Barcode</string>
 		<key>Snap Photo</key>
 		<string>1-5-4-Snap-Photo</string>
