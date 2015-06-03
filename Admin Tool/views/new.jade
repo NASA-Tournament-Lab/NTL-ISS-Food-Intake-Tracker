@@ -26,7 +26,19 @@ html
 				$( "input[type=submit], input[type=button], a.button" ).button();
 				
 				// create validation
-				$("#form").validate();
+				var errorMessage = 'Please select an JPG image file with .jpg extension.';
+				$("#form").validate({
+					messages: {
+						productProfileImage: {
+							accept: errorMessage,
+							extension: errorMessage
+						},
+						profileImage: {
+							accept: errorMessage,
+							extension: errorMessage
+						}
+					}
+				});
 				if (undefined != data && data.length > 0) {
 					$('#message').text(data);
 					$('#dialog').dialog('option', 'title', 'Error');
