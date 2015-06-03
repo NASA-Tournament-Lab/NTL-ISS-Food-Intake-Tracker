@@ -44,7 +44,19 @@ html
 				});			
 
 				// create validation
-				$("#form").validate();
+				var errorMessage = 'Please select an JPG image file with .jpg extension.';
+				$("#form").validate({
+					messages: {
+						productProfileImage: {
+							accept: errorMessage,
+							extension: errorMessage
+						},
+						profileImage: {
+							accept: errorMessage,
+							extension: errorMessage
+						}
+					}
+				});
 				
 				if (undefined != data.error && data.error.length > 0) {
 					$('#message').text(data.error);
