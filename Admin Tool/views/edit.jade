@@ -44,7 +44,19 @@ html
 				});			
 
 				// create validation
-				$("#form").validate();
+				var errorMessage = 'Please select an JPG image file with .jpg extension.';
+				$("#form").validate({
+					messages: {
+						productProfileImage: {
+							accept: errorMessage,
+							extension: errorMessage
+						},
+						profileImage: {
+							accept: errorMessage,
+							extension: errorMessage
+						}
+					}
+				});
 				
 				if (undefined != data.error && data.error.length > 0) {
 					$('#message').text(data.error);
@@ -103,7 +115,7 @@ html
 							else if numerics.indexOf(key) != -1
 								input(type='text', value=value, name=key, id=key, style='width:200px;' required number)
 							else if key == 'barcode'
-								input(type='text', value=value, name=key, id=key, style='width:200px;' digits)
+								input(type='text', value=value, name=key, id=key, style='width:200px;' )
 							else
 								input(type='text', value=value, name=key, id=key, style='width:200px;' required)
 					each value, key in obj

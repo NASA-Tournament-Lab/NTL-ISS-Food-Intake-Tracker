@@ -26,7 +26,19 @@ html
 				$( "input[type=submit], input[type=button], a.button" ).button();
 				
 				// create validation
-				$("#form").validate();
+				var errorMessage = 'Please select an JPG image file with .jpg extension.';
+				$("#form").validate({
+					messages: {
+						productProfileImage: {
+							accept: errorMessage,
+							extension: errorMessage
+						},
+						profileImage: {
+							accept: errorMessage,
+							extension: errorMessage
+						}
+					}
+				});
 				if (undefined != data && data.length > 0) {
 					$('#message').text(data);
 					$('#dialog').dialog('option', 'title', 'Error');
@@ -74,7 +86,7 @@ html
 						else if numerics.indexOf(key) != -1
 							input(type='text', value=value, name=key, id=key, style='width:200px;' required number)
 						else if key == 'barcode'
-							input(type='text', value=value, name=key, id=key, style='width:200px;' digits)
+							input(type='text', value=value, name=key, id=key, style='width:200px;' )
 						else
 							input(type='text', value=value, name=key, id=key, style='width:200px;' required)
 					input(type='hidden', value=uuid, key="id", name="id")

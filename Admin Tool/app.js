@@ -538,7 +538,7 @@ app.post('/food', requiredAuthentication, function(req, res) {
             var catQuery = escape("INSERT INTO data VALUES(%L, 'StringWrapper', %L, 'now', 'now', 'file_load');", catId, JSON.stringify(data));
 			console.log("Query (StringWrapper): " + catQuery);
 			pgclient.query(catQuery, function(err, results) {
-				callback('Error inserting category "' + data.value + '" into database');
+                callback(err != null ? 'Error inserting category "' + data.value + '" into database' : null);
 			});
 		});
 	}
@@ -552,7 +552,7 @@ app.post('/food', requiredAuthentication, function(req, res) {
 		queryFunctions.push(function(callback) {
 			console.log("Query (Media): " + deleteQuery);
 			pgclient.query(deleteQuery, function(err, results) {
-				callback('Error inserting media "' + originalName + '" into database');
+                callback(err != null ? 'Error inserting media "' + originalName + '" into database' : null);
 			});
 		});
 
@@ -575,7 +575,7 @@ app.post('/food', requiredAuthentication, function(req, res) {
 													originalName, "/tmp/resized.jpg");
 							console.log("Query (Media): " + mediaQuery);
 							pgclient.query(mediaQuery, function(err, results) {
-								callback('Error inserting media "' + originalName + '" into database');
+                                callback(err != null ? 'Error inserting media "' + originalName + '" into database' : null); 
 							});
 						});
 				} else {
@@ -583,7 +583,7 @@ app.post('/food', requiredAuthentication, function(req, res) {
 											 originalName, "/tmp/" + productProfileImage.name);
 					console.log("Query (Media): " + mediaQuery);
 					pgclient.query(mediaQuery, function(err, results) {
-						callback('Error inserting media "' + originalName + '" into database');
+                        callback(err != null ? 'Error inserting media "' + originalName + '" into database' : null);
 					});
 				}
 			});
@@ -598,7 +598,7 @@ app.post('/food', requiredAuthentication, function(req, res) {
 	    var query = escape("INSERT INTO data VALUES(%L, 'FoodProduct', %L, 'now', 'now', 'file_load');", id, JSON.stringify(newValue));		
 	    console.log("Query (FoodProduct): " + query);
 		pgclient.query(query, function(err, results) {
-			callback('Error inserting food "' + newValue.name + '" into database', results);
+            callback(err != null ? 'Error inserting food "' + newValue.name + '" into database' : null, results);
 		});
 	});
 
@@ -664,7 +664,7 @@ app.post('/user', requiredAuthentication, function(req, res) {
 		queryFunctions.push(function(callback) {
 			console.log("Query (Media): " + deleteQuery);
 			pgclient.query(deleteQuery, function(err, results) {
-				callback(err);
+				callback(err != null ? 'Error inserting media "' + originalName + '" into database' : null);
 			});
 		});
 
@@ -672,7 +672,6 @@ app.post('/user', requiredAuthentication, function(req, res) {
 			// obtain an image object:
 			lwip.open("/tmp/" + profileImageFile.name, function(err, currentImage) {
 				if (undefined != err) {
-					console.log('Error1 ' + JSON.stringify(err));
 					callback('Error opening image file');
 				} else if (currentImage.width() > MAX_SIZE || currentImage.height() > MAX_SIZE) {
 					var rr = currentImage.width() > currentImage.height();
@@ -686,8 +685,8 @@ app.post('/user', requiredAuthentication, function(req, res) {
 							var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
 													originalName, "/tmp/resized.jpg");
 							console.log("Query (Media): " + mediaQuery);
-							pgclient.query(mediaQuery, function(err, results) {
-								callback(err);
+							pgclient.query(mediaQuery, function(err, results) {                                
+                                callback(err != null ? 'Error inserting media "' + originalName + '" into database' : null);
 							});
 						});
 				} else {
@@ -695,13 +694,12 @@ app.post('/user', requiredAuthentication, function(req, res) {
 											 originalName, "/tmp/" + profileImageFile.name);
 					console.log("Query (Media): " + mediaQuery);
 					pgclient.query(mediaQuery, function(err, results) {
-						callback(err);
+					    callback(err != null ? 'Error inserting media "' + originalName + '" into database' : null);
 					});
 				}
 			});
 		} catch(err) {
-			console.log('Error2 ' + JSON.stringify(err));
-			callback(err);
+			callback('Error opening image file');
 		}
 	}
 
@@ -710,7 +708,7 @@ app.post('/user', requiredAuthentication, function(req, res) {
 	queryFunctions.push(function(callback) {
 		console.log("Query (User): " + query);
 		pgclient.query(query, function(err, results) {
-			callback(err, results);
+			callback(err != null ? 'Error inserting user "' + newValue.fullName + '" into database' : null, results);
 		});
 	});
 
@@ -718,7 +716,7 @@ app.post('/user', requiredAuthentication, function(req, res) {
 		queryFunctions,
 		function (err, result) {
 			if (err != null) {
-			    req.flash('error', typeof err == 'object' ? JSON.stringify(err) : err);			    
+			    req.flash('error', err);			    
 			    currentNewValues = newValue;
                 res.redirect('/user');
 			} else {
