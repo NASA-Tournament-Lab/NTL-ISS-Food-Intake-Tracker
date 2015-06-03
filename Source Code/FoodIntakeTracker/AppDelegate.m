@@ -226,6 +226,10 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
             backgroundTask = UIBackgroundTaskInvalid;
         });
     }
+    
+    if (self.shouldAutoLogout) {
+        [self.tabBarViewController logout];
+    }
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application

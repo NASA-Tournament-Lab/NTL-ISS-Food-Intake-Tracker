@@ -4211,17 +4211,17 @@ Sun,  21st April 2014</string>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Y7R-z4-lTZ" userLabel="Label - swipe">
-                                        <rect key="frame" x="7" y="54" width="306" height="49"/>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Y7R-z4-lTZ" userLabel="Label - swipe">
+                                        <rect key="frame" x="12" y="51" width="294" height="53"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <string key="text">Swipe a food item to the left to reveal
-the nutritional value (Cal, Sodium, Fluids).</string>
+the nutritional value (Calories, Sodium, Fluids).</string>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="5kN-X2-Gtg">
-                                        <rect key="frame" x="112" y="111" width="94" height="39"/>
+                                        <rect key="frame" x="112" y="115" width="94" height="39"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                         <state key="normal" title="OK" backgroundImage="btn-blue.png">
@@ -5344,7 +5344,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker.png" id="mFz-7O-cF6">
-                                        <rect key="frame" x="-1" y="14.999998559608491" width="369" height="378"/>
+                                        <rect key="frame" x="-1" y="15" width="369" height="377.99999677047117"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker-arrow.png" id="a2G-PT-vR1">

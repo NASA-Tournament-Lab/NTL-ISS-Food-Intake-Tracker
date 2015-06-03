@@ -1813,6 +1813,10 @@
  * @param sender the button.
  */
 - (IBAction)showSelectConsumption:(id)sender {
+    [self hideDeletePop:nil];
+    [self hideCopyPop:nil];
+    [self hidePastePop:nil];
+    
     self.customTabBarController.imgConsumption.image = [UIImage imageNamed:@"icon-consumption"];
     [self.customTabBarController.btnConsumption setImage:nil forState:UIControlStateNormal];
     self.customTabBarController.activeTab = 0;

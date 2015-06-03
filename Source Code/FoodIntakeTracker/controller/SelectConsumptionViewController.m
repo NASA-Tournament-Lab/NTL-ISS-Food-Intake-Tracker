@@ -105,6 +105,8 @@
     self.noRightTable.hidden = YES;
     self.rightTable.hidden = NO;
     
+    self.searchBar.text = nil;
+    
     self.lblTitle.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:24];
     self.lblTitle.text = @"Food Inventory";
     self.lblSubTitle.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:17];
@@ -233,12 +235,6 @@
 - (void)loadFoods{
     // Clear selected foods
     //[self.selectFoods removeAllObjects];
-    if (self.selectFoods.count == 0){
-        [self.btnAdd setEnabled:NO];
-    } else{
-        [self.btnAdd setEnabled:YES];
-    }
-    
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
     UserServiceImpl *userService = appDelegate.userService;
@@ -252,7 +248,8 @@
         [filter.categories removeAllObjects];
         [filter.origins removeAllObjects];
         
-        filter.synchronized = @NO;        
+        filter.synchronized = @NO;
+        filter.adhocOnly = @NO;
         context = [DBHelper currentThreadMoc];
     } else {
         filter = [foodProductService buildFoodProductFilter:&error];
@@ -362,9 +359,6 @@
     }
     [self.rightView addSubview:indexBar];
     visibleStart = visibleEnd = 0;
-    [self.rightTable reloadData];
-    
-    [self listGridValueChanged:nil];
     
     int count = 0;
     if (selectIndex < 2) {
@@ -385,8 +379,18 @@
         [self.selectFoods removeObjectsInArray:toRemove];
     }
     
+    if (self.selectFoods.count == 0){
+        [self.btnAdd setEnabled:NO];
+    } else{
+        [self.btnAdd setEnabled:YES];
+    }
+
+    
     [self.rightTable setHidden:count == 0];
     [self.noRightTable setHidden:count > 0];
+    
+    [self.rightTable reloadData];
+    [self listGridValueChanged:nil];
 }
 
 /**
