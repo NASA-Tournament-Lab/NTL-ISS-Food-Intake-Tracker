@@ -33,7 +33,6 @@ try:
 
     # Connect to an existing database
     conn = psycopg2.connect("dbname=" + database + " user=" + user + " host=127.0.0.1")
-    conn.autocommit = False
     # Open a cursor to perform database operations
     cur = conn.cursor()
 
