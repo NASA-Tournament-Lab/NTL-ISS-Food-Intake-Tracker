@@ -103,7 +103,7 @@ html
 							else if numerics.indexOf(key) != -1
 								input(type='text', value=value, name=key, id=key, style='width:200px;' required number)
 							else if key == 'barcode'
-								input(type='text', value=value, name=key, id=key, style='width:200px;' digits)
+								input(type='text', value=value, name=key, id=key, style='width:200px;' )
 							else
 								input(type='text', value=value, name=key, id=key, style='width:200px;' required)
 					each value, key in obj
