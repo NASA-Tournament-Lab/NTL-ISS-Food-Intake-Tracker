@@ -650,6 +650,14 @@
     [super viewDidUnload];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+
+    [self hideDeletePop:nil];
+    [self hideCopyPop:nil];
+    [self hidePastePop:nil];
+}
+
 -(void)setProgressViewColor:(CustomProgressView *) view {
     if (view.currentProgress * MAX_GM_KG < 1.2) {
         [view setFullColor:[UIColor redColor]];
@@ -1813,9 +1821,7 @@
  * @param sender the button.
  */
 - (IBAction)showSelectConsumption:(id)sender {
-    [self hideDeletePop:nil];
-    [self hideCopyPop:nil];
-    [self hidePastePop:nil];
+    [self viewDidDisappear:NO];
     
     self.customTabBarController.imgConsumption.image = [UIImage imageNamed:@"icon-consumption"];
     [self.customTabBarController.btnConsumption setImage:nil forState:UIControlStateNormal];

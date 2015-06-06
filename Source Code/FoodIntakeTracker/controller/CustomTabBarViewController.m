@@ -195,6 +195,7 @@
     [self.view bringSubviewToFront:self.tabView];
     
     consumptionNav.view.hidden = YES;
+    [consumptionNav.topViewController viewWillDisappear:NO];
     helpSettingController.view.hidden = NO;
     userApplicationData.view.hidden = YES;
     manageUserProfile.view.hidden = YES;
@@ -234,6 +235,7 @@
     [self.view bringSubviewToFront:self.tabView];
     
     consumptionNav.view.hidden = YES;
+    [consumptionNav.topViewController viewWillDisappear:NO];
     helpSettingController.view.hidden = YES;
     userApplicationData.view.hidden = NO;
     manageUserProfile.view.hidden = YES;
@@ -265,6 +267,7 @@
     [self.view bringSubviewToFront:self.tabView];
     
     consumptionNav.view.hidden = YES;
+    [consumptionNav.topViewController viewWillDisappear:NO];
     helpSettingController.view.hidden = YES;
     userApplicationData.view.hidden = YES;
     manageUserProfile.view.hidden = NO;
