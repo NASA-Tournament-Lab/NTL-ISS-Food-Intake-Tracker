@@ -384,9 +384,9 @@
     } else{
         [self.btnAdd setEnabled:YES];
     }
-
     
-    [self.rightTable setHidden:count == 0];
+    [self.rightView setHidden:self.segListGrid.selectedSegmentIndex == 1 || count == 0];
+    [self.gridView setHidden:self.segListGrid.selectedSegmentIndex == 0 || count == 0];
     [self.noRightTable setHidden:count > 0];
     
     [self.rightTable reloadData];
