@@ -41,10 +41,10 @@ try:
     users = []
     for record in cur:
         obj = json.loads(record[2])
-        if obj.has_key(u"removed") and obj[u"removed"] == "0":
+        if obj.has_key(u"removed") and obj[u"removed"] == 0:
             obj[u"id"] = record[0]
             users.append(obj)
-
+    
     # Read file to load
     with open(filename, 'rb') as f:
         reader = csv.reader(f)
@@ -71,7 +71,7 @@ try:
                 user[u"removed"] = 0
                 user[u"synchronized"] = 1
 
-                userMatch = next((l for l in users if xstr(l[u"fullName"]).strip() == user[u"fullName"]), None)
+                userMatch = next((l for l in users if l.get(u"fullName","").strip() == user[u"fullName"]), None)
                 if userMatch is None:
                     found = False
                     id = None
