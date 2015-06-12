@@ -91,7 +91,6 @@ static NSString* reachHostName = @"";
                     alertShow = YES;
                     [Helper showAlert:@"Network Connection Error"
                               message:@"This iPad has lost it's network connection. You can still use the ISS FIT app, and we will attempt to sync with the central food database when it's available."
-                     "it's available."
                              delegate:self];
                 }
             }
