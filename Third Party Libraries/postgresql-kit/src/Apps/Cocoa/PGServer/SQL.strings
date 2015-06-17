@@ -1,0 +1,26 @@
+
+"PGServerNumberOfConnections" =
+  "SELECT 
+     COUNT(*) AS num_connections
+   FROM
+     pg_stat_activity
+   WHERE
+     pid <> pg_backend_pid()"
+;
+
+"PGServerConnectionTable" =
+  "SELECT 
+     datname AS database,procpid AS pid,current_query AS query,
+     usename AS username,client_hostname AS remotehost,
+     application_name,query_start,waiting
+   FROM
+     pg_stat_activity
+   WHERE
+     pid <> pg_backend_pid()"
+;
+
+"PGServerCreateDatabase" =
+  "CREATE DATABASE $1; 
+   COMMENT ON DATABASE $1 IS $2"
+;
+
