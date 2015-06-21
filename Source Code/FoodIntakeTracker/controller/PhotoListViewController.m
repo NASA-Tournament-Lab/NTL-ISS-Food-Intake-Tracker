@@ -113,7 +113,7 @@
  * @param btn the button.
  */
 - (void)clickPhoto:(UIButton *)btn{
-    int row = btn.tag;
+    NSInteger row = btn.tag;
     FoodProduct *item = [foodItems objectAtIndex:row];
     if([selectFoods containsObject:item]){
         [selectFoods removeObject:item];
@@ -238,7 +238,7 @@
         [consumptionViewController.foodConsumptionRecords addObject:record];
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:[self.customTabBarController currentSelectedDate]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[self.customTabBarController currentSelectedDate]];
 
     [selectFoods removeAllObjects];
     [consumptionViewController updateProgress];
@@ -325,7 +325,7 @@
  * called when value is selected in sort by option list.
  * @param index the selected index.
  */
-- (void)listviewDidSelect:(int)index{
+- (void)listviewDidSelect:(NSInteger)index{
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
     NSError *error;

@@ -24,14 +24,8 @@
 
 @implementation UserServiceImpl
 
-@synthesize permissions = _permissions;
-
 -(id)initWithConfiguration:(NSDictionary *)configuration {
-    self = [super init];
-    if (self) {
-        _permissions = configuration[@"Permissions"];
-    }
-    return self;
+    return [super init];
 }
 
 -(User *)buildUser:(NSError **) error {
@@ -270,30 +264,5 @@
     [LoggingHelper logMethodExit:methodName returnValue:nil];
     return YES;
 }
-
--(BOOL)isAuthorized:(User *)user action:(NSString *)action error:(NSError **)error {
-    NSString *methodName = [NSString stringWithFormat:@"%@.isAuthorized:action:error", NSStringFromClass(self.class)];
-    
-    //Check user == nil?
-    if(user == nil || action == nil){
-        if(error) {
-            *error = [NSError errorWithDomain:@"UserServiceImpl" code:IllegalArgumentErrorCode
-                                 userInfo:@{NSUnderlyingErrorKey: @"user or action should not be nil"}];
-           [LoggingHelper logError:methodName error:*error];
-        }
-        return NO;
-    }
-    
-    [LoggingHelper logMethodEntrance:methodName paramNames:@[@"user", @"action"] params:@[user, action]];
-    
-	BOOL result = YES;
-    if ([[self.permissions valueForKey:action] boolValue]) {
-        result = user.admin.boolValue;
-    }
-    
-    [LoggingHelper logMethodExit:methodName returnValue:(result ? @"YES" : @"NO")];
-    return result;
-}
-
 
 @end

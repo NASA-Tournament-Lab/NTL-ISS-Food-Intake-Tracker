@@ -98,7 +98,7 @@
            reusingView:(UIView *)view{
     
     if([view isKindOfClass:[UILabel class]]){
-        ((UILabel *)view).text = [NSString stringWithFormat:@"%.2d", row];
+        ((UILabel *)view).text = [NSString stringWithFormat:@"%.2d", (int)row];
         return view;
     }
     UILabel *label = [[UILabel alloc] init];

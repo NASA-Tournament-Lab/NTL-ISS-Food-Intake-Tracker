@@ -330,7 +330,7 @@
     appDelegate.loggedInUser = loggedInUser;
     [self performSegueWithIdentifier:@"Login" sender:self];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:[NSDate date]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
 }
 
 /**
@@ -348,7 +348,7 @@
 - (IBAction)listPageChanged:(id)sender {
     int width = self.loginListScrollView.frame.size.width;
     int height = self.loginListScrollView.frame.size.height;
-    int current = self.loginListPageControll.currentPage;
+    NSInteger current = self.loginListPageControll.currentPage;
     [self.loginListScrollView scrollRectToVisible:CGRectMake(width * current, 0, width, height)
                                          animated:YES];
 }

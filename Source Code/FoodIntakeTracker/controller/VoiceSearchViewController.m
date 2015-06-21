@@ -22,7 +22,6 @@
 #import "VoiceSearchViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "AppDelegate.h"
-#import "SpeechRecognitionServiceImpl.h"
 #import "FoodProductServiceImpl.h"
 #import "Helper.h"
 #import "Settings.h"
@@ -52,8 +51,6 @@
     self.lblTitle.text = @"Record Food Intake";
     
     // Retrieve language model paths
-    //AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-    //SpeechRecognitionServiceImpl *srService = appDelegate.speechRecognitionService;
     self.searchResult = [NSMutableArray array];
     self.selectedFoodProducts = [NSMutableArray array];
     self.btnSpeak.enabled = NO;
@@ -63,18 +60,6 @@
     self.noResultsMessageLabel.hidden = YES;
     self.topDivider.hidden = YES;
     
-    //record sound test code -  END
-    /* Uncomment to regenarte language models. */
-    /*
-    if ([srService updateFoodProductLanguageModel:&error]) {
-        NSLog(@"Updated successfully");
-    }
-    */
-    //NSDictionary *dict = [srService getFoodProductLanguageModelPaths:&error];
-    // start listening for speech
-    //[pocketsphinxController startListeningWithLanguageModelAtPath:[dict valueForKey:@"LMPath"]
-    //                                             dictionaryAtPath:[dict valueForKey:@"DictionaryPath"]
-    //                                          languageModelIsJSGF:FALSE];
     [[NSNotificationCenter defaultCenter] postNotificationName:AutoLogoutRenewEvent object:nil];
 }
 
@@ -104,7 +89,7 @@
     NSError *err = nil;
     recorder = [[ AVAudioRecorder alloc] initWithURL:url settings:recordSetting error:&err];
     if(!recorder){
-        NSLog(@"recorder: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
+        NSLog(@"recorder: %@ %d %@", [err domain], (int) [err code], [[err userInfo] description]);
         UIAlertView *alert =
         [[UIAlertView alloc] initWithTitle: @"Warning"
                                    message: [err localizedDescription]
@@ -220,16 +205,6 @@
     self.resultsLabel.hidden = YES;
     self.noResultsMessageLabel.hidden = YES;
     self.topDivider.hidden = YES;
-    // Retrieve language model paths
-    //AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-    //SpeechRecognitionServiceImpl *srService = appDelegate.speechRecognitionService;
-    //NSError *error;
-    //NSDictionary *dict = [srService getFoodProductLanguageModelPaths:&error];
-    //if ([Helper displayError:error]) return;
-    // start listening for speech
-    /*[pocketsphinxController startListeningWithLanguageModelAtPath:[dict valueForKey:@"LMPath"]
-                                                 dictionaryAtPath:[dict valueForKey:@"DictionaryPath"]
-                                              languageModelIsJSGF:FALSE];*/
 }
 
 /**

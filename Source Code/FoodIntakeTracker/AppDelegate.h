@@ -28,7 +28,6 @@
 #import <UIKit/UIKit.h>
 #import "UserService.h"
 #import "FoodProductService.h"
-#import "SpeechRecognitionService.h"
 #import "FoodConsumptionRecordService.h"
 #import "DataUpdateService.h"
 #import "SynchronizationService.h"
@@ -66,11 +65,6 @@
 @property (strong, nonatomic) id<FoodProductService> foodProductService;
 
 /*!
- @discussion Represents the SpeechRecognitionService used in the application.
- */
-@property (strong, nonatomic) id<SpeechRecognitionService> speechRecognitionService;
-
-/*!
  @discussion Represents the FoodConsumptionRecordService used in the application.
  */
 @property (strong, nonatomic) id<FoodConsumptionRecordService> foodConsumptionRecordService;
@@ -97,11 +91,6 @@
 @property (strong, nonatomic) NSDictionary *helpData;
 
 /*!
- @discussion Represents the timer for sending heartbeat.
- */
-@property (strong, nonatomic) NSTimer *heartbeatTimer;
-
-/*!
  @discussion Represents the timer for generating summary.
  */
 @property (strong, nonatomic) NSTimer *summaryGenerationTimer;
@@ -110,11 +99,6 @@
  @discussion Represents the timer for checking for data sync/update.
  */
 @property (strong, nonatomic) NSTimer *dataSyncUpdateTimer;
-
-/*!
- @discussion Represents the summary generation frequency. Can be "Weekly", "Monthly".
- */
-@property (strong, nonatomic) NSString *summaryGenerationFrequency;
 
 /*!
  @discussion Represents configuration data.  */
@@ -131,20 +115,5 @@
 @property (nonatomic,strong) CustomTabBarViewController *tabBarViewController;
  
 + (AppDelegate *) shareDelegate;
-
-/*
- * This method will send heartbeat if the user is logged in.
- */
-- (void) sendHeartbeat;
-
-/*
- * This method will generate food consumption summary.
- */
-//- (void) generateSummary;
-
-/*
- * This method will do data sync/update.
- */
-//- (void) doSyncUpdate;
 
 @end

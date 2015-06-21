@@ -85,13 +85,4 @@
  */
 -(BOOL)logoutUser:(User *)user error:(NSError **)error;
 
-/*!
- @discussion Check if the user is authorized to perform certain action.
- @param user The user to check.
- @param action The action.
- @param error The reference to an NSError object which will be filled if any error occurs.
- @return YES if the user is authorized to perform the given action; or NO otherwise.
- */
--(BOOL)isAuthorized:(User *)user action:(NSString *)action error:(NSError **)error;
-
 @end

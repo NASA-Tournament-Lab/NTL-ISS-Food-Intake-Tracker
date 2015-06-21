@@ -174,64 +174,6 @@
 }
 
 /**
- * This method will be called when the picture is taken.
- * @param picker the UIImagePickerController
- * @param info the information
- */
-/*- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    UIImage *chosenImage = info[UIImagePickerControllerEditedImage];
-    photoImage.image = chosenImage;
-    self.processView.hidden = NO;
-    self.prgProcess.progress = 0.0;
-    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-    tesseract = [[Tesseract alloc] initWithDataPath:appDelegate.tesseractDataPath language:@"eng"];
-    [tesseract setImage:chosenImage];
-    self.prgProcess.progress = 0.5;
-    BOOL succeeded = [tesseract recognize];
-    self.prgProcess.progress = 1.0;
-    if (succeeded) {
-        self.processView.hidden = YES;
-        NSString *label = [tesseract recognizedText];
-        // Remove trailing characters
-        if (label.length > 0 && [[label substringFromIndex:MAX(label.length - 2, 0)] isEqualToString:@"\n\n"]) {
-            label = [label substringToIndex:MAX(label.length - 2, 0)];
-        }
-        
-        AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-        FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
-        NSError *error;
-        FoodProduct *foodProduct = [foodProductService getFoodProductByName:appDelegate.loggedInUser
-                                                                       name:label
-                                                                      error:&error];
-        if (error) {
-            if ([error code] == EntityNotFoundErrorCode) {
-                [Helper showAlert:@"Not Found" message:error.userInfo[NSLocalizedDescriptionKey]];
-            }
-            else {
-                [Helper displayError:error];
-                return;
-            }
-        }
-        else {
-            [resultFoods addObject:foodProduct];
-            self.resultView.hidden = NO;
-            self.imgFood.image = [UIImage imageNamed:foodProduct.productProfileImage];
-            self.lblFoodName.text = foodProduct.name;
-            [self buildResults];
-            
-            [self.view bringSubviewToFront:self.resultView];
-            [self.btnTake setEnabled:YES];
-            self.lblTakeButtonTitle.text = @"Scan Another Label";
-            [self.lblTakeButtonTitle setTextColor:[UIColor colorWithRed:0.2 green:0.43 blue:0.62 alpha:1]];
-            [self.btnResults setEnabled:YES];
-        }
-
-        [self.popover dismissPopoverAnimated:YES];
-    }
-    [tesseract clear];
-}*/
-
-/**
  * This method will be called when the picture taking is cancelled.
  * @param picker the UIImagePickerController
  */

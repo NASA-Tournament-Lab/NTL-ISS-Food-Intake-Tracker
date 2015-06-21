@@ -62,7 +62,7 @@
     /* the food items */
     NSMutableArray *foodItems;
     /* the select index of the user list */
-    int selectIndex;
+    NSInteger selectIndex;
     /* the clear background cover layer */
     UIView *clearCover;
 }
@@ -247,7 +247,7 @@
  */
 - (void)showFoodComment:(id)sender{
     UIButton *btn = (UIButton *)sender;
-    int row = btn.tag;
+    NSInteger row = btn.tag;
     int startPos = 55 * row + 135 - self.consumptionTable.contentOffset.y;
     self.commentView.frame = CGRectMake(471, startPos, 291, 153);
     self.commentView.hidden = NO;

@@ -28,7 +28,6 @@
 #import "AppDelegate.h"
 #import "UserServiceImpl.h"
 #import "FoodProductServiceImpl.h"
-#import "SpeechRecognitionServiceImpl.h"
 #import "FoodConsumptionRecordServiceImpl.h"
 #import "SynchronizationServiceImpl.h"
 #import "DataUpdateServiceImpl.h"
@@ -150,7 +149,6 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         
         self.userService = [[UserServiceImpl alloc] initWithConfiguration:self.configuration];
         self.foodProductService = [[FoodProductServiceImpl alloc] init];
-        self.speechRecognitionService = [[SpeechRecognitionServiceImpl alloc] initWithConfiguration:self.configuration];
         self.foodConsumptionRecordService = [[FoodConsumptionRecordServiceImpl alloc] initWithConfiguration:self.configuration];
         self.synchronizationService = [[SynchronizationServiceImpl alloc] initWithConfiguration:self.configuration];
         self.dataUpdateService = [[DataUpdateServiceImpl alloc] initWithConfiguration:self.configuration];
@@ -158,23 +156,13 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         NSDictionary *localConf = [NSMutableDictionary dictionaryWithDictionary:[NSDictionary dictionaryWithContentsOfFile:configBundle]];
         self.additionalFilesDirectory = [localConf valueForKey:@"LocalFileSystemDirectory"];
         self.helpData = [localConf objectForKey:@"HelpData"];
-        self.summaryGenerationFrequency = [localConf objectForKey:@"SummaryGenerationFrequency"];
         
         if (!changed) {
             [self performSelector:@selector(initialLoad) withObject:nil afterDelay:0.5];
         }
         
-        // Start timers
-        self.heartbeatTimer =
-        [NSTimer scheduledTimerWithTimeInterval:
-         [[self.configuration valueForKey:@"HeartbeatInterval"] intValue]
-                                         target:self
-                                       selector:@selector(sendHeartbeat)
-                                       userInfo:nil
-                                        repeats:YES];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doSyncUpdate:)
-                                                     name:@"DataSyncUpdateInterval" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doSyncUpdate:) name:@"DataSyncUpdate"
+                                                   object:nil];
         
         [self performSelector:@selector(doSyncUpdate:) withObject:nil afterDelay:1.0];
 
@@ -255,21 +243,6 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
 
 + (AppDelegate *) shareDelegate {
     return (AppDelegate *)[[UIApplication sharedApplication] delegate];
-}
-
-/*!
- * This method will send heartbeat if the user is logged in.
- */
-- (void) sendHeartbeat {
-    if (self.loggedInUser) {
-        dispatch_queue_t heartBeatQ = dispatch_queue_create("Send Heart Beat", NULL);
-        dispatch_async(heartBeatQ, ^{
-            @autoreleasepool {
-                //We do not use lock anymore
-                //[self.lockService sendLockHeartbeat:self.loggedInUser error:nil];
-            }
-        });
-    }
 }
 
 /*!
@@ -440,7 +413,6 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     
     self.userService = [[UserServiceImpl alloc] initWithConfiguration:self.configuration];
     self.foodProductService = [[FoodProductServiceImpl alloc] init];
-    self.speechRecognitionService = [[SpeechRecognitionServiceImpl alloc] initWithConfiguration:self.configuration];
     self.foodConsumptionRecordService = [[FoodConsumptionRecordServiceImpl alloc] initWithConfiguration:self.configuration];
     self.synchronizationService = [[SynchronizationServiceImpl alloc] initWithConfiguration:self.configuration];
     self.dataUpdateService = [[DataUpdateServiceImpl alloc] initWithConfiguration:self.configuration];

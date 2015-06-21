@@ -229,7 +229,6 @@
 		4DF167E917BD20E100D3633F /* DataUpdateServiceImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167C617BD20E100D3633F /* DataUpdateServiceImpl.m */; };
 		4DF167EA17BD20E100D3633F /* FoodConsumptionRecordServiceImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167C917BD20E100D3633F /* FoodConsumptionRecordServiceImpl.m */; };
 		4DF167EB17BD20E100D3633F /* FoodProductServiceImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167CC17BD20E100D3633F /* FoodProductServiceImpl.m */; };
-		4DF167EE17BD20E100D3633F /* SpeechRecognitionServiceImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167D517BD20E100D3633F /* SpeechRecognitionServiceImpl.m */; };
 		4DF167EF17BD20E100D3633F /* SynchronizationServiceImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167D817BD20E100D3633F /* SynchronizationServiceImpl.m */; };
 		4DF167F017BD20E100D3633F /* UserServiceImpl.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167DB17BD20E100D3633F /* UserServiceImpl.m */; };
 		4DF167F217BD215400D3633F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DF167F117BD215400D3633F /* AudioToolbox.framework */; };
@@ -792,9 +791,6 @@
 		4DF167CA17BD20E100D3633F /* FoodProductService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoodProductService.h; sourceTree = "<group>"; };
 		4DF167CB17BD20E100D3633F /* FoodProductServiceImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoodProductServiceImpl.h; sourceTree = "<group>"; };
 		4DF167CC17BD20E100D3633F /* FoodProductServiceImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoodProductServiceImpl.m; sourceTree = "<group>"; };
-		4DF167D317BD20E100D3633F /* SpeechRecognitionService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpeechRecognitionService.h; sourceTree = "<group>"; };
-		4DF167D417BD20E100D3633F /* SpeechRecognitionServiceImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SpeechRecognitionServiceImpl.h; sourceTree = "<group>"; };
-		4DF167D517BD20E100D3633F /* SpeechRecognitionServiceImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SpeechRecognitionServiceImpl.m; sourceTree = "<group>"; };
 		4DF167D617BD20E100D3633F /* SynchronizationService.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SynchronizationService.h; sourceTree = "<group>"; };
 		4DF167D717BD20E100D3633F /* SynchronizationServiceImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SynchronizationServiceImpl.h; sourceTree = "<group>"; };
 		4DF167D817BD20E100D3633F /* SynchronizationServiceImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SynchronizationServiceImpl.m; sourceTree = "<group>"; };
@@ -1034,25 +1030,25 @@
 			buildActionMask = 2147483647;
 			files = (
 				4BA6D2FA19DE2283007A52A9 /* libstdc++.6.dylib in Frameworks */,
+				4DF167FE17BD218900D3633F /* libresolv.dylib in Frameworks */,
+				4DF167FC17BD218000D3633F /* libiconv.dylib in Frameworks */,
+				4DF167FA17BD217700D3633F /* libz.dylib in Frameworks */,
+				4B2C76D919908EA0009F8FB3 /* libcrypto.a in Frameworks */,
+				4B2C76DB19908EA0009F8FB3 /* libssl.a in Frameworks */,
+				4B2C76DA19908EA0009F8FB3 /* libpq.a in Frameworks */,
 				4B2C773F19908FA9009F8FB3 /* Security.framework in Frameworks */,
 				4D9FEABA17C015DE001F92B5 /* AddressBook.framework in Frameworks */,
 				4D9FEABB17C015DE001F92B5 /* AddressBookUI.framework in Frameworks */,
 				4D9FEAB717C015C8001F92B5 /* CoreMedia.framework in Frameworks */,
 				4D9FEAB517C015BD001F92B5 /* CoreVideo.framework in Frameworks */,
-				4DF167FE17BD218900D3633F /* libresolv.dylib in Frameworks */,
-				4DF167FC17BD218000D3633F /* libiconv.dylib in Frameworks */,
-				4DF167FA17BD217700D3633F /* libz.dylib in Frameworks */,
 				4DF167F817BD216C00D3633F /* SystemConfiguration.framework in Frameworks */,
 				4DF167F617BD216000D3633F /* CoreData.framework in Frameworks */,
-				4B2C76D919908EA0009F8FB3 /* libcrypto.a in Frameworks */,
 				4DF167F417BD215800D3633F /* AVFoundation.framework in Frameworks */,
 				4DF167F217BD215400D3633F /* AudioToolbox.framework in Frameworks */,
 				E70A70031768A01600712B47 /* QuartzCore.framework in Frameworks */,
 				E7C40725175FFA1F00C3649E /* UIKit.framework in Frameworks */,
 				E7C40727175FFA1F00C3649E /* Foundation.framework in Frameworks */,
-				4B2C76DB19908EA0009F8FB3 /* libssl.a in Frameworks */,
 				E7C40729175FFA1F00C3649E /* CoreGraphics.framework in Frameworks */,
-				4B2C76DA19908EA0009F8FB3 /* libpq.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1485,9 +1481,6 @@
 				4DF167CA17BD20E100D3633F /* FoodProductService.h */,
 				4DF167CB17BD20E100D3633F /* FoodProductServiceImpl.h */,
 				4DF167CC17BD20E100D3633F /* FoodProductServiceImpl.m */,
-				4DF167D317BD20E100D3633F /* SpeechRecognitionService.h */,
-				4DF167D417BD20E100D3633F /* SpeechRecognitionServiceImpl.h */,
-				4DF167D517BD20E100D3633F /* SpeechRecognitionServiceImpl.m */,
 				4DF167D617BD20E100D3633F /* SynchronizationService.h */,
 				4DF167D717BD20E100D3633F /* SynchronizationServiceImpl.h */,
 				4DF167D817BD20E100D3633F /* SynchronizationServiceImpl.m */,
@@ -2312,7 +2305,6 @@
 				4DF167E917BD20E100D3633F /* DataUpdateServiceImpl.m in Sources */,
 				4DF167EA17BD20E100D3633F /* FoodConsumptionRecordServiceImpl.m in Sources */,
 				4DF167EB17BD20E100D3633F /* FoodProductServiceImpl.m in Sources */,
-				4DF167EE17BD20E100D3633F /* SpeechRecognitionServiceImpl.m in Sources */,
 				4DF167EF17BD20E100D3633F /* SynchronizationServiceImpl.m in Sources */,
 				4DF167F017BD20E100D3633F /* UserServiceImpl.m in Sources */,
 				4D4884B317C3CC7C006851A9 /* CustomTableViewController.m in Sources */,

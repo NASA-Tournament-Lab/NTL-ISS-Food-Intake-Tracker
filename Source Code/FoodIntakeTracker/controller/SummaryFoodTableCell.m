@@ -44,8 +44,8 @@
 - (void)Picker:(BaseCustomPickerView *)picker DidSelectedValue:(NSString *)val{
     if([picker isKindOfClass:[HourPickerView class]]){
         self.lblTime.text = val;
-        int hour = [[[val componentsSeparatedByString:@":"] objectAtIndex:0] integerValue];
-        int minute = [[[val componentsSeparatedByString:@":"] objectAtIndex:1] integerValue];
+        int hour = [[[val componentsSeparatedByString:@":"] objectAtIndex:0] intValue];
+        int minute = [[[val componentsSeparatedByString:@":"] objectAtIndex:1] intValue];
         
         NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
         gregorian.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
@@ -76,7 +76,7 @@
     [recordService saveFoodConsumptionRecord:self.foodConsumptionRecord error:&error];
     if ([Helper displayError:error]) return;
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.foodConsumptionRecord.timestamp];    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.foodConsumptionRecord.timestamp];    
 }
 
 /**

@@ -85,7 +85,10 @@ static NSString* reachHostName = @"";
             @synchronized(self) {
                 canConnect = NO;
                 
-                [self.pgConnection performSelectorInBackground:@selector(disconnect) withObject:nil];
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    [self.pgConnection reset];
+                    [self.pgConnection disconnect];
+                });
                 
                 if (!alertShow) {
                     alertShow = YES;
