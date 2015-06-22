@@ -61,7 +61,7 @@
 /**
  * called when user select an option in the list view.
  */
-- (void)listviewDidSelect:(int)index;
+- (void)listviewDidSelect:(NSInteger)index;
 
 @end
 

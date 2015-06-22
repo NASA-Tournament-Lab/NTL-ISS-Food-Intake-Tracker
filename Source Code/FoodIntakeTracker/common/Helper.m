@@ -294,10 +294,7 @@ static NSArray *monthNameArray = nil;
     
     NSDateComponents *difference = [calendar components:NSDayCalendarUnit
                                                fromDate:f toDate:t options:0];
-    
-    int dayDiff = [difference day];
-    
-    return dayDiff;
+    return [difference day];
 }
 
 @end

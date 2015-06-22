@@ -188,10 +188,10 @@
             StringWrapper *foodProductCategory =
             [[appDelegate.loggedInUser.lastUsedFoodProductFilter.categories allObjects] objectAtIndex:0];
             NSArray *categoriesList = (NSArray *)[categories objectForKey:@"Food by Category"];
-            int foodProductCategoryIndex = [categoriesList indexOfObject:foodProductCategory.value];
+            NSInteger foodProductCategoryIndex = [categoriesList indexOfObject:foodProductCategory.value];
             if (foodProductCategoryIndex < categoriesList.count) {
                 NSMutableArray *array = [selectCategoryIndex objectForKey:@1];
-                [array addObject:[NSNumber numberWithInt:foodProductCategoryIndex]];
+                [array addObject:[NSNumber numberWithInteger:foodProductCategoryIndex]];
                 noFilter = NO;
             }
         }
@@ -199,10 +199,10 @@
             StringWrapper *foodProductOrigin =
             [[appDelegate.loggedInUser.lastUsedFoodProductFilter.origins allObjects] objectAtIndex:0];
             NSArray *origins = (NSArray *)[categories objectForKey:@"Food by Country"];
-            int foodProductOriginIndex = [origins indexOfObject:foodProductOrigin.value];
+            NSInteger foodProductOriginIndex = [origins indexOfObject:foodProductOrigin.value];
             if (foodProductOriginIndex < origins.count) {
                 NSMutableArray *array = [selectCategoryIndex objectForKey:@2];
-                [array addObject:[NSNumber numberWithInt:foodProductOriginIndex]];
+                [array addObject:[NSNumber numberWithInteger:foodProductOriginIndex]];
                 noFilter = NO;
             }
         }
@@ -439,7 +439,7 @@
  * Get the sort option from list view
  * @return The sort option.
  */
-- (NSNumber *) getSortOptionFromListView:(int)listSelection {
+- (NSNumber *) getSortOptionFromListView:(NSInteger)listSelection {
     int selection = 0;
     switch (listSelection) {
         case 0:
@@ -596,8 +596,8 @@
  * called when value is selected in sort by option list.
  * @param index the selected index.
  */
-- (void)listviewDidSelect:(int)aIndex{
-    int index = aIndex;
+- (void)listviewDidSelect:(NSInteger)aIndex{
+    NSInteger index = aIndex;
     if (self.btnChange.selected) {
         self.lblSortBy.text = [self.optionListView.options objectAtIndex:index];
         [self hideSortByOption];

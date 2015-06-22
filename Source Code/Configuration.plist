@@ -2,33 +2,16 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>Permissions</key>
-	<dict>
-		<key>Action1</key>
-		<false/>
-		<key>Action2</key>
-		<true/>
-	</dict>
-	<key>GeneralLanguageModelFileName</key>
-	<string>GLM</string>
-	<key>FoodProductLanguageModelFileName</key>
-	<string>FLM</string>
 	<key>ImageFileNameSuffix</key>
 	<string>jpg</string>
 	<key>VoiceRecordingFileNameSuffix</key>
 	<string>aac</string>
-	<key>LocalFileSystemDirectory</key>
-	<string>data</string>
-	<key>SambaServerInitialDataDeviceFolder</key>
-	<string>OTHER_DEVICE_ID</string>
-	<key>CreatePreloadApplicationData</key>
-	<false/>
 	<key>FoodConsumptionRecordModifiablePeroidInDays</key>
 	<integer>10</integer>
 	<key>FoodConsumptionRecordKeptPeriodInDays</key>
 	<integer>10</integer>
-	<key>LockExpirationPeriodInSeconds</key>
-	<integer>180</integer>
+	<key>LocalFileSystemDirectory</key>
+	<string>data</string>
 	<key>HelpData</key>
 	<dict>
 		<key>How to Login</key>
@@ -78,18 +61,12 @@
 		<key>Settings</key>
 		<string>1-12-1-Application-Settings</string>
 	</dict>
-	<key>SummaryGenerationFrequency</key>
-	<string>Daily</string>
-	<key>HeartbeatInterval</key>
-	<integer>180</integer>
-	<key>SummaryGenerationInterval</key>
-	<integer>1200</integer>
-	<key>DataSyncUpdateInterval</key>
-	<integer>600</integer>
 	<key>DailyTargetCalories</key>
 	<integer>3500</integer>
 	<key>DailyTargetSodium</key>
 	<integer>3500</integer>
+	<key>New item</key>
+	<string></string>
 	<key>DailyTargetFluid</key>
 	<integer>2500</integer>
 	<key>DailyTargetProtein</key>

@@ -36,7 +36,6 @@
 #import "SelectConsumptionViewController.h"
 #import "Helper.h"
 #import "AppDelegate.h"
-#import "SpeechRecognitionServiceImpl.h"
 #import "FoodConsumptionRecordServiceImpl.h"
 #import "FoodProductServiceImpl.h"
 #import "Settings.h"
@@ -583,14 +582,6 @@
     self.lblMonth.text = [Helper monthName:info.month];
     self.lblYear.text = [NSString stringWithFormat:@"GMT %d", info.year];
 
-    // Initialize OpenEars
-    //self.pocketsphinxController = [[PocketsphinxController alloc] init];
-    //self.pocketsphinxController.returnNbest = FALSE;
-    //self.openEarsEventsObserver = [[OpenEarsEventsObserver alloc] init];
-    //[self.openEarsEventsObserver setDelegate:self];
-    // Retrieve language model paths
-    //SpeechRecognitionServiceImpl *srService = appDelegate.speechRecognitionService;
-
     [self redrawPieChartWithProtein:0.333 carb:0.333 fat:0.334];
     
     // Save audio
@@ -983,7 +974,7 @@
         NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
         [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
     }
     [self updateProgress];
     [self stopCommentDictation];
@@ -1167,7 +1158,7 @@
     foodDetail = nil;
     recorderFilePath = nil;
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
 }
 
 /**
@@ -1374,7 +1365,7 @@
     }
     
     if (selectedItems.count > 0) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
     }
     
     [self.foodTableView reloadData];
@@ -1463,7 +1454,7 @@
         [recordService deleteFoodConsumptionRecord:cell.foodConsumptionRecord error:&error];
         if ([Helper displayError:error]) return;
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
     }
     [self.foodTableView reloadData];
     [self updateProgress];
@@ -1582,7 +1573,7 @@
             [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
         }
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
         
         [voiceSearch.selectedFoodProducts removeAllObjects];
         [self.foodTableView reloadData];
@@ -1663,7 +1654,7 @@
                 [self.foodConsumptionRecords addObject:record];
             }
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
             
             [selectConsumption.selectFoods removeAllObjects];
             [self.foodTableView reloadData];
@@ -1902,7 +1893,7 @@
     NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
     [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:self.dateListView.currentDate];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
 }
 
 #pragma mark - UIPopover Delegate Methods

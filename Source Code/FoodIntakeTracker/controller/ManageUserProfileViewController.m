@@ -204,7 +204,7 @@
     self.deletePopupView.hidden = YES;
     self.profileDeletedNoteView.hidden = NO;
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:[NSDate date]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
     
     [self performSelector:@selector(hideProfileDeletedNoteView) withObject:nil afterDelay:1];
 }
@@ -444,7 +444,7 @@
         [self reloadUsers];
         [self resetSelection:user.fullName];
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:[NSDate date]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
     }
     else if(self.btnTakePhoto.hidden) {
         [self showEditPhoto];
@@ -457,7 +457,7 @@
         [self showPhotoPreview];
         [self reloadUsers];
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdateInterval" object:[NSDate date]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
     }
 }
 
@@ -612,7 +612,7 @@
  * @param indexPath An index path locating a row in tableView.
  */
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    int oldSelectIndex = 0;
+    NSInteger oldSelectIndex = 0;
     if(indexPath.row == self.selectIndex){
         return;
     }

@@ -195,7 +195,7 @@
     /* the setting navigation item array */
     NSMutableArray *settingItems;
     /* the select index of navigation table. */
-    int selectIndex;
+    NSInteger selectIndex;
     /* the label the time picker is for */
     UILabel *timeLabel;
     /* Represents the help titles. */
@@ -287,7 +287,7 @@
     int value = 0;
     NSArray *array = [str componentsSeparatedByString:@"-"];
     for (int i = 0; i < 3; i++) {
-        int x = [[array objectAtIndex:i] integerValue];
+        int x = [[array objectAtIndex:i] intValue];
         value += pow(10, 3 - i) * x;
     }
     return value;

@@ -67,7 +67,7 @@
 - (NSDate *)selectItemInPos:(CGPoint)pos{
     int x = pos.x / 48;
     int y = pos.y / 40;
-    int index = y * 7 + x - prevMonth.count;
+    NSInteger index = y * 7 + x - prevMonth.count;
     if(index < 0 || index >= curMonth.count){
         return nil;
     }
@@ -122,10 +122,10 @@
             if(preInfo.weekday == 7 && prevMonth.count > 0){
                 break;
             }
-            [prevMonth insertObject:[NSString stringWithFormat:@"%d", dayOfYear] atIndex:0];
+            [prevMonth insertObject:[NSString stringWithFormat:@"%ld", (unsigned long)dayOfYear] atIndex:0];
         }
         else{
-            [curMonth insertObject:[NSString stringWithFormat:@"%d", dayOfYear] atIndex:0];
+            [curMonth insertObject:[NSString stringWithFormat:@"%ld", (unsigned long)dayOfYear] atIndex:0];
             if(preInfo.day == 1 && preInfo.weekday == 2){
                 break;
             }
@@ -144,10 +144,10 @@
             if(preInfo.weekday == 1){
                 break;
             }
-            [nextMonth addObject:[NSString stringWithFormat:@"%d", dayOfYear]];
+            [nextMonth addObject:[NSString stringWithFormat:@"%ld", (unsigned long)dayOfYear]];
         }
         else{
-            [curMonth addObject:[NSString stringWithFormat:@"%d", dayOfYear]];
+            [curMonth addObject:[NSString stringWithFormat:@"%ld", (unsigned long)dayOfYear]];
             if(preInfo.day == 1 && preInfo.weekday == 2){
                 break;
             }
@@ -169,7 +169,7 @@
                                                     NSDayCalendarUnit |
                                                     NSWeekdayCalendarUnit)
                                           fromDate:self.selectedDate];
-    int pos = info.day + prevMonth.count - 1;
+    NSInteger pos = info.day + prevMonth.count - 1;
     int posX = pos % 7;
     int posY = pos / 7;
     

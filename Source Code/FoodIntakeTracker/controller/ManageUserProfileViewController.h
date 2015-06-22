@@ -88,7 +88,7 @@ UIImagePickerControllerDelegate, UIPopoverControllerDelegate, CustomTableViewDel
 /* Represents the popover controller. */
 @property (strong, nonatomic) UIPopoverController *popover;
 /* the select index of user list table */
-@property (assign, nonatomic) int selectIndex;
+@property (assign, nonatomic) NSInteger selectIndex;
 /* the suggestion table view */
 @property (strong, nonatomic) SuggestionTableView *suggestionTableView;
 

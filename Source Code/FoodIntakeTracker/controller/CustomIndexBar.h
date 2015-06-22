@@ -31,7 +31,7 @@
  */
 @interface CustomIndexBar : UIView {
     /* the total index number */
-    int totalIndex;
+    NSInteger totalIndex;
     /* the visible index background image view */
     UIImageView *visibleIndexBackground;
     /* the text color */

@@ -173,26 +173,7 @@ static dispatch_once_t onceToken = 0;
         NSString* persistentStorePath = [documentsDirectory stringByAppendingPathComponent:@"NasaIssFit.sqlite"];
         NSError *error = nil;
         
-        NSString *configBundle = [[NSBundle mainBundle] pathForResource:@"Configuration" ofType:@"plist"];
-        NSDictionary *configuration = [NSDictionary dictionaryWithContentsOfFile:configBundle];
-
-        // create pre-load data
-        if([configuration[@"CreatePreloadApplicationData"] boolValue]) {
-            // clean local storage if necessary
-            if([[NSFileManager defaultManager] fileExistsAtPath:persistentStorePath]) {
-                [[NSFileManager defaultManager] removeItemAtPath:persistentStorePath error:&error];
-            }
-            
-            NSString *localFileSystemFolder = [DataHelper
-                                               getAbsoulteLocalDirectory:configuration[@"LocalFileSystemDirectory"]];
-            NSArray *files = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:localFileSystemFolder error:&error];
-            for (NSString *file in files) {
-                [[NSFileManager defaultManager] removeItemAtPath:file error:&error];
-            }
-            
-        }
-        // load pre-load data
-        else  if(![[NSFileManager defaultManager] fileExistsAtPath:persistentStorePath]) {
+        if (![[NSFileManager defaultManager] fileExistsAtPath:persistentStorePath]) {
             
             NSBundle *bundle = [NSBundle bundleForClass:[self class]];
             NSString *localFolder = [bundle pathForResource:@"application_data/data" ofType:@""];
@@ -210,8 +191,6 @@ static dispatch_once_t onceToken = 0;
                 [[NSFileManager defaultManager] copyItemAtPath:sqlFile
                                                         toPath:persistentStorePath error:&error];
             }
-            
-            
         }
         
         NSURL *storeUrl = [NSURL fileURLWithPath:persistentStorePath];
