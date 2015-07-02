@@ -340,7 +340,7 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     originalFrame = self.frame;
     if (event.type == UIEventTypeTouches) {
-        [self performSelector:@selector(longTap) withObject:nil afterDelay:0.5];
+        [self performSelector:@selector(longTap) withObject:nil afterDelay:0.6];
     }
 }
 
@@ -349,15 +349,20 @@
     
     self.layer.cornerRadius = 0.0f;
     
-    [UIView animateWithDuration:0.5 animations:^{
+    if (!CGAffineTransformIsIdentity(self.transform)) {
+        [UIView animateWithDuration:0.5 animations:^{
+            self.transform = CGAffineTransformIdentity;
+            self.frame = interFrame;
+        } completion:^(BOOL finished) {
+            self.backgroundColor = [UIColor clearColor];
+            self.frame = originalFrame;
+            [self layoutIfNeeded];
+        }];
+    } else {
         self.transform = CGAffineTransformIdentity;
-        self.frame = interFrame;
-    } completion:^(BOOL finished) {
         self.backgroundColor = [UIColor clearColor];
         self.frame = originalFrame;
-        
-        [self setNeedsDisplay];
-    }];
+    }
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -368,7 +373,6 @@
     [self.superview bringSubviewToFront:self];
     self.layer.cornerRadius = 5.0f;
     self.backgroundColor = [UIColor colorWithWhite:252.f/255.f alpha:0.9];
-    
     
     float scale = 1.2f;
     float deltaWidth = 40.0f;
@@ -398,13 +402,13 @@
     }
     
     self.frame = interFrame;
-    [self setNeedsDisplay];
+    [self layoutIfNeeded];
     
     [UIView animateWithDuration:0.5 animations:^{
         self.transform = CGAffineTransformScale(CGAffineTransformIdentity, scale, scale);
         self.frame = newFrame;
     } completion:^(BOOL finished) {
-        [self setNeedsDisplay];
+        [self layoutIfNeeded];
     }];
 }
 
