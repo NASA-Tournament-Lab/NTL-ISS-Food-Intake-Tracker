@@ -224,16 +224,3 @@ REVOKE ALL ON SCHEMA public FROM pl_fit_db;
 GRANT ALL ON SCHEMA public TO pl_fit_db;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
-
---
--- Name: users; Type: ACL; Schema: public; Owner: pl_fit_db
---
-
-REVOKE ALL ON TABLE users FROM PUBLIC;
-REVOKE ALL ON TABLE users FROM pl_fit_db;
-
-
---
--- PostgreSQL database dump complete
---
-
