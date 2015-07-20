@@ -36,13 +36,21 @@ try:
     optlist, args = getopt.getopt(sys.argv[1:], 'u:d:f:p:h:t', ["filename=", "user=", "database=", "password=", "host=", "port="])
 
     user = None
+    password = None
     database  = None
-    filename = None
+    host  = None
+    port  = None
     for o, a in optlist:
         if o in ("-u", "--user"):
             user = a
         elif o in ("-d", "--database"):
             database = a
+        elif o in ("-p", "--password"):
+            password = a
+        elif o in ("-h", "--host"):
+            host = a
+        elif o in ("-t", "--port"):
+            port = a
         elif o in ("-f", "--filename"):
             filename = a
         else:
