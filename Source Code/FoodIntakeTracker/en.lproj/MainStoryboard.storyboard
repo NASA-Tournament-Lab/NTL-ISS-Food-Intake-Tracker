@@ -5344,7 +5344,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxX="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker.png" id="mFz-7O-cF6">
-                                        <rect key="frame" x="-1" y="14.999999318804063" width="369" height="378"/>
+                                        <rect key="frame" x="-1" y="14.999998559608491" width="369" height="378"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES"/>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker-arrow.png" id="a2G-PT-vR1">
@@ -6896,7 +6896,7 @@ Unfortunately, the nutritional content will not be immediately available in the 
         <image name="btn-info.png" width="32" height="32"/>
         <image name="btn-month-active.png" width="119" height="40"/>
         <image name="btn-next-month.png" width="40" height="33"/>
-        <image name="btn-non-nutrient.png" width="240" height="29"/>
+        <image name="btn-non-nutrient.png" width="240" height="30"/>
         <image name="btn-orange.png" width="128" height="43"/>
         <image name="btn-paste-active.png" width="40" height="41"/>
         <image name="btn-paste-enable.png" width="40" height="41"/>

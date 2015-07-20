@@ -118,7 +118,8 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     if (![standardUserDefaults objectForKey:@"address_preference"] ||
         ![standardUserDefaults objectForKey:@"user_preference"] ||
         ![standardUserDefaults objectForKey:@"database_preference"] ||
-        ![standardUserDefaults objectForKey:@"password_preference"]) {
+        ![standardUserDefaults objectForKey:@"password_preference"] ||
+        ![standardUserDefaults objectForKey:@"port_preference"]) {
         [self registerDefaultsFromSettingsBundle];
     }
     
@@ -452,7 +453,8 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     if (![self.configuration[@"SharedFileServerPath"] isEqualToString:[standardUserDefaults objectForKey:@"address_preference"]] ||
         ![self.configuration[@"SharedFileServerUsername"] isEqualToString:[standardUserDefaults objectForKey:@"user_preference"]] ||
         ![self.configuration[@"SharedFileServerDatabase"] isEqualToString:[standardUserDefaults objectForKey:@"database_preference"]] ||
-        ![self.configuration[@"SharedFileServerPassword"] isEqualToString:[standardUserDefaults objectForKey:@"password_preference"]]) {
+        ![self.configuration[@"SharedFileServerPassword"] isEqualToString:[standardUserDefaults objectForKey:@"password_preference"]] ||
+        ![self.configuration[@"SharedFileServerPort"] isEqualToString:[standardUserDefaults objectForKey:@"port_preference"]]) {
         return YES;
     }
     
@@ -469,6 +471,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     [self.configuration setObject:[standardUserDefaults objectForKey:@"user_preference"] forKey:@"SharedFileServerUsername"];
     [self.configuration setObject:[standardUserDefaults objectForKey:@"database_preference"] forKey:@"SharedFileServerDatabase"];
     [self.configuration setObject:[standardUserDefaults objectForKey:@"password_preference"] forKey:@"SharedFileServerPassword"];
+    [self.configuration setObject:[standardUserDefaults objectForKey:@"port_preference"] forKey:@"SharedFileServerPort"];
     
     [[NSUserDefaults standardUserDefaults] setObject:self.configuration forKey:@"CurrentConfiguration"];
     [[NSUserDefaults standardUserDefaults] synchronize];

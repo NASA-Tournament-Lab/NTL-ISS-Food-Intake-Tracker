@@ -46,6 +46,7 @@ static NSString* reachHostName = @"";
     NSString *username = [standardUserDefaults objectForKey:@"user_preference"];
     NSString *database = [standardUserDefaults objectForKey:@"database_preference"];
     NSString *password = [standardUserDefaults objectForKey:@"password_preference"];
+    NSInteger port = [[standardUserDefaults objectForKey:@"port_preference"] integerValue];
     
     if (![reachHostName isEqualToString:ipAddress]) {
         reachHostName = [NSString stringWithString:ipAddress];
@@ -117,7 +118,7 @@ static NSString* reachHostName = @"";
     }
     
     NSError *connError = nil;
-    NSURL *url = [NSURL URLWithHost:ipAddress ssl:YES username:username password:password database:database params:nil];
+    NSURL *url = [NSURL URLWithHost:ipAddress port:port ssl:NO username:username password:password database:database params:nil];
     [self.pgConnection connectWithURL:url error:&connError];
     if (connError) {
         NSLog(@"Connection error: %@", connError);

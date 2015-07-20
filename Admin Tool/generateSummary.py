@@ -11,14 +11,17 @@ def zipdir(path, zip):
     for root, dirs, files in os.walk(path):
         for dir in dirs:
             zip.write(os.path.join(root, dir))
-        for file in files: 
+        for file in files:
             zip.write(os.path.join(root, file), os.path.join(root, file), zipfile.ZIP_DEFLATED)
 
 try:
     optlist, args = getopt.getopt(sys.argv[1:], 's:e:u:d:', ["user=", "database=","selected="])
 
     user = None
+    password = None
     database  = None
+    host  = None
+    port  = None
     startDate = None
     endDate = None
     selected = None
@@ -27,6 +30,12 @@ try:
             user = a
         elif o in ("-d", "--database"):
             database = a
+        elif o in ("-p", "--password"):
+            password = a
+        elif o in ("-h", "--host"):
+            host = a
+        elif o in ("-t", "--port"):
+            port = a
         elif o == "-s":
             startDate = a
         elif o == "-e":
@@ -54,7 +63,7 @@ try:
     os.chdir(initialDirectory)
 
     # Connect to an existing database
-    conn = psycopg2.connect("dbname=" + database + " user=" + user + " host=127.0.0.1")
+    conn = psycopg2.connect("dbname=" + database + " user=" + user + " password=" + password + " host=" + host+ " port=" + port)
     # Open a cursor to perform database operations
     cur = conn.cursor()
 
@@ -114,7 +123,7 @@ try:
 
         # Create header
         wr.writerow(["Username", "Date Time", "Food Product", "Quantity", "Comments", "Images", "Voices"])
-        
+
         recordMatch = (l for l in records if l.get(u"user","") == user[u"id"])
         for record in recordMatch:
             food = next((l for l in foods if l[u"id"] == record.get(u"foodProduct", "")), None)
@@ -150,9 +159,9 @@ try:
                 wr.writerow(row)
             except Exception as err:
                 myfile.close()
-                exc_info = sys.exc_info()            
+                exc_info = sys.exc_info()
                 raise exc_info[1], None, exc_info[2]
-            
+
         myfile.close()
         os.chdir("../")
 
@@ -162,7 +171,7 @@ try:
 
     # Close communication with the database
     cur.close()
-    conn.close() 
+    conn.close()
 
     zipf = zipfile.ZipFile('summary.zip', 'w')
     zipdir(initialDirectory, zipf)
