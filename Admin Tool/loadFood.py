@@ -40,6 +40,7 @@ try:
     database  = None
     host  = None
     port  = None
+    filename = None
     for o, a in optlist:
         if o in ("-u", "--user"):
             user = a
