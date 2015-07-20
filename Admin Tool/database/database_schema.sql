@@ -76,7 +76,7 @@ CREATE FUNCTION login(_username text, _pwd text, OUT _email text) RETURNS text
     LANGUAGE plpgsql SECURITY DEFINER
     AS $$
 BEGIN
- SELECT email INTO _email FROM users
+ SELECT email INTO _email FROM public.users
  WHERE users.username = lower(_username)
  AND pwdhash = crypt(_pwd, users.pwdhash);
 END;
@@ -214,13 +214,13 @@ CREATE RULE syncdata_rule AS ON INSERT TO data DO INSERT INTO sync_data (id, dev
 
 CREATE RULE syncdata_update_rule AS ON UPDATE TO data DO INSERT INTO sync_data (id, deviceid, type) SELECT new.id, devices.deviceid, 'object' FROM devices WHERE ((devices.deviceid)::text <> (new.modifiedby)::text);
 
-
 --
 -- Name: public; Type: ACL; Schema: -; Owner: pl_fit_db
 --
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
 REVOKE ALL ON SCHEMA public FROM pl_fit_db;
-GRANT ALL ON SCHEMA public TO pl_fit_db;
-GRANT ALL ON SCHEMA public TO PUBLIC;
 
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO pl_fit_db;
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO pl_fit_db;
+GRANT USAGE ON SCHEMA public to pl_fit_db;
