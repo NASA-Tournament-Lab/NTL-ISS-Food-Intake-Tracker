@@ -15,7 +15,7 @@ def zipdir(path, zip):
             zip.write(os.path.join(root, file), os.path.join(root, file), zipfile.ZIP_DEFLATED)
 
 try:
-    optlist, args = getopt.getopt(sys.argv[1:], 's:e:u:d:', ["user=", "database=","selected="])
+    optlist, args = getopt.getopt(sys.argv[1:], 's:e:u:d:p:h:t', ["user=", "database=", "password=", "host=", "port=", "selected="])
 
     user = None
     password = None

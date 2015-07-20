@@ -33,25 +33,16 @@ def checkCategories(cur, categories):
     return ";".join(result)
 
 try:
-    optlist, args = getopt.getopt(sys.argv[1:], 'u:d:f:', ["filename=", "user=", "database="])
+    optlist, args = getopt.getopt(sys.argv[1:], 'u:d:f:p:h:t', ["filename=", "user=", "database=", "password=", "host=", "port="])
 
     user = None
-    password = None
     database  = None
-    host  = None
-    port  = None
     filename = None
     for o, a in optlist:
         if o in ("-u", "--user"):
             user = a
         elif o in ("-d", "--database"):
             database = a
-        elif o in ("-p", "--password"):
-            password = a
-        elif o in ("-h", "--host"):
-            host = a
-        elif o in ("-t", "--port"):
-            port = a
         elif o in ("-f", "--filename"):
             filename = a
         else:
@@ -61,7 +52,7 @@ try:
         assert False, "Filename cannot be null"
 
     # Connect to an existing database
-    conn = psycopg2.connect("dbname=" + database + " user=" + user + " password=" + password + " host=" + host+ " port=" + port)
+    conn = psycopg2.connect("dbname=" + database + " user=" + user + " host=127.0.0.1")
     # Open a cursor to perform database operations
     cur = conn.cursor()
 

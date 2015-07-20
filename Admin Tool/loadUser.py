@@ -13,7 +13,7 @@ def copyValue(fromUser, toUser, key):
     return toUser
 
 try:
-    optlist, args = getopt.getopt(sys.argv[1:], 'u:d:f:', ["filename=", "user=", "database="])
+    optlist, args = getopt.getopt(sys.argv[1:], 'u:d:f:p:h:t', ["filename=", "user=", "database=", "password=", "host=", "port="])
 
     user = None
     password = None
