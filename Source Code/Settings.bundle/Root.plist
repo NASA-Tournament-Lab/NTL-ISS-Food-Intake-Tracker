@@ -98,7 +98,7 @@
 			<key>KeyboardType</key>
 			<string>NumberPad</string>
 			<key>Title</key>
-			<string>Server Host:</string>
+			<string>Server Port:</string>
 			<key>Type</key>
 			<string>PSTextFieldSpecifier</string>
 		</dict>
