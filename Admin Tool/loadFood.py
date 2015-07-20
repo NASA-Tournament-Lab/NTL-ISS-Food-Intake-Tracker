@@ -128,3 +128,8 @@ try:
 except getopt.GetoptError as err:
     # print help information and exit:
     print(err) # will print something like "option -a not recognized"
+    exc_info = sys.exc_info()
+    raise exc_info[1], None, exc_info[2]
+except psycopg2.Error as e:
+    exc_info = sys.exc_info()
+    raise exc_info[1], None, exc_info[2]
