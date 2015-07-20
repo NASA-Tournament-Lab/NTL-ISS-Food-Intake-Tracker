@@ -13,16 +13,25 @@ def copyValue(fromUser, toUser, key):
     return toUser
 
 try:
-    optlist, args = getopt.getopt(sys.argv[1:], 'u:d:f:', ["filename=", "user=", "database="])
+    optlist, args = getopt.getopt(sys.argv[1:], 'u:d:f:p:h:t', ["filename=", "user=", "database=", "password=", "host=", "port="])
 
     user = None
+    password = None
     database  = None
+    host  = None
+    port  = None
     filename = None
     for o, a in optlist:
         if o in ("-u", "--user"):
             user = a
         elif o in ("-d", "--database"):
             database = a
+        elif o in ("-p", "--password"):
+            password = a
+        elif o in ("-h", "--host"):
+            host = a
+        elif o in ("-t", "--port"):
+            port = a
         elif o in ("-f", "--filename"):
             filename = a
         else:
@@ -32,7 +41,7 @@ try:
         assert False, "Filename cannot be null"
 
     # Connect to an existing database
-    conn = psycopg2.connect("dbname=" + database + " user=" + user + " host=127.0.0.1")
+    conn = psycopg2.connect("dbname=" + database + " user=" + user + " password=" + password + " host=" + host+ " port=" + port)
     # Open a cursor to perform database operations
     cur = conn.cursor()
 
@@ -44,7 +53,7 @@ try:
         if obj.has_key(u"removed") and obj[u"removed"] == 0:
             obj[u"id"] = record[0]
             users.append(obj)
-    
+
     # Read file to load
     with open(filename, 'rb') as f:
         reader = csv.reader(f)
@@ -90,11 +99,11 @@ try:
                     cur.execute("UPDATE data SET value = %s, modifieddate = 'now', modifiedby = 'file_load' WHERE id = %s;", (data, userMatch[u"id"]))
 
         except csv.Error as e:
-            conn.rollback()            
+            conn.rollback()
             cur.close()
             conn.close()
             exc_info = sys.exc_info()
-            
+
             raise exc_info[1], None, exc_info[2]
 
     conn.commit()
@@ -105,3 +114,8 @@ try:
 except getopt.GetoptError as err:
     # print help information and exit:
     print(err) # will print something like "option -a not recognized"
+    exc_info = sys.exc_info()
+    raise exc_info[1], None, exc_info[2]
+except psycopg2.Error as e:
+    exc_info = sys.exc_info()
+    raise exc_info[1], None, exc_info[2]

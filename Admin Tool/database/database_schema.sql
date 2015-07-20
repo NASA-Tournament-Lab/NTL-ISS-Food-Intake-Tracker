@@ -27,16 +27,16 @@ DROP FUNCTION public.login(_username text, _pwd text, OUT _email text);
 DROP FUNCTION public.bytea_import(p_path text, OUT p_result bytea);
 DROP SCHEMA public CASCADE;
 --
--- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
+-- Name: public; Type: SCHEMA; Schema: -; Owner: pl_fit_db
 --
 
 CREATE SCHEMA public;
 
 
-ALTER SCHEMA public OWNER TO postgres;
+ALTER SCHEMA public OWNER TO pl_fit_db;
 
 --
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: pl_fit_db
 --
 
 COMMENT ON SCHEMA public IS 'standard public schema';
@@ -44,7 +44,7 @@ COMMENT ON SCHEMA public IS 'standard public schema';
 SET search_path = public, pg_catalog;
 
 --
--- Name: bytea_import(text); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: bytea_import(text); Type: FUNCTION; Schema: public; Owner: pl_fit_db
 --
 
 CREATE FUNCTION bytea_import(p_path text, OUT p_result bytea) RETURNS bytea
@@ -56,9 +56,9 @@ declare
 begin
   p_result := '';
   select lo_import(p_path) into l_oid;
-  for r in ( select data 
-             from pg_largeobject 
-             where loid = l_oid 
+  for r in ( select data
+             from pg_largeobject
+             where loid = l_oid
              order by pageno ) loop
     p_result = p_result || r.data;
   end loop;
@@ -66,31 +66,31 @@ begin
 end;$$;
 
 
-ALTER FUNCTION public.bytea_import(p_path text, OUT p_result bytea) OWNER TO postgres;
+ALTER FUNCTION public.bytea_import(p_path text, OUT p_result bytea) OWNER TO pl_fit_db;
 
 --
--- Name: login(text, text); Type: FUNCTION; Schema: public; Owner: postgres
+-- Name: login(text, text); Type: FUNCTION; Schema: public; Owner: pl_fit_db
 --
 
 CREATE FUNCTION login(_username text, _pwd text, OUT _email text) RETURNS text
     LANGUAGE plpgsql SECURITY DEFINER
     AS $$
 BEGIN
- SELECT email INTO _email FROM users
+ SELECT email INTO _email FROM public.users
  WHERE users.username = lower(_username)
  AND pwdhash = crypt(_pwd, users.pwdhash);
 END;
 $$;
 
 
-ALTER FUNCTION public.login(_username text, _pwd text, OUT _email text) OWNER TO postgres;
+ALTER FUNCTION public.login(_username text, _pwd text, OUT _email text) OWNER TO pl_fit_db;
 
 SET default_tablespace = '';
 
 SET default_with_oids = false;
 
 --
--- Name: data; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: data; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE TABLE data (
@@ -103,10 +103,10 @@ CREATE TABLE data (
 );
 
 
-ALTER TABLE public.data OWNER TO postgres;
+ALTER TABLE public.data OWNER TO pl_fit_db;
 
 --
--- Name: devices; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: devices; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE TABLE devices (
@@ -114,10 +114,10 @@ CREATE TABLE devices (
 );
 
 
-ALTER TABLE public.devices OWNER TO postgres;
+ALTER TABLE public.devices OWNER TO pl_fit_db;
 
 --
--- Name: media; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: media; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE TABLE media (
@@ -127,10 +127,10 @@ CREATE TABLE media (
 );
 
 
-ALTER TABLE public.media OWNER TO postgres;
+ALTER TABLE public.media OWNER TO pl_fit_db;
 
 --
--- Name: sync_data; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: sync_data; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE TABLE sync_data (
@@ -140,10 +140,10 @@ CREATE TABLE sync_data (
 );
 
 
-ALTER TABLE public.sync_data OWNER TO postgres;
+ALTER TABLE public.sync_data OWNER TO pl_fit_db;
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: users; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE TABLE users (
@@ -153,10 +153,10 @@ CREATE TABLE users (
 );
 
 
-ALTER TABLE public.users OWNER TO postgres;
+ALTER TABLE public.users OWNER TO pl_fit_db;
 
 --
--- Name: data_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: data_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 ALTER TABLE ONLY data
@@ -164,7 +164,7 @@ ALTER TABLE ONLY data
 
 
 --
--- Name: media_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: media_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 ALTER TABLE ONLY media
@@ -172,7 +172,7 @@ ALTER TABLE ONLY media
 
 
 --
--- Name: users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: users_email_key; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 ALTER TABLE ONLY users
@@ -180,7 +180,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 ALTER TABLE ONLY users
@@ -188,52 +188,39 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: syncdata_deviceid_idx; Type: INDEX; Schema: public; Owner: postgres; Tablespace: 
+-- Name: syncdata_deviceid_idx; Type: INDEX; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE INDEX syncdata_deviceid_idx ON sync_data USING btree (deviceid);
 
 
 --
--- Name: syncdata_media_rule; Type: RULE; Schema: public; Owner: postgres
+-- Name: syncdata_media_rule; Type: RULE; Schema: public; Owner: pl_fit_db
 --
 
 CREATE RULE syncdata_media_rule AS ON INSERT TO media DO INSERT INTO sync_data (id, deviceid, type) SELECT new.filename, devices.deviceid, 'media' FROM devices WHERE ((devices.deviceid)::text <> (new.modifiedby)::text);
 
 
 --
--- Name: syncdata_rule; Type: RULE; Schema: public; Owner: postgres
+-- Name: syncdata_rule; Type: RULE; Schema: public; Owner: pl_fit_db
 --
 
 CREATE RULE syncdata_rule AS ON INSERT TO data DO INSERT INTO sync_data (id, deviceid, type) SELECT new.id, devices.deviceid, 'object' FROM devices WHERE ((devices.deviceid)::text <> (new.modifiedby)::text);
 
 
 --
--- Name: syncdata_update_rule; Type: RULE; Schema: public; Owner: postgres
+-- Name: syncdata_update_rule; Type: RULE; Schema: public; Owner: pl_fit_db
 --
 
 CREATE RULE syncdata_update_rule AS ON UPDATE TO data DO INSERT INTO sync_data (id, deviceid, type) SELECT new.id, devices.deviceid, 'object' FROM devices WHERE ((devices.deviceid)::text <> (new.modifiedby)::text);
 
-
 --
--- Name: public; Type: ACL; Schema: -; Owner: postgres
+-- Name: public; Type: ACL; Schema: -; Owner: pl_fit_db
 --
 
 REVOKE ALL ON SCHEMA public FROM PUBLIC;
-REVOKE ALL ON SCHEMA public FROM postgres;
-GRANT ALL ON SCHEMA public TO postgres;
-GRANT ALL ON SCHEMA public TO PUBLIC;
+REVOKE ALL ON SCHEMA public FROM pl_fit_db;
 
-
---
--- Name: users; Type: ACL; Schema: public; Owner: postgres
---
-
-REVOKE ALL ON TABLE users FROM PUBLIC;
-REVOKE ALL ON TABLE users FROM postgres;
-
-
---
--- PostgreSQL database dump complete
---
-
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO pl_fit_db;
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO pl_fit_db;
+GRANT USAGE ON SCHEMA public to pl_fit_db;

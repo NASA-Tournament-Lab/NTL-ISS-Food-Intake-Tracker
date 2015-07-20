@@ -16,7 +16,7 @@
 			<key>AutocorrectionType</key>
 			<string>No</string>
 			<key>DefaultValue</key>
-			<string>54.213.230.225</string>
+			<string>localhost</string>
 			<key>IsSecure</key>
 			<false/>
 			<key>Key</key>
@@ -36,7 +36,7 @@
 			<key>AutocorrectionType</key>
 			<string>No</string>
 			<key>DefaultValue</key>
-			<string>postgres</string>
+			<string>pl_fit_db</string>
 			<key>IsSecure</key>
 			<false/>
 			<key>Key</key>
@@ -54,7 +54,7 @@
 			<key>AutocorrectionType</key>
 			<string>No</string>
 			<key>DefaultValue</key>
-			<string>nasadb</string>
+			<string>pl_fit</string>
 			<key>IsSecure</key>
 			<false/>
 			<key>Key</key>
@@ -72,7 +72,7 @@
 			<key>AutocorrectionType</key>
 			<string>No</string>
 			<key>DefaultValue</key>
-			<string>12345</string>
+			<string>CHANGEME</string>
 			<key>IsSecure</key>
 			<true/>
 			<key>Key</key>
@@ -81,6 +81,24 @@
 			<string>URL</string>
 			<key>Title</key>
 			<string>Server Password:</string>
+			<key>Type</key>
+			<string>PSTextFieldSpecifier</string>
+		</dict>
+		<dict>
+			<key>AutocapitalizationType</key>
+			<string>None</string>
+			<key>AutocorrectionType</key>
+			<string>No</string>
+			<key>DefaultValue</key>
+			<string>56283</string>
+			<key>IsSecure</key>
+			<false/>
+			<key>Key</key>
+			<string>port_preference</string>
+			<key>KeyboardType</key>
+			<string>NumberPad</string>
+			<key>Title</key>
+			<string>Server Port:</string>
 			<key>Type</key>
 			<string>PSTextFieldSpecifier</string>
 		</dict>
