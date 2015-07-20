@@ -1,5 +1,6 @@
 var config = {};
 
+config.db = {};
 config.db.database = 'pl_fit';
 config.db.username =  'pl_fit_db';
 config.db.password = 'CHANGEME';
