@@ -60,7 +60,7 @@ try:
         assert False, "Filename cannot be null"
 
     # Connect to an existing database
-    conn = psycopg2.connect("dbname=" + database + " user=" + user + " host=127.0.0.1")
+    conn = psycopg2.connect("dbname=" + database + " user=" + user + " password=" + password + " host=" + host+ " port=" + port)
     # Open a cursor to perform database operations
     cur = conn.cursor()
 
