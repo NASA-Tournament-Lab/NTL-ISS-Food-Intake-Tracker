@@ -9,9 +9,9 @@ html
 		script(type='text/javascript', src='/js/jquery.validate.js')
 		script(type='text/javascript', src='/js/additional-methods.js')
 		script.
-			var data = !{data};
+			var data = !{dialogError};
 		script.
-			$(document).ready(function() {								
+			$(document).ready(function() {
 				$("input[type=submit], input[type=button], a.button, span.button" ).button();
 				$('#dialog').dialog({
 					autoOpen: false,
@@ -38,10 +38,10 @@ html
 						}
 					}
 				});
-				$("#delete-button").on("click", function(event) {				
+				$("#delete-button").on("click", function(event) {
 					$("#dialog-confirm").dialog('option', 'title', 'Confirmation');
 					$("#dialog-confirm").dialog('open');
-				});			
+				});
 
 				// create validation
 				var errorMessage = 'Please select an image file that ends in ".jpg"';
@@ -57,7 +57,7 @@ html
 						}
 					}
 				});
-				
+
 				if (undefined != data.error && data.error.length > 0) {
 					$('#message').text(data.error);
 					$('#dialog').dialog('option', 'title', 'Error');
@@ -76,7 +76,7 @@ html
 				p(id='message')
 			div(id='dialog-confirm')
 				p.
-					Are you sure you want to delete current data?			
+					Are you sure you want to delete current data?
 			div
 				form(id='form', action=action, method='post', enctype='multipart/form-data')
 					- var index = 0
@@ -107,7 +107,7 @@ html
 								select(id=key, name=key, style="width:200px;")
 									for originValue in origins
 										option(value=originValue, selected=value === originValue) #{originValue}
-							else if key == 'productProfileImage' || key == 'profileImage'									
+							else if key == 'productProfileImage' || key == 'profileImage'
 								input(type='file', name=key, id=key, accept='image/jpg, image/jpeg' extension="jpg")
 								if value
 									div

@@ -4,7 +4,7 @@ var cookieParser = require('cookie-parser');
 var flash = require('connect-flash');
 var async = require('async');
 var pg = require('pg');
-var escape = require('pg-escape');
+var format = require('pg-format');
 var uuid = require('node-uuid');
 var bodyParser = require('body-parser');
 var multer = require('multer');
@@ -12,6 +12,7 @@ var fs = require('fs');
 var PythonShell = require('python-shell');
 var lwip = require('lwip');
 var config = require('./config');
+var format = require('pg-format');
 
 var app = express();
 
@@ -91,6 +92,48 @@ var firstKey = function(obj) {
 	for (var a in obj) return a;
 }
 
+/**
+ * Save image to database.
+ */
+var saveImageToDB = function(image, callback) {
+	try {
+		// obtain an image object:
+		var originalName = image.originalname;
+		lwip.open("/tmp/" + image.name, function(err, currentImage) {
+			var batch = currentImage.batch();
+			if (undefined != err) {
+				console.log('Error ' + JSON.stringify(err));
+				callback('Error opening image file');
+			} else if (currentImage.width() > MAX_SIZE || currentImage.height() > MAX_SIZE) {
+				var rr = currentImage.width() > currentImage.height();
+				var newWidth = rr ? MAX_SIZE : Math.floor(currentImage.width() * (MAX_SIZE / currentImage.height()));
+				var newHeight = rr ? Math.floor(currentImage.height() * (MAX_SIZE / currentImage.width())) : MAX_SIZE;
+				console.log('Old size: ' + currentImage.width() + ' x ' + currentImage.height());
+				console.log('New size: ' + newWidth + ' x ' + newHeight);
+				batch.resize(newWidth, newHeight);
+			}
+			batch.toBuffer("jpg", function(errToBuffer, buffer) {
+				if (errToBuffer) {
+					callback(errToBuffer);
+					return;
+				}
+				var mediaQuery = format("INSERT INTO media VALUES(%L, %L, 'file_load');",
+										originalName, buffer);
+				console.log("Query (Media): " + mediaQuery);
+				pgclient.query(mediaQuery, function(err, results) {
+					if (err != null) {
+						callback('Error saving image file: ' + JSON.stringify(err));
+					} else {
+						callback(null);
+					}
+				});;
+			});
+		});
+	} catch (err) {
+		callback('Error saving image file: ' + JSON.stringify(err));
+	}
+}
+
 // Speed up calls to hasOwnProperty
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -141,7 +184,7 @@ var updateValue = function(req, res, remove) {
 		if (undefined != image) {
 			var originalName = image.originalname;
 			newValue[key] = originalName;
-			var deleteQuery = escape("DELETE FROM media WHERE filename = %L", originalName);
+			var deleteQuery = format("DELETE FROM media WHERE filename = %L", originalName);
 			queryFunctions.push(function(callback) {
 				console.log("Query (Media): " + deleteQuery);
 				pgclient.query(deleteQuery, function(err, results) {
@@ -150,41 +193,7 @@ var updateValue = function(req, res, remove) {
 			});
 
 			queryFunctions.push(function(callback) {
-				try {
-					// obtain an image object:
-					lwip.open("/tmp/" + image.name, function(err, currentImage) {
-						if (undefined != err) {
-							console.log('Error ' + JSON.stringify(err));
-							callback('Error opening image file');
-						} else if (currentImage.width() > MAX_SIZE || currentImage.height() > MAX_SIZE) {
-							var rr = currentImage.width() > currentImage.height();
-							var newWidth = rr ? MAX_SIZE : Math.floor(currentImage.width() * (MAX_SIZE / currentImage.height()));
-							var newHeight = rr ? Math.floor(currentImage.height() * (MAX_SIZE / currentImage.width())) : MAX_SIZE;
-							console.log('Old size: ' + currentImage.width() + ' x ' + currentImage.height());
-							console.log('New size: ' + newWidth + ' x ' + newHeight);
-							currentImage.batch()
-								.resize(newWidth, newHeight)
-								.writeFile("/tmp/resized.jpg", function(err) {
-									var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
-															originalName, "/tmp/resized.jpg");
-									console.log("Query (Media): " + mediaQuery);
-									pgclient.query(mediaQuery, function(err, results) {
-										callback(err);
-									});
-								});
-						} else {
-							var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
-													 originalName, "/tmp/" + image.name);
-							console.log("Query (Media): " + mediaQuery);
-							pgclient.query(mediaQuery, function(err, results) {
-								callback(err);
-							});
-						}
-					});
-				} catch (err) {
-					console.log('Error ' + JSON.stringify(err));
-					callback('Error opening image file');
-				}
+				saveImageToDB(image, callback);
 			});
 		}
 	}
@@ -216,7 +225,7 @@ var updateValue = function(req, res, remove) {
 			queryFunctions.push(function(callback) {
 				var catId = queryIds.pop();
 				var data = queryCatData.pop();
-				var catQuery = escape("INSERT INTO data VALUES(%L, 'StringWrapper', %L, 'now', 'now', 'file_load');", catId, JSON.stringify(data));
+				var catQuery = format("INSERT INTO data VALUES(%L, 'StringWrapper', %L, 'now', 'now', 'file_load');", catId, JSON.stringify(data));
 				pgclient.query(catQuery, function(err, results) {
 					console.log("Query (StringWrapper): " + catQuery);
 					callback(err);
@@ -229,14 +238,13 @@ var updateValue = function(req, res, remove) {
 	}
 	delete newValue["categoriesId"];
 
-	console.log("Param: " + JSON.stringify(newValue));
-
 	queryFunctions.push(function(callback) {
 		pgclient.query("BEGIN", function(err, results) {
+			console.log("BEGIN UPDATE");
 			callback(err);
 		});
 	});
-	var query = escape("UPDATE data SET value = %L, modifieddate = 'now', modifiedby = 'file_load' WHERE id = %L",
+	var query = format("UPDATE data SET value = %L, modifieddate = 'now', modifiedby = 'file_load' WHERE id = %L",
 					   JSON.stringify(newValue), req.params.id);
 	queryFunctions.push(function(callback) {
 		console.log("Update query: " + query);
@@ -247,6 +255,7 @@ var updateValue = function(req, res, remove) {
 
 	queryFunctions.push(function(callback) {
 		pgclient.query("COMMIT", function(err, results) {
+			console.log("COMMIT UPDATE");
 			callback(err);
 		});
 	});
@@ -254,14 +263,15 @@ var updateValue = function(req, res, remove) {
 	var isFood = req.url.indexOf('food') != -1;
 	var message = "";
 	if (remove) {
-		message = isFood ?	"Food Deleted" : "User Profile Deleted";
+		message = isFood ? "Food Deleted" : "User Profile Deleted";
 	} else {
-		message = isFood ?	"Food Data Updated" : "User Profile Updated";
+		message = isFood ? "Food Data Updated" : "User Profile Updated";
 	}
 	async.waterfall(
 		queryFunctions,
 		function (err, result) {
-			if (err) {
+			if (err != null) {
+				console.log("Error while updating value:\n\t" + JSON.stringify(err));
 				req.flash('error', err);
 				res.redirect((isFood ? '/food/' : '/user/') + req.params.id);
 			} else {
@@ -539,7 +549,7 @@ app.post('/food', requiredAuthentication, function(req, res) {
 		queryFunctions.push(function(callback) {
 			var catId = tmpCatIds.pop();
 			var data = tmpCategories.pop();
-			var catQuery = escape("INSERT INTO data VALUES(%L, 'StringWrapper', %L, 'now', 'now', 'file_load');", catId, JSON.stringify(data));
+			var catQuery = format("INSERT INTO data VALUES(%L, 'StringWrapper', %L, 'now', 'now', 'file_load');", catId, JSON.stringify(data));
 			console.log("Query (StringWrapper): " + catQuery);
 			pgclient.query(catQuery, function(err, results) {
 				callback(err != null ? 'Error inserting category "' + data.value + '" into database' : null);
@@ -552,7 +562,7 @@ app.post('/food', requiredAuthentication, function(req, res) {
 		var originalName = productProfileImage.originalname;
 		newValue["productProfileImage"] = originalName;
 
-		var deleteQuery = escape("DELETE FROM media WHERE filename = %L", originalName);
+		var deleteQuery = format("DELETE FROM media WHERE filename = %L", originalName);
 		queryFunctions.push(function(callback) {
 			console.log("Query (Media): " + deleteQuery);
 			pgclient.query(deleteQuery, function(err, results) {
@@ -561,45 +571,15 @@ app.post('/food', requiredAuthentication, function(req, res) {
 		});
 
 		// obtain an image object:
-		try {
-			lwip.open("/tmp/" + productProfileImage.name, function(err, currentImage) {
-				if (undefined != err) {
-					console.log('Error1 ' + JSON.stringify(err));
-					callback('Error opening image file');
-				} else if (currentImage.width() > MAX_SIZE || currentImage.height() > MAX_SIZE) {
-					var rr = currentImage.width() > currentImage.height();
-					var newWidth = rr ? MAX_SIZE : Math.floor(currentImage.width() * (MAX_SIZE / currentImage.height()));
-					var newHeight = rr ? Math.floor(currentImage.height() * (MAX_SIZE / currentImage.width())) : MAX_SIZE;
-					console.log('Old size: ' + currentImage.width() + ' x ' + currentImage.height());
-					console.log('New size: ' + newWidth + ' x ' + newHeight);
-					currentImage.batch()
-						.resize(newWidth, newHeight)
-						.writeFile("/tmp/resized.jpg", function(err) {
-							var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
-													originalName, "/tmp/resized.jpg");
-							console.log("Query (Media): " + mediaQuery);
-							pgclient.query(mediaQuery, function(err, results) {
-								callback(err != null ? 'Error inserting media "' + originalName + '" into database' : null);
-							});
-						});
-				} else {
-					var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
-											 originalName, "/tmp/" + productProfileImage.name);
-					console.log("Query (Media): " + mediaQuery);
-					pgclient.query(mediaQuery, function(err, results) {
-						callback(err != null ? 'Error inserting media "' + originalName + '" into database' : null);
-					});
-				}
-			});
-		} catch (err) {
-			callback('Error opening image file');
-		}
+		queryFunctions.push(function(callback) {
+			saveImageToDB(productProfileImage, callback);
+		});
 	}
 
 	queryFunctions.push(function(callback) {
 		newValue["categories"] = catIds.join(";");
 
-		var query = escape("INSERT INTO data VALUES(%L, 'FoodProduct', %L, 'now', 'now', 'file_load');", id, JSON.stringify(newValue));
+		var query = format("INSERT INTO data VALUES(%L, 'FoodProduct', %L, 'now', 'now', 'file_load');", id, JSON.stringify(newValue));
 		console.log("Query (FoodProduct): " + query);
 		pgclient.query(query, function(err, results) {
 			callback(err != null ? 'Error inserting food "' + newValue.name + '" into database' : null, results);
@@ -664,7 +644,7 @@ app.post('/user', requiredAuthentication, function(req, res) {
 		var originalName = profileImageFile.originalname;
 		newValue["profileImage"] = originalName;
 
-		var deleteQuery = escape("DELETE FROM media WHERE filename = %L", originalName);
+		var deleteQuery = format("DELETE FROM media WHERE filename = %L", originalName);
 		queryFunctions.push(function(callback) {
 			console.log("Query (Media): " + deleteQuery);
 			pgclient.query(deleteQuery, function(err, results) {
@@ -672,43 +652,14 @@ app.post('/user', requiredAuthentication, function(req, res) {
 			});
 		});
 
-		try {
-			// obtain an image object:
-			lwip.open("/tmp/" + profileImageFile.name, function(err, currentImage) {
-				if (undefined != err) {
-					callback('Error opening image file');
-				} else if (currentImage.width() > MAX_SIZE || currentImage.height() > MAX_SIZE) {
-					var rr = currentImage.width() > currentImage.height();
-					var newWidth = rr ? MAX_SIZE : Math.floor(currentImage.width() * (MAX_SIZE / currentImage.height()));
-					var newHeight = rr ? Math.floor(currentImage.height() * (MAX_SIZE / currentImage.width())) : MAX_SIZE;
-					console.log('Old size: ' + currentImage.width() + ' x ' + currentImage.height());
-					console.log('New size: ' + newWidth + ' x ' + newHeight);
-					currentImage.batch()
-						.resize(newWidth, newHeight)
-						.writeFile("/tmp/resized.jpg", function(err) {
-							var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
-													originalName, "/tmp/resized.jpg");
-							console.log("Query (Media): " + mediaQuery);
-							pgclient.query(mediaQuery, function(err, results) {
-								callback(err != null ? 'Error inserting media "' + originalName + '" into database' : null);
-							});
-						});
-				} else {
-					var mediaQuery = escape("INSERT INTO media VALUES(%L, (SELECT bytea_import(%L)), 'file_load');",
-											 originalName, "/tmp/" + profileImageFile.name);
-					console.log("Query (Media): " + mediaQuery);
-					pgclient.query(mediaQuery, function(err, results) {
-						callback(err != null ? 'Error inserting media "' + originalName + '" into database' : null);
-					});
-				}
-			});
-		} catch(err) {
-			callback('Error opening image file');
-		}
+		// obtain an image object:
+		queryFunctions.push(function(callback) {
+			saveImageToDB(productProfileImage, callback);
+		});
 	}
 
 	var toSave = JSON.stringify(newValue);
-	var query = escape("INSERT INTO data VALUES(%L, 'User', %L, 'now', 'now', 'file_load');", id, toSave);
+	var query = format("INSERT INTO data VALUES(%L, 'User', %L, 'now', 'now', 'file_load');", id, toSave);
 	queryFunctions.push(function(callback) {
 		console.log("Query (User): " + query);
 		pgclient.query(query, function(err, results) {
@@ -815,13 +766,30 @@ app.get('/food/:id', requiredAuthentication, function(req, res) {
 
 app.get('/user/:id', requiredAuthentication, function(req, res) {
 	console.log("Param: " + req.params.id);
+
+	var error = req.flash('error');
+	if (undefined != error && error.length > 0) {
+		console.log('Rendering error');
+		res.render('edit', {
+			message: editObject.name,
+			action: '/food/' + req.params.id,
+			obj: sortObjectByKey(editObject, foodKeys),
+			editKeys: foodKeys,
+			titles: foodTitles,
+			dialogError: JSON.stringify({
+				error: error || ""
+			})
+		});
+		return;
+	}
+
 	pgclient.query("SELECT value FROM data WHERE id = '" + req.params.id + "';", function(err, result) {
-		if(err || result.rows.length == 0) {
+		if (err || result.rows.length == 0) {
 			return console.error('error running query', err);
 		}
 
 		console.log("Result: " + result.rows[0].value);
-		var editObject = JSON.parse(result.rows[0].value);
+		editObject = JSON.parse(result.rows[0].value);
 
 		pgclient.query("SELECT encode(data, 'base64') AS value FROM media WHERE filename = '" + editObject["profileImage"] + "';", function(err, result) {
 			var image_jpg = result.rows.length > 0 && result.rows[0] != null ? result.rows[0].value : '';
