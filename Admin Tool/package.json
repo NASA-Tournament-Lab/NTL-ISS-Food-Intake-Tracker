@@ -16,7 +16,7 @@
     "multer": "^0.1.4",
     "node-uuid": "^1.4.1",
     "pg": "3.4.4",
-    "pg-escape": "0.0.3",
+    "pg-format": "0.1.4 ",
     "python-shell": "0.0.3"
   }
 }
