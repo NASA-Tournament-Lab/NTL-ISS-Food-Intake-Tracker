@@ -16,6 +16,9 @@ var format = require('pg-format');
 
 var app = express();
 
+// set pretty html
+app.locals.pretty = true;
+
 var maxAge = 60 * 60 * 1000;
 
 app.use( bodyParser.json() );  // to support JSON-encoded bodies
@@ -114,7 +117,8 @@ var saveImageToDB = function(image, callback) {
 			}
 			batch.toBuffer("jpg", function(errToBuffer, buffer) {
 				if (errToBuffer) {
-					callback(errToBuffer);
+					console.log('Error: ' + JSON.stringify(errToBuffer));
+					callback('Error saving image file to database');
 					return;
 				}
 				var mediaQuery = format("INSERT INTO media VALUES(%L, %L, 'file_load');",
@@ -122,7 +126,8 @@ var saveImageToDB = function(image, callback) {
 				console.log("Query (Media): " + mediaQuery);
 				pgclient.query(mediaQuery, function(err, results) {
 					if (err != null) {
-						callback('Error saving image file: ' + JSON.stringify(err));
+						console.log('Error: ' + JSON.stringify(err));
+						callback('Error saving image file to database');
 					} else {
 						callback(null);
 					}
@@ -130,7 +135,8 @@ var saveImageToDB = function(image, callback) {
 			});
 		});
 	} catch (err) {
-		callback('Error saving image file: ' + JSON.stringify(err));
+		console.log('Error: ' + JSON.stringify(err));
+		callback('Error saving image file to database');
 	}
 }
 
@@ -654,7 +660,7 @@ app.post('/user', requiredAuthentication, function(req, res) {
 
 		// obtain an image object:
 		queryFunctions.push(function(callback) {
-			saveImageToDB(productProfileImage, callback);
+			saveImageToDB(profileImageFile, callback);
 		});
 	}
 
@@ -682,25 +688,22 @@ app.post('/user', requiredAuthentication, function(req, res) {
 })
 
 var editObject = null;
+var editImage = null;
 
 // Load food / user
 app.get('/food/:id', requiredAuthentication, function(req, res) {
 	console.log("Param: " + req.params.id);
+
 	var error = req.flash('error');
-
-	console.log('error : ' + error);
-
 	if (undefined != error && error.length > 0) {
-		console.log('Rendering error');
 		res.render('edit', {
 			message: editObject.name,
 			action: '/food/' + req.params.id,
 			obj: sortObjectByKey(editObject, foodKeys),
 			editKeys: foodKeys,
 			titles: foodTitles,
-			dialogError: JSON.stringify({
-				error: error || ""
-			})
+			image_jpg: editImage || '',
+			error: error || ''
 		});
 		return;
 	}
@@ -744,7 +747,7 @@ app.get('/food/:id', requiredAuthentication, function(req, res) {
 				console.log("Result: " + JSON.stringify(editObject));
 
 				pgclient.query("SELECT encode(data, 'base64') AS value FROM media WHERE filename = '" + editObject["productProfileImage"] + "';", function(err, result) {
-					var image_jpg = result.rows.length > 0 && result.rows[0] != null ? result.rows[0].value : '';
+					editImage = result.rows.length > 0 && result.rows[0] != null ? result.rows[0].value : '';
 
 					res.render('edit', {
 							message: editObject.name,
@@ -752,8 +755,8 @@ app.get('/food/:id', requiredAuthentication, function(req, res) {
 							obj: sortObjectByKey(editObject, foodKeys),
 							editKeys: foodKeys,
 							titles: foodTitles,
-							image_jpg: image_jpg,
-							dialogError: ''
+							image_jpg: editImage,
+							error: ''
 					});
 				});
 			});
@@ -769,16 +772,14 @@ app.get('/user/:id', requiredAuthentication, function(req, res) {
 
 	var error = req.flash('error');
 	if (undefined != error && error.length > 0) {
-		console.log('Rendering error');
 		res.render('edit', {
-			message: editObject.name,
-			action: '/food/' + req.params.id,
+			message: editObject.fullName,
+			action: '/user/' + req.params.id,
 			obj: sortObjectByKey(editObject, foodKeys),
-			editKeys: foodKeys,
-			titles: foodTitles,
-			dialogError: JSON.stringify({
-				error: error || ""
-			})
+			editKeys: userKeys,
+			titles: userTitles,
+			image_jpg: editImage || '',
+			error: error || ''
 		});
 		return;
 	}
@@ -792,7 +793,7 @@ app.get('/user/:id', requiredAuthentication, function(req, res) {
 		editObject = JSON.parse(result.rows[0].value);
 
 		pgclient.query("SELECT encode(data, 'base64') AS value FROM media WHERE filename = '" + editObject["profileImage"] + "';", function(err, result) {
-			var image_jpg = result.rows.length > 0 && result.rows[0] != null ? result.rows[0].value : '';
+			editImage = result.rows.length > 0 && result.rows[0] != null ? result.rows[0].value : '';
 
 			res.render('edit', {
 				message: editObject.fullName,
@@ -800,8 +801,8 @@ app.get('/user/:id', requiredAuthentication, function(req, res) {
 				obj: sortObjectByKey(editObject, userKeys),
 				editKeys: userKeys,
 				titles: userTitles,
-				image_jpg: image_jpg,
-				dialogError: ''
+				image_jpg: editImage,
+				error: ''
 			});
 		});
 	});

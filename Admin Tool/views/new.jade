@@ -1,6 +1,6 @@
 html
 	head
-		title!= title
+		title ISS FIT - Admin Tool
 		link(rel='stylesheet', href='/css/style.css')
 		link(rel='stylesheet', href='/css/jquery-ui.css')
 		link(rel='stylesheet', href='/css/theme.css')
@@ -22,9 +22,9 @@ html
 						}
 					}
 				});
-				
+
 				$( "input[type=submit], input[type=button], a.button" ).button();
-				
+
 				// create validation
 				var errorMessage = 'Please select an image file that ends in ".jpg"';
 				$("#form").validate({
@@ -55,17 +55,17 @@ html
 		.container(id="new-container", style="margin-left:20px;")
 			h1!= message
 			div(id='dialog')
-				p(id='message')			
+				p(id='message')
 			div
 				form(id='form', action=action, method='post', enctype='multipart/form-data')
 					- var index = 0
-					- var numerics = ["energy", "sodium", "fluid", "protein", "carb", "fat", "dailyTargetEnergy", "dailyTargetSodium", "dailyTargetFluid", "dailyTargetProtein", "dailyTargetCarb", "dailyTargetFat", "weight"]						
+					- var numerics = ["energy", "sodium", "fluid", "protein", "carb", "fat", "dailyTargetEnergy", "dailyTargetSodium", "dailyTargetFluid", "dailyTargetProtein", "dailyTargetCarb", "dailyTargetFat", "weight"]
 					each key in keys
 						- var title = titles[index++]
 						- var value = defaultValues[key]
 						h3!=title
 						if key == 'categories'
-							- var cats = ["Vegetables / Sides", "Meat / Fish", "Drink", "Dessert & Snacks", "Breakfast", "Fruit & Nuts"]						
+							- var cats = ["Vegetables / Sides", "Meat / Fish", "Drink", "Dessert & Snacks", "Breakfast", "Fruit & Nuts"]
 							select(id=key, name=key, style="width:200px;height:80px;", multiple="multiple" required)
 								for catValue in cats
 									if undefined == value || value.indexOf(catValue) == -1

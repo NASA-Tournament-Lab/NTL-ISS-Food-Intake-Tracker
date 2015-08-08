@@ -1,6 +1,6 @@
 html
 	head
-		title!= title
+		title ISS FIT - Admin Tool
 		link(rel='stylesheet', href='/css/style.css')
 		link(rel='stylesheet', href='/css/jquery-ui.css')
 		link(rel='stylesheet', href='/css/theme.css')
@@ -9,10 +9,9 @@ html
 		script(type='text/javascript', src='/js/jquery.validate.js')
 		script(type='text/javascript', src='/js/additional-methods.js')
 		script.
-			var data = !{dialogError};
+			var data = '!{error}';
 		script.
 			$(document).ready(function() {
-				$("input[type=submit], input[type=button], a.button, span.button" ).button();
 				$('#dialog').dialog({
 					autoOpen: false,
 					modal: true,
@@ -23,6 +22,9 @@ html
 						}
 					}
 				});
+
+				$("input[type=submit], input[type=button], a.button, span.button" ).button();
+
 				var action = '!{action}';
 				$("#dialog-confirm").dialog({
 					autoOpen: false,
@@ -57,9 +59,8 @@ html
 						}
 					}
 				});
-
-				if (undefined != data.error && data.error.length > 0) {
-					$('#message').text(data.error);
+				if (undefined != data && data.length > 0) {
+					$('#message').text(data);
 					$('#dialog').dialog('option', 'title', 'Error');
 					$('#dialog').dialog('open');
 				}
