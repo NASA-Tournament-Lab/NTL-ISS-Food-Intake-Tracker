@@ -13,6 +13,7 @@ var PythonShell = require('python-shell');
 var lwip = require('lwip');
 var config = require('./config');
 var format = require('pg-format');
+var https = require('https');
 
 var app = express();
 
@@ -44,7 +45,7 @@ app.set('view engine', 'jade');
 var server, pgclient, MAX_SIZE = 1024;
 
 var conString = "postgres://" + config.db.username + ":" + config.db.password+ "@" + config.db.host+ ":" +
-				config.db.port + "/" + config.db.database;
+				config.db.port + "/" + config.db.database + "?ssl=true";
 
 var foodKeys = ["name", "barcode", "energy", "sodium", "fluid", "protein", "carb", "fat", "categories", "origin",
 				"productProfileImage"];
@@ -60,6 +61,13 @@ var defaultValues = { "dailyTargetEnergy": "3500", "dailyTargetSodium": "3500", 
 					  "dailyTargetProtein": "100", "dailyTargetCarb": "500", "dailyTargetFat": "60" };
 
 var currentNewValues = null;
+
+var key = fs.readFileSync(config.web.key);
+var cert = fs.readFileSync(config.web.cert);
+var https_options = {
+    key: key,
+    cert: cert
+};
 
 /**
  * Return an Object sorted by it's Key
@@ -289,6 +297,11 @@ var updateValue = function(req, res, remove) {
 }
 
 function requiredAuthentication(req, res, next) {
+        if (config.useApache) {
+                next();
+                return;
+        }
+
 	var currentSession = req.session;
 	if (currentSession.loggedIn != null && currentSession.loggedIn) {
 		next();
@@ -326,7 +339,7 @@ app.get('/', function (req, res) {
 
 	currentNewValues = null;
 
-	if (currentSession == null || currentSession.loggedIn == null || !currentSession.loggedIn) {
+	if (!config.useApache && (currentSession == null || currentSession.loggedIn == null || !currentSession.loggedIn)) {
 		res.redirect('/login');
 	} else {
 		res.render('index', {
@@ -938,11 +951,11 @@ app.post('/import', requiredAuthentication, function(req, res) {
 
 // Delete food/user
 
-app.get('/delete/user/:id', function(req, res) {
+app.get('/delete/user/:id', requiredAuthentication, function(req, res) {
 	updateValue(req, res, true);
 });
 
-app.get('/delete/food/:id', function(req, res) {
+app.get('/delete/food/:id', requiredAuthentication, function(req, res) {
 	updateValue(req, res, true);
 });
 
@@ -951,7 +964,14 @@ pg.connect(conString, function(err, client, done) {
 		return console.error('error fetching client from pool', err);
 	}
 	pgclient = client;
-	server = app.listen(8080, function() {
-		console.log('Listening on port %d', server.address().port);
-	});
+        if (config.useApache) {
+                server = app.listen(config.web.port, 'localhost', function() {
+                     console.log('Listening at localhost on port %d', server.address().port);
+               });
+        } else {
+               server = https.createServer(https_options, app);
+               server.listen(config.web.port, function() {
+	             console.log('Listening on port %d', server.address().port);
+	       });
+        }
 });
