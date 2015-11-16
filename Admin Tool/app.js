@@ -964,12 +964,12 @@ pg.connect(conString, function(err, client, done) {
 		return console.error('error fetching client from pool', err);
 	}
 	pgclient = client;
+        server = https.createServer(https_options, app);
         if (config.useApache) {
-                server = app.listen(config.web.port, 'localhost', function() {
+               server.listen(config.web.port, 'localhost', function() {
                      console.log('Listening at localhost on port %d', server.address().port);
                });
         } else {
-               server = https.createServer(https_options, app);
                server.listen(config.web.port, function() {
 	             console.log('Listening on port %d', server.address().port);
 	       });
