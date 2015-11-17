@@ -11,7 +11,7 @@
 
 #import "PGClientKit.h"
 
-@interface PGCoreData : NSObject<UIAlertViewDelegate>
+@interface PGCoreData : NSObject<UIAlertViewDelegate, PGConnectionDelegate>
 
 @property PGConnection *pgConnection;
 

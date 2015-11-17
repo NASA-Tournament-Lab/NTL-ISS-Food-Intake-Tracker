@@ -26,6 +26,7 @@ static NSString* reachHostName = @"";
     if (!instance) {
         instance = [[PGCoreData alloc] init];
         instance.pgConnection = [[PGConnection alloc] init];
+        instance.pgConnection.delegate = instance;
     }
     return instance;
 }
@@ -45,7 +46,6 @@ static NSString* reachHostName = @"";
     NSString *ipAddress = [standardUserDefaults objectForKey:@"address_preference"];
     NSString *username = [standardUserDefaults objectForKey:@"user_preference"];
     NSString *database = [standardUserDefaults objectForKey:@"database_preference"];
-    NSString *password = [standardUserDefaults objectForKey:@"password_preference"];
     NSInteger port = [[standardUserDefaults objectForKey:@"port_preference"] integerValue];
     
     if (![reachHostName isEqualToString:ipAddress]) {
@@ -118,7 +118,15 @@ static NSString* reachHostName = @"";
     }
     
     NSError *connError = nil;
-    NSURL *url = [NSURL URLWithHost:ipAddress port:port ssl:NO username:username password:password database:database params:nil];
+    // NSURL *url = [NSURL URLWithHost:ipAddress port:port ssl:YES username:username password:password database:database params:nil];
+    NSDictionary *postgresqlParams = @{
+                                       @"sslmode": @"require",
+                                       @"user": username,
+                                       @"hostaddr": ipAddress,
+                                       @"port": [NSNumber numberWithInt:port],
+                                       @"dbname": database
+                                       };
+    NSURL *url = [NSURL URLWithPostgresqlParams:postgresqlParams];
     [self.pgConnection connectWithURL:url error:&connError];
     if (connError) {
         NSLog(@"Connection error: %@", connError);
@@ -419,6 +427,16 @@ static NSString* reachHostName = @"";
 
 -(PGResult* )execute:(NSString* )query format:(PGClientTupleFormat)format error:(NSError** )error {
     return [self execute:query format:format values:nil error:error];
+}
+
+#pragma mark - PGConnectionDelegate
+
+-(void)connection:(PGConnection* )connection willOpenWithParameters:(NSMutableDictionary* )dictionary {
+    NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    NSString *password = [standardUserDefaults objectForKey:@"password_preference"];
+    if(password) {
+        [dictionary setObject:password forKey:@"password"];
+    }
 }
 
 #pragma mark - UIAlertViewDelegate methods
