@@ -15,12 +15,58 @@ typedef NS_ENUM(NSUInteger, MTBCamera) {
     MTBCameraFront
 };
 
+typedef NS_ENUM(NSUInteger, MTBTorchMode) {
+    MTBTorchModeOff,
+    MTBTorchModeOn,
+    MTBTorchModeAuto
+};
+
 @interface MTBBarcodeScanner : NSObject
 
 /**
- *  YES if the scanner should use the front camera.
+ *  Set which camera to use. See MTBCamera for options.
  */
 @property (nonatomic, assign) MTBCamera camera;
+
+/**
+ *  Control the torch on the device, if present.
+ */
+@property (nonatomic, assign) MTBTorchMode torchMode;
+
+/**
+ *  If set, only barcodes inside this area will be scanned.
+ */
+@property (nonatomic, assign) CGRect scanRect;
+
+/**
+ *  Layer used to present the camera input. If the previewView
+ *  does not use auto layout, it may be necessary to adjust the layers frame.
+ */
+@property (nonatomic, strong) CALayer *previewLayer;
+
+/*!
+ @property didStartScanningBlock
+ @abstract
+ Optional callback block that's called when the scanner finished initializing.
+ 
+ @discussion
+ Optional callback that will be called when the scanner is initialized and the view
+ is presented on the screen. This is useful for presenting an activity indicator
+ while the scanner is initializing.
+ */
+@property (nonatomic, copy) void (^didStartScanningBlock)();
+
+/*!
+ @property resultBlock
+ @abstract
+ Block that's called for every barcode captured. Returns an array of AVMetadataMachineReadableCodeObjects.
+ 
+ @discussion
+ The resultBlock is called once for every frame that at least one valid barcode is found.
+ The returned array consists of AVMetadataMachineReadableCodeObject objects.
+ This block is automatically set when you call startScanningWithResultBlock:
+ */
+@property (nonatomic, copy) void (^resultBlock)(NSArray *codes);
 
 /**
  *  Initialize a scanner that will feed the camera input
@@ -74,6 +120,14 @@ typedef NS_ENUM(NSUInteger, MTBCamera) {
  *  Start scanning for barcodes. The camera input will be added as a sublayer
  *  to the UIView given for previewView during initialization.
  *
+ *  This method assumes you have already set the `resultBlock` property directly.
+ */
+- (void)startScanning;
+
+/**
+ *  Start scanning for barcodes. The camera input will be added as a sublayer
+ *  to the UIView given for previewView during initialization.
+ *
  *  @param resultBlock Callback block for captured codes. If the scanner was instantiated with initWithMetadataObjectTypes:previewView, only codes with a type given in metaDataObjectTypes will be reported.
  */
 - (void)startScanningWithResultBlock:(void (^)(NSArray *codes))resultBlock;
@@ -95,5 +149,41 @@ typedef NS_ENUM(NSUInteger, MTBCamera) {
  *  If this method is called when isScanning=NO, it has no effect
  */
 - (void)flipCamera;
+
+/**
+ *  Return a BOOL value that specifies whether the current capture device has a torch.
+ *
+ *  @return YES if the the current capture device has a torch.
+ */
+- (BOOL)hasTorch;
+
+/**
+ *  Toggle the torch from on to off, or off to on.
+ *  If the torch was previously set to Auto, the torch will turn on.
+ *  If the device does not support a torch, calling this method will have no effect.
+ *  To set the torch to on/off/auto directly, set the `torchMode` property.
+ */
+- (void)toggleTorch;
+
+/**
+ *  Freeze capture keeping the last frame on previewView.
+ *  If this method is called before startScanning, it has no effect.
+ */
+- (void)freezeCapture;
+
+/**
+ *  Unfreeze a frozen capture
+ */
+- (void)unfreezeCapture;
+
+/**
+ *  Captures a still image of the current camera feed
+ */
+- (void)captureStillImage:(void (^)(UIImage *image, NSError *error))captureBlock;
+
+/**
+ *  Determine if currently capturing a still image
+ */
+- (BOOL)isCapturingStillImage;
 
 @end

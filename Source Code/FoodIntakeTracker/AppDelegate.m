@@ -135,11 +135,12 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     // Load configurations and create services
     NSString *configBundle = [[NSBundle mainBundle] pathForResource:@"Configuration" ofType:@"plist"];
     if (configBundle) {
-        self.configuration = [[NSUserDefaults standardUserDefaults] objectForKey:@"CurrentConfiguration"];
-        if (!self.configuration) {
-            self.configuration = [NSMutableDictionary dictionaryWithDictionary:[NSDictionary dictionaryWithContentsOfFile:configBundle]];
+        NSDictionary *dict = [[NSUserDefaults standardUserDefaults] objectForKey:@"CurrentConfiguration"];
+        if (!dict) {
+            self.configuration = [[NSDictionary dictionaryWithContentsOfFile:configBundle] mutableCopy];
             [self modifyCurrentConfiguration];
         } else if ([self isServerChanged]) {
+            self.configuration = [dict mutableCopy];
             // samba sever configuration has changed
             [self modifyCurrentConfiguration];
             [self doServerChange];
