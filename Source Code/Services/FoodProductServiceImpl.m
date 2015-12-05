@@ -135,6 +135,41 @@
     return YES;
 }
 
+-(BOOL)updateAdhocFoodProduct:(AdhocFoodProduct *)record error:(NSError **)error {
+    NSString *methodName = [NSString stringWithFormat:@"%@.updateAdhocFoodProduct:error:",
+                            NSStringFromClass(self.class)];
+
+    //Check record or record.managedObjectContext == nil?
+    if (record == nil || record.managedObjectContext == nil){
+        if(error) {
+            *error = [NSError errorWithDomain:@"FoodProductServiceImpl" code:IllegalArgumentErrorCode
+                                     userInfo:@{NSUnderlyingErrorKey:
+                                                    @"record or its managedObjectContext should not be nil"}];
+            [LoggingHelper logError:methodName error:*error];
+        }
+        return NO;
+    }
+
+    [LoggingHelper logMethodEntrance:methodName paramNames:@[@"record"] params:@[record]];
+
+    //Save record
+    [self.managedObjectContext lock];
+
+    record.synchronized = @NO;
+    for (FoodConsumptionRecord *consumptionRecord in record.consumptionRecord) {
+        consumptionRecord.synchronized = @NO;
+    }
+
+    [self.managedObjectContext save:error];
+    [LoggingHelper logError:methodName error:*error];
+
+    [self.managedObjectContext unlock];
+
+    [LoggingHelper logMethodExit:methodName returnValue:nil];
+
+    return YES;
+}
+
 -(BOOL)deleteAdhocFoodProduct:(AdhocFoodProduct *)product error:(NSError **)error {
     NSString *methodName = [NSString stringWithFormat:@"%@.deleteAdhocFoodProduct:error:",
                                     NSStringFromClass(self.class)];

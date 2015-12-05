@@ -139,11 +139,13 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         if (!dict) {
             self.configuration = [[NSDictionary dictionaryWithContentsOfFile:configBundle] mutableCopy];
             [self modifyCurrentConfiguration];
-        } else if ([self isServerChanged]) {
+        } else {
             self.configuration = [dict mutableCopy];
-            // samba sever configuration has changed
-            [self modifyCurrentConfiguration];
-            [self doServerChange];
+            if ([self isServerChanged]) {
+                // samba sever configuration has changed
+                [self modifyCurrentConfiguration];
+                [self doServerChange];
+            }
         }
         
         self.shouldAutoLogout = NO;

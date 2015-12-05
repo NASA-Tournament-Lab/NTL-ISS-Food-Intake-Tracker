@@ -50,7 +50,6 @@
     
     [self take:self.takeButton];
     
-    
     // register for keyboard notifications
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillShow:)
@@ -121,6 +120,12 @@
  * @param sender the button.
  */
 - (IBAction)take:(id)sender{
+    [self.txtFoodName resignFirstResponder];
+    [self.txtFoodComment resignFirstResponder];
+
+    self.txtFoodName.text = nil;
+    self.txtFoodComment.text = nil;
+
     UIButton *button = (UIButton *)sender;
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
     picker.delegate = self;
@@ -128,7 +133,6 @@
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
         picker.cameraDevice = UIImagePickerControllerCameraDeviceRear;
-        //picker.cameraViewTransform = CGAffineTransformScale(picker.cameraViewTransform, -1, 1);
     }
     else {
         picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
@@ -210,7 +214,7 @@
     } else if (self.resultViewFound.hidden == NO) {
         [self.btnResults setEnabled:YES];
     }
-    
+
     [self.preview insertSubview:photoImage belowSubview:self.imgCenter];
     // self.imgCenter.hidden = NO;
     self.lblTakeButtonTitle.text = @"Take Photo";
@@ -223,7 +227,7 @@
     self.resultViewFound.hidden = YES;
     self.btnAdd.hidden = YES;
     [self.btnResults setSelected:NO];
-    
+
     // Take picture
     [self take:self.btnTake];
 }
@@ -312,8 +316,16 @@
         self.btnResults.enabled = YES;
         self.resultViewFound.hidden = YES;
         self.foodAddedPopup.hidden = NO;
+    } else {
+        UIAlertView *alert =
+        [[UIAlertView alloc] initWithTitle:@"Success"
+                                   message:@"Food entry added to consumption."
+                                  delegate:nil
+                         cancelButtonTitle:@"OK"
+                         otherButtonTitles:nil];
+        [alert show];
     }
-    
+
     [self addSelectedFoodsToConsumption];
 }
 

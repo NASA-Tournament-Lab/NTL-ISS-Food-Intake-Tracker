@@ -60,7 +60,7 @@
 -(void)deleteFoodProductFilter:(FoodProductFilter *)filter error:(NSError **)error;
 
 /*!
- @discussion Save (or create if not present) a AdhocFoodProduct object in the Core Data managed object context.
+ @discussion Create a AdhocFoodProduct object in the Core Data managed object context.
  Note that this method will set the synchronized property of the object as NO, set the lastModifiedDate property of 
  the object as current date time, and set the createdDate property of the object as current date time if it's nil.
  @param user The User object which is associated with the product.
@@ -69,6 +69,17 @@
  @return YES if the operation succceeds, otherwise NO.
  */
 -(BOOL)addAdhocFoodProduct:(User *)user product:(AdhocFoodProduct *)product error:(NSError **)error;
+
+/*!
+ @discussion Update a AdhocFoodProduct object in the Core Data managed object context.
+ Note that this method will set the synchronized property of the object as NO, set the lastModifiedDate property of
+ the object as current date time, and set the createdDate property of the object as current date time if it's nil.
+ @param user The User object which is associated with the product.
+ @param product The AdhocFoodProduct object to save.
+ @param error The reference to an NSError object which will be filled if any error occurs.
+ @return YES if the operation succceeds, otherwise NO.
+ */
+-(BOOL)updateAdhocFoodProduct:(AdhocFoodProduct *)record error:(NSError **)error;
 
 /*!
  @discussion Mark an AdhocFoodProduct object as deleted.

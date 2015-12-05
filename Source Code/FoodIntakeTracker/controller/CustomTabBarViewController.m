@@ -403,7 +403,7 @@
             NSLog(@"\tUpdated last sync label to %@", date);
             unichar chr[1] = {'\n'};
             NSString *singleCR = [NSString stringWithCharacters:(const unichar *)chr length:1];
-            NSString *text = [NSString stringWithFormat:@"Last Synced On:%@%@", singleCR,
+            NSString *text = [NSString stringWithFormat:@"Last synced on:%@%@", singleCR,
                               [f stringFromDate:date]];
             [self.lastSyncLabel performSelectorOnMainThread:@selector(setText:)
                                                  withObject:text waitUntilDone:YES];

@@ -144,15 +144,20 @@
 - (void)buildPhotos{
     UIScrollView *scroll = [[UIScrollView alloc] initWithFrame:self.scrollView.frame];
     scroll.contentSize = CGSizeMake(768, 220 * ceil(foodItems.count / 4.0));
-    for(int i = 0; i < foodItems.count; i++){
-        FoodProduct *item = [foodItems objectAtIndex:i];
+    NSInteger i = 0;
+    for(NSInteger j = 0; j < foodItems.count; j++){
+        FoodProduct *item = [foodItems objectAtIndex:j];
+        UIImage *image = [Helper loadImage:item.productProfileImage];
+        if (!image) {
+            continue;
+        }
         int x = (i % 4) * 190;
         int y = (i / 4) * 220;
         UIView *v = [[UIView alloc] initWithFrame:CGRectMake(x, y, 190, 220)];
         UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(17, 17, 170, 170)];
         img.layer.borderColor = [UIColor colorWithRed:0.54 green:0.79 blue:1 alpha:1].CGColor;
         img.layer.borderWidth = 1;
-        img.image = [Helper loadImage:item.productProfileImage];
+        img.image = image;
         [v addSubview:img];
         UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(17, 192, 179, 21)];
         lbl.backgroundColor = [UIColor clearColor];
@@ -161,7 +166,7 @@
         lbl.textColor = [UIColor colorWithRed:0.27 green:0.27 blue:0.27 alpha:1];
         [v addSubview:lbl];
         UIButton *btn = [[UIButton alloc] initWithFrame:img.frame];
-        btn.tag = i;
+        btn.tag = j;
         [btn addTarget:self action:@selector(clickPhoto:) forControlEvents:UIControlEventTouchUpInside];
         [v addSubview:btn];
         if([selectFoods containsObject:item]){
@@ -171,6 +176,7 @@
             [v addSubview:img];
         }
         [scroll addSubview:v];
+        i++;
     }
     [self.scrollView.superview insertSubview:scroll belowSubview:self.scrollView];
     [self.scrollView removeFromSuperview];

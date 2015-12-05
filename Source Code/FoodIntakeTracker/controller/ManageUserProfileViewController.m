@@ -133,6 +133,17 @@
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:AutoLogoutRenewEvent object:nil];
+
+    // register for keyboard notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    // register for keyboard notifications
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillHide:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
 }
 
 /**
@@ -189,7 +200,7 @@
     User *user = [users objectAtIndex:self.selectIndex];
     if ([appDelegate.loggedInUser isEqual:user]) {
         [Helper showAlert:@"Error" message:@"You cannot delete your own profile."];
-        self.deletePopupView.hidden = YES;
+        [self hideDeletePopup:sender];
         return;
     }
     
@@ -423,9 +434,17 @@
     }
     else if(self.profileTable.hidden == NO && self.txtFirstName.hidden == NO){
         // Validation
+        // Validation
+        self.txtFirstName.text = [self.txtFirstName.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        self.txtLastName.text = [self.txtLastName.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+
+        if (![Helper checkStringIsValid:self.txtFirstName.text] || ![Helper checkStringIsValid:self.txtLastName.text]) {
+            [Helper showAlert:@"Error" message:@"Please enter your first & last name"];
+            return;
+        }
         
         if (self.txtFirstName.text.length > 35 || self.txtLastName.text.length > 35) {
-            [Helper showAlert:@"Error" message:@"Sorry, the name field values entered are too long."];
+            [Helper showAlert:@"Error" message:@"Sorry, the name field values entered are too long (max 35 characters)."];
             return;
         }
         
@@ -753,6 +772,26 @@
         [self.txtLastName resignFirstResponder];
     }
     return YES;
+}
+
+- (void)keyboardWillShow:(NSNotification *) note{
+    NSDictionary *userInfo = note.userInfo;
+    NSTimeInterval duration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    UIViewAnimationCurve curve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
+
+    [UIView animateWithDuration:duration delay:0 options:UIViewAnimationOptionBeginFromCurrentState | curve animations:^{
+        self.view.frame = CGRectMake(0, -120.f, self.view.frame.size.width, self.view.frame.size.height);
+    } completion:nil];
+}
+
+- (void)keyboardWillHide:(NSNotification *)note {
+    NSDictionary *userInfo = note.userInfo;
+    NSTimeInterval duration = [userInfo[UIKeyboardAnimationDurationUserInfoKey] doubleValue];
+    UIViewAnimationCurve curve = [userInfo[UIKeyboardAnimationCurveUserInfoKey] integerValue];
+
+    [UIView animateWithDuration:duration delay:0 options:UIViewAnimationOptionBeginFromCurrentState | curve animations:^{
+        self.view.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+    } completion:nil];
 }
 
 @end

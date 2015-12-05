@@ -92,6 +92,13 @@
         foodDetail.btnVoicePlay.enabled = YES;
         
         foodDetail.commentInstructionLabel.text = @"Player stopped";
+        foodDetail.commentInstructionLabel.hidden = NO;
+        [foodDetail.commentInstructionLabel sizeToFit];
+        CGRect labelFrame = foodDetail.commentInstructionLabel.frame;
+        labelFrame.size.width += 5;
+        labelFrame.size.height += 5;
+        foodDetail.commentInstructionLabel.frame = labelFrame;
+        foodDetail.commentInstructionLabel.center = CGPointMake(280.f, 380.f);
     }
 }
 
@@ -138,9 +145,17 @@
     }
     
     index++;
-    
+
     foodDetail.commentInstructionLabel.text = [NSString stringWithFormat:@"Playing recording (%d of %d)", index,
                                                self.fileNameQueue.count];
+    foodDetail.commentInstructionLabel.hidden = NO;
+    foodDetail.commentInstructionLabel.layer.cornerRadius = 4.0f;
+    [foodDetail.commentInstructionLabel sizeToFit];
+    CGRect labelFrame = foodDetail.commentInstructionLabel.frame;
+    labelFrame.size.width += 5;
+    labelFrame.size.height += 5;
+    foodDetail.commentInstructionLabel.frame = labelFrame;
+    foodDetail.commentInstructionLabel.center = CGPointMake(280.f, 380.f);
 }
 
 - (void)stop {
@@ -440,7 +455,7 @@
     bool listening;
 
     /* Audio record objects */
-    NSString *recorderFilePath;
+    NSMutableArray *recorderFilePath;
     AVAudioRecorder *recorder;
     Looper *looper;
 }
@@ -620,6 +635,15 @@
     self.fatPercentageLabel.layer.cornerRadius = 7.f;
     self.fatPercentageLabel.layer.borderWidth = 0.8f;
     self.fatPercentageLabel.layer.borderColor = [UIColor colorWithWhite:0.2 alpha:0.2].CGColor;
+
+    _addFood.commentInstructionLabel.hidden = YES;
+    foodDetail.commentInstructionLabel.hidden = YES;
+    [_addFood.commentInstructionLabel sizeToFit];
+    [foodDetail.commentInstructionLabel sizeToFit];
+    _addFood.commentInstructionLabel.layer.cornerRadius = 4.0f;
+    foodDetail.commentInstructionLabel.layer.cornerRadius = 4.0f;
+
+    recorderFilePath = [NSMutableArray array];
 }
 
 /**
@@ -886,7 +910,7 @@
     // Validate the food name
     _addFood.txtFood.text = [_addFood.txtFood.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     if (![Helper checkStringIsValid:_addFood.txtFood.text]) {
-        [Helper showAlert:@"Error" message:@"The food name cannot be empty."];
+        [Helper showAlert:@"Error" message:@"The Food Name cannot be empty."];
         return;
     }
     
@@ -901,12 +925,12 @@
     FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
     NSError *error;
     if (self.foodConsumptionRecordToAdd) {
-        FoodProduct *foodProduct = [foodProductService getFoodProductByName:appDelegate.loggedInUser
-                                                                       name:_addFood.txtFood.text
-                                                                      error:&error];
+        //FoodProduct *foodProduct = [foodProductService getFoodProductByName:appDelegate.loggedInUser
+        //                                                               name:_addFood.txtFood.text
+        //                                                              error:&error];
         error = nil;
         
-        if (!foodProduct) {
+        // if (!foodProduct) {
             if (self.adhocFoodProductToAdd) {
                 [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser
                                                 product:self.adhocFoodProductToAdd
@@ -916,7 +940,7 @@
                 self.adhocFoodProductToAdd.name = _addFood.txtFood.text;
                 self.adhocFoodProductToAdd.quantity = [NSNumber numberWithFloat:_addFood.txtQuantity.text.floatValue];
             }
-        }
+        // }
         
         self.foodConsumptionRecordToAdd.comment = _addFood.txtComment.text;
         self.foodConsumptionRecordToAdd.quantity = [NSNumber numberWithFloat:_addFood.txtQuantity.text.floatValue];
@@ -935,30 +959,33 @@
         components.minute = [[time substringFromIndex:3] intValue];
         self.foodConsumptionRecordToAdd.timestamp = [components date];
         
-        if (recorderFilePath) {
-            StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
-                                                                                  entityForName:@"StringWrapper"
-                                                                                  inManagedObjectContext:
-                                                                                  recordService.managedObjectContext]
-                                                  insertIntoManagedObjectContext:nil];
-            stringWrapper.value = recorderFilePath;
-            stringWrapper.synchronized = @NO;
-            stringWrapper.removed = @NO;
-            self.foodConsumptionRecordToAdd.voiceRecordings = [NSSet setWithObject:stringWrapper];
+        if (recorderFilePath && recorderFilePath.count > 0) {
+            for (NSString *filePath in recorderFilePath) {
+                StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
+                                                                                      entityForName:@"StringWrapper"
+                                                                                      inManagedObjectContext:
+                                                                                      recordService.managedObjectContext]
+                                                      insertIntoManagedObjectContext:nil];
+                stringWrapper.value = filePath;
+                stringWrapper.synchronized = @NO;
+                stringWrapper.removed = @NO;
+
+                [self.foodConsumptionRecordToAdd addVoiceRecordingsObject:stringWrapper];
+            }
         }
         
         [recordService addFoodConsumptionRecord:appDelegate.loggedInUser
                                          record:self.foodConsumptionRecordToAdd
                                           error:&error];
         if ([Helper displayError:error]) return;
-        if (foodProduct) {
+        //if (foodProduct) {
             // The food product already exists
-            self.foodConsumptionRecordToAdd.foodProduct = foodProduct;
-            self.foodConsumptionRecordToAdd.quantity = self.foodConsumptionRecordToAdd.quantity;
-        } else {
+        //    self.foodConsumptionRecordToAdd.foodProduct = foodProduct;
+        //    self.foodConsumptionRecordToAdd.quantity = self.foodConsumptionRecordToAdd.quantity;
+        //} else {
             self.foodConsumptionRecordToAdd.foodProduct = self.adhocFoodProductToAdd;
             self.foodConsumptionRecordToAdd.quantity = self.adhocFoodProductToAdd.quantity;
-        }
+        //}
         
         [recordService saveFoodConsumptionRecord:self.foodConsumptionRecordToAdd error:&error];
         if ([Helper displayError:error]) return;
@@ -969,9 +996,10 @@
         [clearCover removeFromSuperview];
         _addFood = nil;
         clearCover = nil;
-        recorderFilePath = nil;
         self.adhocFoodProductToAdd = nil;
         self.foodConsumptionRecordToAdd = nil;
+
+        [recorderFilePath removeAllObjects];
         
         [self.btnAddFood setSelected:NO];
         
@@ -1062,7 +1090,7 @@
     [self updateProgress];
     [self stopCommentDictation];
     
-    recorderFilePath = nil;
+    [recorderFilePath removeAllObjects];
 }
 
 /**
@@ -1084,39 +1112,21 @@
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     FoodConsumptionRecordServiceImpl *recordService = appDelegate.foodConsumptionRecordService;
     NSError *error;
+
+    if (foodDetail.txtFoodName.text.length == 0) {
+        [Helper showAlert:@"Error" message:@"The Food Name cannot be empty."];
+        return;
+    }
     
     // handle food name change
     if ([foodDetail.foodConsumptionRecord.foodProduct isKindOfClass:[AdhocFoodProduct class]] &&
         ![foodDetail.foodConsumptionRecord.foodProduct.name isEqualToString:foodDetail.txtFoodName.text]) {
         FoodProductServiceImpl *foodService = appDelegate.foodProductService;
         AdhocFoodProduct *product = (AdhocFoodProduct *) foodDetail.foodConsumptionRecord.foodProduct;
-        AdhocFoodProduct *newProduct = [foodService buildAdhocFoodProduct:&error];
-        newProduct.name = foodDetail.txtFoodName.text;
-        newProduct.barcode = product.barcode;
-        newProduct.origin = product.origin;
-        newProduct.fluid = product.fluid;
-        newProduct.energy = product.energy;
-        newProduct.sodium = product.sodium;
-        newProduct.protein = product.protein;
-        newProduct.carb = product.carb;
-        newProduct.fat = product.fat;
-        newProduct.productProfileImage = product.productProfileImage;
-        [newProduct addCategories:product.categories];
-        
-        if (![product.name hasPrefix:@"Intake"]) {
-            [foodService deleteAdhocFoodProduct:product error:&error];
-            if ([Helper displayError:error]) return;
-        }
-        
-        foodDetail.foodConsumptionRecord.foodProduct = nil;
-        [recordService saveFoodConsumptionRecord:foodDetail.foodConsumptionRecord error:&error];
+        product.name = foodDetail.txtFoodName.text;
+
+        [foodService updateAdhocFoodProduct:product error:&error];
         if ([Helper displayError:error]) return;
-        
-        [foodService addAdhocFoodProduct:appDelegate.loggedInUser product:newProduct error:&error];
-        if ([Helper displayError:error]) return;
-        
-        newProduct.user = product.user;
-        foodDetail.foodConsumptionRecord.foodProduct = newProduct;
     }
     
     foodDetail.foodConsumptionRecord.quantity = [NSNumber numberWithFloat:foodDetail.txtQuantity.text.floatValue];
@@ -1137,18 +1147,28 @@
     components.minute = [[timeString substringFromIndex:3] intValue];
     components.second = (int)round([foodDetail.foodConsumptionRecord.timestamp timeIntervalSince1970]) % 60;
     foodDetail.foodConsumptionRecord.timestamp = [components date];
-    
-    if (recorderFilePath) {
-        StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
-                                                                              entityForName:@"StringWrapper"
-                                                                              inManagedObjectContext:
-                                                                              recordService.managedObjectContext]
-                                              insertIntoManagedObjectContext:recordService.managedObjectContext];
-        stringWrapper.value = recorderFilePath;
-        stringWrapper.synchronized = @NO;
-        stringWrapper.removed = @NO;
-        
-        [foodDetail.foodConsumptionRecord addVoiceRecordingsObject:stringWrapper];
+
+    if (recorderFilePath && recorderFilePath.count > 0) {
+        for (NSString *filePath in recorderFilePath) {
+            [recordService.managedObjectContext lock];
+
+            StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
+                                                                                  entityForName:@"StringWrapper"
+                                                                                  inManagedObjectContext:
+                                                                                  recordService.managedObjectContext]
+                                                  insertIntoManagedObjectContext:nil];
+            stringWrapper.value = filePath;
+            stringWrapper.synchronized = @NO;
+            stringWrapper.removed = @NO;
+
+            [recordService.managedObjectContext insertObject:stringWrapper];
+            [recordService.managedObjectContext save:&error];
+            if ([Helper displayError:error]) return;
+            
+            [recordService.managedObjectContext unlock];
+
+            [foodDetail.foodConsumptionRecord addVoiceRecordingsObject:stringWrapper];
+        }
     }
     
     [recordService saveFoodConsumptionRecord:foodDetail.foodConsumptionRecord error:&error];
@@ -1160,7 +1180,7 @@
     clearCover = nil;
     [foodDetail.view removeFromSuperview];
     foodDetail = nil;
-    recorderFilePath = nil;
+    [recorderFilePath removeAllObjects];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
 }
@@ -1182,9 +1202,16 @@
     [foodDetail.btnCancel addTarget:self
                              action:@selector(hideFoodDetail)
                    forControlEvents:UIControlEventTouchUpInside];
-    
-    [foodDetail.btnSave setHidden:[record.foodProduct.removed boolValue]];
-    [foodDetail.txtQuantity setUserInteractionEnabled:![record.foodProduct.removed boolValue]];
+
+    if ([record.foodProduct.removed boolValue]) {
+        [foodDetail.btnSave setHidden:YES];
+        [foodDetail.btnVoice setHidden:YES];
+        [foodDetail.btnVoicePlay setHidden:YES];
+        [foodDetail.txtFoodName setUserInteractionEnabled:NO];
+        [foodDetail.txtComment setUserInteractionEnabled:NO];
+        [foodDetail.txtQuantity setUserInteractionEnabled:NO];
+    }
+
     [foodDetail.btnSave addTarget:self
                            action:@selector(saveFoodDetail)
                  forControlEvents:UIControlEventTouchUpInside];
@@ -1316,6 +1343,10 @@
     
     NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
     [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+
+    if (copyItems.count > 0) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
+    }
 }
 /**
  * handle action for delete button. Just pop over delete confirm dialog.
@@ -1550,17 +1581,20 @@
             record.foodProduct.carb = product.carb;
             record.foodProduct.fat = product.fat;
             record.timestamp = [Helper convertDateTimeToDate:self.dateListView.currentDate time:[NSDate date]];
-            
-            if (recorderFilePath) {
-                StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
-                                                                                      entityForName:@"StringWrapper"
-                                                                                      inManagedObjectContext:
-                                                                                      recordService.managedObjectContext]
-                                                      insertIntoManagedObjectContext:nil];
-                stringWrapper.value = recorderFilePath;
-                stringWrapper.synchronized = @NO;
-                stringWrapper.removed = @NO;
-                record.voiceRecordings = [NSSet setWithObject:stringWrapper];
+
+            if (recorderFilePath && recorderFilePath.count > 0) {
+                for (NSString *filePath in recorderFilePath) {
+                    StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
+                                                                                          entityForName:@"StringWrapper"
+                                                                                          inManagedObjectContext:
+                                                                                          recordService.managedObjectContext]
+                                                          insertIntoManagedObjectContext:nil];
+                    stringWrapper.value = filePath;
+                    stringWrapper.synchronized = @NO;
+                    stringWrapper.removed = @NO;
+
+                    [record addVoiceRecordingsObject:stringWrapper];
+                }
             }
             
             [recordService addFoodConsumptionRecord:appDelegate.loggedInUser record:record error:&error];
@@ -1571,7 +1605,7 @@
             [self.foodConsumptionRecords addObject:record];
             [self.foodTableView reloadData];
             
-            recorderFilePath = nil;
+            [recorderFilePath removeAllObjects];
             
             NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
             [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
@@ -1681,8 +1715,8 @@
     foodDetail.btnVoicePlay.enabled = NO;
     
     NSMutableArray *array = [NSMutableArray arrayWithArray:[foodDetail.foodConsumptionRecord.voiceRecordings allObjects]];
-    if (recorderFilePath != nil) {
-        [array addObject:recorderFilePath];
+    if (recorderFilePath.count > 0) {
+        [array addObjectsFromArray:recorderFilePath];
     }
     
     looper = [[Looper alloc] initWithFileNameQueue:array];
@@ -1697,8 +1731,8 @@
  */
 - (IBAction)startCommentDictation:(id)sender {
     if (self.commentToUpdate) {
-        _addFood.commentInstructionLabel.text = @"";
-        foodDetail.commentInstructionLabel.text = @"";
+        _addFood.commentInstructionLabel.hidden = YES;
+        foodDetail.commentInstructionLabel.hidden = YES;
         // Stop commenting
         [self stopCommentDictation];
     }
@@ -1706,6 +1740,26 @@
         // start listening for speech
         _addFood.commentInstructionLabel.text = @"Initializing...";
         foodDetail.commentInstructionLabel.text = @"Initializing...";
+        _addFood.commentInstructionLabel.hidden = NO;
+        foodDetail.commentInstructionLabel.hidden = NO;
+
+        [_addFood.commentInstructionLabel sizeToFit];
+        CGRect labelFrame = _addFood.commentInstructionLabel.frame;
+        labelFrame.size.width += 7;
+        labelFrame.size.height += 7;
+        _addFood.commentInstructionLabel.frame = labelFrame;
+        _addFood.commentInstructionLabel.center = CGPointMake(557.f, 102.f);
+
+        [foodDetail.commentInstructionLabel sizeToFit];
+        labelFrame = foodDetail.commentInstructionLabel.frame;
+        labelFrame.size.width += 7;
+        labelFrame.size.height += 7;
+        foodDetail.commentInstructionLabel.frame = labelFrame;
+        foodDetail.commentInstructionLabel.center = CGPointMake(280.f, 380.f);
+
+        _addFood.commentInstructionLabel.layer.cornerRadius = 4.0f;
+        foodDetail.commentInstructionLabel.layer.cornerRadius = 4.0f;
+
         listening = YES;
         
         if (foodDetail) {
@@ -1737,17 +1791,35 @@
             [alert show];
             return;
         }
+
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.3]];
         
         //prepare to record
         [recorder setDelegate:self];
         [recorder prepareToRecord];
         
         //start recording
-        [recorder recordForDuration:600];
+        [recorder recordForDuration:120];
         
-        _addFood.commentInstructionLabel.text = @"Speak now, please tap the Mic icon to stop";
-        foodDetail.commentInstructionLabel.text = @"Speak now, please tap the Mic icon to stop";
-        
+        _addFood.commentInstructionLabel.text = @"Speak now, tap the Mic icon to stop (< 2min)";
+        foodDetail.commentInstructionLabel.text = @"Speak now, tap the Mic icon to stop (< 2min)";
+        _addFood.commentInstructionLabel.hidden = NO;
+        foodDetail.commentInstructionLabel.hidden = NO;
+
+        [_addFood.commentInstructionLabel sizeToFit];
+        labelFrame = _addFood.commentInstructionLabel.frame;
+        labelFrame.size.width += 5;
+        labelFrame.size.height += 5;
+        _addFood.commentInstructionLabel.frame = labelFrame;
+        _addFood.commentInstructionLabel.center = CGPointMake(557.f, 102.f);
+
+        [foodDetail.commentInstructionLabel sizeToFit];
+        labelFrame = foodDetail.commentInstructionLabel.frame;
+        labelFrame.size.width += 5;
+        labelFrame.size.height += 5;
+        foodDetail.commentInstructionLabel.frame = labelFrame;
+        foodDetail.commentInstructionLabel.center = CGPointMake(280.f, 380.f);
+
         UIButton *button = (UIButton *)sender;
         if ([button isEqual:foodDetail.btnVoice]) {
             self.commentToUpdate = foodDetail.txtComment;
@@ -1763,52 +1835,38 @@
  */
 - (void)stopCommentDictation {
     // Stop listening for speech
-    _addFood.commentInstructionLabel.text = @"Recording Stopped";
-    foodDetail.commentInstructionLabel.text = @"Recording Stopped";
+    _addFood.commentInstructionLabel.text = @"Recording stopped";
+    foodDetail.commentInstructionLabel.text = @"Recording stopped";
+    _addFood.commentInstructionLabel.hidden = NO;
+    foodDetail.commentInstructionLabel.hidden = NO;
+
+    [_addFood.commentInstructionLabel sizeToFit];
+    CGRect labelFrame = _addFood.commentInstructionLabel.frame;
+    labelFrame.size.width += 5;
+    labelFrame.size.height += 5;
+    _addFood.commentInstructionLabel.frame = labelFrame;
+    _addFood.commentInstructionLabel.center = CGPointMake(557.f, 102.f);
+
+    [foodDetail.commentInstructionLabel sizeToFit];
+    labelFrame = foodDetail.commentInstructionLabel.frame;
+    labelFrame.size.width += 5;
+    labelFrame.size.height += 5;
+    foodDetail.commentInstructionLabel.frame = labelFrame;
+    foodDetail.commentInstructionLabel.center = CGPointMake(280.f, 380.f);
+
     if (listening) {
-        // [self.pocketsphinxController stopListening];
         [recorder stop];
         listening = NO;
     }
+
+    [self performSelector:@selector(hideCommentInstructionLabel) withObject:nil afterDelay:2];
+
     self.commentToUpdate = nil;
 }
 
-/**
- * This method will be called when a hypothesis is recognized.
- * @param hypothesis the hypothesis
- * @param recognitionScore the score
- * @param utteranceID the utterance ID
- */
-- (void)pocketsphinxDidReceiveHypothesis:(NSString *)hypothesis
-                        recognitionScore:(NSString *)recognitionScore
-                             utteranceID:(NSString *)utteranceID {
-    if (self.commentToUpdate) {
-        NSLog(@"Recognized: %@", [hypothesis lowercaseString]);
-        self.commentToUpdate.text =
-        [[self.commentToUpdate.text stringByAppendingString:@" "]
-         stringByAppendingString:[hypothesis lowercaseString]];
-    }
-}
-
-// An optional delegate method of OpenEarsEventsObserver which informs that Pocketsphinx is now listening for speech.
-- (void) pocketsphinxDidStartListening {
-	NSLog(@"Pocketsphinx is now listening.");
-    _addFood.commentInstructionLabel.text = @"Speak now, please tap the Mic icon to stop";
-    foodDetail.commentInstructionLabel.text = @"Speak now, please tap the Mic icon to stop";
-}
-
-- (void) pocketsphinxDidDetectFinishedSpeech {
-    _addFood.commentInstructionLabel.text = @"Processing...";
-    foodDetail.commentInstructionLabel.text = @"Processing...";
-}
-
-- (void) pocketsphinxDidStopListening {
-	NSLog(@"Pocketsphinx has stopped listening.");
-    listening = NO;
-}
-
-- (void) pocketsphinxDidStartCalibration {
-	NSLog(@"Pocketsphinx calibration has started.");
+- (void)hideCommentInstructionLabel{
+    _addFood.commentInstructionLabel.hidden = YES;
+    foodDetail.commentInstructionLabel.hidden = YES;
 }
 
 /**
@@ -1843,6 +1901,10 @@
  * @param sender the button.
  */
 - (IBAction)addWaterButtonClicked:(id)sender {
+    if ([self.fluidProgress.lblCurrent.text integerValue] > 9999) {
+        return;
+    }
+
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     FoodConsumptionRecordServiceImpl *recordService = appDelegate.foodConsumptionRecordService;
     FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
@@ -2141,7 +2203,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
     if ([Helper displayError:err]) return;
     
     NSString *audioPath = [Helper saveVoiceRecording:audioData];
-    recorderFilePath = audioPath;
+    [recorderFilePath addObject:audioPath];
     
     if (voiceSearch) {
         NSString *name = @"Intake From Voice";

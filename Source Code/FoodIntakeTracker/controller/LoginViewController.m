@@ -190,20 +190,48 @@
     // Validation
     self.txtUserName.text = [self.txtUserName.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     self.txtLastName.text = [self.txtLastName.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-    
+
+    NSCharacterSet *s = [[NSCharacterSet letterCharacterSet] invertedSet];
+    if ([self.txtUserName.text rangeOfCharacterFromSet:s].location != NSNotFound ||
+        [self.txtLastName.text rangeOfCharacterFromSet:s].location != NSNotFound) {
+        [Helper showAlert:@"Error" message:@"First and Last names should cannot have numbers"];
+        return;
+    }
+
     if (![Helper checkStringIsValid:self.txtUserName.text] || ![Helper checkStringIsValid:self.txtLastName.text]) {
         [Helper showAlert:@"Error" message:@"Please enter your first & last name"];
         return;
     }
     
     if (self.txtUserName.text.length > 35 || self.txtLastName.text.length > 35) {
-        [Helper showAlert:@"Error" message:@"Sorry, the name field values entered are too long."];
+        [Helper showAlert:@"Error" message:@"Sorry, the name field values entered are too long (max 35 characters)."];
         return;
     }
     
     if ([self.txtUserName.text rangeOfString:@" "].location != NSNotFound ||
         [self.txtLastName.text rangeOfString:@" "].location != NSNotFound) {
         [Helper showAlert:@"Error" message:@"The names should not have spaces."];
+        return;
+    }
+
+    // check if user exists
+    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    UserServiceImpl *userService = appDelegate.userService;
+    NSError *error;
+
+    NSString *fullName = [self.txtUserName.text stringByAppendingFormat:@" %@", self.txtLastName.text];
+    NSArray *results = [userService filterUsers:fullName error:&error];
+    if ([Helper displayError:error]) return;
+
+    if (results.count > 0) {
+        [Helper showAlert:@"Error" message:@"User already exists. Please select different First/Last names."];
+
+        self.loginPanel.hidden = YES;
+        self.registerPanel.hidden = NO;
+        self.registerUserNamePanel.hidden = NO;
+        self.registerPhotoPanel.hidden = YES;
+        self.registerFinishPanel.hidden = YES;
+
         return;
     }
     
@@ -255,7 +283,8 @@
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
         picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
-        picker.cameraViewTransform = CGAffineTransformScale(picker.cameraViewTransform, -1, 1);
+        picker.cameraViewTransform = CGAffineTransformScale(CGAffineTransformIdentity, -1, 1);
+        [picker addObserver:self forKeyPath:@"cameraDevice" options:NSKeyValueObservingOptionNew context:nil];
     }
     else {
         picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
@@ -546,7 +575,9 @@
     self.loginGridView.imgTakePhoto.layer.borderColor = [UIColor lightGrayColor].CGColor;
     self.loginGridView.imgTakePhoto.layer.borderWidth = 1.0f;
     [self.loginGridView setNeedsDisplay];
-   
+
+    [picker removeObserver:self forKeyPath:@"cameraDevice"];
+
     [self.popover dismissPopoverAnimated:YES];
 }
 
@@ -555,6 +586,8 @@
  * @param picker the UIImagePickerController
  */
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    [picker removeObserver:self forKeyPath:@"cameraDevice"];
+
     [self.popover dismissPopoverAnimated:YES];
 }
 
@@ -570,6 +603,14 @@
         [self.txtLastName resignFirstResponder];
     }
     return YES;
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath
+                      ofObject:(id)object
+                        change:(NSDictionary *)change
+                       context:(void *)context {
+    NSLog(@"%@", object);
+    NSLog(@"%@", change);
 }
 
 @end

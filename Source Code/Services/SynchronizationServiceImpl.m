@@ -187,7 +187,7 @@
                               @3, @"User",
                               @4, @"FoodProduct",
                               @5, @"AdhocFoodProduct",
-                              @6, @"FoodConsumptionProduct", nil];
+                              @5, @"FoodConsumptionProduct", nil];
         NSNumber *n1 = [dict objectForKey:v1.name];
         n1 = n1 == nil ? @100 : n1;
         NSNumber *n2 = [dict objectForKey:v2.name];

@@ -178,7 +178,16 @@
 - (void)textFieldDidChange:(NSNotification *)notification {
     UITextField *textField = notification.object;
     if (textField == self.txtFood) {
-        if (!self.suggestionTableView) {
+        AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
+        NSError *error = nil;
+        FoodProductFilter *filter = [foodProductService buildFoodProductFilter:&error];
+        filter.sortOption = @2;
+        NSString *searchText = textField.text;
+        filter.name = searchText;
+        NSArray *result = [foodProductService filterFoodProducts:appDelegate.loggedInUser filter:filter error:&error];
+
+        if (!self.suggestionTableView && result.count > 0) {
             self.suggestionTableView = [self.storyboard instantiateViewControllerWithIdentifier:@"AutoSuggestionView"];
             self.suggestionTableView.delegate = self;
             UIPopoverController *popController =
@@ -190,22 +199,19 @@
                                            inView:textField.superview
                          permittedArrowDirections:UIPopoverArrowDirectionAny
                                          animated:YES];
+        } else if (self.suggestionTableView && result.count == 0) {
+            [self.suggestionTableView.popController dismissPopoverAnimated:YES];
+            self.suggestionTableView = nil;
         }
-        
-        AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-        FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
-        NSError *error = nil;
-        FoodProductFilter *filter = [foodProductService buildFoodProductFilter:&error];
-        filter.sortOption = @2;
-        NSString *searchText = textField.text;
-        filter.name = searchText;
-        NSArray *result = [foodProductService filterFoodProducts:appDelegate.loggedInUser filter:filter error:&error];
+
         if (self.suggestionTableView) {
             NSMutableArray *suggestions = [NSMutableArray array];
             for (int i = 0; i < result.count; i++) {
-                AdhocFoodProduct *product = result[i];
+                FoodProduct *product = result[i];
                 NSString *productName = [product.name uppercaseString];
-                if ([searchText isEqualToString:@""] || [productName rangeOfString:[searchText uppercaseString]].location != NSNotFound) {
+                if (([searchText isEqualToString:@""] ||
+                    [productName rangeOfString:[searchText uppercaseString]].location != NSNotFound) &&
+                    ![product isKindOfClass:[AdhocFoodProduct class]]) {
                     [suggestions addObject:product.name];
                 }
             }
