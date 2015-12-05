@@ -15,12 +15,18 @@ html
 				$('#dialog').dialog({
 					autoOpen: false,
 					modal: true,
-					position: { my: 'top', at: 'center', of : '#new-container' },
+					position: { my: 'bottom', at: 'center', of : window },
 					buttons: {
 						Ok: function() {
 							$( this ).dialog( "close" );
 						}
 					}
+				});
+
+				$(window).resize(function() {
+					$('.ui-dialog-content:visible').each(function() {
+						$(this).dialog('option', 'position', { my: 'bottom', at: 'center', of : window });
+					});
 				});
 
 				$( "input[type=submit], input[type=button], a.button" ).button();

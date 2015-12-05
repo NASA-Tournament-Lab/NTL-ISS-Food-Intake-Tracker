@@ -35,6 +35,8 @@
 
 @implementation SummaryFoodTableCell
 
+@synthesize editing = _isEditing;
+
 /**
  * custom picker deletegate method.
  * change the text label for time or quantity if value changed.
@@ -171,6 +173,7 @@
  * the reordering control, NO to make the transition immediate.
  */
 - (void)setEditing:(BOOL)editing animated:(BOOL)animated{
+    _isEditing = editing;
     
     CGSize size = [self.lblName.text sizeWithAttributes:@{ NSFontAttributeName : self.lblName.font}];
     if (size.width > self.lblName.frame.size.width) {

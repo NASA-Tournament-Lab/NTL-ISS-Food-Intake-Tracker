@@ -185,25 +185,30 @@
     if (appDelegate.loggedInUser.useLastUsedFoodProductFilter.boolValue && appDelegate.loggedInUser.lastUsedFoodProductFilter) {
         BOOL noFilter = YES;
         if ([appDelegate.loggedInUser.lastUsedFoodProductFilter.categories count] > 0) {
-            StringWrapper *foodProductCategory =
-            [[appDelegate.loggedInUser.lastUsedFoodProductFilter.categories allObjects] objectAtIndex:0];
             NSArray *categoriesList = (NSArray *)[categories objectForKey:@"Food by Category"];
-            NSInteger foodProductCategoryIndex = [categoriesList indexOfObject:foodProductCategory.value];
-            if (foodProductCategoryIndex < categoriesList.count) {
-                NSMutableArray *array = [selectCategoryIndex objectForKey:@1];
-                [array addObject:[NSNumber numberWithInteger:foodProductCategoryIndex]];
-                noFilter = NO;
+            NSMutableArray *array = [selectCategoryIndex objectForKey:@1];
+
+            for (StringWrapper *foodProductCategory in appDelegate.loggedInUser.lastUsedFoodProductFilter.categories) {
+                NSInteger foodProductCategoryIndex = [categoriesList indexOfObject:foodProductCategory.value];
+                if (foodProductCategoryIndex != NSNotFound) {
+                    [array addObject:[NSNumber numberWithInteger:foodProductCategoryIndex]];
+                    noFilter = NO;
+                } else if ([foodProductCategory.value isEqualToString:@"Vitamins / Supplements"]) {
+                    [selectCategoryIndex setObject:@0 forKey:@4];
+                    noFilter = NO;
+                }
             }
         }
         if ([appDelegate.loggedInUser.lastUsedFoodProductFilter.origins count] > 0) {
-            StringWrapper *foodProductOrigin =
-            [[appDelegate.loggedInUser.lastUsedFoodProductFilter.origins allObjects] objectAtIndex:0];
             NSArray *origins = (NSArray *)[categories objectForKey:@"Food by Country"];
-            NSInteger foodProductOriginIndex = [origins indexOfObject:foodProductOrigin.value];
-            if (foodProductOriginIndex < origins.count) {
-                NSMutableArray *array = [selectCategoryIndex objectForKey:@2];
-                [array addObject:[NSNumber numberWithInteger:foodProductOriginIndex]];
-                noFilter = NO;
+            NSMutableArray *array = [selectCategoryIndex objectForKey:@2];
+
+            for (StringWrapper *foodProductOrigin in appDelegate.loggedInUser.lastUsedFoodProductFilter.origins) {
+                NSInteger foodProductOriginIndex = [origins indexOfObject:foodProductOrigin.value];
+                if (foodProductOriginIndex < origins.count) {
+                    [array addObject:[NSNumber numberWithInteger:foodProductOriginIndex]];
+                    noFilter = NO;
+                }
             }
         }
         int favoriteWithinTimePeriod = [appDelegate.loggedInUser.lastUsedFoodProductFilter.favoriteWithinTimePeriod intValue];
@@ -260,7 +265,7 @@
     // Filter the food products
     filter.name = self.searchBar.text;
     filter.favoriteWithinTimePeriod = @0;
-    
+
     if ([[selectCategoryIndex objectForKey:@1] count] > 0) {
         NSMutableSet *ct = [NSMutableSet set];
         for (NSNumber *index in [selectCategoryIndex objectForKey:@1]) {
@@ -272,8 +277,21 @@
                                      inManagedObjectContext:context withSeparator:@";"];
             [ct addObjectsFromArray:[set allObjects]];
         }
+
         filter.categories = ct;
     }
+    if ([[selectCategoryIndex objectForKey:@4] intValue] != -1) {
+        if (filter.categories == nil) {
+            filter.categories = [NSMutableSet set];
+        }
+
+        NSSet *vt = [DataHelper convertNSStringToNSSet:@"Vitamins / Supplements" withEntityDescription:
+                     [NSEntityDescription entityForName:@"StringWrapper"
+                                 inManagedObjectContext:[DBHelper currentThreadMoc]]
+                                inManagedObjectContext:context withSeparator:@";"];
+        [filter.categories addObjectsFromArray:[vt allObjects]];
+    }
+
     if ([[selectCategoryIndex objectForKey:@2] count] > 0) {
         NSMutableSet *ct = [NSMutableSet set];
         for (NSNumber *index in [selectCategoryIndex objectForKey:@2]) {
@@ -296,14 +314,6 @@
             filter.favoriteWithinTimePeriod = @30;
         }
     }
-    index = [[selectCategoryIndex objectForKey:@4] intValue];
-    if (index != -1) {
-        NSSet *ct = [DataHelper convertNSStringToNSSet:@"Vitamins / Supplements" withEntityDescription:
-                     [NSEntityDescription entityForName:@"StringWrapper"
-                                 inManagedObjectContext:[DBHelper currentThreadMoc]]
-                                inManagedObjectContext:context withSeparator:@";"];
-        filter.categories = [ct mutableCopy];
-    }
     
     // Save last used food product filter
     if (appDelegate.loggedInUser.useLastUsedFoodProductFilter && appDelegate.loggedInUser.lastUsedFoodProductFilter) {
@@ -325,7 +335,7 @@
     }
     
     for(FoodProduct *foodProduct in result) {
-        if (foodProduct.name.length > 0) {
+        if (foodProduct.name.length > 0 && ![foodProduct isKindOfClass:[AdhocFoodProduct class]]) {
             NSString *key = [foodProduct.name substringToIndex:1];
             if (key && ![key isEqualToString:@""]) {
                 key = [key uppercaseString];
@@ -338,7 +348,7 @@
         }
     }
     
-    for(int i = [foodKeys count] - 1; i >= 0; i--){
+    for(NSInteger i = [foodKeys count] - 1; i >= 0; i--){
         NSString *key = foodKeys[i];
         NSMutableArray *foodProducts = foodDict[key];
         if (foodProducts.count == 0) {
@@ -360,7 +370,7 @@
     [self.rightView addSubview:indexBar];
     visibleStart = visibleEnd = 0;
     
-    int count = 0;
+    NSInteger count = 0;
     if (selectIndex < 2) {
         for (int section = 0; section < foodKeys.count; section++) {
             count += [[foodDict valueForKey:[foodKeys objectAtIndex:section]] count];
@@ -384,10 +394,11 @@
     } else{
         [self.btnAdd setEnabled:YES];
     }
-    
+
     [self.rightView setHidden:self.segListGrid.selectedSegmentIndex == 1 || count == 0];
     [self.gridView setHidden:self.segListGrid.selectedSegmentIndex == 0 || count == 0];
     [self.noRightTable setHidden:count > 0];
+    [self.segListGrid setUserInteractionEnabled:count > 0];
     
     [self.rightTable reloadData];
     [self listGridValueChanged:nil];
@@ -1044,8 +1055,17 @@
     // Reload the foods
     [self loadFoods];
     [self listviewDidSelect:self.optionListView.selectIndex];
-    
-    if (!self.suggestionTableView) {
+
+    FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
+    NSError *error = nil;
+    FoodProductFilter *filter = [foodProductService buildFoodProductFilter:&error];
+    filter.sortOption = @2;
+    if (![searchText isEqualToString:@""]) {
+        filter.name = searchText;
+    }
+    NSArray *result = [foodProductService filterFoodProducts:filter error:&error];
+
+    if (!self.suggestionTableView && result.count > 0) {
         self.suggestionTableView = [self.storyboard instantiateViewControllerWithIdentifier:@"AutoSuggestionView"];
         self.suggestionTableView.delegate = self;
         UIPopoverController *popController =
@@ -1057,27 +1077,25 @@
                                        inView:self.searchBar.superview
                      permittedArrowDirections:UIPopoverArrowDirectionAny
                                      animated:YES];
+    } else if (self.suggestionTableView && result.count == 0) {
+        [self.suggestionTableView.popController dismissPopoverAnimated:YES];
+        self.suggestionTableView = nil;
     }
 
-    FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
-    NSError *error = nil;
-    FoodProductFilter *filter = [foodProductService buildFoodProductFilter:&error];
-    filter.sortOption = @2;
-    if (![searchText isEqualToString:@""]) {
-        filter.name = searchText;
-    }
-    NSArray *result = [foodProductService filterFoodProducts:filter error:&error];
     if (self.suggestionTableView) {
         NSMutableArray *suggestions = [NSMutableArray array];
         for (int i = 0; i < result.count; i++) {
             FoodProduct *product = result[i];
             NSString *productName = [product.name uppercaseString];
-            if ([searchText isEqualToString:@""] ||
-                [productName rangeOfString:[searchText uppercaseString]].location != NSNotFound) {
+            if (([searchText isEqualToString:@""] ||
+                [productName rangeOfString:[searchText uppercaseString]].location != NSNotFound) &&
+                ![product isKindOfClass:[AdhocFoodProduct class]]){
                 if ([DataHelper checkNameUnique:result withFood:product]) {
                     [suggestions addObject:product.name];
-                } else {
+                } else if (product.name != nil && product.origin != nil) {
                     [suggestions addObject:[NSString stringWithFormat:@"%@ - %@", product.name, product.origin]];
+                } else if (product.name != nil) {
+                    [suggestions addObject:[NSString stringWithFormat:@"%@", product.name]];
                 }
             }
         }
@@ -1159,6 +1177,7 @@
         
         [self.rightTable setHidden:count == 0];
         [self.noRightTable setHidden:count > 0];
+        [self.segListGrid setUserInteractionEnabled:count > 0];
 
         return count;
     }
@@ -1431,15 +1450,12 @@
             }
             selectCategoryIndex[indexPath.section] = indexPath.row;*/
         }
-        
-        self.btnChange.hidden = (indexPath.section != 2);
-        
+
+        self.btnChange.hidden = YES;
         self.btnChange.selected = NO;
         self.lblSortTitle.text = @"Sort By:";
         self.optionListView.delegate = self;
-        /*self.optionListView.selectIndex = 0;
-        self.optionListView.options = sortByOptionArray;
-        self.lblSortBy.text = [self.optionListView.options objectAtIndex:0];*/
+
         [self.optionListView.listTable reloadData];
         
         [tableView reloadData];

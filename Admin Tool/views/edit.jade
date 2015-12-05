@@ -15,7 +15,7 @@ html
 				$('#dialog').dialog({
 					autoOpen: false,
 					modal: true,
-					position: { my: 'top', at: 'center', of : '#edit-container' },
+					position: { my: 'bottom', at: 'center', of : window },
 					buttons: {
 						Ok: function() {
 							$( this ).dialog( "close" );
@@ -29,7 +29,7 @@ html
 				$("#dialog-confirm").dialog({
 					autoOpen: false,
 					modal: true,
-					position: { my: 'top', at: 'center', of : '#edit-container' },
+					position: { my: 'bottom', at: 'center', of : window },
 					buttons: {
 						Ok: function() {
 							window.location.href = '/delete' + action;
@@ -111,6 +111,7 @@ html
 							else if key == 'productProfileImage' || key == 'profileImage'
 								input(type='file', name=key, id=key, accept='image/jpg, image/jpeg' extension="jpg")
 								if value
+									input(type='hidden', name=key, id=key, value=value)
 									div
 										<img id='image-data' src='data:image/jpeg;base64, !{image_jpg}' />
 							else if numerics.indexOf(key) != -1

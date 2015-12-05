@@ -47,3 +47,11 @@ a.button, span.button {
 label.error {
     margin-left: 10px;
 }
+select.error, textarea.error, input.error {
+    outline-style: solid;
+    outline-width: 2px;
+    outline-color: #FF0000;
+}
+.ui-dialog {
+	position: fixed !important;
+}

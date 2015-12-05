@@ -94,7 +94,7 @@ static NSString* reachHostName = @"";
                 if (!alertShow) {
                     alertShow = YES;
                     [Helper showAlert:@"Network Connection Error"
-                              message:@"This iPad has lost it's network connection. You can still use the ISS FIT app, and we will attempt to sync with the central food database when it's available."
+                              message:@"This iPad has lost its network connection. You can still use the ISS FIT app, and we will attempt to sync with the central food database when it's available."
                              delegate:self];
                 }
             }
@@ -118,7 +118,6 @@ static NSString* reachHostName = @"";
     }
     
     NSError *connError = nil;
-    // NSURL *url = [NSURL URLWithHost:ipAddress port:port ssl:YES username:username password:password database:database params:nil];
     NSDictionary *postgresqlParams = @{
                                        @"sslmode": @"require",
                                        @"user": username,
