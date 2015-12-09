@@ -33,6 +33,9 @@
     int selectPhotos;
     /* Audio record objects */
     AVAudioRecorder *recorder;
+    /* Elapsed timer */
+    NSTimer *timer;
+    NSInteger timeElapsed;
 }
 
 @end
@@ -79,6 +82,15 @@
     [super viewDidUnload];
 }
 
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    if (timer) {
+        [timer invalidate];
+        timer = nil;
+    }
+}
+
 - (void)viewDidAppear:(BOOL)animated {
     NSDictionary *recordSetting = @{AVFormatIDKey: @(kAudioFormatMPEG4AAC),
                                     AVEncoderAudioQualityKey: @(AVAudioQualityMedium),
@@ -105,10 +117,26 @@
     [recorder prepareToRecord];
     
     //start recording
-    [recorder recordForDuration:600];
+    timeElapsed = 120;
+    [recorder recordForDuration:120];
     
     [self.lblSubTitle setTextColor:[UIColor colorWithWhite:0.2f alpha:1.0f]];
-    self.lblSubTitle.text = @"Speak Now";
+    self.lblSubTitle.text = @"Speak Now (< 2min)";
+
+    timer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(updateSubTitle) userInfo:nil repeats:YES];
+    [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
+}
+
+- (void)updateSubTitle {
+    timeElapsed--;
+    if (timeElapsed >= 0) {
+        int seconds = timeElapsed % 60;
+        int minutes = timeElapsed / 60;
+
+        self.lblSubTitle.text = [NSString stringWithFormat:@"Speak Now (%02d:%2d)", minutes, seconds];
+    } else {
+        [timer invalidate];
+    }
 }
 
 /**
@@ -188,8 +216,11 @@
  * @param sender the button.
  */
 - (IBAction)doneButton:(id)sender {
-    //[pocketsphinxController stopListening];
     [recorder stop];
+    if (timer) {
+        [timer invalidate];
+        timer = nil;
+    }
 }
 
 /**
@@ -216,61 +247,6 @@
     [self.btnSpeak setEnabled:NO];
     self.lblSubTitle.text = @"Analyzing...";
     [self performSelector:@selector(showResult) withObject:nil afterDelay:2];
-}
-
-/**
- * This method will be called when N-Best Hypothesis have been produced.
- * @param hypothesisArray the hypothesis array.
- */
-- (void)pocketsphinxDidReceiveNBestHypothesisArray:(NSArray *)hypothesisArray {
-    self.lblSubTitle.text = @"Analyzing...";
-    // Retrieve language model paths
-    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-    FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
-    NSError *error;
-    
-    [self.searchResult removeAllObjects];
-    NSMutableSet *recognizedSet = [NSMutableSet set];
-    for (id hypothesis in hypothesisArray) {
-        NSString *hypo = nil;
-        if ([hypothesis isKindOfClass:[NSDictionary class]]) {
-            hypo = hypothesis[@"Hypothesis"];
-        }
-        else {
-            hypo = hypothesis;
-        }
-        hypo = [hypo capitalizedString];
-        NSLog(@"Recognized:%@", hypo);
-        if ([recognizedSet containsObject:hypo]) {
-            continue;
-        }
-        /*FoodProduct *foodProduct = [foodProductService getFoodProductByName:appDelegate.loggedInUser
-                                                                       name:hypo
-                                                                      error:&error];*/
-        FoodProductFilter *filter = [foodProductService buildFoodProductFilter:&error];
-        filter.name = hypo;
-        NSArray * results = [foodProductService filterFoodProducts:appDelegate.loggedInUser filter:filter error:&error];
-        
-        if (results && results.count > 0) {
-            for (FoodProduct *product in results) {
-                if (![recognizedSet containsObject:product]) {
-                    [recognizedSet addObject:product];
-                    [self.searchResult addObject:product];
-                }
-            }
-            break;
-        }
-    }
-    [self showResult];
-    
-    // Stop listening
-    //[pocketsphinxController performSelector:@selector(stopListening) withObject:nil afterDelay:0.1];
-}
-
-// An optional delegate method of OpenEarsEventsObserver which informs that Pocketsphinx is now listening for speech.
-- (void) pocketsphinxDidStartListening {
-    [self.lblSubTitle setTextColor:[UIColor redColor]];
-    self.lblSubTitle.text = @"Speak Now";
 }
 
 @end

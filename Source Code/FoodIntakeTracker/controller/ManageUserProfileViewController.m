@@ -471,6 +471,7 @@
     else {
         NSString *imagePath = [Helper saveImage2:self.imgProfilePhoto.image];
         user.profileImage = imagePath;
+        user.synchronized = @0;
         [userService saveUser:user error:&error];
         if ([Helper displayError:error]) return;
         [self showPhotoPreview];

@@ -150,4 +150,13 @@
  */
 -(NSArray *)getAllProductOrigins:(NSError **)error;
 
+/*!
+ @discussion Compare two food products by it number of record counts.
+ * @param firstProduct the first product.
+ * @param secondProduct the second product.
+ * @param error The reference to an NSError object which will be filled if any error occurs.
+ * @return NSOrderedDescending if count for firstProduct greater than count for secondProduct, NSOrderedSame if count is the same or NSOrderedAscending if count for secondProduct greater than count for firstProduct
+ */
+-(NSComparisonResult)compareFoodProduct:(id)firstProduct secondProduct:(id)secondProduct error:(NSError **)error;
+
 @end

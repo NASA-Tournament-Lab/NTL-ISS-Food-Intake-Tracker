@@ -109,6 +109,8 @@
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     UserServiceImpl *userService = appDelegate.userService;
     if (appDelegate.loggedInUser) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
+
         NSError *error;
         [userService logoutUser:appDelegate.loggedInUser error:&error];
         appDelegate.loggedInUser = nil;

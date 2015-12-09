@@ -789,6 +789,31 @@
     return origins;
 }
 
+-(NSComparisonResult)compareFoodProduct:(id)firstProduct secondProduct:(id)secondProduct error:(NSError **)error
+{
+    [self.managedObjectContext lock];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSEntityDescription *description = [NSEntityDescription  entityForName:@"FoodConsumptionRecord"
+                                                    inManagedObjectContext:[self managedObjectContext]];
+
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(foodProduct == %@)", firstProduct];
+    [request setEntity:description];
+    [request setPredicate:predicate];
+    unsigned int count1 = [[self managedObjectContext] countForFetchRequest:request error:error];
+
+    predicate = [NSPredicate predicateWithFormat:@"(foodProduct == %@)", secondProduct];
+    [request setPredicate:predicate];
+    unsigned int count2 = [[self managedObjectContext] countForFetchRequest:request error:error];
+    [self.managedObjectContext unlock];
+    if (count1 < count2) {
+        return NSOrderedDescending;
+    } else if (count1 == count2) {
+        return NSOrderedSame;
+    } else {
+        return NSOrderedAscending ;
+    }
+}
+
 //A private method to filter predicated result
 -(NSArray *)filterResult:(NSArray *)result user:(User *)user adhocOnly:(BOOL)adhocOnly
 {
@@ -812,29 +837,4 @@
     return filteredResult;
 }
 
-//Compare two products by their counts.
--(NSComparisonResult)compareFoodProduct:(id)firstProduct secondProduct:(id)secondProduct error:(NSError **)error
-{
-    [self.managedObjectContext lock];
-    NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    NSEntityDescription *description = [NSEntityDescription  entityForName:@"FoodConsumptionRecord"
-                                                    inManagedObjectContext:[self managedObjectContext]];
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(foodProduct == %@)", firstProduct];
-    [request setEntity:description];
-    [request setPredicate:predicate];
-    unsigned int count1 = [[self managedObjectContext] countForFetchRequest:request error:error];
-    
-    predicate = [NSPredicate predicateWithFormat:@"(foodProduct == %@)", secondProduct];
-    [request setPredicate:predicate];
-    unsigned int count2 = [[self managedObjectContext] countForFetchRequest:request error:error];
-    [self.managedObjectContext unlock];
-    if (count1 < count2) {
-        return NSOrderedDescending;
-    } else if (count1 == count2) {
-        return NSOrderedSame;
-    } else {
-        return NSOrderedAscending ;
-    }
-}
 @end

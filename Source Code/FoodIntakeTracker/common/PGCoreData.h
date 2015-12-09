@@ -16,6 +16,7 @@
 @property PGConnection *pgConnection;
 
 + (PGCoreData *) instance;
++ (void)deleteInstance;
 
 - (BOOL)connect;
 - (void)disconnect;

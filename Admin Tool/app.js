@@ -524,7 +524,6 @@ app.post('/food', requiredAuthentication, function(req, res) {
     }
     newValue["name"] = newValue["name"].toString();
     newValue["origin"] = newValue["origin"].toString();
-    newValue["barcode"] = newValue["barcode"].toString();
     newValue["active"] = 1;
     newValue["removed"] = 0;
     newValue["synchronized"] = 1;
@@ -542,12 +541,12 @@ app.post('/food', requiredAuthentication, function(req, res) {
                 for (var i = 0; i < results.rows.length; i++) {
                     var row = results.rows[i];
                     var value = JSON.parse(row.value);
-                    if (value.name != null && value.name..toString().trim().toLowerCase() === newValue["name"].trim().toLowerCase() &&
+                    if (value.name != null && value.name.toString().trim().toLowerCase() === newValue["name"].trim().toLowerCase() &&
                         value.origin != null && value.origin.trim() == newValue["origin"].trim()) {
                         callback('Food with name "' + value.name + '" and origin "' + value.origin + '" already exists');
                         return;
                     }
-                    if (value.barcode != null && value.barcode.trim() === newValue["barcode"].trim()) {
+                    if (value.barcode != null && newValue["barcode"] != null && value.barcode.toString().trim() === newValue["barcode"].toString().trim()) {
                         callback('Food with barcode "' + value.barcode + '" already exists');
                         return;
                     }

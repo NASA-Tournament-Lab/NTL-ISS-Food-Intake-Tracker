@@ -4346,8 +4346,8 @@ Sun,  21st April 2014</string>
                                     <action selector="Analyze:" destination="Utg-Kb-KvV" eventType="touchUpInside" id="LqF-C2-399"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Speak Now" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Sbi-9i-uWm">
-                                <rect key="frame" x="72" y="363" width="271" height="35"/>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Speak Now (&lt; 2min)" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Sbi-9i-uWm">
+                                <rect key="frame" x="156" y="363" width="110" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <animations/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="18"/>

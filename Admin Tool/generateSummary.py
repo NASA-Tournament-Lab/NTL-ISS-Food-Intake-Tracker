@@ -108,7 +108,7 @@ try:
             continue
 
         # Create directories - if necessary
-        directory = user[u"fullName"]
+        directory = fullName.replace("/", "_")
         if not os.path.exists(directory):
             os.makedirs(directory)
         os.chdir(directory)

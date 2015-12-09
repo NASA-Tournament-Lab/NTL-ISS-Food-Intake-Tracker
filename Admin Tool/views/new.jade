@@ -88,7 +88,7 @@ html
 								for originValue in origins
 									option(value=originValue, selected=value === originValue) #{originValue}
 						else if key == 'productProfileImage' || key == 'profileImage'
-							input(type='file', name=key, id=key, accept='image/jpg, image/jpeg' extension="jpg")
+							input(type='file', title='Choose a file', name=key, id=key, accept='image/jpg, image/jpeg' extension="jpg")
 						else if numerics.indexOf(key) != -1
 							input(type='text', value=value, name=key, id=key, style='width:200px;' required number)
 						else if key == 'barcode'

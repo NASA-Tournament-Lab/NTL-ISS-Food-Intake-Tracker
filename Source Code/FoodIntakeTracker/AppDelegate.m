@@ -199,8 +199,10 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     
     if (loadingFinished && status == SyncStatusStarted && backgroundTask == UIBackgroundTaskInvalid) {
         backgroundTask = [application beginBackgroundTaskWithExpirationHandler:^ {
-            [application endBackgroundTask: backgroundTask];
+            [application endBackgroundTask:backgroundTask];
             backgroundTask = UIBackgroundTaskInvalid;
+
+            [PGCoreData deleteInstance];
         }];
         
         // Start the long-running task and return immediately.
@@ -212,13 +214,15 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                 NSLog(@"Waiting for synchronization: %f", application.backgroundTimeRemaining);
             }
             
-            [[PGCoreData instance] disconnect];
+            [PGCoreData deleteInstance];
             
-            [application endBackgroundTask: backgroundTask];
+            [application endBackgroundTask:backgroundTask];
             backgroundTask = UIBackgroundTaskInvalid;
         });
+    } else {
+        [PGCoreData deleteInstance];
     }
-    
+
     if (self.shouldAutoLogout) {
         [self.tabBarViewController logout];
     }
