@@ -284,7 +284,6 @@
         picker.sourceType = UIImagePickerControllerSourceTypeCamera;
         picker.cameraDevice = UIImagePickerControllerCameraDeviceFront;
         picker.cameraViewTransform = CGAffineTransformScale(CGAffineTransformIdentity, -1, 1);
-        [picker addObserver:self forKeyPath:@"cameraDevice" options:NSKeyValueObservingOptionNew context:nil];
     }
     else {
         picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
@@ -576,8 +575,6 @@
     self.loginGridView.imgTakePhoto.layer.borderWidth = 1.0f;
     [self.loginGridView setNeedsDisplay];
 
-    [picker removeObserver:self forKeyPath:@"cameraDevice"];
-
     [self.popover dismissPopoverAnimated:YES];
 }
 
@@ -586,8 +583,6 @@
  * @param picker the UIImagePickerController
  */
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [picker removeObserver:self forKeyPath:@"cameraDevice"];
-
     [self.popover dismissPopoverAnimated:YES];
 }
 
@@ -603,14 +598,6 @@
         [self.txtLastName resignFirstResponder];
     }
     return YES;
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context {
-    NSLog(@"%@", object);
-    NSLog(@"%@", change);
 }
 
 @end

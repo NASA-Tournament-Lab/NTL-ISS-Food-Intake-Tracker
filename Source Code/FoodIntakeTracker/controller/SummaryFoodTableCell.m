@@ -65,12 +65,21 @@
                                                             object:self.foodConsumptionRecord];
     }
     else{
-        NSNumber *quantity = [NSNumber numberWithFloat:val.floatValue];
-        self.foodConsumptionRecord.quantity = quantity;
+        // check valid
+        CGFloat diffValue = val.floatValue - self.foodConsumptionRecord.quantity.floatValue;
+        if ((self.fluidAmount + [self.foodConsumptionRecord.fluid floatValue] * diffValue) > 9999 ||
+            (self.caloriesAmount + [self.foodConsumptionRecord.energy floatValue] * diffValue) > 9999 ||
+            (self.sodiumAmount + [self.foodConsumptionRecord.sodium floatValue] * diffValue) > 9999 ) {
+            [self setNeedsDisplay];
+            return;
+        }
+
+        self.foodConsumptionRecord.quantity = [NSNumber numberWithFloat:val.floatValue];
         [[NSNotificationCenter defaultCenter] postNotificationName:ConsumptionUpdatedEvent
                                                             object:self.foodConsumptionRecord];
         [self setNeedsDisplay];
     }
+
     // Save the record
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     FoodConsumptionRecordServiceImpl *recordService = appDelegate.foodConsumptionRecordService;

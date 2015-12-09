@@ -109,7 +109,7 @@ html
 									for originValue in origins
 										option(value=originValue, selected=value === originValue) #{originValue}
 							else if key == 'productProfileImage' || key == 'profileImage'
-								input(type='file', name=key, id=key, accept='image/jpg, image/jpeg' extension="jpg")
+								input(type='file', title='Choose a file', name=key, id=key, accept='image/jpg, image/jpeg' extension="jpg")
 								if value
 									input(type='hidden', name=key, id=key, value=value)
 									div

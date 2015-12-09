@@ -812,8 +812,15 @@
         [self loadGridViews];
     }
     
-    if (selectIndex == 8 || selectIndex == 9) {
-        [self loadFoods];
+    if (selectIndex > 7) {
+        AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+        FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
+
+        [foodList sortUsingComparator:^(FoodProduct *obj1, FoodProduct *obj2) {
+            NSError *error;
+            return selectIndex == 8 ? [foodProductService compareFoodProduct:obj1 secondProduct:obj2 error:&error] :
+                                      [foodProductService compareFoodProduct:obj2 secondProduct:obj1 error:&error];
+        }];
     }
 }
 

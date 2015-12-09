@@ -1335,6 +1335,11 @@
         if ([Helper displayError:error]) return;
         [self.foodConsumptionRecords addObject:copyRecord];
     }
+
+    if (copyItems.count > 0) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
+    }
+
     [copyItems removeAllObjects];
     [self.foodTableView reloadData];
     [self updateProgress];
@@ -1343,10 +1348,6 @@
     
     NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
     [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-
-    if (copyItems.count > 0) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
-    }
 }
 /**
  * handle action for delete button. Just pop over delete confirm dialog.
@@ -2039,7 +2040,7 @@
     cell.lblTime.text = [NSString stringWithFormat:@"%.2d:%.2d", hour, minute];
     cell.lblName.text = item.foodProduct.name;
     cell.lblName.textColor = [UIColor colorWithRed:68.f/255.f green:68.f/255.f blue:68.f/255.f alpha:1];
-    if ([item.foodProduct.removed boolValue]) {
+    if ([item.foodProduct.removed boolValue] && ![item.foodProduct isKindOfClass:[AdhocFoodProduct class]]) {
         cell.lblName.textColor = [UIColor colorWithRed:192.f/255.f green:0 blue:0 alpha:1];
     }
     if(item.foodProduct.energy.intValue == 0 && item.foodProduct.sodium.intValue == 0 &&
@@ -2070,20 +2071,18 @@
     cell.btnComment.hidden = YES;
     if(item.comment.length > 0){
         cell.btnComment.hidden = NO;
-    }/* else if (item.voiceRecordings.count > 0) {
-        for (StringWrapper *itemVoice in [item.voiceRecordings allObjects]) {
-            if (itemVoice && itemVoice.value && itemVoice.value.length > 0) {
-                cell.btnComment.hidden = NO;
-                break;
-            }
-        }
-    }*/
+    }
     if(cell.editing){
         cell.deleteView.hidden = NO;
     }
     else{
         cell.deleteView.hidden = YES;
     }
+
+    cell.fluidAmount = [self.fluidProgress.lblCurrent.text integerValue];
+    cell.caloriesAmount = [self.caloriesProgess.lblCurrent.text integerValue];
+    cell.sodiumAmount = [self.sodiumProgress.lblCurrent.text integerValue];
+
     [cell setNeedsDisplay];
     return cell;
 }

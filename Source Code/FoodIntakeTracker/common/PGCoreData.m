@@ -31,6 +31,11 @@ static NSString* reachHostName = @"";
     return instance;
 }
 
++ (void)deleteInstance {
+    [instance.pgConnection disconnect];
+    instance = nil;
+}
+
 - (id)init {
     self = [super init];
     if (self) {

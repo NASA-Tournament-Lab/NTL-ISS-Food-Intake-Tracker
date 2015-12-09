@@ -291,10 +291,18 @@
  * @param sender the button.
  */
 - (IBAction)deletePhotos:(id)sender {
-    
-    for(FoodProduct *item in selectFoods){
+    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
+    NSError *error = nil;
+
+    for(AdhocFoodProduct *item in selectFoods){
+        [item setRemoved:@YES];
+        [foodProductService updateAdhocFoodProduct:item error:&error];
+        if ([Helper displayError:error]) return;
+
         [foodItems removeObject:item];
     }
+
     [selectFoods removeAllObjects];
     [self.btnDelete setEnabled:NO];
     [self.btnAdd setEnabled:NO];

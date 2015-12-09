@@ -77,6 +77,13 @@
 @property (weak, nonatomic) IBOutlet UIButton *btnDone;
 /* Represents the FoodConsumptionRecord in this view. */
 @property (weak, nonatomic) FoodConsumptionRecord *foodConsumptionRecord;
+/* Represents the current fluid amount */
+@property (assign, nonatomic) NSInteger fluidAmount;
+/* Represents the current calories amount */
+@property (assign, nonatomic) NSInteger caloriesAmount;
+/* Represents the current sodium amount */
+@property (assign, nonatomic) NSInteger sodiumAmount;
+
 
 /**
  * show hour pikcer when clicking at time.
