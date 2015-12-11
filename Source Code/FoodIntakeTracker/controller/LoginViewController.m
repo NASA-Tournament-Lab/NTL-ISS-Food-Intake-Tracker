@@ -395,8 +395,6 @@
  @discussion Called when the app finishes loading process.
  */
 - (void)finishLoading:(NSNotification *)notification {
-    userLocks = [[PGCoreData instance] fetchUserLocks];
-
     self.loadingLabel.text = @"Loading";
     
     [self showLoginPanel:nil];
@@ -484,6 +482,11 @@
  @param btn the button.
  */
 - (void)showSelectedUserPanel:(UIButton *)btn{
+    if ([self isUserLocked:user]) {
+        [Helper showAlert:@"Error" message:@"User already logged in another device"];
+        return;
+    }
+    
     selectUserIndex = btn.tag;
     User *user = (User*)[users objectAtIndex:selectUserIndex];
     selectedUserFullName = user.fullName;
@@ -546,6 +549,7 @@
 }
 
 - (BOOL)isUserLocked:(User *) user {
+    userLocks = [[PGCoreData instance] fetchUserLocks];
     if (userLocks) {
         for (NSDictionary *dict in userLocks) {
             NSString *uid = [dict objectForKey:@"id"];
