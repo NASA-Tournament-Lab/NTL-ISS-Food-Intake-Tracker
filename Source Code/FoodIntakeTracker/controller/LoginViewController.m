@@ -480,14 +480,15 @@
  @param btn the button.
  */
 - (void)showSelectedUserPanel:(UIButton *)btn{
+    selectUserIndex = btn.tag;
+    User *user = (User*)[users objectAtIndex:selectUserIndex];
+    selectedUserFullName = user.fullName;
+    
     if ([self isUserLocked:user]) {
         [Helper showAlert:@"Error" message:@"User already logged in another device"];
         return;
     }
     
-    selectUserIndex = btn.tag;
-    User *user = (User*)[users objectAtIndex:selectUserIndex];
-    selectedUserFullName = user.fullName;
     // Set the user's photo and user's full name on loginSelectedPanel
     self.imgSelectedUserImage.image = [Helper loadImage:user.profileImage];    
     if (self.imgSelectedUserImage.image == nil) {
