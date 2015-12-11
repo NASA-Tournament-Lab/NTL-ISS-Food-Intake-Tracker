@@ -2439,7 +2439,7 @@
 					"$(PROJECT_DIR)/library/Postgresql",
 				);
 				OTHER_LDFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.topcoder.FoodIntakeTracker2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.topcoder.FoodIntakeTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				VALID_ARCHS = "armv7 armv7s arm64";
@@ -2466,7 +2466,7 @@
 					"$(PROJECT_DIR)/library/Postgresql",
 				);
 				OTHER_LDFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.topcoder.FoodIntakeTracker2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.topcoder.FoodIntakeTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				VALID_ARCHS = "armv7 armv7s arm64";
