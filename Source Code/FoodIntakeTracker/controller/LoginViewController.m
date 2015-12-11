@@ -109,9 +109,7 @@
 
 @end
 
-@implementation LoginViewController {
-    NSArray *userLocks;
-}
+@implementation LoginViewController
 
 /**
  * Overwrite this method to set login panel list panel as default.
@@ -542,14 +540,12 @@
         [btn setImage:[UIImage imageNamed:@"icon-photo-list-active.png"] forState:UIControlStateHighlighted];
         [self.loginListScrollView addSubview:img];
         [self.loginListScrollView addSubview:btn];
-        if (![self isUserLocked:user]) {
-            [btn addTarget:self action:@selector(showSelectedUserPanel:) forControlEvents:UIControlEventTouchUpInside];
-        }
+        [btn addTarget:self action:@selector(showSelectedUserPanel:) forControlEvents:UIControlEventTouchUpInside];
     }
 }
 
 - (BOOL)isUserLocked:(User *) user {
-    userLocks = [[PGCoreData instance] fetchUserLocks];
+    NSArray *userLocks = [[PGCoreData instance] fetchUserLocks];
     if (userLocks) {
         for (NSDictionary *dict in userLocks) {
             NSString *uid = [dict objectForKey:@"id"];
