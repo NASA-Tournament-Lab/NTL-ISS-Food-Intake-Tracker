@@ -761,6 +761,25 @@
         }];
         
     }
+    else if(index == 8 || index == 9){
+        viewCaloriesOnly = NO;
+        viewFluidOnly = NO;
+        viewSodiumOnly = NO;
+        viewProteinOnly = NO;
+        viewCarbOnly = NO;
+        viewFatOnly = NO;
+        [foodList sortUsingComparator:^(FoodProduct *obj1, FoodProduct *obj2){
+            if (obj1.consumptionRecord.count > obj2.consumptionRecord.count) {
+                return index == 8 ? a : b;
+            }
+
+            if (obj1.consumptionRecord.count < obj2.consumptionRecord.count) {
+                return index == 8 ? b : a;
+            }
+            return (NSComparisonResult)NSOrderedSame;
+        }];
+
+    }
     else{
         viewCaloriesOnly = NO;
         viewFluidOnly = NO;
@@ -810,17 +829,6 @@
     }
     else{
         [self loadGridViews];
-    }
-    
-    if (selectIndex > 7) {
-        AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-        FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
-
-        [foodList sortUsingComparator:^(FoodProduct *obj1, FoodProduct *obj2) {
-            NSError *error;
-            return selectIndex == 8 ? [foodProductService compareFoodProduct:obj1 secondProduct:obj2 error:&error] :
-                                      [foodProductService compareFoodProduct:obj2 secondProduct:obj1 error:&error];
-        }];
     }
 }
 

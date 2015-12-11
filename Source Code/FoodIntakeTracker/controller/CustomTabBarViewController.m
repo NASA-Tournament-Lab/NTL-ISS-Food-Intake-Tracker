@@ -26,6 +26,7 @@
 #import "ManageUserProfileViewController.h"
 #import "AppDelegate.h"
 #import "UserServiceImpl.h"
+#import "PGCoreData.h"
 #import "Helper.h"
 #import "Settings.h"
 
@@ -97,9 +98,30 @@
                                                  name:AutoLogoutStartEvent object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stopAutoLogout)
                                                  name:AutoLogoutStopEvent object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(forceLogout)
+                                                 name:ForceLogoutEvent object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLastSyncLabel:)
                                                  name:UpdateLastSync object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:AutoLogoutRenewEvent object:nil];
+}
+
+/**
+ * action forced logout button.
+ */
+- (void)forceLogout{
+    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    if (appDelegate.loggedInUser) {
+        [[PGCoreData instance] removeUserLock];
+        appDelegate.loggedInUser = nil;
+    }
+    dispatch_async(dispatch_get_main_queue(),^{
+        [self.navigationController popViewControllerAnimated:YES];
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+
+        NSNotification *notif = [[NSNotification alloc] initWithName:@"ForceLogout"
+                                                              object:@{@"success" : @YES} userInfo:nil];
+        [[self.navigationController topViewController] performSelector:@selector(finishLoading:) withObject:notif];
+    });
 }
 
 /**
@@ -107,16 +129,20 @@
  */
 - (void)logout{
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-    UserServiceImpl *userService = appDelegate.userService;
     if (appDelegate.loggedInUser) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
-
-        NSError *error;
-        [userService logoutUser:appDelegate.loggedInUser error:&error];
+        [[PGCoreData instance] removeUserLock];
         appDelegate.loggedInUser = nil;
     }
-    [self.navigationController popViewControllerAnimated:YES];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+
+    [appDelegate doSyncUpdateWithBlock:^(BOOL result) {
+        [self.navigationController popViewControllerAnimated:YES];
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+
+        NSNotification *notif = [[NSNotification alloc] initWithName:@"Logout"
+                                                              object:@{@"success" : @YES} userInfo:nil];
+        [[self.navigationController topViewController] performSelector:@selector(finishLoading:) withObject:notif];
+    }];
+
 }
 
 /**

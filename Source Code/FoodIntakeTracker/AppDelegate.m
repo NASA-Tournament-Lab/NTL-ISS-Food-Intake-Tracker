@@ -164,10 +164,14 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         if (!changed) {
             [self performSelector:@selector(initialLoad) withObject:nil afterDelay:0.5];
         }
-        
+
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doSyncUpdate:) name:@"DataSyncUpdate"
                                                    object:nil];
-        
+
+        dispatch_async(dataSyncUpdateQ, ^{
+            [[PGCoreData instance] removeUserLock];
+        });
+
         [self performSelector:@selector(doSyncUpdate:) withObject:nil afterDelay:1.0];
 
         return YES;
@@ -288,6 +292,41 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         });
     }
 }
+
+/*!
+ * This method will do data sync/update.
+ */
+- (void) doSyncUpdateWithBlock:(void (^) (BOOL) ) block {
+    // Skip the sync/update if the initial load is still in progress.
+    if (loadingFinished) {
+        dispatch_async(dataSyncUpdateQ, ^{
+            @autoreleasepool {
+                status = SyncStatusStarted;
+
+                NSDate *now = [NSDate date];
+                NSError *error = nil;
+
+                NSLog(@"Start sync at   : %@", now);
+
+                BOOL result = [self.synchronizationService synchronize:&error];
+
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    block(result);
+                });
+
+                NSLog(@"Finished sync at: %@", now);
+
+                status = SyncStatusFinished;
+
+                if (backgroundTask != UIBackgroundTaskInvalid) {
+                    [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
+                    backgroundTask = UIBackgroundTaskInvalid;
+                }
+            }
+        });
+    }
+}
+
 
 #pragma mark - Test Code
 

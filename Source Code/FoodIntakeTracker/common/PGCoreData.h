@@ -29,6 +29,9 @@
 - (NSArray *)fetchObjects;
 - (NSArray *)fetchMedias;
 - (NSArray *)fetchAllMedia;
+- (BOOL)insertUserLock:(User *) user;
+- (BOOL)removeUserLock;
+- (NSArray *)fetchUserLocks;
 - (BOOL)startFetchMedia;
 - (BOOL)endFetchMedia;
 - (NSDictionary *)fetchNextMedia;

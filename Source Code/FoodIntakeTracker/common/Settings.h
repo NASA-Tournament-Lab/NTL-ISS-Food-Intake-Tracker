@@ -27,6 +27,7 @@
 #define AutoLogoutRenewEvent @"AutoLogoutRenewEvent"
 #define AutoLogoutStartEvent @"AutoLogoutStartEvent"
 #define AutoLogoutStopEvent @"AutoLogoutStopEvent"
+#define ForceLogoutEvent @"ForceLogoutEvent"
 #define InitialLoadingBeginEvent @"InitialLoadingBeginEvent"
 #define InitialLoadingEndEvent @"InitialLoadingEndEvent"
 #define InitialLoadingProgressEvent @"InitialLoadingProgressEvent"
