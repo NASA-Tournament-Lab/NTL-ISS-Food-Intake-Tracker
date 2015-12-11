@@ -23,6 +23,7 @@ DROP TABLE public.sync_data;
 DROP TABLE public.media;
 DROP TABLE public.devices;
 DROP TABLE public.data;
+DROP TABLE public.user_lock;
 DROP FUNCTION public.login(_username text, _pwd text, OUT _email text);
 DROP FUNCTION public.bytea_import(p_path text, OUT p_result bytea);
 DROP SCHEMA public CASCADE;
@@ -104,6 +105,17 @@ CREATE TABLE data (
 
 
 ALTER TABLE public.data OWNER TO pl_fit_db;
+
+--
+-- Name: user_lock; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
+--
+
+CREATE TABLE user_lock (
+    id character varying(64) NOT NULL,
+    deviceId character varying(64) NOT NULL
+);
+
+ALTER TABLE public.user_lock OWNER TO pl_fit_db;
 
 --
 -- Name: devices; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
