@@ -109,9 +109,7 @@
 
 @end
 
-@implementation LoginViewController {
-    NSArray *userLocks;
-}
+@implementation LoginViewController
 
 /**
  * Overwrite this method to set login panel list panel as default.
@@ -395,8 +393,6 @@
  @discussion Called when the app finishes loading process.
  */
 - (void)finishLoading:(NSNotification *)notification {
-    userLocks = [[PGCoreData instance] fetchUserLocks];
-
     self.loadingLabel.text = @"Loading";
     
     [self showLoginPanel:nil];
@@ -484,6 +480,11 @@
  @param btn the button.
  */
 - (void)showSelectedUserPanel:(UIButton *)btn{
+    if ([self isUserLocked:user]) {
+        [Helper showAlert:@"Error" message:@"User already logged in another device"];
+        return;
+    }
+    
     selectUserIndex = btn.tag;
     User *user = (User*)[users objectAtIndex:selectUserIndex];
     selectedUserFullName = user.fullName;
@@ -539,13 +540,12 @@
         [btn setImage:[UIImage imageNamed:@"icon-photo-list-active.png"] forState:UIControlStateHighlighted];
         [self.loginListScrollView addSubview:img];
         [self.loginListScrollView addSubview:btn];
-        if (![self isUserLocked:user]) {
-            [btn addTarget:self action:@selector(showSelectedUserPanel:) forControlEvents:UIControlEventTouchUpInside];
-        }
+        [btn addTarget:self action:@selector(showSelectedUserPanel:) forControlEvents:UIControlEventTouchUpInside];
     }
 }
 
 - (BOOL)isUserLocked:(User *) user {
+    NSArray *userLocks = [[PGCoreData instance] fetchUserLocks];
     if (userLocks) {
         for (NSDictionary *dict in userLocks) {
             NSString *uid = [dict objectForKey:@"id"];
