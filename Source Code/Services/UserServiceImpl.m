@@ -223,20 +223,6 @@
         return nil;
     } else {
         User *user = result[0];
-
-        /* lock is removed
-        [self.lockService acquireLock:user error:error];
-        [LoggingHelper logError:methodName error:*error];
-        
-        if (*error) {
-            [LoggingHelper logMethodExit:methodName returnValue:nil];
-            return nil;
-        } else {
-
-            [LoggingHelper logMethodExit:methodName returnValue:user];
-            return user;
-        }*/
-        
         [LoggingHelper logMethodExit:methodName returnValue:user];
         return user;
     }

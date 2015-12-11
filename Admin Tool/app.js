@@ -192,6 +192,25 @@ var updateValue = function(req, res, remove) {
 
     var queryFunctions = [];
 
+    // check barcode exists
+    queryFunctions.push(function(callback) {
+        pgclient.query("SELECT value FROM data WHERE name = 'FoodProduct'", function(err, results) {
+            if (err) {
+                callback(err);
+            } else {
+                for (var i = 0; i < results.rows.length; i++) {
+                    var row = results.rows[i];
+                    var value = JSON.parse(row.value);
+                    if (value.barcode != null && newValue["barcode"] != null && value.barcode.toString().trim() === newValue["barcode"].toString().trim()) {
+                        callback('Food with barcode "' + value.barcode + '" already exists');
+                        return;
+                    }
+                }
+                callback(null);
+            }
+        });
+    });
+
     if (undefined != req.files) {
         var key = firstKey(req.files);
         var image = req.files[key];
@@ -805,13 +824,15 @@ app.get('/user/:id', requiredAuthentication, function(req, res) {
         return;
     }
 
-    pgclient.query("SELECT value FROM data WHERE id = '" + req.params.id + "';", function(err, result) {
+    pgclient.query("SELECT value, (SELECT COUNT(1) FROM user_lock WHERE id = data.id) AS lock FROM data WHERE id = '" + req.params.id + "';", function(err, result) {
         if (err || result.rows.length == 0) {
             return console.error('error running query', err);
         }
 
         console.log("Result: " + result.rows[0].value);
         editObject = JSON.parse(result.rows[0].value);
+      
+        var locked = result.rows[0].lock > 0;
 
         pgclient.query("SELECT encode(data, 'base64') AS value FROM media WHERE filename = '" + editObject["profileImage"] + "';", function(err, result) {
             editImage = result.rows.length > 0 && result.rows[0] != null ? result.rows[0].value : '';
@@ -820,6 +841,7 @@ app.get('/user/:id', requiredAuthentication, function(req, res) {
                 message: editObject.fullName,
                 action: '/user/' + req.params.id,
                 obj: sortObjectByKey(editObject, userKeys),
+                editLock: locked,
                 editKeys: userKeys,
                 titles: userTitles,
                 image_jpg: editImage,

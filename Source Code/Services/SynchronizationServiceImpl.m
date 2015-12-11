@@ -175,7 +175,12 @@
     if (![self.managedObjectContext save:&e]) {
         CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
     }
-    
+
+    // fetch all new objects from other devices
+    NSArray *allData = [coreData fetchObjects];
+    BOOL hasData = allData && allData.count > 0;
+    NSMutableArray *postponedObjects = [NSMutableArray array];
+
     // check for unsychronized objects
     NSArray *d = self.managedObjectContext.persistentStoreCoordinator.managedObjectModel.entities;
     NSArray *sd = [d sortedArrayWithOptions:0 usingComparator:^NSComparisonResult(id obj1, id obj2) {
@@ -215,13 +220,18 @@
         for (SynchronizableModel *object in objects) {
             NSNumber *synced = object.synchronized;
             if (synced && ![synced boolValue]) {
-                NSLog(@"Not synchronized %@", object);
-                if ([object updateObjects:connection] && [self saveMedia:object]) {
-                    // success
-                    [object setSynchronized:@YES];
-                    totalChange++;
+                if (hasData && [self hasObject:allData object:object]) {
+                    // has server changes - merge from server and update later
+                    [postponedObjects addObject:object];
                 } else {
-                    return NO;
+                    NSLog(@"Not synchronized %@", object);
+                    if ([object updateObjects:connection] && [self saveMedia:object]) {
+                        // success
+                        [object setSynchronized:@YES];
+                        totalChange++;
+                    } else {
+                        return NO;
+                    }
                 }
             }
         }
@@ -234,10 +244,8 @@
     if (![self.managedObjectContext save:&e]) {
         CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
     }
-    
-    // fetch all new objects from other devices
-    NSArray *allData = [coreData fetchObjects];
-    if (allData && allData.count > 0) {
+
+    if (hasData) {
         for (NSDictionary *data in allData) {
             [self startUndoActions];
             
@@ -277,6 +285,8 @@
                         e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
                         CHECK_ERROR_AND_RETURN(e, error, @"Cannot update object.", DataUpdateErrorCode, YES, YES);
                     }
+
+                    NSLog(@"Updated object %@", object);
                 }
             } else if (!isRemoved) {
                 if (![DataHelper convertJSONToObject:oId jsonValue:jsonDictionary name:name managegObjectContext:self.managedObjectContext]) {
@@ -319,7 +329,25 @@
     
     // clear sync table
     [coreData clearMediaSyncData];
-    
+
+    // will merge the local changes to database
+    totalChange = 0;
+    for (SynchronizableModel *object in postponedObjects) {
+        object.synchronized = @NO;
+        NSLog(@"Not synchronized %@", object);
+        if ([object updateObjects:connection] && [self saveMedia:object]) {
+            // success
+            [object setSynchronized:@YES];
+            totalChange++;
+        } else {
+            return NO;
+        }
+    }
+
+    if (totalChange > 0) {
+        [self updateSyncTime:[[NSDate date] timeIntervalSince1970] * 1000];
+    }
+
     // Unlock the managedObjectContext
     [[self managedObjectContext] unlock];
     
@@ -351,6 +379,15 @@
     }
     
     return YES;
+}
+
+- (BOOL)hasObject:(NSArray *) array object:(SynchronizableModel *) object {
+    for (NSDictionary *dict in array) {
+        if ([[dict objectForKey:@"id"] isEqualToString:object.uuid]) {
+            return YES;
+        }
+    }
+    return NO;
 }
 
 @end

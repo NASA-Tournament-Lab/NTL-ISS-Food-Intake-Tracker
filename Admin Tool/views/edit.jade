@@ -124,6 +124,8 @@ html
 						if editKeys.indexOf(key) == -1
 							input(type='hidden', value=value, name=key, id=key)
 					p
-						input(type='submit',value='Save')
+						if !editLock
+							input(type='submit',value='Save')
 						a(href="/", class="button") Cancel
-						span(id="delete-button", class="button") Delete
+						if !editLock
+							span(id="delete-button", class="button") Delete

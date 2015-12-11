@@ -25,6 +25,7 @@
 #import "CustomTabBarViewController.h"
 #import "UserServiceImpl.h"
 #import "AppDelegate.h"
+#import "PGCoreData.h"
 #import "Helper.h"
 #import "Settings.h"
 
@@ -108,7 +109,9 @@
 
 @end
 
-@implementation LoginViewController
+@implementation LoginViewController {
+    NSArray *userLocks;
+}
 
 /**
  * Overwrite this method to set login panel list panel as default.
@@ -190,13 +193,6 @@
     // Validation
     self.txtUserName.text = [self.txtUserName.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     self.txtLastName.text = [self.txtLastName.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-
-    NSCharacterSet *s = [[NSCharacterSet letterCharacterSet] invertedSet];
-    if ([self.txtUserName.text rangeOfCharacterFromSet:s].location != NSNotFound ||
-        [self.txtLastName.text rangeOfCharacterFromSet:s].location != NSNotFound) {
-        [Helper showAlert:@"Error" message:@"First and Last names should cannot have numbers"];
-        return;
-    }
 
     if (![Helper checkStringIsValid:self.txtUserName.text] || ![Helper checkStringIsValid:self.txtLastName.text]) {
         [Helper showAlert:@"Error" message:@"Please enter your first & last name"];
@@ -349,16 +345,20 @@
 }
 
 - (void)startLogin {
-    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    AppDelegate *appDelegate = AppDelegate.shareDelegate;
     UserServiceImpl *userService = appDelegate.userService;
     NSError *error = nil;
     User *loggedInUser = [userService loginUser:selectedUserFullName error:&error];
-    self.loadingPanel.hidden = YES;
     if ([Helper displayError:error]) return;
     appDelegate.loggedInUser = loggedInUser;
-    [self performSegueWithIdentifier:@"Login" sender:self];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
+
+    [[PGCoreData instance] insertUserLock:loggedInUser];
+
+    [appDelegate doSyncUpdateWithBlock:^(BOOL result) {
+        self.loadingPanel.hidden = YES;
+        [self performSegueWithIdentifier:@"Login" sender:self];
+    }];
+
 }
 
 /**
@@ -395,6 +395,8 @@
  @discussion Called when the app finishes loading process.
  */
 - (void)finishLoading:(NSNotification *)notification {
+    userLocks = [[PGCoreData instance] fetchUserLocks];
+
     self.loadingLabel.text = @"Loading";
     
     [self showLoginPanel:nil];
@@ -537,8 +539,23 @@
         [btn setImage:[UIImage imageNamed:@"icon-photo-list-active.png"] forState:UIControlStateHighlighted];
         [self.loginListScrollView addSubview:img];
         [self.loginListScrollView addSubview:btn];
-        [btn addTarget:self action:@selector(showSelectedUserPanel:) forControlEvents:UIControlEventTouchUpInside];
+        if (![self isUserLocked:user]) {
+            [btn addTarget:self action:@selector(showSelectedUserPanel:) forControlEvents:UIControlEventTouchUpInside];
+        }
     }
+}
+
+- (BOOL)isUserLocked:(User *) user {
+    if (userLocks) {
+        for (NSDictionary *dict in userLocks) {
+            NSString *uid = [dict objectForKey:@"id"];
+            if ([uid isEqualToString:user.uuid]) {
+                return YES;
+            }
+        }
+    }
+
+    return NO;
 }
 
 #pragma mark - UIScrollView Delegate Methods

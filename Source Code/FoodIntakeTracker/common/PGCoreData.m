@@ -9,6 +9,8 @@
 #import "PGCoreData.h"
 #import "Reachability.h"
 #import "Helper.h"
+#import "Settings.h"
+#import "AppDelegate.h"
 
 static PGCoreData *instance;
 static Reachability* reach;
@@ -46,7 +48,7 @@ static NSString* reachHostName = @"";
 
 - (BOOL)connect {
     [self disconnect];
-    
+
     NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
     NSString *ipAddress = [standardUserDefaults objectForKey:@"address_preference"];
     NSString *username = [standardUserDefaults objectForKey:@"user_preference"];
@@ -75,7 +77,22 @@ static NSString* reachHostName = @"";
         reach.reachableBlock = ^(Reachability*reach) {
             @synchronized(self) {
                 canConnect = YES;
-                
+
+                // check if current user has been lock
+                AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+
+                NSArray *userLocks = [self fetchUserLocks];
+                User *user = appDelegate.loggedInUser;
+                if (userLocks) {
+                    for (NSDictionary *dict in userLocks) {
+                        NSString *uid = [dict objectForKey:@"id"];
+                        if ([uid isEqualToString:user.uuid]) {
+                            [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
+                            return;
+                        }
+                    }
+                }
+
                 if (!alertShow) {
                     alertShow = YES;
                     [Helper showAlert:@"Connection Re-established"
@@ -355,6 +372,57 @@ static NSString* reachHostName = @"";
         [array addObject:[result fetchRowAsDictionary]];
     }
     
+    return array;
+}
+
+- (BOOL)insertUserLock:(User *) user {
+    NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"UUID"];
+    NSError *error = nil;
+    NSArray *values = [NSArray arrayWithObjects:user.uuid, deviceUuid, nil];
+    PGResult *result = [self execute:@"INSERT INTO user_lock values($1::varchar, $2::varchar)" format:PGClientTupleFormatText
+                              values:values error:&error];
+    if (result == nil || result.affectedRows != 1 || error) {
+        return NO;
+    }
+
+    return YES;
+}
+
+- (BOOL)removeUserLock {
+    NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"UUID"];
+    NSError *error = nil;
+    NSArray *values = [NSArray arrayWithObjects:deviceUuid, nil];
+
+    [self execute:@"DELETE FROM user_lock WHERE deviceId = $1::varchar" format:PGClientTupleFormatText
+           values:values error:&error];
+
+    if (error) {
+        NSLog(@"Error: %@", error);
+        return NO;
+    }
+
+    return YES;
+}
+
+- (NSArray *)fetchUserLocks {
+    NSError *error = nil;
+
+    PGResult *result = [self execute:@"SELECT id, deviceId FROM user_lock" format:PGClientTupleFormatText error:&error];
+
+    if (error) {
+        NSLog(@"Error: %@", error);
+        return nil;
+    }
+
+    if (!result || !result.dataReturned) {
+        return nil;
+    }
+
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:result.size];
+    for (int i = 0; i < result.size; i++) {
+        [array addObject:[result fetchRowAsDictionary]];
+    }
+
     return array;
 }
 

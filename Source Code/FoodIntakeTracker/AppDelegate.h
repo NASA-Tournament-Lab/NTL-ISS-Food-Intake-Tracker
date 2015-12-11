@@ -113,7 +113,12 @@
  @discussion The navigation controller.
  */
 @property (nonatomic,strong) CustomTabBarViewController *tabBarViewController;
- 
+
+/*!
+ * This method will do data sync/update.
+ */
+- (void) doSyncUpdateWithBlock:(void (^) (BOOL) ) block;
+
 + (AppDelegate *) shareDelegate;
 
 @end
