@@ -287,14 +287,21 @@
                     }
 
                     NSLog(@"Updated object %@", object);
+
+                    NSManagedObjectID *currentUserId = AppDelegate.shareDelegate.loggedInUser.objectID;
+                    if ([object isKindOfClass:[User class]] && [object.objectID isEqual:currentUserId]) {
+                        AppDelegate.shareDelegate.loggedInUser = (User *) object;
+                        [[NSNotificationCenter defaultCenter] postNotificationName:CurrentUserUpdateEvent object:nil];
+                    }
                 }
             } else if (!isRemoved) {
-                if (![DataHelper convertJSONToObject:oId jsonValue:jsonDictionary name:name managegObjectContext:self.managedObjectContext]) {
+                if (![DataHelper convertJSONToObject:oId jsonValue:jsonDictionary name:name
+                                managegObjectContext:self.managedObjectContext]) {
                     e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
                     CHECK_ERROR_AND_RETURN(e, error, @"Cannot insert object.", DataUpdateErrorCode, YES, YES);
                 }
             }
-            
+
             [self endUndoActions];
             if (![self.managedObjectContext save:&e]) {
                 CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
@@ -350,7 +357,7 @@
 
     // Unlock the managedObjectContext
     [[self managedObjectContext] unlock];
-    
+
     // Update progress
     [self updateProgress:@1.0];
     

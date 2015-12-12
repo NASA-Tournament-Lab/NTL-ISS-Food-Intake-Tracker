@@ -478,6 +478,11 @@
  * called when view will appear. just load foods here.
  */
 - (void)updateView {
+    if (![[NSThread currentThread] isMainThread]) {
+        [self performSelectorOnMainThread:@selector(updateView) withObject:nil waitUntilDone:NO];
+        return;
+    }
+    
     if(foodItems.count == 0){
         NSDate *selectDate = self.dateListView.currentDate;
         if (!selectDate) {
@@ -644,6 +649,9 @@
     foodDetail.commentInstructionLabel.layer.cornerRadius = 4.0f;
 
     recorderFilePath = [NSMutableArray array];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateView)
+                                                 name:CurrentUserUpdateEvent object:nil];
 }
 
 /**

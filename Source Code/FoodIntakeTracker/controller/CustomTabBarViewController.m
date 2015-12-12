@@ -102,6 +102,8 @@
                                                  name:ForceLogoutEvent object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLastSyncLabel:)
                                                  name:UpdateLastSync object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTabbar)
+                                                 name:CurrentUserUpdateEvent object:nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:AutoLogoutRenewEvent object:nil];
 }
 
@@ -324,6 +326,9 @@
         [self.view insertSubview:userApplicationData.view atIndex:0];
         userApplicationData.view.frame = CGRectMake(0, 0, 768, 1004);
         userApplicationData.customTabBarController = self;
+    } else if (userApplicationData && !isAdmin) {
+        [userApplicationData.view removeFromSuperview];
+        userApplicationData = nil;
     }
     if (manageUserProfile == nil && appDelegate.loggedInUser) {
         manageUserProfile = [self.storyboard instantiateViewControllerWithIdentifier:@"ManageUserProfileView"];
@@ -438,6 +443,15 @@
             f = nil;
         }
     }
+}
+
+- (void)updateTabbar {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        BOOL newAdmin = AppDelegate.shareDelegate.loggedInUser.admin.boolValue;
+        if (newAdmin != admin) {
+            [self setAdmin:newAdmin];
+        }
+    });
 }
 
 @end

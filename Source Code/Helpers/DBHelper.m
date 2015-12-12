@@ -118,7 +118,7 @@ static dispatch_once_t onceToken = 0;
 {
     dispatch_async(serialQueue, ^{
         if (name != nil && [mocs objectForKey:name] != nil) {
-            [mocs removeObjectForKey:name];
+            // [mocs removeObjectForKey:name];
             [mocThreads removeObjectForKey:name];
         }
     });
