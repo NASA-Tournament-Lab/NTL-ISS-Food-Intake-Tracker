@@ -439,7 +439,7 @@ PGKVPairs* makeKVPairs(NSDictionary* dict) {
 		return NO;
 	}
 	// extract parameters
-	NSDictionary* parameters = [self _connectionParametersForURL:url timeout:60];
+	NSDictionary* parameters = [self _connectionParametersForURL:url timeout:10];
 	if(parameters==nil) {
 		[_lock unlock];
 		[self raiseError:error code:PGClientErrorParameters url:url reason:nil];

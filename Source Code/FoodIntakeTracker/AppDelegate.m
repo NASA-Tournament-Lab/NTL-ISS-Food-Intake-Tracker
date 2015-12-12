@@ -262,35 +262,11 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
  */
 - (void) doSyncUpdate:(NSNotification *) notif {
     // Skip the sync/update if the initial load is still in progress.
-    if (loadingFinished) {
-        dispatch_async(dataSyncUpdateQ, ^{
-            @autoreleasepool {
-                status = SyncStatusStarted;
-                
-                NSDate *now = [NSDate date];
-                NSError *error = nil;
-                
-                NSLog(@"Start sync at   : %@", now);
-                
-                BOOL result = [self.synchronizationService synchronize:&error];
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    NSDictionary *loadingEndParam = @{@"success": [NSNumber numberWithBool:result]};
-                    [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
-                                                                        object:loadingEndParam];
-                });
-                
-                NSLog(@"Finished sync at: %@", now);
-                
-                status = SyncStatusFinished;
-                
-                if (backgroundTask != UIBackgroundTaskInvalid) {
-                    [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
-                    backgroundTask = UIBackgroundTaskInvalid;
-                }
-            }
-        });
-    }
+    [self doSyncUpdateWithBlock:^(BOOL result){
+        NSDictionary *loadingEndParam = @{@"success": [NSNumber numberWithBool:result]};
+        [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
+                                                            object:loadingEndParam];
+    }];
 }
 
 /*!
@@ -303,10 +279,9 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
             @autoreleasepool {
                 status = SyncStatusStarted;
 
-                NSDate *now = [NSDate date];
                 NSError *error = nil;
 
-                NSLog(@"Start sync at   : %@", now);
+                NSLog(@"Start sync at   : %@", [NSDate date]);
 
                 BOOL result = [self.synchronizationService synchronize:&error];
 
@@ -314,9 +289,9 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                     block(result);
                 });
 
-                NSLog(@"Finished sync at: %@", now);
-
                 status = SyncStatusFinished;
+
+                NSLog(@"Finished sync at: %@", [NSDate date]);
 
                 if (backgroundTask != UIBackgroundTaskInvalid) {
                     [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];

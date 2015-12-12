@@ -194,6 +194,22 @@ var updateValue = function(req, res, remove) {
 
     // check barcode exists
     queryFunctions.push(function(callback) {
+        pgclient.query("SELECT id, deviceId FROM user_lock WHERE id = '" + req.params.id + "'", function(err, results) {
+            if (err) {
+                callback(err);
+            } else {
+                if (results.rows.length == 0) {
+	           callback(null);
+                } else {	           
+                   var row = results.rows[0]; 
+	           callback("User is being used by device: " + row.deviceid);
+	        }  
+            }
+        });
+    });
+    
+    // check barcode exists
+    queryFunctions.push(function(callback) {
         pgclient.query("SELECT value FROM data WHERE name = 'FoodProduct'", function(err, results) {
             if (err) {
                 callback(err);
@@ -987,6 +1003,16 @@ app.get('/delete/user/:id', requiredAuthentication, function(req, res) {
 
 app.get('/delete/food/:id', requiredAuthentication, function(req, res) {
     updateValue(req, res, true);
+});
+
+app.get('/force/user/:id', requiredAuthentication, function(req, res) {
+    var id = req.params.id;
+    pgclient.query("DELETE FROM user_lock WHERE id = '" + id + "'", function(err, result) {
+        if (err) {
+            return console.error('error running query', err);
+        }
+        res.redirect('/user/' + id);
+    });
 });
 
 pg.connect(conString, function(err, client, done) {
