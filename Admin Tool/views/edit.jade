@@ -40,9 +40,27 @@ html
 						}
 					}
 				});
+				$("#dialog-force-confirm").dialog({
+					autoOpen: false,
+					modal: true,
+					position: { my: 'bottom', at: 'center', of : window },
+					buttons: {
+						Ok: function() {
+							window.location.href = '/force' + action;
+							$( this ).dialog( "close" );
+						},
+						Cancel: function() {
+							$( this ).dialog( "close" );
+						}
+					}
+				});
 				$("#delete-button").on("click", function(event) {
 					$("#dialog-confirm").dialog('option', 'title', 'Confirmation');
 					$("#dialog-confirm").dialog('open');
+				});
+				$("#force-button").on("click", function(event) {
+					$("#dialog-force-confirm").dialog('option', 'title', 'Confirmation');
+					$("#dialog-force-confirm").dialog('open');
 				});
 
 				// create validation
@@ -72,6 +90,9 @@ html
 					img(src='/images/logo.png', alt='', style='float: left;height:144px;')
 				#right
 					h1(style='float: left;height:144px;') ISS FIT - Admin Tool
+		div(id='dialog-force-confirm')
+			p.
+				Are you sure you want to remove user lock?
 		.container(style="margin-left:20px;", id="edit-container")
 			div(id='dialog')
 				p(id='message')
@@ -129,3 +150,5 @@ html
 						a(href="/", class="button") Cancel
 						if !editLock
 							span(id="delete-button", class="button") Delete
+						if editLock
+							span(id="force-button", class="button") Release Lock

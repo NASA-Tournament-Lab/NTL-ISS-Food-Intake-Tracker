@@ -989,6 +989,16 @@ app.get('/delete/food/:id', requiredAuthentication, function(req, res) {
     updateValue(req, res, true);
 });
 
+app.get('/force/user/:id', requiredAuthentication, function(req, res) {
+    var id = req.params.id;
+    pgclient.query("DELETE FROM user_lock WHERE id = '" + id + "'", function(err, result) {
+        if (err) {
+            return console.error('error running query', err);
+        }
+        res.redirect('/user/' + id);
+    });
+});
+
 pg.connect(conString, function(err, client, done) {
     if(err) {
         return console.error('error fetching client from pool', err);
