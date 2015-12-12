@@ -747,6 +747,8 @@
     self.imgProfilePhoto.image = chosenImage;
     
     [self.popover dismissPopoverAnimated:YES];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
 }
 
 /*!

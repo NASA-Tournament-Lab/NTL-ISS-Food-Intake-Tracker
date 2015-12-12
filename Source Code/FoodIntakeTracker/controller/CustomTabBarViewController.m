@@ -115,36 +115,47 @@
     if (appDelegate.loggedInUser) {
         [[PGCoreData instance] removeUserLock];
         appDelegate.loggedInUser = nil;
-    }
-    dispatch_async(dispatch_get_main_queue(),^{
-        [self.navigationController popViewControllerAnimated:YES];
-        [[NSNotificationCenter defaultCenter] removeObserver:self];
 
-        NSNotification *notif = [[NSNotification alloc] initWithName:@"ForceLogout"
-                                                              object:@{@"success" : @YES} userInfo:nil];
-        [[self.navigationController topViewController] performSelector:@selector(finishLoading:) withObject:notif];
-    });
+        dispatch_async(dispatch_get_main_queue(),^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingBeginEvent object:nil];
+
+            [self.navigationController popViewControllerAnimated:YES];
+
+            NSDictionary *loadingEndParam = @{@"success": @YES};
+            [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
+                                                                object:loadingEndParam];
+
+            [[NSNotificationCenter defaultCenter] removeObserver:self];
+        });
+    }
 }
 
 /**
  * action for logout button.
  */
 - (void)logout{
+    if ([[NSThread currentThread] isMainThread]) {
+        [self performSelectorInBackground:@selector(logout) withObject:nil];
+        return;
+    }
+
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     if (appDelegate.loggedInUser) {
         [[PGCoreData instance] removeUserLock];
         appDelegate.loggedInUser = nil;
+
+        [appDelegate doSyncUpdateWithBlock:^(BOOL result) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingBeginEvent object:nil];
+
+            [self.navigationController popViewControllerAnimated:YES];
+
+            NSDictionary *loadingEndParam = @{@"success": @YES};
+            [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
+                                                                object:loadingEndParam];
+
+            [[NSNotificationCenter defaultCenter] removeObserver:self];
+        }];
     }
-
-    [appDelegate doSyncUpdateWithBlock:^(BOOL result) {
-        [self.navigationController popViewControllerAnimated:YES];
-        [[NSNotificationCenter defaultCenter] removeObserver:self];
-
-        NSNotification *notif = [[NSNotification alloc] initWithName:@"Logout"
-                                                              object:@{@"success" : @YES} userInfo:nil];
-        [[self.navigationController topViewController] performSelector:@selector(finishLoading:) withObject:notif];
-    }];
-
 }
 
 /**

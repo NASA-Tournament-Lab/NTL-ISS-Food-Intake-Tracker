@@ -20,6 +20,7 @@
 
 #import "Helper.h"
 #import "AppDelegate.h"
+#import "PGCoreData.h"
 
 #define MAX_WIDTH 768
 
@@ -295,6 +296,54 @@ static NSArray *monthNameArray = nil;
     NSDateComponents *difference = [calendar components:NSDayCalendarUnit
                                                fromDate:f toDate:t options:0];
     return [difference day];
+}
+
+/*!
+ @discussion Check if user lock exists.
+ * @param user the user to check.
+ * @return true if lock was acquired or if user is already locked for this device, false otherwise.
+ */
++ (BOOL)checkLock:(User *)user {
+    // check if current user has been lock by another device
+    NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"UUID"];
+
+    NSArray *userLocks = [[PGCoreData instance] fetchUserLocks];
+    if (userLocks) {
+        for (NSDictionary *dict in userLocks) {
+            NSString *uid = [dict objectForKey:@"id"];
+            NSString *deviceId = [dict objectForKey:@"deviceid"];
+            if ([uid isEqualToString:user.uuid]) {
+                return [deviceId isEqualToString:deviceUuid];
+            }
+        }
+    }
+    
+    return NO;
+}
+
+/*!
+ @discussion Try to acquire a user lock.
+ * @param user the user to set new lock.
+ * @return true if lock was acquired or if user is already locked for this device, false otherwise.
+ */
++ (BOOL)acquireLock:(User *)user {
+    // check if current user has been lock by another device
+    NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"UUID"];
+
+    NSArray *userLocks = [[PGCoreData instance] fetchUserLocks];
+    if (userLocks) {
+        for (NSDictionary *dict in userLocks) {
+            NSString *uid = [dict objectForKey:@"id"];
+            NSString *deviceId = [dict objectForKey:@"deviceid"];
+            if ([uid isEqualToString:user.uuid]) {
+                return [deviceId isEqualToString:deviceUuid];
+            }
+        }
+    }
+
+    [[PGCoreData instance] insertUserLock:user];
+
+    return YES;
 }
 
 @end

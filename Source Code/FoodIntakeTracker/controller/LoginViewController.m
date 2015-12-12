@@ -348,9 +348,14 @@
     NSError *error = nil;
     User *loggedInUser = [userService loginUser:selectedUserFullName error:&error];
     if ([Helper displayError:error]) return;
-    appDelegate.loggedInUser = loggedInUser;
 
-    [[PGCoreData instance] insertUserLock:loggedInUser];
+    if (![Helper acquireLock:loggedInUser]) {
+        self.loadingPanel.hidden = YES;
+        [Helper showAlert:@"Error" message:@"User already logged in another device"];
+        return;
+    }
+
+    appDelegate.loggedInUser = loggedInUser;
 
     [appDelegate doSyncUpdateWithBlock:^(BOOL result) {
         self.loadingPanel.hidden = YES;
@@ -483,12 +488,6 @@
     selectUserIndex = btn.tag;
     User *user = (User*)[users objectAtIndex:selectUserIndex];
     selectedUserFullName = user.fullName;
-    
-    if ([self isUserLocked:user]) {
-        [Helper showAlert:@"Error" message:@"User already logged in another device"];
-        return;
-    }
-    
     // Set the user's photo and user's full name on loginSelectedPanel
     self.imgSelectedUserImage.image = [Helper loadImage:user.profileImage];    
     if (self.imgSelectedUserImage.image == nil) {
@@ -543,20 +542,6 @@
         [self.loginListScrollView addSubview:btn];
         [btn addTarget:self action:@selector(showSelectedUserPanel:) forControlEvents:UIControlEventTouchUpInside];
     }
-}
-
-- (BOOL)isUserLocked:(User *) user {
-    NSArray *userLocks = [[PGCoreData instance] fetchUserLocks];
-    if (userLocks) {
-        for (NSDictionary *dict in userLocks) {
-            NSString *uid = [dict objectForKey:@"id"];
-            if ([uid isEqualToString:user.uuid]) {
-                return YES;
-            }
-        }
-    }
-
-    return NO;
 }
 
 #pragma mark - UIScrollView Delegate Methods

@@ -47,7 +47,16 @@ static NSString* reachHostName = @"";
 }
 
 - (BOOL)connect {
-    [self disconnect];
+    @synchronized(self) {
+        if (!canConnect) {
+            NSLog(@"UNREACHABLE");
+            return NO;
+        }
+    }
+
+    if ([self isConnected]) {
+        [self disconnect];
+    }
 
     NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
     NSString *ipAddress = [standardUserDefaults objectForKey:@"address_preference"];
@@ -77,10 +86,11 @@ static NSString* reachHostName = @"";
         reach.reachableBlock = ^(Reachability*reach) {
             @synchronized(self) {
                 canConnect = YES;
+                NSLog(@"This iPad now has a network connection.");
 
-                if (![self acquireLock]) {
+                if (![Helper acquireLock:AppDelegate.shareDelegate.loggedInUser]) {
                     [Helper showAlert:@"Error"
-                              message:@"Failed to acquire user lock. Force logout."];
+                              message:@"User already logged in another device."];
 
                     [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
                     return;
@@ -103,6 +113,7 @@ static NSString* reachHostName = @"";
         reach.unreachableBlock = ^(Reachability*reach) {
             @synchronized(self) {
                 canConnect = NO;
+                NSLog(@"This iPad has lost its network connection.");
                 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     [self.pgConnection reset];
@@ -127,30 +138,28 @@ static NSString* reachHostName = @"";
         // query status at first try
         canConnect = [reach isReachable];
     }
-    
-    @synchronized(self) {
-        if (!canConnect) {
-            NSLog(@"UNREACHABLE");
+
+    if (canConnect) {
+        NSError *connError = nil;
+        NSDictionary *postgresqlParams = @{
+                                           @"sslmode": @"require",
+                                           @"user": username,
+                                           @"hostaddr": ipAddress,
+                                           @"port": [NSNumber numberWithInt:port],
+                                           @"dbname": database
+                                           };
+        NSURL *url = [NSURL URLWithPostgresqlParams:postgresqlParams];
+        [self.pgConnection connectWithURL:url error:&connError];
+        if (connError) {
+            NSLog(@"Connection error: %@", connError);
             return NO;
         }
+        
+        return [self isConnected];
     }
 
-    NSError *connError = nil;
-    NSDictionary *postgresqlParams = @{
-                                       @"sslmode": @"require",
-                                       @"user": username,
-                                       @"hostaddr": ipAddress,
-                                       @"port": [NSNumber numberWithInt:port],
-                                       @"dbname": database
-                                       };
-    NSURL *url = [NSURL URLWithPostgresqlParams:postgresqlParams];
-    [self.pgConnection connectWithURL:url error:&connError];
-    if (connError) {
-        NSLog(@"Connection error: %@", connError);
-        return NO;
-    }
-    
-    return [self isConnected];
+    NSLog(@"UNREACHABLE");
+    return NO;
 }
 
 - (void)disconnect {
@@ -495,27 +504,6 @@ static NSString* reachHostName = @"";
 
 -(PGResult* )execute:(NSString* )query format:(PGClientTupleFormat)format error:(NSError** )error {
     return [self execute:query format:format values:nil error:error];
-}
-
-#pragma mark - Lock private method
-
-- (BOOL)acquireLock {
-    // check if current user has been lock by another device
-    NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"UUID"];
-    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-    User *user = appDelegate.loggedInUser;
-
-    NSArray *userLocks = [self fetchUserLocks];
-    if (userLocks) {
-        for (NSDictionary *dict in userLocks) {
-            NSString *uid = [dict objectForKey:@"id"];
-            NSString *deviceId = [dict objectForKey:@"deviceid"];
-            if ([uid isEqualToString:user.uuid]) {
-                return [deviceId isEqualToString:deviceUuid];
-            }
-        }
-    }
-    return [self insertUserLock:user];
 }
 
 #pragma mark - PGConnectionDelegate

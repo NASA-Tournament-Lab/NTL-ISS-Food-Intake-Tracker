@@ -28,6 +28,7 @@
 #import "FoodProductServiceImpl.h"
 #import "Models.h"
 #import "LoggingHelper.h"
+#import "Helper.h"
 #import "DataHelper.h"
 #import "Settings.h"
 #import "AppDelegate.h"
@@ -156,10 +157,7 @@
     NSString *methodName = [NSString stringWithFormat:@"%@.synchronize:", NSStringFromClass(self.class)];
   
     [LoggingHelper logMethodEntrance:methodName paramNames:@[@"synchronize:"] params:nil];
-    
-    // Lock on the managedObjectContext
-    [[self managedObjectContext] lock];
-    
+
     PGCoreData *coreData = [PGCoreData instance];
     if (![coreData isConnected]) {
         if (![coreData connect]) {
@@ -167,7 +165,20 @@
         }
     }
     PGConnection *connection = coreData.pgConnection;
-    
+
+    User *loggedInUser = AppDelegate.shareDelegate.loggedInUser;
+    if (loggedInUser && ![Helper checkLock:loggedInUser]) {
+        [Helper showAlert:@"Error"
+                  message:@"Admin user has removed lock."];
+
+        [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
+
+        return NO;
+    }
+
+    // Lock on the managedObjectContext
+    [[self managedObjectContext] lock];
+
     NSError *e = nil;
     
     // Save any pending data

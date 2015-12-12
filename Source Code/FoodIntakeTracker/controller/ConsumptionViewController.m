@@ -523,6 +523,15 @@
     
         self.imgHeaderLine.frame = CGRectMake(self.lblHeaderTitle.frame.origin.x + size1.width + 10, 10, 2, 41);
     }
+
+    if (appDelegate.loggedInUser) {
+        self.caloriesProgess.lblTotal.text =
+        [NSString stringWithFormat:@"| %@ Cal", appDelegate.loggedInUser.dailyTargetEnergy];
+        self.sodiumProgress.lblTotal.text =
+        [NSString stringWithFormat:@"| %@ mg", appDelegate.loggedInUser.dailyTargetSodium];
+        self.fluidProgress.lblTotal.text =
+        [NSString stringWithFormat:@"| %@ mL", appDelegate.loggedInUser.dailyTargetFluid];
+    }
 }
 
 /**
@@ -603,8 +612,8 @@
                                                     NSWeekdayCalendarUnit)
                                           fromDate:[NSDate date]];
     
-    self.lblMonth.text = [Helper monthName:info.month];
-    self.lblYear.text = [NSString stringWithFormat:@"GMT %d", info.year];
+    self.lblMonth.text = [Helper monthName:(int)info.month];
+    self.lblYear.text = [NSString stringWithFormat:@"GMT %d", (int)info.year];
 
     [self redrawPieChartWithProtein:0.333 carb:0.333 fat:0.334];
     
