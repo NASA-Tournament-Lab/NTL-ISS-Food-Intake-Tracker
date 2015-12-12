@@ -129,7 +129,7 @@
     
     for (int i = 0; i < users.count; i++) {
         User *user = users[i];
-        if ([user isEqual:appDelegate.loggedInUser]) {
+        if ([user.objectID isEqual:appDelegate.loggedInUser.objectID]) {
             selectIndex = i;
         }
     }

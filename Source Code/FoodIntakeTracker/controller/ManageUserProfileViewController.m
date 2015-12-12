@@ -93,45 +93,7 @@
     self.segmentControl.tintColor = [UIColor colorWithRed:0.16 green:0.33 blue:0.53 alpha:1];
     self.lblSegLeftTitle.textColor = [UIColor whiteColor];
     self.lblSegRightTitle.textColor = [UIColor blackColor];
-    
-    self.selectIndex = 0;
-    NSError *error;
-    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-    UserServiceImpl *userService = appDelegate.userService;
-    users = [NSMutableArray arrayWithArray:[userService filterUsers:@"" error:&error]];
-    if ([Helper displayError:error]) return;
-    [users sortUsingComparator:^(User *obj1, User *obj2){
-        return [obj1.fullName compare:obj2.fullName];
-    }];
-    
-    self.lblSelectedUserName.text = appDelegate.loggedInUser.fullName;
-    self.imgProfilePhoto.image = self.imgSelectedUserPhoto.image =
-    [Helper loadImage:appDelegate.loggedInUser.profileImage];
-    self.imgProfilePhoto.contentMode = UIViewContentModeScaleAspectFit;
-    self.imgSelectedUserPhoto.contentMode = UIViewContentModeScaleAspectFit;
-    NSArray *arr = [appDelegate.loggedInUser.fullName componentsSeparatedByString:@" "];
-    self.lblProfileFirstName.text = [arr objectAtIndex:0];
-    self.lblProfileLastName.text = (arr.count > 1) ? [arr objectAtIndex:1] : @"";
-    self.btnTakePhoto.hidden = YES;
-    
-    for (int i = 0; i < users.count; i++) {
-        User *user = users[i];
-        if ([user isEqual:appDelegate.loggedInUser]) {
-            self.selectIndex = i;
-        }
-    }
-    [self.userListTable selectRowAtIndexPath:[NSIndexPath indexPathForRow:self.selectIndex inSection:0]
-                                    animated:NO
-                              scrollPosition:UITableViewScrollPositionNone];
-    [self showPreviewProfile];
-    
-    if ([appDelegate.loggedInUser admin].boolValue) {
-        [self.rightView setFrame:CGRectMake(313, 52, 455, 952)];
-    }
-    else {
-        [self.rightView setFrame:CGRectMake(0, 52, 768, 952)];
-    }
-    
+
     [[NSNotificationCenter defaultCenter] postNotificationName:AutoLogoutRenewEvent object:nil];
 
     // register for keyboard notifications
@@ -151,6 +113,46 @@
  */
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+
+    self.selectIndex = 0;
+    NSError *error;
+
+    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    UserServiceImpl *userService = appDelegate.userService;
+    users = [NSMutableArray arrayWithArray:[userService filterUsers:@"" error:&error]];
+    if ([Helper displayError:error]) return;
+    [users sortUsingComparator:^(User *obj1, User *obj2){
+        return [obj1.fullName compare:obj2.fullName];
+    }];
+
+    for (int i = 0; i < users.count; i++) {
+        User *user = users[i];
+        if ([user.objectID isEqual:appDelegate.loggedInUser.objectID]) {
+            self.selectIndex = i;
+        }
+    }
+
+    [self.userListTable selectRowAtIndexPath:[NSIndexPath indexPathForRow:self.selectIndex inSection:0]
+                                    animated:NO
+                              scrollPosition:UITableViewScrollPositionNone];
+    [self showPreviewProfile];
+
+    if ([appDelegate.loggedInUser admin].boolValue) {
+        [self.rightView setFrame:CGRectMake(313, 52, 455, 952)];
+    }
+    else {
+        [self.rightView setFrame:CGRectMake(0, 52, 768, 952)];
+    }
+
+    self.lblSelectedUserName.text = appDelegate.loggedInUser.fullName;
+    self.imgProfilePhoto.image = self.imgSelectedUserPhoto.image = [Helper loadImage:appDelegate.loggedInUser.profileImage];
+    self.imgProfilePhoto.contentMode = UIViewContentModeScaleAspectFit;
+    self.imgSelectedUserPhoto.contentMode = UIViewContentModeScaleAspectFit;
+    NSArray *arr = [appDelegate.loggedInUser.fullName componentsSeparatedByString:@" "];
+    self.lblProfileFirstName.text = [arr objectAtIndex:0];
+    self.lblProfileLastName.text = (arr.count > 1) ? [arr objectAtIndex:1] : @"";
+    self.btnTakePhoto.hidden = YES;
+
     [self reloadUsers];
 }
 
@@ -198,7 +200,7 @@
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     UserServiceImpl *userService = appDelegate.userService;
     User *user = [users objectAtIndex:self.selectIndex];
-    if ([appDelegate.loggedInUser isEqual:user]) {
+    if ([appDelegate.loggedInUser.objectID isEqual:user.objectID]) {
         [Helper showAlert:@"Error" message:@"You cannot delete your own profile."];
         [self hideDeletePopup:sender];
         return;
@@ -424,12 +426,6 @@
     User *user = [users objectAtIndex:self.selectIndex];
     NSError *error;
     if(self.profileTable.hidden == NO && self.lblProfileFirstName.hidden == NO){
-        /*
-        if ([user isEqual:appDelegate.loggedInUser]) {
-            [Helper showAlert:@"Error" message:@"You cannot modify the names of the logged user."];
-            return;
-        }
-         */
         [self showEditProfile];
     }
     else if(self.profileTable.hidden == NO && self.txtFirstName.hidden == NO){

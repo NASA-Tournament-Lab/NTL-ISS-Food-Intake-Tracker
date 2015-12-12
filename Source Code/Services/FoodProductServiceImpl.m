@@ -590,7 +590,7 @@
     if (result.count > 0) {
         for (FoodProduct *p in result) {
             if ([p isKindOfClass:[AdhocFoodProduct class]]) {
-                if (user != nil && [((AdhocFoodProduct *)p).user isEqual:user]) {
+                if (user != nil && [((AdhocFoodProduct *)p).user.objectID isEqual:user.objectID]) {
                     ret = p;
                     break;
                 }
@@ -646,7 +646,7 @@
     if (result.count > 0) {
         for (FoodProduct *p in result) {
             if ([p isKindOfClass:[AdhocFoodProduct class]]) {
-                if (user != nil && [((AdhocFoodProduct *)p).user isEqual:user]) {
+                if (user != nil && [((AdhocFoodProduct *)p).user.objectID isEqual:user.objectID]) {
                     ret = p;
                     break;
                 }
@@ -699,7 +699,7 @@
     if (result.count > 0) {
         for (FoodProduct *p in result) {
             if ([p isKindOfClass:[AdhocFoodProduct class]]) {
-                if (user != nil && [((AdhocFoodProduct *)p).user isEqual:user]) {
+                if (user != nil && [((AdhocFoodProduct *)p).user.objectID isEqual:user.objectID]) {
                     ret = p;
                     break;
                 }
@@ -822,7 +822,7 @@
     for (id product in result) {
         if ([product isKindOfClass:[AdhocFoodProduct class]]) {
             AdhocFoodProduct *adhcFoodProduct = (AdhocFoodProduct *)product;
-            if ([adhcFoodProduct.user isEqual:user]) {
+            if ([adhcFoodProduct.user.objectID isEqual:user.objectID]) {
                 [filteredResult addObject:adhcFoodProduct];
                 continue;
             }

@@ -78,20 +78,16 @@ static NSString* reachHostName = @"";
             @synchronized(self) {
                 canConnect = YES;
 
-                // check if current user has been lock
-                AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+                if (![self acquireLock]) {
+                    [Helper showAlert:@"Error"
+                              message:@"Failed to acquire user lock. Force logout."];
 
-                NSArray *userLocks = [self fetchUserLocks];
-                User *user = appDelegate.loggedInUser;
-                if (userLocks) {
-                    for (NSDictionary *dict in userLocks) {
-                        NSString *uid = [dict objectForKey:@"id"];
-                        if ([uid isEqualToString:user.uuid]) {
-                            [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
-                            return;
-                        }
-                    }
+                    [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
+                    return;
                 }
+
+                // sync to database
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
 
                 if (!alertShow) {
                     alertShow = YES;
@@ -138,7 +134,7 @@ static NSString* reachHostName = @"";
             return NO;
         }
     }
-    
+
     NSError *connError = nil;
     NSDictionary *postgresqlParams = @{
                                        @"sslmode": @"require",
@@ -499,6 +495,27 @@ static NSString* reachHostName = @"";
 
 -(PGResult* )execute:(NSString* )query format:(PGClientTupleFormat)format error:(NSError** )error {
     return [self execute:query format:format values:nil error:error];
+}
+
+#pragma mark - Lock private method
+
+- (BOOL)acquireLock {
+    // check if current user has been lock by another device
+    NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"UUID"];
+    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    User *user = appDelegate.loggedInUser;
+
+    NSArray *userLocks = [self fetchUserLocks];
+    if (userLocks) {
+        for (NSDictionary *dict in userLocks) {
+            NSString *uid = [dict objectForKey:@"id"];
+            NSString *deviceId = [dict objectForKey:@"deviceid"];
+            if ([uid isEqualToString:user.uuid]) {
+                return [deviceId isEqualToString:deviceUuid];
+            }
+        }
+    }
+    return [self insertUserLock:user];
 }
 
 #pragma mark - PGConnectionDelegate
