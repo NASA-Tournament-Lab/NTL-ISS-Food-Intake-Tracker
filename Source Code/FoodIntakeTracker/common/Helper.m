@@ -307,18 +307,23 @@ static NSArray *monthNameArray = nil;
     // check if current user has been lock by another device
     NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"UUID"];
 
-    NSArray *userLocks = [[PGCoreData instance] fetchUserLocks];
-    if (userLocks) {
-        for (NSDictionary *dict in userLocks) {
-            NSString *uid = [dict objectForKey:@"id"];
-            NSString *deviceId = [dict objectForKey:@"deviceid"];
-            if ([uid isEqualToString:user.uuid]) {
-                return [deviceId isEqualToString:deviceUuid];
+    NSLog(@"Checking lock for user %@", user.fullName);
+    @synchronized([Helper class]) {
+        NSArray *userLocks = [[PGCoreData instance] fetchUserLocks];
+        if (userLocks) {
+            for (NSDictionary *dict in userLocks) {
+                NSString *uid = [dict objectForKey:@"id"];
+                NSString *deviceId = [dict objectForKey:@"deviceid"];
+                if ([uid isEqualToString:user.uuid] && [deviceId isEqualToString:deviceUuid]) {
+                    return YES;
+                }
             }
         }
+
+        NSLog(@"Failed to find lock for user %@", user.fullName);
+
+        return NO;
     }
-    
-    return NO;
 }
 
 /*!
@@ -329,21 +334,24 @@ static NSArray *monthNameArray = nil;
 + (BOOL)acquireLock:(User *)user {
     // check if current user has been lock by another device
     NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"UUID"];
+    NSLog(@"Acquiring lock for user %@", user.fullName);
 
-    NSArray *userLocks = [[PGCoreData instance] fetchUserLocks];
-    if (userLocks) {
-        for (NSDictionary *dict in userLocks) {
-            NSString *uid = [dict objectForKey:@"id"];
-            NSString *deviceId = [dict objectForKey:@"deviceid"];
-            if ([uid isEqualToString:user.uuid]) {
-                return [deviceId isEqualToString:deviceUuid];
+    @synchronized([Helper class]) {
+        NSArray *userLocks = [[PGCoreData instance] fetchUserLocks];
+        if (userLocks) {
+            for (NSDictionary *dict in userLocks) {
+                NSString *uid = [dict objectForKey:@"id"];
+                NSString *deviceId = [dict objectForKey:@"deviceid"];
+                if ([uid isEqualToString:user.uuid]) {
+                    return [deviceId isEqualToString:deviceUuid];
+                }
             }
         }
+
+        [[PGCoreData instance] insertUserLock:user];
+
+        return YES;
     }
-
-    [[PGCoreData instance] insertUserLock:user];
-
-    return YES;
 }
 
 @end

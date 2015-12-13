@@ -88,16 +88,21 @@ static NSString* reachHostName = @"";
                 canConnect = YES;
                 NSLog(@"This iPad now has a network connection.");
 
-                if (![Helper acquireLock:AppDelegate.shareDelegate.loggedInUser]) {
-                    [Helper showAlert:@"Error"
-                              message:@"User already logged in another device."];
+                // wait 500ms
+                [NSThread sleepForTimeInterval:0.5];
 
-                    [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
-                    return;
-                }
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    if (![Helper acquireLock:AppDelegate.shareDelegate.loggedInUser]) {
+                        [Helper showAlert:@"Error"
+                                  message:@"User already logged in another device."];
 
-                // sync to database
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
+                        return;
+                    }
+
+                    // sync to database
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
+                });
 
                 if (!alertShow) {
                     alertShow = YES;
@@ -420,7 +425,7 @@ static NSString* reachHostName = @"";
     }
 
     if (!result || !result.dataReturned) {
-        return nil;
+        return [NSMutableArray array];
     }
 
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:result.size];

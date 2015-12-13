@@ -168,8 +168,10 @@
 
     User *loggedInUser = AppDelegate.shareDelegate.loggedInUser;
     if (loggedInUser && ![Helper checkLock:loggedInUser]) {
-        [Helper showAlert:@"Error"
-                  message:@"Admin user has removed lock."];
+        NSString *errorMsg = @"Admin user has removed lock.";
+        *error = [NSError errorWithDomain:@"LockDomain" code:UserLockErrorCode userInfo:@{NSUnderlyingErrorKey:errorMsg}];
+
+        [Helper displayError:*error];
 
         [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
 
