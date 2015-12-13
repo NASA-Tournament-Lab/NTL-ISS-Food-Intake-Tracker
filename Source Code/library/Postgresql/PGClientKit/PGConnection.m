@@ -509,7 +509,7 @@ PGKVPairs* makeKVPairs(NSDictionary* dict) {
 
 -(BOOL)pingWithURL:(NSURL* )url error:(NSError** )error {
 	// extract parameters
-	NSDictionary* parameters = [self _connectionParametersForURL:url timeout:0];
+	NSDictionary* parameters = [self _connectionParametersForURL:url timeout:10];
 	if(parameters==nil) {
 		[self raiseError:error code:PGClientErrorParameters url:url reason:nil];
 		return NO;
