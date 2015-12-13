@@ -134,13 +134,13 @@
  * action for logout button.
  */
 - (void)logout{
-    if ([[NSThread currentThread] isMainThread]) {
-        [self performSelectorInBackground:@selector(logout) withObject:nil];
-        return;
-    }
-
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     if (appDelegate.loggedInUser) {
+        if ([[NSThread currentThread] isMainThread]) {
+            [self performSelectorInBackground:@selector(logout) withObject:nil];
+            return;
+        }
+
         [[PGCoreData instance] removeUserLock];
         appDelegate.loggedInUser = nil;
 
@@ -155,6 +155,9 @@
 
             [[NSNotificationCenter defaultCenter] removeObserver:self];
         }];
+    } else {
+        [self.navigationController popViewControllerAnimated:YES];
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
     }
 }
 
