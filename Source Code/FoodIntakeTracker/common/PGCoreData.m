@@ -140,8 +140,12 @@ static NSString* reachHostName = @"";
                 NSLog(@"This iPad has lost its network connection.");
                 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    NSLog(@"Closing all DB server connections.");
+
                     [self.pgConnection reset];
                     [self.pgConnection disconnect];
+
+                    NSLog(@"All connections were closed.");
                 });
                 
                 if (!alertShow) {
@@ -182,7 +186,9 @@ static NSString* reachHostName = @"";
 }
 
 - (BOOL)isConnected {
-    return self.pgConnection.status == PGConnectionStatusConnected;
+    @synchronized(self) {
+        return canConnect && self.pgConnection.status == PGConnectionStatusConnected;
+    }
 }
 
 - (BOOL)registerDevice {
