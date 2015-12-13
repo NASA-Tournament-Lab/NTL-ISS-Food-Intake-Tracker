@@ -120,7 +120,10 @@ typedef enum {
     IllegalArgumentErrorCode,
     
     // File path not exists error
-    FilePathNotExistErrorCode
+    FilePathNotExistErrorCode,
+
+    // Indicate errors during lock acquisition
+    UserLockErrorCode,
     
 } ServiceErrorCode;
 

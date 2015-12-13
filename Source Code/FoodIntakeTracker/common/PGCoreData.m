@@ -63,7 +63,17 @@ static NSString* reachHostName = @"";
     NSString *username = [standardUserDefaults objectForKey:@"user_preference"];
     NSString *database = [standardUserDefaults objectForKey:@"database_preference"];
     NSInteger port = [[standardUserDefaults objectForKey:@"port_preference"] integerValue];
-    
+
+    NSDictionary *postgresqlParams = @{
+                                       @"sslmode": @"require",
+                                       @"user": username,
+                                       @"hostaddr": ipAddress,
+                                       @"port": [NSNumber numberWithInt:port],
+                                       @"dbname": database
+                                       };
+    NSError *connError = nil;
+    NSURL *url = [NSURL URLWithPostgresqlParams:postgresqlParams];
+
     if (![reachHostName isEqualToString:ipAddress]) {
         reachHostName = [NSString stringWithString:ipAddress];
         
@@ -88,16 +98,30 @@ static NSString* reachHostName = @"";
                 canConnect = YES;
                 NSLog(@"This iPad now has a network connection.");
 
-                if (![Helper acquireLock:AppDelegate.shareDelegate.loggedInUser]) {
-                    [Helper showAlert:@"Error"
-                              message:@"User already logged in another device."];
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    while (canConnect) {
+                        // wait 500ms
+                        [NSThread sleepForTimeInterval:0.5];
+                        NSError *error = nil;
 
-                    [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
-                    return;
-                }
+                        if ([self.pgConnection pingWithURL:url error:&error]) {
+                            if (![Helper acquireLock:AppDelegate.shareDelegate.loggedInUser]) {
+                                [Helper showAlert:@"Error"
+                                          message:@"User already logged in another device."];
 
-                // sync to database
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
+                                [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
+                                return;
+                            }
+
+                            // sync to database
+                            [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
+                            
+                            return;
+                        } else {
+                            NSLog(@"Ping error: %@", error);
+                        }
+                    }
+                });
 
                 if (!alertShow) {
                     alertShow = YES;
@@ -116,8 +140,12 @@ static NSString* reachHostName = @"";
                 NSLog(@"This iPad has lost its network connection.");
                 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    NSLog(@"Closing all DB server connections.");
+
                     [self.pgConnection reset];
                     [self.pgConnection disconnect];
+
+                    NSLog(@"All connections were closed.");
                 });
                 
                 if (!alertShow) {
@@ -140,15 +168,6 @@ static NSString* reachHostName = @"";
     }
 
     if (canConnect) {
-        NSError *connError = nil;
-        NSDictionary *postgresqlParams = @{
-                                           @"sslmode": @"require",
-                                           @"user": username,
-                                           @"hostaddr": ipAddress,
-                                           @"port": [NSNumber numberWithInt:port],
-                                           @"dbname": database
-                                           };
-        NSURL *url = [NSURL URLWithPostgresqlParams:postgresqlParams];
         [self.pgConnection connectWithURL:url error:&connError];
         if (connError) {
             NSLog(@"Connection error: %@", connError);
@@ -167,7 +186,9 @@ static NSString* reachHostName = @"";
 }
 
 - (BOOL)isConnected {
-    return self.pgConnection.status == PGConnectionStatusConnected;
+    @synchronized(self) {
+        return canConnect && self.pgConnection.status == PGConnectionStatusConnected;
+    }
 }
 
 - (BOOL)registerDevice {
@@ -420,7 +441,7 @@ static NSString* reachHostName = @"";
     }
 
     if (!result || !result.dataReturned) {
-        return nil;
+        return [NSMutableArray array];
     }
 
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:result.size];

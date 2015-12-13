@@ -285,6 +285,12 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
 
                 BOOL result = [self.synchronizationService synchronize:&error];
 
+                if (error.code == UserLockErrorCode) {
+                    status = SyncStatusFinished;
+                    NSLog(@"Sync interrupted at: %@", [NSDate date]);
+                    return;
+                }
+
                 dispatch_async(dispatch_get_main_queue(), ^{
                     block(result);
                 });
