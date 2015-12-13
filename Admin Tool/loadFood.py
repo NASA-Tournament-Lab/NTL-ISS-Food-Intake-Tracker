@@ -4,7 +4,7 @@ import getopt, sys, psycopg2, json, csv, os, uuid
 from datetime import datetime, date, timedelta
 
 def xstr(s):
-    return "" if s is None else str(s)
+   return "" if s is None else s.encode('utf-8')
 
 def remove_values_from_list(the_list, val):
    return [value for value in the_list if not value.startswith(val)]

@@ -5,7 +5,7 @@ from datetime import datetime, date, timedelta
 import zipfile, shutil
 
 def xstr(s):
-    return "" if s is None else str(s)
+    return "" if s is None else s.encode('utf-8')
 
 def zipdir(path, zip):
     for root, dirs, files in os.walk(path):
@@ -108,7 +108,8 @@ try:
             continue
 
         # Create directories - if necessary
-        directory = fullName.replace("/", "_")
+        fullNameAscii = fullName.decode("utf-8").encode("ascii", "replace")
+        directory = fullNameAscii.replace("/", "_")
         if not os.path.exists(directory):
             os.makedirs(directory)
         os.chdir(directory)
@@ -132,7 +133,7 @@ try:
                 continue
             try:
                 row = []
-                row.append(user[u"fullName"])
+                row.append(fullName)
                 row.append(record[u"timestamp"][:-6])
                 row.append(food[u"name"])
                 row.append(record[u"quantity"])

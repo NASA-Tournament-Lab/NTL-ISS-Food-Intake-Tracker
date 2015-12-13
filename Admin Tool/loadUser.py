@@ -4,7 +4,7 @@ import getopt, sys, psycopg2, json, csv, os, uuid
 from datetime import datetime, date, timedelta
 
 def xstr(s):
-    return "" if s is None else str(s)
+    return "" if s is None else s.encode('utf-8')
 
 def copyValue(fromUser, toUser, key):
     value = fromUser.get(key)
