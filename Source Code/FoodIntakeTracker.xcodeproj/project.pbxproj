@@ -1891,6 +1891,11 @@
 				LastTestingUpgradeCheck = 0630;
 				LastUpgradeCheck = 0620;
 				ORGANIZATIONNAME = topcoder;
+				TargetAttributes = {
+					E7C40720175FFA1F00C3649E = {
+						DevelopmentTeam = QTR37VF4PV;
+					};
+				};
 			};
 			buildConfigurationList = E7C4071C175FFA1F00C3649E /* Build configuration list for PBXProject "FoodIntakeTracker" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -2439,7 +2444,7 @@
 					"$(PROJECT_DIR)/library/Postgresql",
 				);
 				OTHER_LDFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.topcoder.FoodIntakeTracker;
+				PRODUCT_BUNDLE_IDENTIFIER = com.topcoder.paulo.Stadium;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				VALID_ARCHS = "armv7 armv7s arm64";
@@ -2466,7 +2471,7 @@
 					"$(PROJECT_DIR)/library/Postgresql",
 				);
 				OTHER_LDFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.topcoder.FoodIntakeTracker;
+				PRODUCT_BUNDLE_IDENTIFIER = com.topcoder.paulo.Stadium;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				VALID_ARCHS = "armv7 armv7s arm64";
