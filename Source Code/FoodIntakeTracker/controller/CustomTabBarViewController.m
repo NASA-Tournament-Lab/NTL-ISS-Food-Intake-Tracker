@@ -134,27 +134,27 @@
  * action for logout button.
  */
 - (void)logout{
-    if ([[NSThread currentThread] isMainThread]) {
-        [self performSelectorInBackground:@selector(logout) withObject:nil];
-        return;
-    }
-
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     if (appDelegate.loggedInUser) {
-        [[PGCoreData instance] removeUserLock];
-        appDelegate.loggedInUser = nil;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [[PGCoreData instance] removeUserLock];
+            appDelegate.loggedInUser = nil;
 
-        [appDelegate doSyncUpdateWithBlock:^(BOOL result) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingBeginEvent object:nil];
+            [appDelegate doSyncUpdateWithBlock:^(BOOL result) {
+                [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingBeginEvent object:nil];
 
-            [self.navigationController popViewControllerAnimated:YES];
+                [self.navigationController popViewControllerAnimated:YES];
 
-            NSDictionary *loadingEndParam = @{@"success": @YES};
-            [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
-                                                                object:loadingEndParam];
+                NSDictionary *loadingEndParam = @{@"success": @YES};
+                [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
+                                                                    object:loadingEndParam];
 
-            [[NSNotificationCenter defaultCenter] removeObserver:self];
-        }];
+                [[NSNotificationCenter defaultCenter] removeObserver:self];
+            }];
+        });
+    } else {
+        [self.navigationController popViewControllerAnimated:YES];
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
     }
 }
 
