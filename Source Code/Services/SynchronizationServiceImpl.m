@@ -164,10 +164,9 @@
             return NO;
         }
     }
-    PGConnection *connection = coreData.pgConnection;
 
     User *loggedInUser = AppDelegate.shareDelegate.loggedInUser;
-    if (loggedInUser && ![Helper checkLock:loggedInUser]) {
+    if (loggedInUser && ![AppDelegate.shareDelegate checkLock:loggedInUser]) {
         NSString *errorMsg = @"Admin user has removed lock.";
         *error = [NSError errorWithDomain:@"LockDomain" code:UserLockErrorCode userInfo:@{NSUnderlyingErrorKey:errorMsg}];
 
@@ -238,7 +237,7 @@
                     [postponedObjects addObject:object];
                 } else {
                     NSLog(@"Not synchronized %@", object);
-                    if ([object updateObjects:connection] && [self saveMedia:object]) {
+                    if ([object updateObjects] && [self saveMedia:object]) {
                         // success
                         [object setSynchronized:@YES];
                         totalChange++;
@@ -355,7 +354,7 @@
     for (SynchronizableModel *object in postponedObjects) {
         object.synchronized = @NO;
         NSLog(@"Not synchronized %@", object);
-        if ([object updateObjects:connection] && [self saveMedia:object]) {
+        if ([object updateObjects] && [self saveMedia:object]) {
             // success
             [object setSynchronized:@YES];
             totalChange++;

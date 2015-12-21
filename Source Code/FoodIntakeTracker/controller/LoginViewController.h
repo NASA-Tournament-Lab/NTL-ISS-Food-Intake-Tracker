@@ -91,7 +91,6 @@
 /* the password textfield of register panel */
 @property (weak, nonatomic) IBOutlet UITextField *txtLastName;
 
-
 /* the take photo panel of register panel */
 @property (weak, nonatomic) IBOutlet UIView *registerPhotoPanel;
 /* the progress bar of taking photo */

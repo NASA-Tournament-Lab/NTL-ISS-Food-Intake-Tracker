@@ -39,5 +39,6 @@
 - (BOOL)clearMediaSyncData;
 - (BOOL)clearObjectSyncData;
 - (BOOL)saveMedia:(NSData *)data fileName:(NSString *)name;
+-(PGResult* )execute:(NSString* )query format:(PGClientTupleFormat)format values:(NSArray* )values error:(NSError** )error;
 
 @end

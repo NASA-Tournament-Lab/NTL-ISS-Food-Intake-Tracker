@@ -129,20 +129,6 @@
  */
 +(NSInteger) daysFromToday:(NSDate *) date;
 
-/*!
- @discussion Check if user lock exists.
- * @param user the user to check.
- * @return true if lock was acquired or if user is already locked for this device, false otherwise.
- */
-+ (BOOL)checkLock:(User *)user;
-
-/*!
- @discussion Try to acquire a user lock.
- * @param user the user to set new lock.
- * @return true if lock was acquired or if user is already locked for this device, false otherwise.
- */
-+ (BOOL)acquireLock:(User *)user;
-
 @end
 
 @interface NSString (CustomFunction)

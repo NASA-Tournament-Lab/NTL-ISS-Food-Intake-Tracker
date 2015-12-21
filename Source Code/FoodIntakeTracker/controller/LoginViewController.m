@@ -133,6 +133,10 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProgress:)
                                                  name:InitialLoadingProgressEvent object:nil];
+
+    [self startLoading];
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -162,6 +166,12 @@
  * action for register button. Show the register panel.
  */
 - (IBAction)showRegister {
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"HasLaunchedOnce"]) {
+        [Helper showAlert:@"Error" message:@"No food data has been loaded yet.\nCheck your internet connection and"
+         " close and re-open the application to load foad and user data."];
+        return;
+    }
+
     self.txtUserName.text = @"";
     self.txtLastName.text = @"";
     self.loginPanel.hidden = YES;
@@ -349,19 +359,31 @@
     User *loggedInUser = [userService loginUser:selectedUserFullName error:&error];
     if ([Helper displayError:error]) return;
 
-    if (![Helper acquireLock:loggedInUser]) {
-        self.loadingPanel.hidden = YES;
-        [Helper showAlert:@"Error" message:@"User already logged in another device"];
-        return;
-    }
+    self.loadingPanel.hidden = NO;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        if (![appDelegate acquireLock:loggedInUser]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.loadingPanel.hidden = YES;
+                [Helper showAlert:@"Error" message:@"User already logged in another device"];
+            });
+            return;
+        }
 
-    appDelegate.loggedInUser = loggedInUser;
+        appDelegate.loggedInUser = loggedInUser;
 
-    [appDelegate doSyncUpdateWithBlock:^(BOOL result) {
-        self.loadingPanel.hidden = YES;
-        [self performSegueWithIdentifier:@"Login" sender:self];
-    }];
+        [appDelegate doSyncUpdateWithBlock:^(BOOL result) {
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"HasLaunchedOnce"]) {
+                self.loadingPanel.hidden = YES;
+                [self performSegueWithIdentifier:@"Login" sender:self];
+            } else {
+                NSNotification *notif = [[NSNotification alloc] initWithName:@"Failed" object:@{@"success": @YES} userInfo:nil];
+                [self finishLoading:notif];
 
+                [Helper showAlert:@"Error" message:@"No food data has been loaded yet.\nCheck your internet connection and"
+                 " close and re-open the application to load foad and user data."];
+            }
+        }];
+    });
 }
 
 /**
