@@ -12,6 +12,8 @@
 #import "Settings.h"
 #import "AppDelegate.h"
 
+#define kTimerInterval 60
+
 static PGCoreData *instance;
 static Reachability* reach;
 static NSString* reachHostName = @"";
@@ -20,6 +22,8 @@ static NSString* reachHostName = @"";
     BOOL canConnect;
     
     BOOL alertShow;
+
+    NSTimer *pingTimer;
 }
 
 @synthesize pgConnection = _pgConnection;
@@ -44,6 +48,54 @@ static NSString* reachHostName = @"";
         canConnect = YES;
     }
     return self;
+}
+
+- (void)testPing {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSLog(@"Test ping");
+        NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
+        NSString *ipAddress = [standardUserDefaults objectForKey:@"address_preference"];
+        NSString *username = [standardUserDefaults objectForKey:@"user_preference"];
+        NSString *database = [standardUserDefaults objectForKey:@"database_preference"];
+        NSInteger port = [[standardUserDefaults objectForKey:@"port_preference"] integerValue];
+
+        NSDictionary *postgresqlParams = @{
+                                           @"sslmode": @"require",
+                                           @"user": username,
+                                           @"hostaddr": ipAddress,
+                                           @"port": [NSNumber numberWithInt:port],
+                                           @"dbname": database
+                                           };
+        NSURL *url = [NSURL URLWithPostgresqlParams:postgresqlParams];
+        NSError *error = nil;
+
+        if ([self.pgConnection pingWithURL:url error:&error]) {
+            @synchronized(self) {
+                if (!canConnect) {
+                    if (!alertShow) {
+                        alertShow = YES;
+                        [Helper showAlert:@"Connection Re-established"
+                                  message:@"This iPad now has a network connection. Any food that you've entered will now be saved to the database."
+                                 delegate:self];
+                    }
+                }
+                canConnect = YES;
+            }
+        } else {
+            @synchronized(self) {
+                if (canConnect) {
+                    if (!alertShow) {
+                        alertShow = YES;
+                        [Helper showAlert:@"Network Connection Error"
+                                  message:@"This iPad has lost its network connection. You can still use the ISS FIT app, and we will attempt to sync with the central food database when it's available."
+                                 delegate:self];
+                    }
+                }
+
+                canConnect = NO;
+            }
+        }
+    });
 }
 
 - (BOOL)connect {
@@ -99,13 +151,15 @@ static NSString* reachHostName = @"";
                 NSLog(@"This iPad now has a network connection.");
 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                    while (canConnect) {
+                    int retries = 3;
+                    while (canConnect && retries > 0) {
                         // wait 500ms
                         [NSThread sleepForTimeInterval:0.5];
                         NSError *error = nil;
 
                         if ([self.pgConnection pingWithURL:url error:&error]) {
-                            if (![Helper acquireLock:AppDelegate.shareDelegate.loggedInUser]) {
+                            AppDelegate *appDelegate = AppDelegate.shareDelegate;
+                            if (![appDelegate acquireLock:appDelegate.loggedInUser]) {
                                 [Helper showAlert:@"Error"
                                           message:@"User already logged in another device."];
 
@@ -117,10 +171,12 @@ static NSString* reachHostName = @"";
                             [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
                             
                             return;
-                        } else {
-                            NSLog(@"Ping error: %@", error);
                         }
+
+                        retries--;
                     }
+
+                    [self testPing];
                 });
 
                 if (!alertShow) {
@@ -167,9 +223,20 @@ static NSString* reachHostName = @"";
         canConnect = [reach isReachable];
     }
 
+    if (!pingTimer) {
+        pingTimer = [NSTimer timerWithTimeInterval:kTimerInterval target:self selector:@selector(testPing) userInfo:nil
+                                           repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:pingTimer forMode:NSDefaultRunLoopMode];
+    }
+
     if (canConnect) {
         [self.pgConnection connectWithURL:url error:&connError];
         if (connError) {
+            @synchronized(self) {
+                if (connError.code == PGClientErrorRejected) {
+                    canConnect = NO;
+                }
+            }
             NSLog(@"Connection error: %@", connError);
             return NO;
         }

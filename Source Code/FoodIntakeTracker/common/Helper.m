@@ -298,62 +298,6 @@ static NSArray *monthNameArray = nil;
     return [difference day];
 }
 
-/*!
- @discussion Check if user lock exists.
- * @param user the user to check.
- * @return true if lock was acquired or if user is already locked for this device, false otherwise.
- */
-+ (BOOL)checkLock:(User *)user {
-    // check if current user has been lock by another device
-    NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"UUID"];
-
-    NSLog(@"Checking lock for user %@", user.fullName);
-    @synchronized([Helper class]) {
-        NSArray *userLocks = [[PGCoreData instance] fetchUserLocks];
-        if (userLocks) {
-            for (NSDictionary *dict in userLocks) {
-                NSString *uid = [dict objectForKey:@"id"];
-                NSString *deviceId = [dict objectForKey:@"deviceid"];
-                if ([uid isEqualToString:user.uuid] && [deviceId isEqualToString:deviceUuid]) {
-                    return YES;
-                }
-            }
-        }
-
-        NSLog(@"Failed to find lock for user %@", user.fullName);
-
-        return NO;
-    }
-}
-
-/*!
- @discussion Try to acquire a user lock.
- * @param user the user to set new lock.
- * @return true if lock was acquired or if user is already locked for this device, false otherwise.
- */
-+ (BOOL)acquireLock:(User *)user {
-    // check if current user has been lock by another device
-    NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"UUID"];
-    NSLog(@"Acquiring lock for user %@", user.fullName);
-
-    @synchronized([Helper class]) {
-        NSArray *userLocks = [[PGCoreData instance] fetchUserLocks];
-        if (userLocks) {
-            for (NSDictionary *dict in userLocks) {
-                NSString *uid = [dict objectForKey:@"id"];
-                NSString *deviceId = [dict objectForKey:@"deviceid"];
-                if ([uid isEqualToString:user.uuid]) {
-                    return [deviceId isEqualToString:deviceUuid];
-                }
-            }
-        }
-
-        [[PGCoreData instance] insertUserLock:user];
-
-        return YES;
-    }
-}
-
 @end
 
 @implementation NSString (CustomFunction)

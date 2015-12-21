@@ -343,8 +343,6 @@
                 NSMutableArray *foodProducts = foodDict[key];
                 [foodProducts addObject:foodProduct];
             }
-        } else {
-            NSLog(@"%@", foodProduct);
         }
     }
     

@@ -28,7 +28,7 @@
     [super willSave];
 }
 
-- (NSDictionary *)getAttributes:(PGConnection *) connection {
+- (NSDictionary *)getAttributes {
     NSArray *keys = [[self.entity attributesByName] allKeys];
     NSDictionary *attributes = [self dictionaryWithValuesForKeys:keys];
     NSMutableDictionary *mutableAttributes = [attributes mutableCopy];
@@ -78,16 +78,16 @@
     return mutableAttributes;
 }
 
-- (BOOL)insertObjects:(PGConnection *) pgConnection {
+- (BOOL)insertObjects {
     NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"UUID"];
     
     NSError *error = nil;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[self getAttributes:pgConnection] options:0 error:&error];
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:[self getAttributes] options:0 error:&error];
     NSString *jsonString = [[NSString alloc] initWithBytes:jsonData.bytes length:jsonData.length encoding:NSUTF8StringEncoding];
 
     error = nil;
     NSArray *values = [NSArray arrayWithObjects:self.uuid, self.entity.name, jsonString, deviceUuid, nil];
-    PGResult *result = [pgConnection
+    PGResult *result = [[PGCoreData instance]
                         execute:@"INSERT INTO data(id, name, value, createdate, modifieddate, modifiedby) VALUES($1::varchar, $2::varchar, $3::varchar, 'now', 'now', $4::varchar)"
                         format:PGClientTupleFormatText values:values error:&error];
     if (error) {
@@ -103,19 +103,20 @@
     return NO;
 }
 
-- (BOOL)updateObjects:(PGConnection *) pgConnection {
+- (BOOL)updateObjects {
     NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"UUID"];
     
     NSError *error = nil;
-    NSDictionary *attributes = [self getAttributes:pgConnection];    
+    NSDictionary *attributes = [self getAttributes];
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:attributes options:0 error:&error];
     NSString *jsonString = [[NSString alloc] initWithBytes:jsonData.bytes length:jsonData.length encoding:NSUTF8StringEncoding];
     
     error = nil;
     NSArray *values = [NSArray arrayWithObjects:self.uuid, jsonString, deviceUuid, nil];
-    PGResult *result = [pgConnection
+    PGResult *result = [[PGCoreData instance]
                         execute:@"UPDATE data SET value = $2::varchar, modifieddate = 'now', modifiedby = $3::varchar WHERE id = $1::varchar"
-                        format:PGClientTupleFormatText values:values error:&error];
+                        format:(PGClientTupleFormatText) values:values error:&error];
+
     if (error) {
         NSLog(@"Error during update: %@", error);
         return NO;
@@ -123,7 +124,7 @@
     
     if (result) {
         if (result.affectedRows == 0) {
-            return [self insertObjects:pgConnection];
+            return [self insertObjects];
         } else if (result.affectedRows == 1) {
             return YES;
         }

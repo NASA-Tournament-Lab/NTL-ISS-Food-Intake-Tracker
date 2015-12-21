@@ -160,19 +160,17 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         NSDictionary *localConf = [NSMutableDictionary dictionaryWithDictionary:[NSDictionary dictionaryWithContentsOfFile:configBundle]];
         self.additionalFilesDirectory = [localConf valueForKey:@"LocalFileSystemDirectory"];
         self.helpData = [localConf objectForKey:@"HelpData"];
-        
-        if (!changed) {
-            [self performSelector:@selector(initialLoad) withObject:nil afterDelay:0.5];
-        }
 
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(doSyncUpdate:) name:@"DataSyncUpdate"
                                                    object:nil];
 
-        dispatch_async(dataSyncUpdateQ, ^{
-            [[PGCoreData instance] removeUserLock];
-        });
+        if (!changed) {
+            [self initialLoad];
+        }
 
-        [self performSelector:@selector(doSyncUpdate:) withObject:nil afterDelay:1.0];
+        if (loadingFinished) {
+            [self removeUserLock];
+        }
 
         return YES;
     } else {
@@ -262,50 +260,58 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
  */
 - (void) doSyncUpdate:(NSNotification *) notif {
     // Skip the sync/update if the initial load is still in progress.
-    [self doSyncUpdateWithBlock:^(BOOL result){
-        NSDictionary *loadingEndParam = @{@"success": [NSNumber numberWithBool:result]};
-        [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
+    if (loadingFinished) {
+        [self doSyncUpdateWithBlock:^(BOOL result){
+            NSDictionary *loadingEndParam = @{@"success": [NSNumber numberWithBool:result]};
+            [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
                                                             object:loadingEndParam];
-    }];
+        }];
+    }
 }
 
 /*!
  * This method will do data sync/update.
+ @param block code to be executed when synchronization has finished
  */
 - (void) doSyncUpdateWithBlock:(void (^) (BOOL) ) block {
-    // Skip the sync/update if the initial load is still in progress.
-    if (loadingFinished) {
-        dispatch_async(dataSyncUpdateQ, ^{
-            @autoreleasepool {
-                status = SyncStatusStarted;
-
-                NSError *error = nil;
-
-                NSLog(@"Start sync at   : %@", [NSDate date]);
-
-                BOOL result = [self.synchronizationService synchronize:&error];
-
-                if (error.code == UserLockErrorCode) {
-                    status = SyncStatusFinished;
-                    NSLog(@"Sync interrupted at: %@", [NSDate date]);
-                    return;
-                }
-
+    dispatch_async(dataSyncUpdateQ, ^{
+        @autoreleasepool {
+            if (!loadingFinished) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    block(result);
+                    block(NO);
                 });
-
-                status = SyncStatusFinished;
-
-                NSLog(@"Finished sync at: %@", [NSDate date]);
-
-                if (backgroundTask != UIBackgroundTaskInvalid) {
-                    [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
-                    backgroundTask = UIBackgroundTaskInvalid;
-                }
+                
+                return;
             }
-        });
-    }
+
+            status = SyncStatusStarted;
+
+            NSError *error = nil;
+
+            NSLog(@"Start sync at   : %@", [NSDate date]);
+
+            BOOL result = [self.synchronizationService synchronize:&error];
+
+            if (error.code == UserLockErrorCode) {
+                status = SyncStatusFinished;
+                NSLog(@"Sync interrupted at: %@", [NSDate date]);
+                return;
+            }
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                block(result);
+            });
+
+            status = SyncStatusFinished;
+
+            NSLog(@"Finished sync at: %@", [NSDate date]);
+
+            if (backgroundTask != UIBackgroundTaskInvalid) {
+                [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
+                backgroundTask = UIBackgroundTaskInvalid;
+            }
+        }
+    });
 }
 
 
@@ -527,6 +533,75 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         
         [self performSelectorInBackground:@selector(resetData) withObject:nil];
     }
+}
+
+#pragma mark - User locks
+
+/*!
+ @discussion Remove user lock.
+ */
+- (void)removeUserLock {
+    dispatch_async(dataSyncUpdateQ, ^{
+        [[PGCoreData instance] removeUserLock];
+    });
+}
+
+/*!
+ @discussion Check if user lock exists.
+ * @param user the user to check.
+ * @return true if lock was acquired or if user is already locked for this device, false otherwise.
+ */
+- (BOOL)checkLock:(User *)user {
+    // check if current user has been lock by another device
+    NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"UUID"];
+
+    NSLog(@"Checking lock for user %@", user.fullName);
+
+    NSArray *userLocks = [[PGCoreData instance] fetchUserLocks];
+    if (userLocks) {
+        for (NSDictionary *dict in userLocks) {
+            NSString *uid = [dict objectForKey:@"id"];
+            NSString *deviceId = [dict objectForKey:@"deviceid"];
+            if ([uid isEqualToString:user.uuid] && [deviceId isEqualToString:deviceUuid]) {
+                return YES;
+            }
+        }
+    }
+
+    NSLog(@"Failed to find lock for user %@ (%@) in %@", user.fullName, user.uuid, userLocks);
+
+    return NO;
+}
+
+/*!
+ @discussion Try to acquire a user lock.
+ * @param user the user to set new lock.
+ * @return true if lock was acquired or if user is already locked for this device, false otherwise.
+ */
+- (BOOL)acquireLock:(User *)user {
+    // check if current user has been lock by another device
+    NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"UUID"];
+    NSLog(@"Acquiring lock for user %@", user.fullName);
+
+    __block BOOL result = NO;
+    dispatch_sync(dataSyncUpdateQ, ^{
+        NSArray *userLocks = [[PGCoreData instance] fetchUserLocks];
+        if (userLocks) {
+            for (NSDictionary *dict in userLocks) {
+                NSString *uid = [dict objectForKey:@"id"];
+                NSString *deviceId = [dict objectForKey:@"deviceid"];
+                if ([uid isEqualToString:user.uuid]) {
+                    result = [deviceId isEqualToString:deviceUuid];
+                }
+            }
+        }
+
+        [[PGCoreData instance] insertUserLock:user];
+        
+        result = YES;
+    });
+
+    return result;
 }
 
 @end

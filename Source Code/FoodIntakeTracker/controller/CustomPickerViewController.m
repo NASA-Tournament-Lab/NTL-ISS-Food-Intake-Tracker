@@ -37,11 +37,11 @@
 @implementation BaseCustomPickerView
 
 /**
- * Set the selected value and update the picker.
- * @param val the selected value.
+ * overwrite this method to parse from val and set the picker.
+ * @param val the setting value.
  */
 - (void)setSelectedVal:(NSString *)val{
-    [self.timePicker selectRow:val.integerValue inComponent:0 animated:NO];
+    selectValue = val;
 }
 
 /**
@@ -105,6 +105,7 @@
     label.font = [UIFont boldSystemFontOfSize:20];
     label.textAlignment = NSTextAlignmentCenter;
     label.backgroundColor = [UIColor clearColor];
+
     return label;
 }
 @end
@@ -117,6 +118,14 @@
  * @version 1.0
  */
 @implementation TimePickerView
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    if (selectValue) {
+        [self.timePicker selectRow:selectValue.integerValue inComponent:0 animated:NO];
+    }
+}
 
 /**
  * load default values.
@@ -160,6 +169,7 @@
     selectValue = [NSString stringWithFormat:self.stringFormat, [self.timePicker selectedRowInComponent:0]];
     [super doneButtonClick:sender];
 }
+
 @end
 
 /**
@@ -170,6 +180,17 @@
  * @version 1.0
  */
 @implementation HourPickerView
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    if (selectValue) {
+        int v1 = [[[selectValue componentsSeparatedByString:@":"] objectAtIndex:0] intValue];
+        int v2 = [[[selectValue componentsSeparatedByString:@":"] objectAtIndex:1] intValue];
+        int r = (v1 * RFACTOR + v2 / FACTOR);
+        [self.timePicker selectRow:r inComponent:0 animated:NO];
+    }
+}
 
 /**
  * Overwrite this method to define the content for the label. It is 00:00 to 23:00
@@ -194,17 +215,6 @@
  */
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component{
     return 24 * RFACTOR;
-}
-
-/**
- * overwrite this method to parse from val and set the picker.
- * @param val the setting value.
- */
-- (void)setSelectedVal:(NSString *)val{
-    int v1 = [[[val componentsSeparatedByString:@":"] objectAtIndex:0] intValue];
-    int v2 = [[[val componentsSeparatedByString:@":"] objectAtIndex:1] intValue];
-    int r = (v1 * RFACTOR + v2 / FACTOR);
-    [self.timePicker selectRow:r inComponent:0 animated:NO];
 }
 
 /**
@@ -240,6 +250,17 @@
  * @version 1.0
  */
 @implementation QuantityPickerView
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+
+    if (selectValue) {
+        int v1 = selectValue.intValue;
+        int v2 = (selectValue.floatValue - selectValue.intValue) / 0.25;
+        [self.timePicker selectRow:v1 inComponent:0 animated:NO];
+        [self.timePicker selectRow:v2 inComponent:1 animated:NO];
+    }
+}
 
 /**
  * Overwrite this method as it needs 2 component here.
@@ -294,17 +315,8 @@
     else{
         lbl.text = [NSString stringWithFormat:@"%.2f Package", row * 0.25];
     }
+
     return lbl;
-}
-/**
- * overwrite this method to parse from val and set the picker.
- * @param val the setting value.
- */
-- (void)setSelectedVal:(NSString *)val{
-    int v1 = val.intValue;
-    int v2 = (val.floatValue - val.intValue) / 0.25;
-    [self.timePicker selectRow:v1 inComponent:0 animated:NO];
-    [self.timePicker selectRow:v2 inComponent:1 animated:NO];
 }
 
 /**

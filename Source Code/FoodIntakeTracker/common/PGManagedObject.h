@@ -15,7 +15,7 @@
 /*! @description Unique uuid to be shared among devices */
 @property (nonatomic, strong) NSString *uuid;
 
-- (BOOL)updateObjects:(PGConnection *) pgConnection;
-- (BOOL)insertObjects:(PGConnection *) pgConnection;
+- (BOOL)updateObjects;
+- (BOOL)insertObjects;
 
 @end

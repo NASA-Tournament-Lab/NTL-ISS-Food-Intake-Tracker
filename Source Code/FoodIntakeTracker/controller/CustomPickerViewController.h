@@ -52,7 +52,7 @@
     NSString *selectValue;
 }
 
-/* the UIPikcer view */
+/* the UIPicker view */
 @property (nonatomic, weak) IBOutlet UIPickerView *timePicker;
 /* the delegate */
 @property (nonatomic, weak) id<CustomPickerViewDelegate> delegate;
@@ -94,7 +94,13 @@
 @property (nonatomic, unsafe_unretained) NSInteger optionCount;
 @end
 
-
+/**
+ * @class HourPickerView
+ * A picker of number that allow user to select. Default range is 0 - 23.
+ *
+ * @author lofzcx
+ * @version 1.0
+ */
 @interface HourPickerView : BaseCustomPickerView
 
 /**
@@ -102,10 +108,11 @@
  * @param sender the button.
  */
 - (IBAction)currentTimeButtonClick:(id)sender;
+
 @end
 
 /**
- * @class HourPickerView
+ * @class QuantityPickerView
  * A picker of quantity that allow user to select. like 1 and 0.25, or 2 and 0.75.
  *
  * @author lofzcx
