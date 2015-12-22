@@ -942,12 +942,12 @@
     FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
     NSError *error;
     if (self.foodConsumptionRecordToAdd) {
-        //FoodProduct *foodProduct = [foodProductService getFoodProductByName:appDelegate.loggedInUser
-        //                                                               name:_addFood.txtFood.text
-        //                                                              error:&error];
+        FoodProduct *foodProduct = [foodProductService getFoodProductByName:appDelegate.loggedInUser
+                                                                       name:_addFood.txtFood.text
+                                                                      error:&error];
         error = nil;
         
-        // if (!foodProduct) {
+        if (!foodProduct) {
             if (self.adhocFoodProductToAdd) {
                 [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser
                                                 product:self.adhocFoodProductToAdd
@@ -957,7 +957,7 @@
                 self.adhocFoodProductToAdd.name = _addFood.txtFood.text;
                 self.adhocFoodProductToAdd.quantity = [NSNumber numberWithFloat:_addFood.txtQuantity.text.floatValue];
             }
-        // }
+        }
         
         self.foodConsumptionRecordToAdd.comment = _addFood.txtComment.text;
         self.foodConsumptionRecordToAdd.quantity = [NSNumber numberWithFloat:_addFood.txtQuantity.text.floatValue];
@@ -995,14 +995,14 @@
                                          record:self.foodConsumptionRecordToAdd
                                           error:&error];
         if ([Helper displayError:error]) return;
-        //if (foodProduct) {
+        if (foodProduct) {
             // The food product already exists
-        //    self.foodConsumptionRecordToAdd.foodProduct = foodProduct;
-        //    self.foodConsumptionRecordToAdd.quantity = self.foodConsumptionRecordToAdd.quantity;
-        //} else {
+            self.foodConsumptionRecordToAdd.foodProduct = foodProduct;
+            self.foodConsumptionRecordToAdd.quantity = self.foodConsumptionRecordToAdd.quantity;
+        } else {
             self.foodConsumptionRecordToAdd.foodProduct = self.adhocFoodProductToAdd;
             self.foodConsumptionRecordToAdd.quantity = self.adhocFoodProductToAdd.quantity;
-        //}
+        }
         
         [recordService saveFoodConsumptionRecord:self.foodConsumptionRecordToAdd error:&error];
         if ([Helper displayError:error]) return;
