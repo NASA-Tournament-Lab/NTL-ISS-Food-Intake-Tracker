@@ -202,15 +202,17 @@
             [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Getting image %d", (i+1)]];
             
             NSArray *medias = [coreData fetchNextMedia];
-            for (NSDictionary *dictFile in medias) {
-                NSString *dataFile = [dictFile objectForKey:@"filename"];
-                NSData *data = [dictFile objectForKey:@"data"];
-                if([dataFile hasSuffix:self.imageFileNameSuffix] || [dataFile hasSuffix:self.voiceRecordingFileNameSuffix]) {
-                    NSString *localDataFile = [[DataHelper getAbsoulteLocalDirectory:self.localFileSystemDirectory]
-                                               stringByAppendingPathComponent:dataFile];
-                    if (![data writeToFile:localDataFile options:NSDataWritingAtomic error:&e]) {
-                        [LoggingHelper logError:methodName error:e];
-                        CHECK_ERROR_AND_RETURN(e, error, @"Cannot save file to local folder.", DataUpdateErrorCode, YES, NO);
+            if (medias != nil) {
+                for (NSDictionary *dictFile in medias) {
+                    NSString *dataFile = [dictFile objectForKey:@"filename"];
+                    NSData *data = [dictFile objectForKey:@"data"];
+                    if([dataFile hasSuffix:self.imageFileNameSuffix] || [dataFile hasSuffix:self.voiceRecordingFileNameSuffix]) {
+                        NSString *localDataFile = [[DataHelper getAbsoulteLocalDirectory:self.localFileSystemDirectory]
+                                                   stringByAppendingPathComponent:dataFile];
+                        if (![data writeToFile:localDataFile options:NSDataWritingAtomic error:&e]) {
+                            [LoggingHelper logError:methodName error:e];
+                            CHECK_ERROR_AND_RETURN(e, error, @"Cannot save file to local folder.", DataUpdateErrorCode, YES, NO);
+                        }
                     }
                 }
             }
