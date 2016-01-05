@@ -34,7 +34,7 @@
 - (NSArray *)fetchUserLocks;
 - (BOOL)startFetchMedia;
 - (BOOL)endFetchMedia;
-- (NSDictionary *)fetchNextMedia;
+- (NSArray *)fetchNextMedia;
 - (NSInteger)fetchMediaCount;
 - (BOOL)clearMediaSyncData;
 - (BOOL)clearObjectSyncData;

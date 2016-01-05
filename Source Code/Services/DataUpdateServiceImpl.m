@@ -105,8 +105,7 @@
     if (!deviceRegistered || force) {
         // Lock on the managedObjectContext
         [[self managedObjectContext] lock];
-    
-        
+
         // Update progress
         [self updateProgress:@0.05];
         
@@ -116,9 +115,13 @@
         float currentProgress = 0.1, progressDelta = 0.6, count = allData.count;
         if (allData && allData.count > 0) {
             // Calculate the the delta progress
-            for (NSDictionary *data in allData) {
-                [self startUndoActions];
-                
+            for (int i = 0; i < allData.count; i++) {
+                NSDictionary *data = [allData objectAtIndex:i];
+
+                if (i % 100 == 0 || [data isEqual:allData.lastObject]) {
+                    [self startUndoActions];
+                }
+
                 NSString *oId = [data objectForKey:@"id"];
                 NSString *name = [data objectForKey:@"name"];
                 NSString *value = [data objectForKey:@"value"];
@@ -127,40 +130,49 @@
                 NSData *jsonData = [value dataUsingEncoding:NSUTF8StringEncoding];
                 NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&e];
                 CHECK_ERROR_AND_RETURN(e, error, @"Cannot convert JSON data to managed object.", DataUpdateErrorCode, YES, YES);
-                
-                // Check if object already exists
-                NSFetchRequest *request = [[NSFetchRequest alloc] init];
-                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(uuid == %@)", oId];
-                NSEntityDescription *description = [NSEntityDescription entityForName:name
-                                                               inManagedObjectContext:[self managedObjectContext]];
-                [request setEntity:description];
-                [request setPredicate:predicate];
-                NSArray *objects = [self.managedObjectContext executeFetchRequest:request error:error];
-                CHECK_ERROR_AND_RETURN(e, error, @"Cannot fetch object in managed object context.",
-                                       EntityNotFoundErrorCode, YES, YES);
-                
-                // Update if objects exists or insert if it doesn't (only for not removed object)
-                BOOL isRemoved = [[jsonDictionary objectForKey:@"removed"] boolValue] && ![name isEqualToString:@"FoodProduct"];
-                if (objects.count > 0) {
-                    SynchronizableModel *object = [objects objectAtIndex:0];
-                    if (isRemoved) {
-                        [object setPrimitiveValue:@YES forKey:@"synchronized"];
-                    } else {
-                        if (![DataHelper updateObjectWithJSON:jsonDictionary object:object managegObjectContext:self.managedObjectContext]) {
+
+                if (deviceRegistered) {
+                    // Check if object already exists
+                    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(uuid == %@)", oId];
+                    NSEntityDescription *description = [NSEntityDescription entityForName:name
+                                                                   inManagedObjectContext:[self managedObjectContext]];
+                    [request setEntity:description];
+                    [request setPredicate:predicate];
+                    NSArray *objects = [self.managedObjectContext executeFetchRequest:request error:error];
+                    CHECK_ERROR_AND_RETURN(e, error, @"Cannot fetch object in managed object context.",
+                                           EntityNotFoundErrorCode, YES, YES);
+
+                    // Update if objects exists or insert if it doesn't (only for not removed object)
+                    BOOL isRemoved = [[jsonDictionary objectForKey:@"removed"] boolValue] && ![name isEqualToString:@"FoodProduct"];
+                    if (objects.count > 0) {
+                        SynchronizableModel *object = [objects objectAtIndex:0];
+                        if (isRemoved) {
+                            [object setPrimitiveValue:@YES forKey:@"synchronized"];
+                        } else {
+                            if (![DataHelper updateObjectWithJSON:jsonDictionary object:object managegObjectContext:self.managedObjectContext]) {
+                                e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
+                                CHECK_ERROR_AND_RETURN(e, error, @"Cannot update object.", DataUpdateErrorCode, YES, YES);
+                            }
+                        }
+                    } else if (!isRemoved) {
+                        if (![DataHelper convertJSONToObject:oId jsonValue:jsonDictionary name:name managegObjectContext:self.managedObjectContext]) {
                             e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
-                            CHECK_ERROR_AND_RETURN(e, error, @"Cannot update object.", DataUpdateErrorCode, YES, YES);
+                            CHECK_ERROR_AND_RETURN(e, error, @"Cannot insert object.", DataUpdateErrorCode, YES, YES);
                         }
                     }
-                } else if (!isRemoved) {
+                } else {
                     if (![DataHelper convertJSONToObject:oId jsonValue:jsonDictionary name:name managegObjectContext:self.managedObjectContext]) {
                         e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
                         CHECK_ERROR_AND_RETURN(e, error, @"Cannot insert object.", DataUpdateErrorCode, YES, YES);
                     }
                 }
-                
-                [self endUndoActions];
-                if (![self.managedObjectContext save:&e]) {
-                    CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+
+                if (i % 100 == 0 || [data isEqual:allData.lastObject]) {
+                    [self endUndoActions];
+                    if (![self.managedObjectContext save:&e]) {
+                        CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+                    }
                 }
                 
                 // Update progress
@@ -168,7 +180,11 @@
                 [self updateProgress:[NSNumber numberWithFloat:currentProgress]];                        
             }
         }
-        
+
+        if (![self.managedObjectContext save:&e]) {
+            CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+        }
+
         [coreData.pgConnection reset];
         
         if (![coreData startFetchMedia]) {
@@ -177,7 +193,7 @@
             return NO;
         }
         
-        currentProgress = 0.7, progressDelta = 0.29, count = [coreData fetchMediaCount];
+        currentProgress = 0.7, progressDelta = 0.29, count = [coreData fetchMediaCount] / 10 + 1;
         if (count < 0) {
             return NO;
         }
@@ -185,15 +201,19 @@
         for (int i = 0; i < count; i++) {
             [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Getting image %d", (i+1)]];
             
-            NSDictionary *dictFile = [coreData fetchNextMedia];
-            NSString *dataFile = [dictFile objectForKey:@"filename"];
-            NSData *data = [dictFile objectForKey:@"data"];
-            if([dataFile hasSuffix:self.imageFileNameSuffix] || [dataFile hasSuffix:self.voiceRecordingFileNameSuffix]) {
-                NSString *localDataFile = [[DataHelper getAbsoulteLocalDirectory:self.localFileSystemDirectory]
-                                           stringByAppendingPathComponent:dataFile];
-                if (![data writeToFile:localDataFile options:NSDataWritingAtomic error:&e]) {                    
-                    [LoggingHelper logError:methodName error:e];
-                    CHECK_ERROR_AND_RETURN(e, error, @"Cannot save file to local folder.", DataUpdateErrorCode, YES, NO);
+            NSArray *medias = [coreData fetchNextMedia];
+            if (medias != nil) {
+                for (NSDictionary *dictFile in medias) {
+                    NSString *dataFile = [dictFile objectForKey:@"filename"];
+                    NSData *data = [dictFile objectForKey:@"data"];
+                    if([dataFile hasSuffix:self.imageFileNameSuffix] || [dataFile hasSuffix:self.voiceRecordingFileNameSuffix]) {
+                        NSString *localDataFile = [[DataHelper getAbsoulteLocalDirectory:self.localFileSystemDirectory]
+                                                   stringByAppendingPathComponent:dataFile];
+                        if (![data writeToFile:localDataFile options:NSDataWritingAtomic error:&e]) {
+                            [LoggingHelper logError:methodName error:e];
+                            CHECK_ERROR_AND_RETURN(e, error, @"Cannot save file to local folder.", DataUpdateErrorCode, YES, NO);
+                        }
+                    }
                 }
             }
             

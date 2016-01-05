@@ -378,10 +378,10 @@ static NSString* reachHostName = @"";
 }
 
 
-- (NSDictionary *)fetchNextMedia {
+- (NSArray *)fetchNextMedia {
     NSError *error = nil;
     
-    PGResult *result = [self execute:@"FETCH FORWARD 1 FROM mediafetch;" format:PGClientTupleFormatBinary error:&error];
+    PGResult *result = [self execute:@"FETCH FORWARD 10 FROM mediafetch;" format:PGClientTupleFormatBinary error:&error];
     
     if (error) {
         NSLog(@"Error: %@", error);
@@ -391,14 +391,19 @@ static NSString* reachHostName = @"";
     if (!result || !result.dataReturned) {
         return nil;
     }
-    
-    return [result fetchRowAsDictionary];
+
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:result.size];
+    for (int i = 0; i < result.size; i++) {
+        [array addObject:[result fetchRowAsDictionary]];
+    }
+
+    return array;
 }
 
 - (NSArray *)fetchAllMedia {
     NSError *error = nil;
     
-    PGResult *result = [self execute:@"SELECT fileName, data FROM media" format:PGClientTupleFormatBinary error:&error];
+    PGResult *result = [self execute:@"SELECT fileName, data FROM media WHERE filename like '%.jpg';" format:PGClientTupleFormatBinary error:&error];
     
     if (error) {
         NSLog(@"Error: %@", error);
