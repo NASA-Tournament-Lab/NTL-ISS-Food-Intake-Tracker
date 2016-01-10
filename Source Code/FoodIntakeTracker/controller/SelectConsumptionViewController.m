@@ -72,15 +72,15 @@
     /* is only view fat */
     BOOL viewFatOnly;
     /* the sort by select index */
-    int selectIndex;
+    NSInteger selectIndex;
     
     /* the custom index bar */
     CustomIndexBar *indexBar;
     
     /* the start visible index */
-    int visibleStart;
+    NSInteger visibleStart;
     /* the end visible index */
-    int visibleEnd;
+    NSInteger visibleEnd;
 }
 
 @end
@@ -612,7 +612,7 @@
         [self hideSortByOption];
         
         if (index > 0) {
-            [selectCategoryIndex setObject:[NSMutableArray arrayWithObject:[NSNumber numberWithInt:index - 1]] forKey:@1];
+            [selectCategoryIndex setObject:[NSMutableArray arrayWithObject:[NSNumber numberWithInteger:index - 1]] forKey:@1];
         } else {
             [selectCategoryIndex setObject:[NSMutableArray array] forKey:@1];
         }
@@ -875,8 +875,8 @@
  */
 - (void)foodSelect:(id)sender{
     UIButton *btn = (UIButton *)sender;
-    int row = btn.tag % MAXROWS;
-    int section = btn.tag / MAXROWS;
+    NSInteger row = btn.tag % MAXROWS;
+    NSInteger section = btn.tag / MAXROWS;
     FoodProduct *item = nil;
     if(selectIndex < 2){
         item = [[foodDict valueForKey:[foodKeys objectAtIndex:section]]
@@ -914,7 +914,7 @@
  * @param btn the button.
  */
 - (void)clickPhoto:(UIButton *)btn{
-    int row = btn.tag;
+    NSInteger row = btn.tag;
     FoodProduct *item = [foodList objectAtIndex:row];
     if([self.selectFoods containsObject:item]){
         [self.selectFoods removeObject:item];
@@ -941,8 +941,8 @@
  * load the grid view by food list.
  */
 - (void)loadGridViews{
-    int total = foodList.count;
-    int rows = ceil(total / 3.0);
+    NSInteger total = foodList.count;
+    NSInteger rows = ceil(total / 3.0);
     UIScrollView *scroll = [[UIScrollView alloc] initWithFrame:self.scrollView.frame];
     scroll.contentSize = CGSizeMake(scroll.frame.size.width, rows * 170 + 20);
     for(int i = 0; i < total; i++){
@@ -1172,7 +1172,7 @@
         return [[categories valueForKey:[categoriesKeys objectAtIndex:section]] count];
     }
     else{
-        int count = 0;
+        NSInteger count = 0;
         if(selectIndex < 2){
             count = [[foodDict valueForKey:[foodKeys objectAtIndex:section]] count];
         } else{
@@ -1217,15 +1217,16 @@
             [line setBackgroundColor:[UIColor whiteColor]];
             [cell addSubview:line];
         }
-        int sec = indexPath.section;
-        int row = indexPath.row;
+        NSInteger sec = indexPath.section;
+        NSInteger row = indexPath.row;
         cell.textLabel.backgroundColor = [UIColor clearColor];
         
         BOOL found = false;
         if (sec == 1 || sec == 2) {
-            found = [[selectCategoryIndex objectForKey:[NSNumber numberWithInt:sec]] containsObject:[NSNumber numberWithInt:row]];
+            found = [[selectCategoryIndex objectForKey:[NSNumber numberWithInteger:sec]]
+                     containsObject:[NSNumber numberWithInteger:row]];
         } else {
-            NSNumber *n = [selectCategoryIndex objectForKey:[NSNumber numberWithInt:sec]];
+            NSNumber *n = [selectCategoryIndex objectForKey:[NSNumber numberWithInteger:sec]];
             found = (n != nil &&  n.intValue == row);
         }
         if (found) {
@@ -1426,19 +1427,19 @@
             [selectCategoryIndex setObject:@-1 forKey:@4];
         }
         else {
-            NSNumber *key = [NSNumber numberWithInt:indexPath.section];
+            NSNumber *key = [NSNumber numberWithInteger:indexPath.section];
             
             if (indexPath.section == 1 || indexPath.section == 2) {
                 NSMutableArray *array = [selectCategoryIndex objectForKey:key];
-                NSInteger index = [array indexOfObject:[NSNumber numberWithInt:indexPath.row]];
+                NSInteger index = [array indexOfObject:[NSNumber numberWithInteger:indexPath.row]];
                 if (index != NSNotFound) {
                     [array removeObjectAtIndex:index];
                 } else {
-                    [array addObject:[NSNumber numberWithInt:indexPath.row]];
+                    [array addObject:[NSNumber numberWithInteger:indexPath.row]];
                 }
             } else {
                 if ([[selectCategoryIndex objectForKey:key] intValue] != indexPath.row) {
-                    [selectCategoryIndex setObject:[NSNumber numberWithInt:indexPath.row] forKey:key];
+                    [selectCategoryIndex setObject:[NSNumber numberWithInteger:indexPath.row] forKey:key];
                 } else {
                     [selectCategoryIndex setObject:@-1 forKey:key];
                 }

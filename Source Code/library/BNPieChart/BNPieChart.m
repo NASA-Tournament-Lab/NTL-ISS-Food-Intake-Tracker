@@ -26,13 +26,13 @@
 - (void)drawSlice:(int)index inContext:(CGContextRef)context;
 - (CGGradientRef)newGradientForIndex:(int)index;
 - (void)addLabelForLastName;
-- (void)getRGBForIndex:(int)index red:(float *)red green:(float *)green blue:(float *)blue;
+- (void)getRGBForIndex:(NSInteger)index red:(CGFloat *)red green:(CGFloat *)green blue:(CGFloat *)blue;
 - (float)approxDistFromCenter:(CGRect)rect;
-- (void)moveInImage:(int)index;
-- (void)moveInLabel:(int)index;
+- (void)moveInImage:(NSInteger)index;
+- (void)moveInLabel:(NSInteger)index;
 - (void)movePreviousImagessIn;
 - (void)movePreviousLabelsIn;
-- (float)pointAtIndex:(int)index;
+- (CGFloat)pointAtIndex:(NSInteger)index;
 
 @end
 
@@ -243,8 +243,8 @@
 	cornerAngles[3] = cornerAngles[1] + M_PI;
 		
 	// Find out which wall the center ray will hit.
-	int index = [slicePortions count] - 1;
-	float rayAngle = ([self pointAtIndex:index] +
+	NSInteger index = [slicePortions count] - 1;
+	CGFloat rayAngle = ([self pointAtIndex:index] +
 					  [self pointAtIndex:(index + 1)]) * M_PI;
 	int i;
 	for (i = 0; i < 4 && rayAngle > cornerAngles[i]; ++i);
@@ -271,7 +271,7 @@
 	label.text = text;
 	CGFloat red, green, blue;
 	[self getRGBForIndex:index red:&red green:&green blue:&blue];
-    float darkenFactor = 0.87;  // Closer to 0 = closer to black.
+    CGFloat darkenFactor = 0.87;  // Closer to 0 = closer to black.
     red *= darkenFactor;
     green *= darkenFactor;
     blue *= darkenFactor;
@@ -304,7 +304,7 @@
     cornerAngles[3] = cornerAngles[1] + M_PI;
     
     // Find out which wall the center ray will hit.
-    int index = [slicePortions count] - 1;
+    NSInteger index = [slicePortions count] - 1;
     float rayAngle = ([self pointAtIndex:index] +
                       [self pointAtIndex:(index + 1)]) * M_PI;
     int i;
@@ -343,7 +343,7 @@
     }
 }
 
-- (void)getRGBForIndex:(int)index red:(float *)red green:(float *)green blue:(float *)blue {
+- (void)getRGBForIndex:(NSInteger)index red:(CGFloat *)red green:(CGFloat *)green blue:(CGFloat *)blue {
   if (colors) {
     BNColor *color = [colors objectAtIndex:(index % [colors count])];
     *red = color.red;
@@ -351,7 +351,7 @@
     *blue = color.blue;
     return;
   }
-  int i = 6 - index;
+  NSInteger i = 6 - index;
 	*red = 0.5 + 0.5 * cos(i);
 	*green = 0.5 + 0.5 * sin(i);
 	*blue = 0.5 + 0.5 * cos(1.5 * i + M_PI / 4.0);	
@@ -391,8 +391,8 @@ float dist(float x1, float y1, float x2, float y2) {
                                (int)(-sin(rayAngle) * excessDist));	
 }
 
-- (void)moveInLabel:(int)index {
-	float outerRadius = radius / kRadiusPortion;
+- (void)moveInLabel:(NSInteger)index {
+	CGFloat outerRadius = radius / kRadiusPortion;
 	UILabel* label = [nameLabels objectAtIndex:index];
 	float distance = [self approxDistFromCenter:label.frame];
 	float excessDist = distance - outerRadius;
@@ -416,9 +416,9 @@ float dist(float x1, float y1, float x2, float y2) {
 	}
 }
 
-- (float)pointAtIndex:(int)index {
+- (CGFloat)pointAtIndex:(NSInteger)index {
 	index = (index + [slicePointsIn01 count]) % [slicePointsIn01 count];
-	return [(NSNumber*)[slicePointsIn01 objectAtIndex:index] floatValue];
+	return [(NSNumber*)[slicePointsIn01 objectAtIndex:index] doubleValue];
 }
 
 // Whether to show the labels

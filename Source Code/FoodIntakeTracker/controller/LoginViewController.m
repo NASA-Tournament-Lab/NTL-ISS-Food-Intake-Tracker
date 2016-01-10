@@ -87,7 +87,7 @@
 
 @interface LoginViewController() <UIScrollViewDelegate>{
     /* the selected user index */
-    int selectUserIndex;
+    NSInteger selectUserIndex;
 }
 
 /**
@@ -538,7 +538,7 @@
     NSError *error = nil;
     users = [userService filterUsers:@"" error:&error];
     if ([Helper displayError:error]) return;
-    int userNumber = [users count];
+    NSInteger userNumber = [users count];
     int width = self.loginListScrollView.frame.size.width;
     int height = self.loginListScrollView.frame.size.height;
     self.loginListScrollView.panGestureRecognizer.delaysTouchesBegan = self.loginListScrollView.delaysContentTouches;

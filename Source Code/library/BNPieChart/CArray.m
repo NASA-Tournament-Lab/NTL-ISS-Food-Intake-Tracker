@@ -73,8 +73,8 @@ void CArrayRemoveElement(CArray *cArray, void *element) {
   if (cArray->releaser) cArray->releaser(element);
   int numLeft = cArray->count--;
   char *eltByte = (char *)element;
-  int byteDist = eltByte - cArray->elements;
-  int index = byteDist / cArray->elementSize;
+  NSInteger byteDist = eltByte - cArray->elements;
+  NSInteger index = byteDist / cArray->elementSize;
   if (index == numLeft) return;
   memmove(eltByte, eltByte + cArray->elementSize, (numLeft - index) * cArray->elementSize);
 }

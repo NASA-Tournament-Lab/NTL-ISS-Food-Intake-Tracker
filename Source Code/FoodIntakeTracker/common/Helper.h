@@ -42,7 +42,7 @@
  * @param month should be 1 - 12.
  * @return the month name if valid month number. else nil.
  */
-+ (NSString *)monthName:(int)month;
++ (NSString *)monthName:(NSInteger)month;
 
 /*
  * This method will save an image to file system. The file name will be automatically generated.

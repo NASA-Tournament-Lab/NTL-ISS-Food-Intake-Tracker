@@ -34,7 +34,7 @@ static NSArray *monthNameArray = nil;
  * @param month should be 1 - 12.
  * @return the month name if valid month number. else nil.
  */
-+ (NSString *)monthName:(int)month{
++ (NSString *)monthName:(NSInteger)month{
     if(monthNameArray == nil){
         monthNameArray = [NSArray arrayWithObjects:@"January", @"February", @"March", @"April",
                           @"May", @"June", @"July", @"August", @"September", @"October ",
