@@ -689,6 +689,8 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 
+    [self hideFoodDetail];
+
     [self hideDeletePop:nil];
     [self hideCopyPop:nil];
     [self hidePastePop:nil];
@@ -1091,6 +1093,7 @@
 }
 
 #pragma mark - food Details
+
 /**
  * hide food detail view.
  */
