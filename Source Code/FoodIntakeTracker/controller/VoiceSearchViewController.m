@@ -130,10 +130,10 @@
 - (void)updateSubTitle {
     timeElapsed--;
     if (timeElapsed >= 0) {
-        int seconds = timeElapsed % 60;
-        int minutes = timeElapsed / 60;
+        NSInteger seconds = timeElapsed % 60;
+        NSInteger minutes = timeElapsed / 60;
 
-        self.lblSubTitle.text = [NSString stringWithFormat:@"Speak Now (%02d:%2d)", minutes, seconds];
+        self.lblSubTitle.text = [NSString stringWithFormat:@"Speak Now (%02ld:%2ld)", minutes, seconds];
     } else {
         [timer invalidate];
     }

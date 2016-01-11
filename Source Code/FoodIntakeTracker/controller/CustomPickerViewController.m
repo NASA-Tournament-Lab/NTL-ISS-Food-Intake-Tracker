@@ -203,7 +203,7 @@
 - (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row
           forComponent:(NSInteger)component reusingView:(UIView *)view{
     UILabel *lbl = (UILabel *)[super pickerView:pickerView viewForRow:row forComponent:component reusingView:view];
-    lbl.text = [NSString stringWithFormat:@"%.2d:%.2d", (int)(row / RFACTOR), (row % RFACTOR) * FACTOR];
+    lbl.text = [NSString stringWithFormat:@"%.2d:%.2d", (int)(row / RFACTOR), (int)(row % RFACTOR) * FACTOR];
     return lbl;
 }
 
@@ -222,9 +222,9 @@
  * @param sender the button.
  */
 - (IBAction)doneButtonClick:(id)sender{
-    int v1 = [self.timePicker selectedRowInComponent:0] / RFACTOR;
-    int v2 = ([self.timePicker selectedRowInComponent:0] % RFACTOR) * FACTOR;
-    selectValue = [NSString stringWithFormat:@"%.2d:%.2d", v1, v2];
+    long v1 = [self.timePicker selectedRowInComponent:0] / RFACTOR;
+    long v2 = ([self.timePicker selectedRowInComponent:0] % RFACTOR) * FACTOR;
+    selectValue = [NSString stringWithFormat:@"%.2ld:%.2ld", v1, v2];
     [super doneButtonClick:sender];
 }
 

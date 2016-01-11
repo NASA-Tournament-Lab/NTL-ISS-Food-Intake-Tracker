@@ -298,7 +298,7 @@
  * If need more view or some other view could be returned here.
  * @param index the setting navaigate table select index.
  */
-- (UIView *)getSettingViewByIndex:(int)index{
+- (UIView *)getSettingViewByIndex:(NSInteger)index{
     if(index == 0){
         return self.settingLogin;
     }
@@ -438,7 +438,7 @@
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     else{
-        int selectedRow = indexPath.row;
+        NSInteger selectedRow = indexPath.row;
         NSDictionary *dic = [settingItems objectAtIndex:selectedRow];
         cell.textLabel.backgroundColor = [UIColor clearColor];
         if(indexPath.row == selectIndex){
@@ -464,7 +464,7 @@
  * change the detail content or view.
  */
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    int oldSelectIndex = 0;
+    NSInteger oldSelectIndex = 0;
     if(indexPath.row == selectIndex){
         return;
     }
@@ -480,7 +480,7 @@
                          withRowAnimation:UITableViewRowAnimationAutomatic];
     }
     else{
-        int selectedRow = indexPath.row;
+        NSInteger selectedRow = indexPath.row;
         if (selectedRow == 1) {
             AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
             if (!appDelegate.loggedInUser) {
@@ -521,7 +521,7 @@
  * This will be called when list item is selected.
  * @param index the index
  */
-- (void)listviewDidSelect:(int)index {
+- (void)listviewDidSelect:(NSInteger)index {
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     UserServiceImpl *userService = appDelegate.userService;
     NSError *error;

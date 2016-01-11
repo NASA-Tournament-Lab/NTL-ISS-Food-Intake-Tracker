@@ -253,7 +253,7 @@
     [request setPredicate:predicate];
     
     // Set sort descriptor
-    int option = [filter.sortOption integerValue];
+    NSInteger option = [filter.sortOption integerValue];
     if (option == A_TO_Z) {
         [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"name"
                                                                     ascending:YES]]];
@@ -332,7 +332,7 @@
             [request setPredicate:predicate];
             
             NSArray *tmp = [[self managedObjectContext] executeFetchRequest:request error:error];
-            unsigned int count = tmp.count;
+            NSInteger count = tmp.count;
             [LoggingHelper logError:methodName error:*error];
             if (*error) {
                 [LoggingHelper logMethodExit:methodName returnValue:nil];

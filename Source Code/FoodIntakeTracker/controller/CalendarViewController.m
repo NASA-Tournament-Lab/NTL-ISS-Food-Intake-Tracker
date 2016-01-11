@@ -170,8 +170,8 @@
                                                     NSWeekdayCalendarUnit)
                                           fromDate:self.selectedDate];
     NSInteger pos = info.day + prevMonth.count - 1;
-    int posX = pos % 7;
-    int posY = pos / 7;
+    NSInteger posX = pos % 7;
+    NSInteger posY = pos / 7;
     
     CGContextRef context = UIGraphicsGetCurrentContext();
     
@@ -303,7 +303,7 @@
 - (void)setMonth:(NSDate *)month{
     self.listView.month = month;
     [self.listView updateDateArray];
-    int h = self.listView.totalRows * 40;
+    long h = self.listView.totalRows * 40;
     
     self.bgCalendarGrid.frame = CGRectMake(15, 80, 336, 40 + h);
     self.btnToday.frame = CGRectMake(15, 143 + h, 336, 33);
@@ -316,7 +316,7 @@
                                                     NSDayCalendarUnit |
                                                     NSWeekdayCalendarUnit)
                                           fromDate:month];
-    self.monthLabel.text = [NSString stringWithFormat:@"%@  %d", [Helper monthName:info.month], info.year];
+    self.monthLabel.text = [NSString stringWithFormat:@"%@  %d", [Helper monthName:info.month], (int)info.year];
 }
 
 /**
@@ -331,8 +331,8 @@
                                                     NSDayCalendarUnit |
                                                     NSWeekdayCalendarUnit)
                                           fromDate:self.listView.month];
-    int m = info.month +1;
-    int y = info.year;
+    NSInteger m = info.month +1;
+    NSInteger y = info.year;
     if(m > 12){
         y = info.year + 1;
         m = 1;
@@ -357,8 +357,8 @@
                                                     NSDayCalendarUnit |
                                                     NSWeekdayCalendarUnit)
                                           fromDate:self.listView.month];
-    int m = info.month - 1;
-    int y = info.year;
+    NSInteger m = info.month - 1;
+    NSInteger y = info.year;
     if(m <= 0){
         y = info.year - 1;
         m = 12;

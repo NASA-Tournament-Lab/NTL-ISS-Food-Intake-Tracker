@@ -77,7 +77,7 @@
                                                fromDate:self.foodConsumptionRecord.timestamp];
     NSInteger hour = [components hour];
     NSInteger minute = [components minute];
-    self.lblTime.text = [NSString stringWithFormat:@"%.2d:%.2d", hour, minute];
+    self.lblTime.text = [NSString stringWithFormat:@"%.2d:%.2d", (int) hour, (int) minute];
     self.scrollView.contentSize = CGSizeMake(554, 54);
     [self.scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     self.commentInstructionLabel.text = @"";

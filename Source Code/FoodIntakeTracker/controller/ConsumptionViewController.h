@@ -58,7 +58,7 @@
  */
 @interface DateListView : UIView{
     /* the active tag index */
-    int activeTag;
+    NSInteger activeTag;
 }
 /* the selected current date */
 @property (strong, nonatomic) NSDate *currentDate;

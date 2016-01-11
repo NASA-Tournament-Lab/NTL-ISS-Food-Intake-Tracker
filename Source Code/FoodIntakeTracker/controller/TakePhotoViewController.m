@@ -126,6 +126,10 @@
     self.txtFoodName.text = nil;
     self.txtFoodComment.text = nil;
 
+    self.btnCancel.hidden = YES;
+    self.btnShowAll.hidden = YES;
+    self.btnResults.hidden = YES;
+
     UIButton *button = (UIButton *)sender;
     UIImagePickerController *picker = [[UIImagePickerController alloc] init];
     picker.delegate = self;
@@ -452,6 +456,10 @@
     self.lblTakeButtonTitle.text = @"Take Another Photo";
     self.resultsView.hidden = YES;
     [self.btnResults setSelected:NO];
+
+    self.btnCancel.hidden = NO;
+    self.btnShowAll.hidden = NO;
+    self.btnResults.hidden = NO;
 }
 
 /*!
@@ -475,6 +483,10 @@
     self.btnAdd.hidden = YES;
     self.resultsView.hidden = YES;
     [self.btnResults setSelected:NO];
+
+    self.btnCancel.hidden = NO;
+    self.btnShowAll.hidden = NO;
+    self.btnResults.hidden = NO;
 }
 
 #pragma mark - PopoverControllerDelegate

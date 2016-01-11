@@ -31,7 +31,7 @@
 }
 
 - (void)wipeOutInDirection:(CGPoint)direction {
-  CGRect endingContentsRect = CGRectMake(0, 0, 1 - abs(direction.x), 1 - abs(direction.y));
+  CGRect endingContentsRect = CGRectMake(0, 0, 1 - fabs(direction.x), 1 - fabs(direction.y));
   if (direction.x < 0) endingContentsRect.origin.x = 1;
   if (direction.y < 0) endingContentsRect.origin.y = 1;
   

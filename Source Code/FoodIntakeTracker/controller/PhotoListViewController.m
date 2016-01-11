@@ -151,8 +151,8 @@
         if (!image) {
             continue;
         }
-        int x = (i % 4) * 190;
-        int y = (i / 4) * 220;
+        NSInteger x = (i % 4) * 190;
+        NSInteger y = (i / 4) * 220;
         UIView *v = [[UIView alloc] initWithFrame:CGRectMake(x, y, 190, 220)];
         UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(17, 17, 170, 170)];
         img.layer.borderColor = [UIColor colorWithRed:0.54 green:0.79 blue:1 alpha:1].CGColor;

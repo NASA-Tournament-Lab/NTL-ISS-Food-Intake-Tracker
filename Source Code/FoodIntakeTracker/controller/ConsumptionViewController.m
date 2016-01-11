@@ -146,7 +146,7 @@
     
     index++;
 
-    foodDetail.commentInstructionLabel.text = [NSString stringWithFormat:@"Playing recording (%d of %d)", index,
+    foodDetail.commentInstructionLabel.text = [NSString stringWithFormat:@"Playing recording (%d of %lud)", index,
                                                self.fileNameQueue.count];
     foodDetail.commentInstructionLabel.hidden = NO;
     foodDetail.commentInstructionLabel.layer.cornerRadius = 4.0f;
@@ -221,7 +221,7 @@
                                                     inUnit:NSYearCalendarUnit
                                                    forDate:date];
         
-        lblDay.text = [NSString stringWithFormat:@"%.2d", dayOfYear];
+        lblDay.text = [NSString stringWithFormat:@"%.2lu", (unsigned long) dayOfYear];
         if(tmp.weekday == info.weekday){
             activeTag = btn.tag;
             [btn setSelected:YES];
@@ -689,6 +689,8 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 
+    [self hideFoodDetail];
+
     [self hideDeletePop:nil];
     [self hideCopyPop:nil];
     [self hidePastePop:nil];
@@ -844,7 +846,7 @@
     
     NSInteger diffDays = [Helper daysFromToday:date];
     if (diffDays != 0) {
-        self.lblFooterTitle.text = [NSString stringWithFormat:@"GMT %+d Nutrient Intake Total", diffDays];
+        self.lblFooterTitle.text = [NSString stringWithFormat:@"GMT %+ld Nutrient Intake Total", diffDays];
     } else {
         self.lblFooterTitle.text = @"Today's Nutrient Intake Progress";
     }
@@ -858,7 +860,7 @@
  */
 - (void)foodSelect:(id)sender{
     UIButton *btn = (UIButton *)sender;
-    int row = btn.tag;
+    NSInteger row = btn.tag;
     FoodConsumptionRecord *item = [self.foodConsumptionRecords objectAtIndex:row];
     if([selectedItems containsObject:item]){
         [selectedItems removeObject:item];
@@ -1091,6 +1093,7 @@
 }
 
 #pragma mark - food Details
+
 /**
  * hide food detail view.
  */
@@ -1290,7 +1293,7 @@
                                           fromDate:self.dateListView.currentDate];
     
     self.lblMonth.text = [Helper monthName:info.month];
-    self.lblYear.text = [NSString stringWithFormat:@"GMT %d", info.year];
+    self.lblYear.text = [NSString stringWithFormat:@"GMT %ld", info.year];
     [self.btnMonth setSelected:NO];
     
     [self loadFoodItemsForDate:date];
@@ -1799,7 +1802,7 @@
         NSError *err = nil;
         recorder = [[ AVAudioRecorder alloc] initWithURL:url settings:recordSetting error:&err];
         if(!recorder){
-            NSLog(@"recorder: %@ %d %@", [err domain], [err code], [[err userInfo] description]);
+            NSLog(@"recorder: %@ %ld %@", [err domain], [err code], [[err userInfo] description]);
             UIAlertView *alert =
             [[UIAlertView alloc] initWithTitle: @"Warning"
                                        message: [err localizedDescription]
@@ -2054,7 +2057,7 @@
     NSInteger hour = [components hour];
     NSInteger minute = [components minute];
     
-    cell.lblTime.text = [NSString stringWithFormat:@"%.2d:%.2d", hour, minute];
+    cell.lblTime.text = [NSString stringWithFormat:@"%.2ld:%.2ld", hour, minute];
     cell.lblName.text = item.foodProduct.name;
     cell.lblName.textColor = [UIColor colorWithRed:68.f/255.f green:68.f/255.f blue:68.f/255.f alpha:1];
     if ([item.foodProduct.removed boolValue] && ![item.foodProduct isKindOfClass:[AdhocFoodProduct class]]) {

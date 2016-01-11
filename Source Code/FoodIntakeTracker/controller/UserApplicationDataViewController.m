@@ -424,7 +424,7 @@
  * @param indexPath An index path locating a row in tableView.
  */
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    int oldSelectIndex = 0;
+    NSInteger oldSelectIndex = 0;
     if(indexPath.row == selectIndex){
         return;
     }
