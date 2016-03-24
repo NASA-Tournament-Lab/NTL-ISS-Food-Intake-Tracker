@@ -365,19 +365,12 @@
         return nil;
     }
     
-    [LoggingHelper logMethodEntrance:methodName paramNames:@[@"filter", @"user"] params:@[filter,user]];
+    [LoggingHelper logMethodEntrance:methodName paramNames:@[@"filter", @"user"] params:@[filter, user]];
     
     
     // Prepare fetch predicate string
     NSMutableString *predicateString = [NSMutableString stringWithString:@"(removed == NO)"];
     NSMutableArray *arguments = [NSMutableArray array];
-//    if ([filter.adhocOnly boolValue]) {
-//        predicateString = [NSMutableString stringWithString:@"(deleted == NO) AND (user == %@)"];
-//        arguments = [NSMutableArray arrayWithObject:user];
-//    }else {
-//        predicateString = [NSMutableString stringWithString:@"(deleted == NO)"];
-//        arguments = [NSMutableArray array];
-//    }
     if (filter.name) {
         [predicateString appendString:@" AND (name LIKE[c] %@)"];
         [arguments addObject:[NSString stringWithFormat:@"*%@*", filter.name]];
@@ -404,12 +397,13 @@
         }
         [predicateString appendString:@")"];
     }
-    
+
     [self.managedObjectContext lock];
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateString argumentArray:arguments];
-    NSEntityDescription *description = [NSEntityDescription entityForName:@"FoodProduct"
-                                                   inManagedObjectContext:[self managedObjectContext]];
+    NSEntityDescription *description = [NSEntityDescription
+                                        entityForName:filter.adhocOnly.boolValue ? @"AdhocFoodProduct" : @"FoodProduct"
+                                        inManagedObjectContext:[self managedObjectContext]];
     [request setEntity:description];
     [request setPredicate:predicate];
     
@@ -822,7 +816,7 @@
     for (id product in result) {
         if ([product isKindOfClass:[AdhocFoodProduct class]]) {
             AdhocFoodProduct *adhcFoodProduct = (AdhocFoodProduct *)product;
-            if ([adhcFoodProduct.user.objectID isEqual:user.objectID]) {
+            if (adhocOnly && [adhcFoodProduct.user.objectID isEqual:user.objectID]) {
                 [filteredResult addObject:adhcFoodProduct];
                 continue;
             }
