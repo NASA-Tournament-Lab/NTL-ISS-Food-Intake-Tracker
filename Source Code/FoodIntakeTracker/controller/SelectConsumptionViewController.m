@@ -308,11 +308,14 @@
     
     NSInteger index = [[selectCategoryIndex objectForKey:@3] intValue];
     if (index != -1) {
+        filter.adhocOnly = @YES;
         if (index == 1) {
             filter.favoriteWithinTimePeriod = @7;
         } else if (index == 2) {
             filter.favoriteWithinTimePeriod = @30;
         }
+    } else {
+        filter.adhocOnly = @NO;
     }
     
     // Save last used food product filter
@@ -335,7 +338,7 @@
     }
     
     for(FoodProduct *foodProduct in result) {
-        if (foodProduct.name.length > 0 && ![foodProduct isKindOfClass:[AdhocFoodProduct class]]) {
+        if (foodProduct.name.length > 0) {
             NSString *key = [foodProduct.name substringToIndex:1];
             if (key && ![key isEqualToString:@""]) {
                 key = [key uppercaseString];
