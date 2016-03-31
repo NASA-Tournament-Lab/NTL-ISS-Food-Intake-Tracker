@@ -70,6 +70,7 @@
     filter.sortOption = @(A_TO_Z);
     filter.removed = @NO;
     filter.adhocOnly = @NO;
+    filter.fetchUserAll = @NO;
     filter.synchronized = @NO;
     
     [LoggingHelper logMethodExit:methodName returnValue:filter];
@@ -213,7 +214,6 @@
     
     [LoggingHelper logMethodEntrance:methodName paramNames:@[@"filter"] params:@[filter]];
     
-    
     // Prepare fetch predicate string
     NSMutableString *predicateString = [NSMutableString stringWithString:@"(removed == NO)"];
     NSMutableArray *arguments = [NSMutableArray array];
@@ -242,6 +242,28 @@
             [arguments addObject:[NSString stringWithFormat:@"%@", stringWrapper.value]];
         }
         [predicateString appendString:@")"];
+    }
+
+    // Filter by favorite within time period
+    NSMutableArray *foodFilter = [NSMutableArray array];
+    if ([filter.fetchUserAll boolValue] && filter.favoriteWithinTimePeriod && filter.favoriteWithinTimePeriod.intValue > 0) {
+        NSFetchRequest *recordRequest = [[NSFetchRequest alloc] init];
+        NSEntityDescription *recordDescription = [NSEntityDescription entityForName:@"FoodConsumptionRecord"
+                                                             inManagedObjectContext:[self managedObjectContext]];
+        NSPredicate *recordPredicate = [NSPredicate predicateWithFormat:@"(timestamp >= %@) AND (SUBQUERY(foodProduct, $x, $x.removed == NO).@count > 0)",
+                                        [NSDate dateWithTimeIntervalSinceNow:-(24 * 3600 * filter.favoriteWithinTimePeriod.intValue)]];
+        [recordRequest setEntity:recordDescription];
+        [recordRequest setPredicate:recordPredicate];
+        NSArray *tmp = [[self managedObjectContext] executeFetchRequest:recordRequest error:error];
+        for (FoodConsumptionRecord *record in tmp) {
+            if (![foodFilter containsObject:record.foodProduct.name]) {
+                [foodFilter addObject:record.foodProduct.name];
+            }
+        }
+        if (foodFilter.count > 0) {
+            [predicateString appendString:@" AND (name IN %@)"];
+            [arguments addObject:foodFilter];
+        }
     }
     
     [self.managedObjectContext lock];
@@ -316,35 +338,6 @@
             return [self compareFoodProduct:b secondProduct:a error:error];
         }];
     }
-    
-    // Filter by favorite within time period
-    if (filter.favoriteWithinTimePeriod && filter.favoriteWithinTimePeriod.intValue > 0) {
-        NSMutableArray *temp = [NSMutableArray arrayWithArray:result];
-        // Filter by favorite status
-        NSMutableArray *toRemove = [NSMutableArray array];
-        for (FoodProduct* item in result) {
-            NSFetchRequest *request = [[NSFetchRequest alloc] init];
-            description = [NSEntityDescription  entityForName:@"FoodConsumptionRecord"
-                                       inManagedObjectContext:[self managedObjectContext]];
-            predicate = [NSPredicate predicateWithFormat:@"(foodProduct == %@) AND (timestamp >= %@)",
-                         item, [NSDate dateWithTimeIntervalSinceNow:-(24 * 3600 * filter.favoriteWithinTimePeriod.intValue)]];
-            [request setEntity:description];
-            [request setPredicate:predicate];
-            
-            NSArray *tmp = [[self managedObjectContext] executeFetchRequest:request error:error];
-            NSInteger count = tmp.count;
-            [LoggingHelper logError:methodName error:*error];
-            if (*error) {
-                [LoggingHelper logMethodExit:methodName returnValue:nil];
-                return nil;
-            }
-            if (count == 0) {
-                [toRemove addObject:item];
-            }
-        }
-        [temp removeObjectsInArray:toRemove];
-        result = [NSArray arrayWithArray:temp];
-    }
 
     [self.managedObjectContext unlock];
     [LoggingHelper logMethodExit:methodName returnValue:result];
@@ -398,6 +391,33 @@
         [predicateString appendString:@")"];
     }
 
+    // Filter by favorite within time period
+    NSMutableArray *foodFilter = [NSMutableArray array];
+    if ([filter.fetchUserAll boolValue]) {
+        NSFetchRequest *recordRequest = [[NSFetchRequest alloc] init];
+        NSPredicate *recordPredicate = nil;
+        NSEntityDescription *recordDescription = [NSEntityDescription entityForName:@"FoodConsumptionRecord"
+                                                             inManagedObjectContext:[self managedObjectContext]];
+        if (filter.favoriteWithinTimePeriod && filter.favoriteWithinTimePeriod.intValue > 0) {
+            recordPredicate = [NSPredicate predicateWithFormat:@"(user == %@) AND (timestamp >= %@) AND (SUBQUERY(foodProduct, $x, $x.removed == NO).@count > 0)", user,
+                               [NSDate dateWithTimeIntervalSinceNow:-(24 * 3600 * filter.favoriteWithinTimePeriod.intValue)]];
+        } else {
+            recordPredicate = [NSPredicate predicateWithFormat:@"(user == %@) AND (SUBQUERY(foodProduct, $x, $x.removed == NO).@count > 0)", user];
+        }
+        [recordRequest setEntity:recordDescription];
+        [recordRequest setPredicate:recordPredicate];
+        NSArray *tmp = [[self managedObjectContext] executeFetchRequest:recordRequest error:error];
+        for (FoodConsumptionRecord *record in tmp) {
+            if (![foodFilter containsObject:record.foodProduct.name]) {
+                [foodFilter addObject:record.foodProduct.name];
+            }
+        }
+        if (foodFilter.count > 0) {
+            [predicateString appendString:@" AND (name IN %@)"];
+            [arguments addObject:foodFilter];
+        }
+    }
+
     [self.managedObjectContext lock];
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateString argumentArray:arguments];
@@ -408,7 +428,7 @@
     [request setPredicate:predicate];
     
     // Set sort descriptor
-    int option = [filter.sortOption integerValue];
+    int option = [filter.sortOption intValue];
     if (option == A_TO_Z) {
         [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"name"
                                                                                             ascending:YES]]];
@@ -452,7 +472,7 @@
         [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"fat"
                                                                     ascending:YES]]];
     }
-    
+
     // Execute fetch request and filter
     NSArray *result = [[self managedObjectContext] executeFetchRequest:request error:error];
     [LoggingHelper logError:methodName error:*error];
@@ -470,36 +490,7 @@
             return [self compareFoodProduct:b secondProduct:a error:error];
         }];
     }
-    
-    // Filter by favorite within time period
-    if (filter.favoriteWithinTimePeriod && filter.favoriteWithinTimePeriod.intValue > 0) {
-        NSMutableArray *temp = [NSMutableArray arrayWithArray:result];
-        // Filter by favorite status
-        NSMutableArray *toRemove = [NSMutableArray array];
-        for (FoodProduct* item in result) {
-            NSFetchRequest *request = [[NSFetchRequest alloc] init];
-            description = [NSEntityDescription  entityForName:@"FoodConsumptionRecord"
-                                       inManagedObjectContext:[self managedObjectContext]];
-            predicate = [NSPredicate predicateWithFormat:@"(foodProduct == %@) AND (timestamp >= %@)",
-                                        item, [NSDate dateWithTimeIntervalSinceNow:-(24 * 3600 * filter.favoriteWithinTimePeriod.intValue)]];
-            [request setEntity:description];
-            [request setPredicate:predicate];
-            //unsigned int count = [[self managedObjectContext] countForFetchRequest:request error:error];
-            NSArray *tmp = [[self managedObjectContext] executeFetchRequest:request error:error];
-            unsigned int count = tmp.count;
-            [LoggingHelper logError:methodName error:*error];
-            if (*error) {
-                [LoggingHelper logMethodExit:methodName returnValue:nil];
-                return nil;
-            }
-            if (count == 0) {
-                [toRemove addObject:item];
-            }
-        }
-        [temp removeObjectsInArray:toRemove];
-        result = [NSArray arrayWithArray:temp];
-    }
-    
+
     // Save filter and update user
     
     filter.synchronized = @NO;
@@ -793,11 +784,11 @@
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(foodProduct == %@)", firstProduct];
     [request setEntity:description];
     [request setPredicate:predicate];
-    unsigned int count1 = [[self managedObjectContext] countForFetchRequest:request error:error];
+    NSInteger count1 = [[self managedObjectContext] countForFetchRequest:request error:error];
 
     predicate = [NSPredicate predicateWithFormat:@"(foodProduct == %@)", secondProduct];
     [request setPredicate:predicate];
-    unsigned int count2 = [[self managedObjectContext] countForFetchRequest:request error:error];
+    NSInteger count2 = [[self managedObjectContext] countForFetchRequest:request error:error];
     [self.managedObjectContext unlock];
     if (count1 < count2) {
         return NSOrderedDescending;

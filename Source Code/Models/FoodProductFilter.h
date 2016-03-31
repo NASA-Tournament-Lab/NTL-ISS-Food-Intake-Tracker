@@ -47,6 +47,9 @@
 //Represents whether food product is adhoc only or not
 @property (nonatomic, strong) NSNumber *adhocOnly;
 
+//Represets whether search should fetch all user food records
+@property (nonatomic, strong) NSNumber *fetchUserAll;
+
 //Represents the user associated
 @property (nonatomic, strong) User *user;
 

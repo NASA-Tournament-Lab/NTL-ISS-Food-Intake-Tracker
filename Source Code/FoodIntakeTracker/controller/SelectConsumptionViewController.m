@@ -254,7 +254,6 @@
         [filter.origins removeAllObjects];
         
         filter.synchronized = @NO;
-        filter.adhocOnly = @NO;
         context = [DBHelper currentThreadMoc];
     } else {
         filter = [foodProductService buildFoodProductFilter:&error];
@@ -264,6 +263,9 @@
     
     // Filter the food products
     filter.name = self.searchBar.text;
+    filter.user = nil;
+    filter.fetchUserAll = @NO;
+    filter.adhocOnly = @NO;
     filter.favoriteWithinTimePeriod = @0;
 
     if ([[selectCategoryIndex objectForKey:@1] count] > 0) {
@@ -308,14 +310,12 @@
     
     NSInteger index = [[selectCategoryIndex objectForKey:@3] intValue];
     if (index != -1) {
-        filter.adhocOnly = @YES;
+        filter.fetchUserAll = @YES;
         if (index == 1) {
             filter.favoriteWithinTimePeriod = @7;
         } else if (index == 2) {
             filter.favoriteWithinTimePeriod = @30;
         }
-    } else {
-        filter.adhocOnly = @NO;
     }
     
     // Save last used food product filter
