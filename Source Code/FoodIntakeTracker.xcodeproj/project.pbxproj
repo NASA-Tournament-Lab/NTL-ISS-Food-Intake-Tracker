@@ -562,6 +562,7 @@
 		4B2C773B19908ED8009F8FB3 /* pg_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pg_config.h; sourceTree = "<group>"; };
 		4B2C773C19908ED8009F8FB3 /* postgres_ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = postgres_ext.h; sourceTree = "<group>"; };
 		4B2C773E19908FA9009F8FB3 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		4B48260C1CAD4B6B00A08E32 /* ISSFoodIntakeTracker 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ISSFoodIntakeTracker 5.xcdatamodel"; sourceTree = "<group>"; };
 		4B626FB3192B70B00080634C /* ISSFoodIntakeTracker23.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = ISSFoodIntakeTracker23.xcmappingmodel; sourceTree = "<group>"; };
 		4BA6D2F119DE2004007A52A9 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		4BA6D2F619DE2224007A52A9 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
@@ -2501,12 +2502,13 @@
 		4BE31E36190EF4B600402D94 /* ISSFoodIntakeTracker.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				4B48260C1CAD4B6B00A08E32 /* ISSFoodIntakeTracker 5.xcdatamodel */,
 				4B2AF55E19985AFF001259C2 /* ISSFoodIntakeTracker 4.xcdatamodel */,
 				4BB5B81A19272C7800C67690 /* ISSFoodIntakeTracker 3.xcdatamodel */,
 				4BE31E37190EF4B600402D94 /* ISSFoodIntakeTracker 2.xcdatamodel */,
 				4BE31E38190EF4B600402D94 /* ISSFoodIntakeTracker.xcdatamodel */,
 			);
-			currentVersion = 4B2AF55E19985AFF001259C2 /* ISSFoodIntakeTracker 4.xcdatamodel */;
+			currentVersion = 4B48260C1CAD4B6B00A08E32 /* ISSFoodIntakeTracker 5.xcdatamodel */;
 			path = ISSFoodIntakeTracker.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

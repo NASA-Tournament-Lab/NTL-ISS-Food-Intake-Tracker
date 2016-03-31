@@ -31,6 +31,7 @@
 @dynamic categories;
 @dynamic origins;
 @dynamic adhocOnly;
+@dynamic fetchUserAll;
 @dynamic user;
 
 @end

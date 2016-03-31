@@ -970,7 +970,7 @@ app.post('/import', requiredAuthentication, function(req, res) {
                     scriptPath: __dirname
                 }, function (err, results) {
                     if (err != null) {
-                        console.log("Food error: " + JSON.stringify(err));
+                        console.log("Food error: " + err.traceback);
                         callback('Error loading food.\nPlease check the CSV file format.');
                     } else {
                         callback(null);

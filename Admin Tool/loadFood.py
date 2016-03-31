@@ -23,7 +23,7 @@ def checkCategories(cur, categories):
         data = {}
         id = uuid.uuid4()
         data[u"synchronized"] = 1
-        data[u"value"] = cat
+        data[u"value"] = cat.strip()
         data[u"removed"] = 0
         cur.execute("INSERT INTO data VALUES(%s, 'StringWrapper', %s, 'now', 'now', 'file_load');", (str(id), json.dumps(data)))
         result.append(str(id))
