@@ -1,0 +1,43 @@
+{
+  "name": "UserLock",
+  "base": "BaseModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "public",
+      "table": "user_lock"
+    }
+  },
+  "properties": {
+    "userId": {
+      "type": "string",
+      "postgresql": {
+        "columnName": "user_uuid",
+        "dataType": "text"
+      }
+    },
+    "deviceId": {
+      "type": "string",
+      "postgresql": {
+        "columnName": "device_uuid",
+        "dataType": "text"
+      }
+    }
+  },
+  "validations": [],
+  "relations": {
+    "user": {
+      "type": "belongsTo",
+      "model": "NasaUser",
+      "foreignKey": "userId"
+    },
+    "device": {
+      "type": "belongsTo",
+      "model": "Devices",
+      "foreignKey": "deviceId"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

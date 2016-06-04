@@ -145,7 +145,7 @@
     }
 
     self.lblSelectedUserName.text = appDelegate.loggedInUser.fullName;
-    self.imgProfilePhoto.image = self.imgSelectedUserPhoto.image = [Helper loadImage:appDelegate.loggedInUser.profileImage];
+    self.imgProfilePhoto.image = self.imgSelectedUserPhoto.image = [Helper loadImage:appDelegate.loggedInUser.profileImage.filename];
     self.imgProfilePhoto.contentMode = UIViewContentModeScaleAspectFit;
     self.imgSelectedUserPhoto.contentMode = UIViewContentModeScaleAspectFit;
     NSArray *arr = [appDelegate.loggedInUser.fullName componentsSeparatedByString:@" "];
@@ -280,7 +280,7 @@
         self.lblProfileLastName.text = @"";
     }
     
-    self.imgProfilePhoto.image = [Helper loadImage:user.profileImage];
+    self.imgProfilePhoto.image = [Helper loadImage:user.profileImage.filename];
     [self.txtLastName resignFirstResponder];
     [self.txtFirstName resignFirstResponder];
 }
@@ -312,7 +312,7 @@
     else {
         self.txtLastName.text = @"";
     }
-    self.imgProfilePhoto.image = [Helper loadImage:user.profileImage];
+    self.imgProfilePhoto.image = [Helper loadImage:user.profileImage.filename];
 }
 
 /**
@@ -328,7 +328,7 @@
     self.profileTable.hidden = YES;
     [self.txtLastName resignFirstResponder];
     [self.txtFirstName resignFirstResponder];
-    self.imgProfilePhoto.image = [Helper loadImage:user.profileImage];
+    self.imgProfilePhoto.image = [Helper loadImage:user.profileImage.filename];
 }
 
 /**
@@ -342,7 +342,7 @@
     [self.btnUpdateSave setTitle:@"Save" forState:UIControlStateNormal];
     self.profileView.hidden = NO;
     self.profileTable.hidden = YES;
-    self.imgProfilePhoto.image = [Helper loadImage:user.profileImage];
+    self.imgProfilePhoto.image = [Helper loadImage:user.profileImage.filename];
     [self takePhoto:nil];
 }
 
@@ -466,8 +466,16 @@
     }
     else {
         NSString *imagePath = [Helper saveImage2:self.imgProfilePhoto.image];
-        user.profileImage = imagePath;
-        user.synchronized = @0;
+        if (!user.profileImage) {
+            NSEntityDescription *entity = [NSEntityDescription entityForName:@"Media"
+                                                      inManagedObjectContext:[user managedObjectContext]];
+            user.profileImage = [[Media alloc] initWithEntity:entity insertIntoManagedObjectContext:[user managedObjectContext]];
+            user.profileImage.removed = @NO;
+            user.profileImage.synchronized = @NO;
+        }
+        user.profileImage.filename = imagePath;
+        user.profileImage.synchronized = @NO;
+        user.synchronized = @NO;
         [userService saveUser:user error:&error];
         if ([Helper displayError:error]) return;
         [self showPhotoPreview];
@@ -532,7 +540,7 @@
     }
     lbl.font = [UIFont boldSystemFontOfSize:16];
     lbl.text = user.fullName;
-    img.image = [Helper loadImage:user.profileImage];
+    img.image = [Helper loadImage:user.profileImage.filename];
     img.layer.borderWidth = 1;
     img.layer.borderColor = [UIColor colorWithRed:0.54 green:0.79 blue:1 alpha:1].CGColor;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
@@ -615,7 +623,7 @@
     
     self.lblSelectedUserName.text = appDelegate.loggedInUser.fullName;
     self.imgProfilePhoto.image = self.imgSelectedUserPhoto.image =
-    [Helper loadImage:appDelegate.loggedInUser.profileImage];
+    [Helper loadImage:appDelegate.loggedInUser.profileImage.filename];
 
     
     [self updateDetailsView];

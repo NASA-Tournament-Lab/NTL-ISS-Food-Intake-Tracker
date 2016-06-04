@@ -77,7 +77,7 @@
 + (NSString *)getAbsoulteLocalDirectory:(NSString *)localDirectory;
 
 
-+ (BOOL)updateObjectWithJSON:(NSDictionary *) dict  object:(SynchronizableModel *)object
++ (BOOL)updateObjectWithJSON:(NSDictionary *) dict  object:(NSManagedObject *)object
         managegObjectContext:(NSManagedObjectContext *) managedObjectContext;
 + (BOOL)convertJSONToObject:(NSString *) theId jsonValue:(NSDictionary *) dict name:(NSString *) name
                     managegObjectContext:(NSManagedObjectContext *) managedObjectContext;

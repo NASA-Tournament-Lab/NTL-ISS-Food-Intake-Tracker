@@ -192,7 +192,7 @@ var updateValue = function(req, res, remove) {
 
     var queryFunctions = [];
 
-    // check barcode exists
+    // check userlock exists
     queryFunctions.push(function(callback) {
         pgclient.query("SELECT id, deviceId FROM user_lock WHERE id = '" + req.params.id + "'", function(err, results) {
             if (err) {
@@ -282,7 +282,7 @@ var updateValue = function(req, res, remove) {
             });
         }
         newValue["categories"] = catIds.join(";");
-    } else if (undefined != newValue["categoriesId"]) {
+    } else if (undefined !== newValue["categoriesId"]) {
         newValue["categories"] = newValue["categoriesId"].replace(",", ";");
     }
     delete newValue["categoriesId"];

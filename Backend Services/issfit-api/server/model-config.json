@@ -1,0 +1,76 @@
+{
+  "_meta": {
+    "sources": [
+      "loopback/common/models",
+      "loopback/server/models",
+      "../common/models",
+      "./models"
+    ],
+    "mixins": [
+      "loopback/common/mixins",
+      "loopback/server/mixins",
+      "../common/mixins",
+      "./mixins"
+    ]
+  },
+  "NasaUser": {
+    "dataSource": "pl_fit_db",
+    "public": true
+  },
+  "BaseSyncModel": {
+    "dataSource": "pl_fit_db",
+    "public": false
+  },
+  "Category": {
+    "dataSource": "pl_fit_db",
+    "public": true
+  },
+  "Origin": {
+    "dataSource": "pl_fit_db",
+    "public": true
+  },
+  "FoodProduct": {
+    "dataSource": "pl_fit_db",
+    "public": true
+  },
+  "AdhocFoodProduct": {
+    "dataSource": "pl_fit_db",
+    "public": true
+  },
+  "BaseModel": {
+    "dataSource": "pl_fit_db",
+    "public": false
+  },
+  "Media": {
+    "dataSource": "pl_fit_db",
+    "public": true
+  },
+  "Devices": {
+    "dataSource": "pl_fit_db",
+    "public": true
+  },
+  "FoodProductRecord": {
+    "dataSource": "pl_fit_db",
+    "public": true
+  },
+  "AudioRecord": {
+    "dataSource": "pl_fit_db",
+    "public": false
+  },
+  "ImageRecord": {
+    "dataSource": "pl_fit_db",
+    "public": false
+  },
+  "CategoryUser": {
+    "dataSource": "pl_fit_db",
+    "public": false
+  },
+  "UserLock": {
+    "dataSource": "pl_fit_db",
+    "public": true
+  },
+  "FoodProductFilter": {
+    "dataSource": "pl_fit_db",
+    "public": true
+  }
+}

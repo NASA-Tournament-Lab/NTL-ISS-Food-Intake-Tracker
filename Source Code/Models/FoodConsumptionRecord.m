@@ -21,7 +21,7 @@
 
 #import "FoodConsumptionRecord.h"
 #import "FoodProduct.h"
-#import "StringWrapper.h"
+#import "Media.h"
 #import "User.h"
 
 //FoodConsumptionRecord implementation

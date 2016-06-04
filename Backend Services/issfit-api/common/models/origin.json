@@ -1,0 +1,22 @@
+{
+  "name": "Origin",
+  "base": "BaseModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "value": {
+      "type": "string",
+      "required": true,
+      "postgresql": {
+        "columnName": "value",
+        "dataType": "text"
+      }
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

@@ -21,7 +21,6 @@
 
 #import "User.h"
 #import "FoodProductFilter.h"
-#import "StringWrapper.h"
 
 //User implementation
 @implementation User

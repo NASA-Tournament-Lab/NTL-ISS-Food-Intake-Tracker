@@ -120,39 +120,32 @@
     copy.foodProduct = record.foodProduct;
     
     NSMutableSet *set = [NSMutableSet set];
-    for (StringWrapper *wrapper in record.images) {
-        StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
-                                                                              entityForName:@"StringWrapper"
-                                                                              inManagedObjectContext:
-                                                                              self.managedObjectContext]
-                                              insertIntoManagedObjectContext:nil];
-        stringWrapper.value = [NSString stringWithString:wrapper.value];
-        stringWrapper.synchronized = @NO;
-        stringWrapper.removed = @NO;
-        
-        [set addObject:stringWrapper];
-        
-        [self.managedObjectContext insertObject:stringWrapper];
+    for (Media *media in record.images) {
+        Media *newMedia = [[Media alloc] initWithEntity:[NSEntityDescription entityForName:@"Media"
+                                                                    inManagedObjectContext:self.managedObjectContext]
+                         insertIntoManagedObjectContext:nil];
+        newMedia.filename = [media.filename copy];
+        newMedia.removed = @NO;
+        newMedia.synchronized = @YES;
+
+        [set addObject:newMedia];
+        [self.managedObjectContext insertObject:newMedia];
     }
     [self.managedObjectContext save:error];
     
     copy.images = [NSSet setWithSet:set];
     
     set = [NSMutableSet set];
-    for (StringWrapper *wrapper in record.voiceRecordings) {
-        StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
-                                                                              entityForName:@"StringWrapper"
-                                                                              inManagedObjectContext:
-                                                                              self.managedObjectContext]
-                                              insertIntoManagedObjectContext:nil];
-        stringWrapper.value = [NSString stringWithString:wrapper.value];
-        stringWrapper.synchronized = @NO;
-        stringWrapper.removed = @NO;
-        
-        [set addObject:stringWrapper];
-        [self.managedObjectContext insertObject:stringWrapper];
-        
-        [self.managedObjectContext insertObject:stringWrapper];
+    for (Media *media in record.voiceRecordings) {
+        Media *newMedia = [[Media alloc] initWithEntity:[NSEntityDescription entityForName:@"Media"
+                                                                    inManagedObjectContext:self.managedObjectContext]
+                         insertIntoManagedObjectContext:nil];
+        newMedia.filename = [media.filename copy];
+        newMedia.removed = @NO;
+        newMedia.synchronized = @YES;
+
+        [set addObject:newMedia];
+        [self.managedObjectContext insertObject:newMedia];
     }
     [self.managedObjectContext save:error];
     
@@ -196,10 +189,10 @@
     record.images = nil;
     record.voiceRecordings = nil;
     [self.managedObjectContext insertObject:record];
-    for (StringWrapper *s in images) {
+    for (Media *s in images) {
         [self.managedObjectContext insertObject:s];
     }
-    for (StringWrapper *s in voiceRecordings) {
+    for (Media *s in voiceRecordings) {
         [self.managedObjectContext insertObject:s];
     }
     // Save changes in the managedObjectContext

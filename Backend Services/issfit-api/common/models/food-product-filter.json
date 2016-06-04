@@ -1,0 +1,84 @@
+{
+  "name": "FoodProductFilter",
+  "base": "BaseSyncModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "public",
+      "table": "food_product_filter"
+    }
+  },
+  "scope": {
+    "include": [
+      "categories",
+      "origins"
+    ]
+  },
+  "properties": {
+    "favoriteWithinTimePeriod": {
+      "type": "number",
+      "postgresql": {
+        "columnName": "favorite",
+        "dataType": "integer"
+      }
+    },
+    "name": {
+      "type": "string",
+      "postgresql": {
+        "dataType": "text"
+      }
+    },
+    "sortOption": {
+      "type": "number",
+      "postgresql": {
+        "columnName": "sort_option",
+        "dataType": "integer"
+      }
+    },
+    "adhocOnly": {
+      "type": "boolean",
+      "postgresql": {
+        "columnName": "adhoc_only",
+        "dataType": "boolean"
+      }
+    },
+    "fetchUserAll": {
+      "type": "boolean",
+      "postgresql": {
+        "columnName": "fetch_all",
+        "dataType": "boolean"
+      }
+    },
+    "user": {
+      "type": "string",
+      "postgresql": {
+        "columnName": "user_uuid",
+        "dataType": "text"
+      }
+    }
+  },
+  "validations": [],
+  "relations": {
+    "categories": {
+      "type": "referencesMany",
+      "model": "Category",
+      "foreignKey": "category_uuids",
+      "options": {
+        "validate": true,
+        "forceId": false
+      }
+    },
+    "origins": {
+      "type": "referencesMany",
+      "model": "Origin",
+      "foreignKey": "origin_uuids",
+      "options": {
+        "validate": true,
+        "forceId": false
+      }
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

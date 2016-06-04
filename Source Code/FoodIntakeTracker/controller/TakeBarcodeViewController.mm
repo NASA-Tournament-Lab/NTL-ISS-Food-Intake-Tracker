@@ -154,7 +154,7 @@
                     }
                     
                     self.resultView.hidden = NO;
-                    self.imgFood.image = [Helper loadImage:foodProduct.productProfileImage];
+                    self.imgFood.image = [Helper loadImage:foodProduct.foodImage.filename];
                     self.lblFoodName.text = foodProduct.name;
                     self.lblFoodCategory.text = [DataHelper convertStringWrapperNSSetToNSString:foodProduct.categories
                                                                                   withSeparator:@", "];
@@ -228,7 +228,7 @@
     [resultFoods addObject:foodProduct];
     
     self.resultView.hidden = NO;
-    self.imgFood.image = [Helper loadImage:foodProduct.productProfileImage];
+    self.imgFood.image = [Helper loadImage:foodProduct.foodImage.filename];
     self.lblFoodName.text = foodProduct.name;
     self.lblFoodCategory.text = [DataHelper convertStringWrapperNSSetToNSString:foodProduct.categories withSeparator:@", "];
     self.lblCalories.text = [NSString stringWithFormat:@"%@",foodProduct.energy];

@@ -120,7 +120,7 @@
     
     self.lblSelectedUserName.text = appDelegate.loggedInUser.fullName;
     self.imgProfilePhoto.image = self.imgSelectedUserPhoto.image =
-    [Helper loadImage:appDelegate.loggedInUser.profileImage];
+    [Helper loadImage:appDelegate.loggedInUser.profileImage.filename];
     self.imgProfilePhoto.contentMode = UIViewContentModeScaleAspectFit;
     self.imgSelectedUserPhoto.contentMode = UIViewContentModeScaleAspectFit;
     NSArray *arr = [appDelegate.loggedInUser.fullName componentsSeparatedByString:@" "];
@@ -179,7 +179,7 @@
     [super viewWillAppear:animated];
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     self.lblSelectedUserName.text = appDelegate.loggedInUser.fullName;
-    self.imgSelectedUserPhoto.image = [Helper loadImage:appDelegate.loggedInUser.profileImage];
+    self.imgSelectedUserPhoto.image = [Helper loadImage:appDelegate.loggedInUser.profileImage.filename];
     [self reloadUsers];
     
     NSError *error;
@@ -325,7 +325,7 @@
             self.lblProfileLastName.text = [components objectAtIndex:1];
         }
         
-        self.imgProfilePhoto.image = [Helper loadImage:user.profileImage];
+        self.imgProfilePhoto.image = [Helper loadImage:user.profileImage.filename];
     }
     else {
         self.profileView.hidden = YES;
@@ -396,7 +396,7 @@
         }
         lbl.font = [UIFont boldSystemFontOfSize:16];
         lbl.text = user.fullName;
-        img.image = [Helper loadImage:user.profileImage];
+        img.image = [Helper loadImage:user.profileImage.filename];
         img.layer.borderWidth = 1;
         img.layer.borderColor = [UIColor colorWithRed:0.54 green:0.79 blue:1 alpha:1].CGColor;
         cell.selectionStyle = UITableViewCellSelectionStyleNone;

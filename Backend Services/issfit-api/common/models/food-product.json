@@ -1,0 +1,127 @@
+{
+  "name": "FoodProduct",
+  "base": "BaseSyncModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": false,
+    "postgresql": {
+      "schema": "public",
+      "table": "food_product"
+    }
+  },
+  "scope": {
+    "include": {
+      "relation": "consumptionRecord",
+      "scope" : {
+        "fields": [ "id" ]
+      }
+    }
+  },
+  "properties": {
+    "active": {
+      "type": "boolean"
+    },
+    "barcode": {
+      "type": "string",
+      "postgresql": {
+        "dataType": "text"
+      }
+    },
+    "carb": {
+      "type": "number",
+      "required": true,
+      "postgresql": {
+        "dataType": "integer"
+      }
+    },
+    "energy": {
+      "type": "number",
+      "required": true,
+      "postgresql": {
+        "dataType": "integer"
+      }
+    },
+    "fat": {
+      "type": "number",
+      "required": true,
+      "postgresql": {
+        "dataType": "integer"
+      }
+    },
+    "fluid": {
+      "type": "number",
+      "required": true,
+      "postgresql": {
+        "dataType": "integer"
+      }
+    },
+    "name": {
+      "type": "string",
+      "required": true,
+      "postgresql": {
+        "dataType": "text"
+      }
+    },
+    "protein": {
+      "type": "number",
+      "required": true,
+      "postgresql": {
+        "dataType": "integer"
+      }
+    },
+    "quantity": {
+      "type": "number",
+      "required": true,
+      "postgresql": {
+        "dataType": "double precision"
+      }
+    },
+    "sodium": {
+      "type": "number",
+      "required": true,
+      "postgresql": {
+        "dataType": "integer"
+      }
+    },
+    "origin": {
+      "type": "string",
+      "postgresql": {
+        "columnName": "origin_uuid",
+        "dataType": "text"
+      }
+    },
+    "foodImage": {
+      "type": "string",
+      "postgresql": {
+        "columnName": "image_media_uuid",
+        "dataType": "text"
+      }
+    },
+    "user": {
+      "type": "string",
+      "postgresql": {
+        "columnName": "user_uuid",
+        "dataType": "text"
+      }
+    }
+  },
+  "validations": [],
+  "relations": {
+    "consumptionRecord": {
+      "type": "hasMany",
+      "model": "FoodProductRecord",
+      "foreignKey": "food_product_uuid"
+    },
+    "categories": {
+      "type": "referencesMany",
+      "model": "Category",
+      "foreignKey": "category_uuids",
+      "options": {
+        "validate": true,
+        "forceId": false
+      }
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

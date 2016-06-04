@@ -1,0 +1,22 @@
+{
+  "name": "Devices",
+  "base": "BaseModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "deviceUuid": {
+      "type": "string",
+      "required": true,
+      "postgresql": {
+        "columnName": "device_uuid",
+        "dataType": "text"
+      }
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

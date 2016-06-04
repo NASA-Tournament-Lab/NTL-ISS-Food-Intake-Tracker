@@ -37,7 +37,7 @@
 #import "Helper.h"
 #import "LoggingHelper.h"
 
-#import "PGCoreData.h"
+#import "WebserviceCoreData.h"
 
 typedef NS_ENUM(NSInteger, SyncStatus) {
     SyncStatusNone,
@@ -62,8 +62,6 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     NSLock *lock;
     /*! Synchronization status */
     SyncStatus status;
-    /*! Dispatch queues */
-    dispatch_queue_t dataSyncUpdateQ;
     
     UIBackgroundTaskIdentifier backgroundTask;
 }
@@ -147,7 +145,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                 [self doServerChange];
             }
         }
-        
+
         self.shouldAutoLogout = NO;
         loadingFinished = NO;
         
@@ -203,8 +201,6 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         backgroundTask = [application beginBackgroundTaskWithExpirationHandler:^ {
             [application endBackgroundTask:backgroundTask];
             backgroundTask = UIBackgroundTaskInvalid;
-
-            [PGCoreData deleteInstance];
         }];
         
         // Start the long-running task and return immediately.
@@ -216,13 +212,9 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                 NSLog(@"Waiting for synchronization: %f", application.backgroundTimeRemaining);
             }
             
-            [PGCoreData deleteInstance];
-            
             [application endBackgroundTask:backgroundTask];
             backgroundTask = UIBackgroundTaskInvalid;
         });
-    } else {
-        [PGCoreData deleteInstance];
     }
 
     if (self.shouldAutoLogout) {
@@ -344,6 +336,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         if (changed) {
             [[NSNotificationCenter defaultCenter] postNotificationName:LoadingNewBeginEvent object:nil];
         } else {
+            [DBHelper resetPersistentStore];
             [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingBeginEvent object:nil];
         }
     });
@@ -358,11 +351,10 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                 NSError *error = nil;
                 syncSuccessful = [self.dataUpdateService update:&error force:YES];
                 [LoggingHelper logError:@"initialLoad" error:error];
+                syncSuccessful &= [[WebserviceCoreData instance] registerDevice];
                 if (syncSuccessful) {
                     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasLaunchedOnce"];
                     [[NSUserDefaults standardUserDefaults] synchronize];
-                                        
-                    [[PGCoreData instance] registerDevice];
                 }
             }
             @catch (NSException *exception) {
@@ -508,14 +500,6 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     
     [[NSUserDefaults standardUserDefaults] setObject:self.configuration forKey:@"CurrentConfiguration"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    
-    if ([[PGCoreData instance] isConnected]) {
-        [[PGCoreData instance] disconnect];
-        
-        [NSThread sleepForTimeInterval:0.5];
-        
-        [[PGCoreData instance] connect];
-    }
 }
 
 #pragma mark - UIAlertViewDelegate methods
@@ -542,7 +526,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
  */
 - (void)removeUserLock {
     dispatch_async(dataSyncUpdateQ, ^{
-        [[PGCoreData instance] removeUserLock];
+        [[WebserviceCoreData instance] removeUserLock];
     });
 }
 
@@ -553,22 +537,22 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
  */
 - (BOOL)checkLock:(User *)user {
     // check if current user has been lock by another device
-    NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"UUID"];
+    NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"DEVICE_UUID"];
 
     NSLog(@"Checking lock for user %@", user.fullName);
 
-    NSArray *userLocks = [[PGCoreData instance] fetchUserLocks];
+    NSArray *userLocks = [[WebserviceCoreData instance] fetchUserLocks];
     if (userLocks) {
         for (NSDictionary *dict in userLocks) {
-            NSString *uid = [dict objectForKey:@"id"];
-            NSString *deviceId = [dict objectForKey:@"deviceid"];
-            if ([uid isEqualToString:user.uuid] && [deviceId isEqualToString:deviceUuid]) {
+            NSString *uid = [dict objectForKey:@"userId"];
+            NSString *deviceId = [dict objectForKey:@"deviceId"];
+            if ([uid isEqualToString:user.id] && [deviceId isEqualToString:deviceUuid]) {
                 return YES;
             }
         }
     }
 
-    NSLog(@"Failed to find lock for user %@ (%@) in %@", user.fullName, user.uuid, userLocks);
+    NSLog(@"Failed to find lock for user %@ (%@) in %@", user.fullName, user.id, userLocks);
 
     return NO;
 }
@@ -580,23 +564,23 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
  */
 - (BOOL)acquireLock:(User *)user {
     // check if current user has been lock by another device
-    NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"UUID"];
+    NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"DEVICE_UUID"];
     NSLog(@"Acquiring lock for user %@", user.fullName);
 
     __block BOOL result = NO;
     dispatch_sync(dataSyncUpdateQ, ^{
-        NSArray *userLocks = [[PGCoreData instance] fetchUserLocks];
+        NSArray *userLocks = [[WebserviceCoreData instance] fetchUserLocks];
         if (userLocks) {
             for (NSDictionary *dict in userLocks) {
-                NSString *uid = [dict objectForKey:@"id"];
+                NSString *uid = [dict objectForKey:@"userId"];
                 NSString *deviceId = [dict objectForKey:@"deviceid"];
-                if ([uid isEqualToString:user.uuid]) {
+                if ([uid isEqualToString:user.id]) {
                     result = [deviceId isEqualToString:deviceUuid];
                 }
             }
         }
 
-        [[PGCoreData instance] insertUserLock:user];
+        [[WebserviceCoreData instance] insertUserLock:user];
         
         result = YES;
     });

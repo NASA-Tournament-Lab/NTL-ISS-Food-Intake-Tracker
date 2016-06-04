@@ -16,7 +16,7 @@
 			<key>AutocorrectionType</key>
 			<string>No</string>
 			<key>DefaultValue</key>
-			<string>52.33.181.105</string>
+			<string>localhost</string>
 			<key>IsSecure</key>
 			<false/>
 			<key>Key</key>
@@ -90,7 +90,7 @@
 			<key>AutocorrectionType</key>
 			<string>No</string>
 			<key>DefaultValue</key>
-			<string>56283</string>
+			<string>3000</string>
 			<key>IsSecure</key>
 			<false/>
 			<key>Key</key>

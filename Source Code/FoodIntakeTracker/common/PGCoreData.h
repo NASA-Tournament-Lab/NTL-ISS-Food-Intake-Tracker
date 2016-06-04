@@ -24,7 +24,6 @@
 - (BOOL)registerDevice;
 - (BOOL)checkDeviceId;
 - (BOOL)checkId:(NSString *) theId;
-- (BOOL)checkResultExists:(NSString *)query values:(NSArray *) values;
 - (NSArray *)fetchAllObjects;
 - (NSArray *)fetchObjects;
 - (NSArray *)fetchMedias;

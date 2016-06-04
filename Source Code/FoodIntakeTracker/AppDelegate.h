@@ -34,6 +34,9 @@
 #import "TouchWindow.h"
 #import "CustomTabBarViewController.h"
 
+/*! Dispatch queues */
+static dispatch_queue_t dataSyncUpdateQ;
+
 /**
  * the application delegate
  *

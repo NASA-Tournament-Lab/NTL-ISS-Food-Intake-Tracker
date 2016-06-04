@@ -182,7 +182,7 @@
         UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(18, 20, 102, 94)];
         img.layer.borderColor = [UIColor colorWithRed:0.54 green:0.79 blue:1 alpha:1].CGColor;
         img.layer.borderWidth = 1;
-        img.image = [UIImage imageNamed:product.productProfileImage];
+        img.image = [UIImage imageNamed:product.foodImage.filename];
         [v addSubview:img];
         UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(20, 128, 100, 17)];
         lbl.backgroundColor = [UIColor clearColor];

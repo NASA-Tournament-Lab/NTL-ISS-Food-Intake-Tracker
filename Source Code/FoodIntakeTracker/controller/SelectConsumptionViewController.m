@@ -188,7 +188,7 @@
             NSArray *categoriesList = (NSArray *)[categories objectForKey:@"Food by Category"];
             NSMutableArray *array = [selectCategoryIndex objectForKey:@1];
 
-            for (StringWrapper *foodProductCategory in appDelegate.loggedInUser.lastUsedFoodProductFilter.categories) {
+            for (Category *foodProductCategory in appDelegate.loggedInUser.lastUsedFoodProductFilter.categories) {
                 NSInteger foodProductCategoryIndex = [categoriesList indexOfObject:foodProductCategory.value];
                 if (foodProductCategoryIndex != NSNotFound) {
                     [array addObject:[NSNumber numberWithInteger:foodProductCategoryIndex]];
@@ -203,7 +203,7 @@
             NSArray *origins = (NSArray *)[categories objectForKey:@"Food by Country"];
             NSMutableArray *array = [selectCategoryIndex objectForKey:@2];
 
-            for (StringWrapper *foodProductOrigin in appDelegate.loggedInUser.lastUsedFoodProductFilter.origins) {
+            for (Origin *foodProductOrigin in appDelegate.loggedInUser.lastUsedFoodProductFilter.origins) {
                 NSInteger foodProductOriginIndex = [origins indexOfObject:foodProductOrigin.value];
                 if (foodProductOriginIndex < origins.count) {
                     [array addObject:[NSNumber numberWithInteger:foodProductOriginIndex]];
@@ -956,7 +956,7 @@
         UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(18, 20, 127, 119)];
         img.layer.borderColor = [UIColor colorWithRed:0.54 green:0.79 blue:1 alpha:1].CGColor;
         img.layer.borderWidth = 1;
-        img.image = [Helper loadImage:item.productProfileImage];
+        img.image = [Helper loadImage:item.foodImage.filename];
         [v addSubview:img];
         UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(18, 150, 127, 20)];
         lbl.backgroundColor = [UIColor clearColor];
@@ -1242,7 +1242,14 @@
             [cell viewWithTag:100].hidden = NO;
         }
         cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:16];
-        cell.textLabel.text = [[categories valueForKey:[categoriesKeys objectAtIndex:sec]] objectAtIndex:row];
+        id keyValue = [[categories valueForKey:[categoriesKeys objectAtIndex:sec]] objectAtIndex:row];
+        if ([keyValue isKindOfClass:[Category class]]) {
+            cell.textLabel.text = [(Category *)keyValue value];
+        } else if ([keyValue isKindOfClass:[Origin class]]) {
+            cell.textLabel.text = [(Origin *)keyValue value];
+        } else {
+            cell.textLabel.text = keyValue;
+        }
         
         AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
         NSString *categoryImageName = appDelegate.configuration[@"Categories"][cell.textLabel.text];

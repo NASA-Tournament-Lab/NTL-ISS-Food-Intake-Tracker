@@ -151,7 +151,7 @@
     [resultFoods addObject:foodProduct];
     
     self.resultView.hidden = NO;
-    self.imgFood.image = [UIImage imageNamed:foodProduct.productProfileImage];
+    self.imgFood.image = [UIImage imageNamed:foodProduct.foodImage.filename];
     self.lblFoodName.text = foodProduct.name;
     // self.lblFoodCategory.text = [[foodProduct.categories allObjects] objectAtIndex:0]; 
     self.lblCalories.text = [NSString stringWithFormat:@"%@",foodProduct.energy];

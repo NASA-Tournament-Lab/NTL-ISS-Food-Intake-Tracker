@@ -25,9 +25,9 @@
 #import "CustomTabBarViewController.h"
 #import "UserServiceImpl.h"
 #import "AppDelegate.h"
-#import "PGCoreData.h"
 #import "Helper.h"
 #import "Settings.h"
+#import "WebserviceCoreData.h"
 
 @implementation LoginGridView
 
@@ -314,7 +314,6 @@
     if ([Helper displayError:error]) return;
     
     user.fullName = [self.txtUserName.text stringByAppendingFormat:@" %@", self.txtLastName.text];
-    user.profileImage = imagePath;
     user.dailyTargetEnergy = [appDelegate.configuration objectForKey:@"DailyTargetCalories"];
     user.dailyTargetSodium = [appDelegate.configuration objectForKey:@"DailyTargetSodium"];
     user.dailyTargetFluid = [appDelegate.configuration objectForKey:@"DailyTargetFluid"];
@@ -322,18 +321,22 @@
     user.dailyTargetCarb = [appDelegate.configuration objectForKey:@"DailyTargetCarbs"];
     user.dailyTargetFat = [appDelegate.configuration objectForKey:@"DailyTargetFats"];
     user.weight = [appDelegate.configuration objectForKey:@"UserWeight"];
+    user.profileImage.filename = imagePath;
     
     user.synchronized = @NO;
     user.admin = @NO;
     
     [userService saveUser:user error:&error];
     if ([Helper displayError:error]) return;
+
     selectedUserFullName = user.fullName;
     self.loginPanel.hidden = YES;
     self.registerPanel.hidden = NO;
     self.registerUserNamePanel.hidden = YES;
     self.registerPhotoPanel.hidden = YES;
     self.registerFinishPanel.hidden = NO;
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:nil];
 }
 /**
  * action for login button.
@@ -511,7 +514,7 @@
     User *user = (User*)[users objectAtIndex:selectUserIndex];
     selectedUserFullName = user.fullName;
     // Set the user's photo and user's full name on loginSelectedPanel
-    self.imgSelectedUserImage.image = [Helper loadImage:user.profileImage];    
+    self.imgSelectedUserImage.image = [Helper loadImage:user.profileImage.filename];
     if (self.imgSelectedUserImage.image == nil) {
         self.imgSelectedUserImage.image = [UIImage imageNamed:@"defaultUserIcon.png"];
     }
@@ -555,7 +558,7 @@
         img.contentMode = UIViewContentModeScaleAspectFit;
         UIButton *btn = [[UIButton alloc] initWithFrame:CGRectMake(pos, 0, 128, 128)];
         img.tag = btn.tag = i;
-        img.image = [Helper loadImage:user.profileImage];
+        img.image = [Helper loadImage:user.profileImage.filename];
         if (img.image == nil) {
             img.image = [UIImage imageNamed:@"defaultUserIcon.png"];
         }

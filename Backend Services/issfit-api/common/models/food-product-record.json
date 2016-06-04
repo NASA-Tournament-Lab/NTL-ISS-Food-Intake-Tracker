@@ -1,0 +1,132 @@
+{
+  "name": "FoodProductRecord",
+  "base": "BaseSyncModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "public",
+      "table": "food_product_record"
+    }
+  },
+  "scope": {
+    "include": [
+      {
+        "relation": "images",
+        "scope" : {
+          "fields": [ "id" ]
+        }
+      },
+      {
+        "relation": "voiceRecordings",
+        "scope" : {
+          "fields": [ "id" ]
+        }
+      }
+    ]
+  },
+  "properties": {
+    "carb": {
+      "type": "number",
+      "required": true,
+      "postgresql": {
+        "dataType": "integer"
+      }
+    },
+    "fat": {
+      "type": "number",
+      "required": true,
+      "postgresql": {
+        "dataType": "integer"
+      }
+    },
+    "energy": {
+      "type": "number",
+      "required": true,
+      "postgresql": {
+        "dataType": "integer"
+      }
+    },
+    "protein": {
+      "type": "number",
+      "required": true,
+      "postgresql": {
+        "dataType": "integer"
+      }
+    },
+    "sodium": {
+      "type": "number",
+      "required": true,
+      "postgresql": {
+        "dataType": "integer"
+      }
+    },
+    "fluid": {
+      "type": "number",
+      "required": true,
+      "postgresql": {
+        "dataType": "integer"
+      }
+    },
+    "adhocOnly": {
+      "type": "boolean",
+      "required": true,
+      "default": false,
+      "postgresql": {
+        "columnName": "adhoc_only",
+        "dataType": "boolean"
+      }
+    },
+    "quantity": {
+      "type": "number",
+      "required": true,
+      "default": "1",
+      "postgresql": {
+        "dataType": "float"
+      }
+    },
+    "comments": {
+      "type": "string",
+      "postgresql": {
+        "dataType": "integer"
+      }
+    },
+    "timestamp": {
+      "type": "date",
+      "required": true
+    },
+    "user": {
+      "type": "string",
+      "postgresql": {
+        "columnName": "user_uuid",
+        "dataType": "text"
+      }
+    },
+    "foodProduct": {
+      "type": "string",
+      "postgresql": {
+        "columnName": "food_product_uuid",
+        "dataType": "text"
+      }
+    }
+  },
+  "validations": [],
+  "relations": {
+    "images": {
+      "type": "hasMany",
+      "model": "Media",
+      "foreignKey": "food_record_uuid",
+      "through": "ImageRecord",
+      "keyThrough": "media_uuid"
+    },
+    "voiceRecordings": {
+      "type": "hasMany",
+      "model": "Media",
+      "foreignKey": "food_record_uuid",
+      "through": "AudioRecord",
+      "keyThrough": "media_uuid"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

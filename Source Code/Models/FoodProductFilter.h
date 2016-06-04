@@ -23,8 +23,7 @@
 #import <CoreData/CoreData.h>
 #import "SynchronizableModel.h"
 
-@class StringWrapper;
-@class User;
+@class User, Category, Origin;
 
 //This represents the filter for filtering food products.
 @interface FoodProductFilter : SynchronizableModel
@@ -59,10 +58,10 @@
 @interface FoodProductFilter (CoreDataGeneratedAccessors)
 
 //Add category value
-- (void)addCategoriesObject:(StringWrapper *)value;
+- (void)addCategoriesObject:(Category *)value;
 
 //Remove category value
-- (void)removeCategoriesObject:(StringWrapper *)value;
+- (void)removeCategoriesObject:(Category *)value;
 
 //Add category values
 - (void)addCategories:(NSSet *)values;
@@ -72,10 +71,10 @@
 
 
 //Add origin value
-- (void)addOriginsObject:(StringWrapper *)value;
+- (void)addOriginsObject:(Origin *)value;
 
 //Remove origin value
-- (void)removeOriginsObject:(StringWrapper *)value;
+- (void)removeOriginsObject:(Origin *)value;
 
 //Add origin values
 - (void)addOrigins:(NSSet *)values;

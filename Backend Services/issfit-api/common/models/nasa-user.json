@@ -1,0 +1,147 @@
+{
+  "name": "NasaUser",
+  "base": "BaseSyncModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "public",
+      "table": "nasa_user"
+    }
+  },
+  "scope": {
+    "include": [
+      {
+        "relation": "adhocFoodProduct",
+        "scope" : {
+          "fields": [ "id" ]
+        }
+      },
+      {
+        "relation": "consumptionRecord",
+        "scope" : {
+          "fields": [ "id" ]
+        }
+      },
+      {
+        "relation": "lastUsedFoodProductFilter",
+        "scope" : {
+          "fields": [ "id" ]
+        }
+      },
+      {
+        "relation":  "userLock",
+        "scope" : {
+          "fields": [ "id" ]
+        }
+      }
+    ]
+  },
+  "properties": {
+    "admin": {
+      "type": "boolean"
+    },
+    "dailyTargetCarb": {
+      "type": "number",
+      "postgresql": {
+        "columnName": "carb",
+        "dataType": "integer"
+      }
+    },
+    "dailyTargetEnergy": {
+      "type": "number",
+      "postgresql": {
+        "columnName": "energy",
+        "dataType": "integer"
+      }
+    },
+    "dailyTargetFat": {
+      "type": "number",
+      "postgresql": {
+        "columnName": "fat",
+        "dataType": "integer"
+      }
+    },
+    "dailyTargetFluid": {
+      "type": "number",
+      "postgresql": {
+        "columnName": "fluid",
+        "dataType": "integer"
+      }
+    },
+    "dailyTargetProtein": {
+      "type": "number",
+      "postgresql": {
+        "columnName": "protein",
+        "dataType": "integer"
+      }
+    },
+    "dailyTargetSodium": {
+      "type": "number",
+      "postgresql": {
+        "columnName": "sodium",
+        "dataType": "integer"
+      }
+    },
+    "fullName": {
+      "type": "string",
+      "postgresql": {
+        "columnName": "full_name",
+        "dataType": "text"
+      }
+    },
+    "maxPacketsPerFoodProductDaily": {
+      "type": "number",
+      "postgresql": {
+        "columnName": "packets_per_day",
+        "dataType": "integer"
+      }
+    },
+    "useLastUsedFoodProductFilter": {
+      "type": "boolean",
+      "postgresql": {
+        "columnName": "use_last_filter",
+        "dataType": "boolean"
+      }
+    },
+    "weight": {
+      "type": "number",
+      "postgresql": {
+        "columnName": "weight",
+        "dataType": "double precision"
+      }
+    },
+    "profileImage": {
+      "type": "string",
+      "postgresql": {
+        "columnName": "image_media_uuid",
+        "dataType": "text"
+      }
+    }
+  },
+  "validations": [],
+  "relations": {
+    "adhocFoodProduct": {
+      "type": "hasMany",
+      "model": "AdhocFoodProduct",
+      "foreignKey": "user_uuid"
+    },
+    "consumptionRecord": {
+      "type": "hasMany",
+      "model": "FoodProductRecord",
+      "foreignKey": "user_uuid"
+    },
+    "lastUsedFoodProductFilter": {
+      "type": "hasOne",
+      "model": "FoodProductFilter",
+      "foreignKey": "user_uuid"
+    },
+    "userLock": {
+      "type": "hasOne",
+      "model": "UserLock",
+      "foreignKey": "user_uuid"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

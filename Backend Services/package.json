@@ -1,0 +1,9 @@
+{
+  "name": "issfit-backend",
+  "description": "ISS FIT - Backend Services",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "strongloop": "^6.0.1"
+  }
+}

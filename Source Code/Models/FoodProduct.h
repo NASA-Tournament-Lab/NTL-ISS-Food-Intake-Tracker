@@ -23,7 +23,9 @@
 #import <CoreData/CoreData.h>
 #import "SynchronizableModel.h"
 
-@class StringWrapper;
+@class Media;
+@class Origin;
+@class Category;
 @class FoodConsumptionRecord;
 
 //This represents a food product.
@@ -45,7 +47,7 @@
 @property (nonatomic, strong) NSString * name;
 
 //Represents the profile image(file path) of the food product which is displayed as the picture in filtering results, etc.
-@property (nonatomic, strong) NSString * productProfileImage;
+@property (nonatomic, strong) Media * foodImage;
 
 //Represents the total milligram of sodium(Na) contained in the food product per packet.
 @property (nonatomic, strong) NSNumber * sodium;
@@ -63,10 +65,10 @@
 @property (nonatomic, strong) NSSet * categories;
 
 //Represents the origin of the food product.
-@property (nonatomic, strong) NSString * origin;
+@property (nonatomic, strong) Origin * origin;
 
 //Represents the file paths of the food product images.
-@property (nonatomic, strong) NSSet *images;
+@property (nonatomic, strong) NSSet * images;
 
 //Represents the quantity
 @property (nonatomic, strong) NSNumber *quantity;
@@ -77,20 +79,13 @@
 //Auto generated food product
 @interface FoodProduct (CoreDataGeneratedAccessors)
 
-//Add image file name
-- (void)addImagesObject:(StringWrapper *)value;
-
-//Remove image file name
-- (void)removeImagesObject:(StringWrapper *)value;
-
-//Add image file names
+- (void)addImagesObject:(Media *)value;
+- (void)removeImagesObject:(Media *)value;
 - (void)addImages:(NSSet *)values;
-
-//Remove image file names
 - (void)removeImages:(NSSet *)values;
 
-- (void)addCategoriesObject:(StringWrapper *)value;
-- (void)removeCategoriesObject:(StringWrapper *)value;
+- (void)addCategoriesObject:(Category *)value;
+- (void)removeCategoriesObject:(Category *)value;
 - (void)addCategories:(NSSet *)values;
 - (void)removeCategories:(NSSet *)values;
 

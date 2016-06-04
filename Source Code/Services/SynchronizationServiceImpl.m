@@ -32,8 +32,7 @@
 #import "DataHelper.h"
 #import "Settings.h"
 #import "AppDelegate.h"
-
-#import "PGCoreData.h"
+#import "WebserviceCoreData.h"
 
 @implementation SynchronizationServiceImpl
 
@@ -105,6 +104,26 @@
 }
 
 /*!
+ @discussion This method will get entity object by id
+ @param entityName The object's entity name.
+ @param uuid The object's uuid.
+ @param error The error.
+ @return A NSArray contains objects.
+ */
+- (NSArray *)getObjectById:(NSString *)entityName id:(NSString *)uuid error:(NSError **)error {
+    [self.managedObjectContext lock];
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(id == %@)", uuid];
+    NSEntityDescription *description = [NSEntityDescription entityForName:entityName
+                                                    inManagedObjectContext:[self managedObjectContext]];
+    [request setEntity:description];
+    [request setPredicate:predicate];
+    NSArray *results = [[self managedObjectContext] executeFetchRequest:request error:error];
+    [self.managedObjectContext unlock];
+    return [results lastObject];
+}
+
+/*!
  @discussion This method will get all entity objects.
  @param entityName The object's entity name.
  @param error The error.
@@ -113,7 +132,7 @@
 - (NSArray *)getAllObjects:(NSString *)entityName error:(NSError **)error {
     [self.managedObjectContext lock];
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    NSEntityDescription *description = [NSEntityDescription  entityForName:entityName
+    NSEntityDescription *description = [NSEntityDescription entityForName:entityName
                                                     inManagedObjectContext:[self managedObjectContext]];
     [request setEntity:description];
     [request setSortDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"lastModifiedDate" ascending:YES]]];
@@ -132,7 +151,7 @@
     [self.managedObjectContext lock];
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(synchronized == NO)"];
-    NSEntityDescription *description = [NSEntityDescription  entityForName:entityName
+    NSEntityDescription *description = [NSEntityDescription entityForName:entityName
                                                     inManagedObjectContext:[self managedObjectContext]];
     [request setEntity:description];
     [request setPredicate:predicate];
@@ -158,11 +177,9 @@
   
     [LoggingHelper logMethodEntrance:methodName paramNames:@[@"synchronize:"] params:nil];
 
-    PGCoreData *coreData = [PGCoreData instance];
-    if (![coreData isConnected]) {
-        if (![coreData connect]) {
-            return NO;
-        }
+    WebserviceCoreData *coreData = [WebserviceCoreData instance];
+    if (![coreData connect]) {
+        return NO;
     }
 
     User *loggedInUser = AppDelegate.shareDelegate.loggedInUser;
@@ -199,12 +216,12 @@
         NSEntityDescription *v1 = (NSEntityDescription *) obj1;
         NSEntityDescription *v2 = (NSEntityDescription *) obj2;
         NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
-                              @1, @"StringWrapper",
+                              @1, @"Media",
                               @2, @"FoodProductFilter",
                               @3, @"User",
                               @4, @"FoodProduct",
                               @5, @"AdhocFoodProduct",
-                              @5, @"FoodConsumptionProduct", nil];
+                              @6, @"FoodConsumptionProduct", nil];
         NSNumber *n1 = [dict objectForKey:v1.name];
         n1 = n1 == nil ? @100 : n1;
         NSNumber *n2 = [dict objectForKey:v2.name];
@@ -215,7 +232,9 @@
     
     NSInteger totalChange = 0;
     for (NSEntityDescription *description in sd) {
-        if ([description.name isEqualToString:@"PGManagedObject"] ||
+        if ([description.name isEqualToString:@"Category"] ||
+            [description.name isEqualToString:@"Origin"] ||
+            [description.name isEqualToString:@"PGManagedObject"] ||
             [description.name isEqualToString:@"SynchronizableModel"]||
             [description.name isEqualToString:@"FoodProduct"]) {
             continue;
@@ -237,12 +256,63 @@
                     [postponedObjects addObject:object];
                 } else {
                     NSLog(@"Not synchronized %@", object);
-                    if ([object updateObjects] && [self saveMedia:object]) {
-                        // success
-                        [object setSynchronized:@YES];
-                        totalChange++;
+                    if ([object isKindOfClass:[Media class]]) {
+                        if ([self saveMedia:object]) {
+                            // success
+                            [object setSynchronized:@YES];
+
+                            if (![self.managedObjectContext save:&e]) {
+                                CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+                            }
+                            
+                            totalChange++;
+                        } else {
+                            return NO;
+                        }
                     } else {
-                        return NO;
+                        if ([object updateObjects]) {
+                            [object setSynchronized:@NO];
+
+                            if (![self.managedObjectContext save:&e]) {
+                                CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+                            }
+
+                            if ([object isKindOfClass:[FoodConsumptionRecord class]]) {
+                                NSMutableSet *allSet = [NSMutableSet set];
+                                [allSet addObjectsFromArray: [[(FoodConsumptionRecord *) object voiceRecordings] allObjects]];
+                                [allSet addObjectsFromArray: [[(FoodConsumptionRecord *) object images] allObjects]];
+                                for (Media *mediaObject in allSet) {
+                                    NSString *localPath = [[DataHelper getAbsoulteLocalDirectory:self.localFileSystemDirectory]
+                                                           stringByAppendingPathComponent:mediaObject.filename];
+                                    NSData *data = [NSData dataWithContentsOfFile:localPath];
+                                    NSMutableDictionary *dict = [[mediaObject getAttributes] mutableCopy];
+                                    [dict setObject:data forKey:@"data"];
+
+                                    NSString *pattern = [mediaObject.filename hasSuffix:self.imageFileNameSuffix] ? @"images" : @"voiceRecordings";
+                                    NSString *newId = [coreData insertMediaRecord:dict foodConsumptionId:object.id pattern:pattern];
+                                    if (newId) {
+                                        [mediaObject setId:newId];
+
+                                        if (![self.managedObjectContext save:&e]) {
+                                            CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+                                        }
+                                    } else {
+                                        return NO;
+                                    }
+                                }
+                            }
+
+                            // success
+                            [object setSynchronized:@YES];
+
+                            if (![self.managedObjectContext save:&e]) {
+                                CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+                            }
+
+                            totalChange++;
+                        } else {
+                            return NO;
+                        }
                     }
                 }
             }
@@ -257,17 +327,43 @@
         CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
     }
 
+    // fetch media (audio / images) information
+    NSArray *dataFiles = [coreData fetchMedias];
+    for (NSDictionary *dictFile in dataFiles) {
+        NSString *oId = [dictFile objectForKey:@"id"];
+        NSString *dataFile = [dictFile objectForKey:@"filename"];
+        NSMutableData *data = [NSMutableData data];
+        for (NSNumber *number in [[dictFile objectForKey:@"data"] objectForKey:@"data"]) {
+            char byte = [number charValue];
+            [data appendBytes: &byte length: 1];
+        }
+
+        if([dataFile hasSuffix:self.imageFileNameSuffix] || [dataFile hasSuffix:self.voiceRecordingFileNameSuffix]) {
+            NSString *localDataFile = [[DataHelper getAbsoulteLocalDirectory:self.localFileSystemDirectory]
+                                       stringByAppendingPathComponent:dataFile];
+            if (![data writeToFile:localDataFile options:NSDataWritingAtomic error:&e]) {
+                [LoggingHelper logError:methodName error:e];
+                CHECK_ERROR_AND_RETURN(e, error, @"Cannot save file to local folder.", DataUpdateErrorCode, YES, NO);
+            }
+
+            if (![DataHelper convertJSONToObject:oId jsonValue:@{ @"filename" : dataFile }  name:@"Media" managegObjectContext:self.managedObjectContext]) {
+                e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
+                CHECK_ERROR_AND_RETURN(e, error, @"Cannot insert object.", DataUpdateErrorCode, YES, YES);
+            }
+        }
+    }
+
     if (hasData) {
         for (NSDictionary *data in allData) {
             [self startUndoActions];
             
             NSString *oId = [data objectForKey:@"id"];
             NSString *name = [data objectForKey:@"name"];
-            NSString *value = [data objectForKey:@"value"];
+            NSDictionary *value = [data objectForKey:@"value"];
             
             // Convert from JSON
-            NSData *jsonData = [value dataUsingEncoding:NSUTF8StringEncoding];
-            NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&e];
+            // NSData *jsonData = [value dataUsingEncoding:NSUTF8StringEncoding];
+            NSDictionary *jsonDictionary = [value copy]; // [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&e];
             CHECK_ERROR_AND_RETURN(e, error, @"Cannot convert JSON data to managed object.", DataUpdateErrorCode, YES, YES);
             
             [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"JSON for %@ dict %@", name,
@@ -275,7 +371,7 @@
             
             // Check if object already exists
             NSFetchRequest *request = [[NSFetchRequest alloc] init];
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(uuid == %@)", oId];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(id == %@)", oId];
             NSEntityDescription *description = [NSEntityDescription entityForName:name
                                                            inManagedObjectContext:[self managedObjectContext]];
             [request setEntity:description];
@@ -322,32 +418,6 @@
         
         [self updateSyncTime:[[NSDate date] timeIntervalSince1970] * 1000];
     }
-    
-    // clear sync table
-    [coreData clearObjectSyncData];
-
-    // fetch media (audio / images) information
-    NSArray *dataFiles = [coreData fetchMedias];
-    for (NSDictionary *dictFile in dataFiles) {
-        NSString *dataFile = [dictFile objectForKey:@"filename"];
-        NSData *data = [dictFile objectForKey:@"data"];
-        if([dataFile hasSuffix:self.imageFileNameSuffix]
-           || [dataFile hasSuffix:self.voiceRecordingFileNameSuffix]) {
-            if ([dataFile hasSuffix:self.imageFileNameSuffix] && [UIImage imageWithData:data] == nil) {
-                e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
-                CHECK_ERROR_AND_RETURN(e, error, @"Not an valid image.", DataUpdateErrorCode, YES, NO);
-            }
-            
-            NSString *localDataFile = [[DataHelper getAbsoulteLocalDirectory:self.localFileSystemDirectory]
-                                       stringByAppendingPathComponent:dataFile];
-            if (![data writeToFile:localDataFile options:NSDataWritingAtomic error:&e]) {
-                CHECK_ERROR_AND_RETURN(e, error, @"Cannot save file to local folder.", DataUpdateErrorCode, YES, NO);
-            }
-        }
-    }
-    
-    // clear sync table
-    [coreData clearMediaSyncData];
 
     // will merge the local changes to database
     totalChange = 0;
@@ -380,29 +450,46 @@
 
 - (BOOL)saveMedia:(SynchronizableModel *) object {
     NSString *value = @"";
-    if ([object isKindOfClass:[StringWrapper class]]) {
-        value = [(StringWrapper *) object value];
-    } else if ([object isKindOfClass:[FoodProduct class]] || [object isKindOfClass:[AdhocFoodProduct class]]) {
-        value = [(FoodProduct *) object productProfileImage];
-    } else if ([object isKindOfClass:[User class]]) {
-        value = [(User *) object profileImage];
+    Media *mediaObject = nil;
+
+    if (object.id) {
+        return YES;
     }
+
+    if ([object isKindOfClass:[Media class]]) {
+        mediaObject = (Media *) object;
+    } else if ([object isKindOfClass:[FoodProduct class]] || [object isKindOfClass:[AdhocFoodProduct class]]) {
+        mediaObject = [(FoodProduct*) object foodImage];
+    } else if ([object isKindOfClass:[User class]]) {
+        mediaObject = [(User *) object profileImage];
+    } else {
+        return YES;
+    }
+    value = mediaObject.filename;
     
     if ([value hasSuffix:self.imageFileNameSuffix] || [value hasSuffix:self.voiceRecordingFileNameSuffix]) {
         NSString *localPath = [[DataHelper getAbsoulteLocalDirectory:self.localFileSystemDirectory]
                                stringByAppendingPathComponent:value];
         NSData *data = [NSData dataWithContentsOfFile:localPath];
         if (data && data.length > 0) {
-            return [[PGCoreData instance] saveMedia:data fileName:value];
+            NSMutableDictionary *dict = [[mediaObject getAttributes] mutableCopy];
+            [dict setObject:data forKey:@"data"];
+            NSString *newId = [[WebserviceCoreData instance] saveMedia:dict];
+            if (!newId) {
+                return NO;
+            }
+            [mediaObject setId:newId];
+
+            [self.managedObjectContext save:nil];
         }
     }
-    
+
     return YES;
 }
 
 - (BOOL)hasObject:(NSArray *) array object:(SynchronizableModel *) object {
     for (NSDictionary *dict in array) {
-        if ([[dict objectForKey:@"id"] isEqualToString:object.uuid]) {
+        if ([[dict objectForKey:@"id"] isEqualToString:object.id]) {
             return YES;
         }
     }

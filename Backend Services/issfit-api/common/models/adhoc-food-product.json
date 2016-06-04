@@ -1,0 +1,25 @@
+{
+  "name": "AdhocFoodProduct",
+  "base": "FoodProduct",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "public",
+      "table": "food_product"
+    }
+  },
+  "properties": {
+    "user": {
+      "type": "string",
+      "postgresql": {
+        "columnName": "user_uuid",
+        "dataType": "text"
+      }
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

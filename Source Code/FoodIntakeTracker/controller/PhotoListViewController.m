@@ -147,7 +147,7 @@
     NSInteger i = 0;
     for(NSInteger j = 0; j < foodItems.count; j++){
         FoodProduct *item = [foodItems objectAtIndex:j];
-        UIImage *image = [Helper loadImage:item.productProfileImage];
+        UIImage *image = [Helper loadImage:item.foodImage.filename];
         if (!image) {
             continue;
         }

@@ -66,7 +66,7 @@
     self.txtComment.text = self.foodConsumptionRecord.comment;
     
     self.img.layer.borderColor = [UIColor colorWithRed:0.54 green:0.79 blue:1 alpha:1].CGColor;
-    self.img.image = [Helper loadImage:self.foodConsumptionRecord.foodProduct.productProfileImage];
+    self.img.image = [Helper loadImage:self.foodConsumptionRecord.foodProduct.foodImage.filename];
     self.img.layer.borderWidth = 1;
     self.img.contentMode = UIViewContentModeScaleAspectFit;
     

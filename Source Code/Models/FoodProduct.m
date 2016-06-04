@@ -20,7 +20,6 @@
 //
 
 #import "FoodProduct.h"
-#import "StringWrapper.h"
 
 //FoodProduct implementation
 @implementation FoodProduct
@@ -30,7 +29,7 @@
 @dynamic energy;
 @dynamic fluid;
 @dynamic name;
-@dynamic productProfileImage;
+@dynamic foodImage;
 @dynamic sodium;
 @dynamic protein;
 @dynamic carb;
