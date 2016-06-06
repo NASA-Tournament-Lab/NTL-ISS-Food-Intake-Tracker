@@ -818,9 +818,14 @@ app.get('/food/:id', function(req, res) {
             }
             if (!isEmpty(result)) {
                 var media = JSON.parse(JSON.stringify(result));
-                if (media.data && media.data["type"] == "Buffer") {
-                    var buffer = new Buffer(media.data["data"]);
-                    editImage = buffer.toString('base64');
+                if (!isEmpty(media.data)) {
+                    if (media.data["type"] == "Buffer") {
+                        var buffer = new Buffer(media.data["data"]);
+                        editImage = buffer.toString('base64');
+                    } else {
+                        var buffer = new Buffer(media["data"]);
+                        editImage = buffer.toString('base64');
+                    }
                 }
             }
             callback(null);
@@ -878,6 +883,8 @@ app.get('/user/:id', function(req, res) {
             editObject = JSON.parse(JSON.stringify(result));
             locked = !isEmpty(editObject.userLock);
 
+            console.log("Result: " + JSON.stringify(editObject));
+
             callback(null);
         });
     });
@@ -888,11 +895,17 @@ app.get('/user/:id', function(req, res) {
                 callback('error running query');
                 return;
             }
+            console.log("Media result: " + JSON.stringify(result));
             if (!isEmpty(result)) {
                 var media = JSON.parse(JSON.stringify(result));
-                if (media.data && media.data["type"] == "Buffer") {
-                    var buffer = new Buffer(media.data["data"]);
-                    editImage = buffer.toString('base64');
+                if (!isEmpty(media.data)) {
+                    if (media.data["type"] == "Buffer") {
+                        var buffer = new Buffer(media.data["data"]);
+                        editImage = buffer.toString('base64');
+                    } else {
+                        var buffer = new Buffer(media["data"]);
+                        editImage = buffer.toString('base64');
+                    }
                 }
             }
             callback(null);
