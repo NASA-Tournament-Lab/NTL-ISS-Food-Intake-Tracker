@@ -1,0 +1,36 @@
+{
+  "name": "Media",
+  "base": "BaseSyncModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "filename": {
+      "type": "string",
+      "required": true,
+      "postgresql": {
+        "dataType": "text"
+      }
+    },
+    "data": {
+      "type": "buffer",
+      "required": true,
+      "postgresql": {
+        "dataType": "bytea"
+      }
+    }
+  },
+  "validations": [],
+  "relations": {
+    "media": {
+      "type": "hasMany",
+      "model": "FoodProductRecord",
+      "foreignKey": "media_uuid",
+      "through": "MediaRecord",
+      "keyThrough": "food_record_uuid"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

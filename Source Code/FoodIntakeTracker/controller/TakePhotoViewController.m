@@ -179,14 +179,14 @@
         
         adhocFoodProduct.name = foodName;
         adhocFoodProduct.quantity = @1;
-        adhocFoodProduct.categories = [NSMutableSet set];
         
         CGFloat r = self.imgFood.image.size.width / self.imgFood.image.size.height;
         UIImage *resized = [self resizeImage:self.imgFood.image newSize:CGSizeMake(r * 800, 800)];
         NSString *imagePath = [Helper saveImage:UIImageJPEGRepresentation(resized, 0.9)];
-        adhocFoodProduct.productProfileImage = imagePath;
-        
-        StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
+        adhocFoodProduct.foodImage.filename = imagePath;
+
+        // @TODO
+        /*StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
                                                                               entityForName:@"StringWrapper"
                                                                               inManagedObjectContext:
                                                                               foodProductService.managedObjectContext]
@@ -194,17 +194,17 @@
         stringWrapper.value = self.lblFoodCategory.text;
         stringWrapper.synchronized = @NO;
         stringWrapper.removed = @NO;
-        adhocFoodProduct.categories = [NSMutableSet setWithObject:stringWrapper];
+        adhocFoodProduct.categories = [NSMutableSet setWithObject:stringWrapper];*/
         
-        stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
-                                                               entityForName:@"StringWrapper"
-                                                               inManagedObjectContext:
-                                                               foodProductService.managedObjectContext]
-                               insertIntoManagedObjectContext:nil];
-        stringWrapper.value = imagePath;
-        stringWrapper.synchronized = @NO;
-        stringWrapper.removed = @NO;
-        adhocFoodProduct.images = [NSSet setWithObject:stringWrapper];
+        Media *media = [[Media alloc] initWithEntity:[NSEntityDescription
+                                                      entityForName:@"Media"
+                                                      inManagedObjectContext:foodProductService.managedObjectContext]
+                      insertIntoManagedObjectContext:nil];
+        media.filename = imagePath;
+        media.removed = @NO;
+        media.synchronized = @NO;
+
+        adhocFoodProduct.images = [NSSet setWithObject:media];
         
         [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser product:adhocFoodProduct error:&error];
         
@@ -264,22 +264,20 @@
         
         adhocFoodProduct.name = foodName;
         adhocFoodProduct.quantity = @1;
-        adhocFoodProduct.categories = [NSMutableSet set];
         
         CGFloat r = self.imgFood.image.size.width / self.imgFood.image.size.height;
         UIImage *resized = [self resizeImage:self.imgFood.image newSize:CGSizeMake(r * 800, 800)];
         NSString *imagePath = [Helper saveImage:UIImageJPEGRepresentation(resized, 0.9)];
-        adhocFoodProduct.productProfileImage = imagePath;
-        
-        StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
-                                                                              entityForName:@"StringWrapper"
-                                                                              inManagedObjectContext:
-                                                                              foodProductService.managedObjectContext]
-                                              insertIntoManagedObjectContext:nil];
-        stringWrapper.value = imagePath;
-        stringWrapper.synchronized = @NO;
-        stringWrapper.removed = @NO;
-        adhocFoodProduct.images = [NSSet setWithObject:stringWrapper];
+        Media *media = [[Media alloc] initWithEntity:[NSEntityDescription
+                                                      entityForName:@"Media"
+                                                      inManagedObjectContext:foodProductService.managedObjectContext]
+                      insertIntoManagedObjectContext:nil];
+        media.filename = imagePath;
+        media.removed = @NO;
+        media.synchronized = @NO;
+
+        adhocFoodProduct.foodImage = media;
+        // adhocFoodProduct.images = [NSSet setWithObject:media];
         
         [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser product:adhocFoodProduct error:&error];
 
@@ -304,15 +302,15 @@
         NSString *imagePath = [Helper saveImage:UIImageJPEGRepresentation(resized, 0.9)];
 
         [[foodProduct managedObjectContext] lock];
-        StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
-                                                                              entityForName:@"StringWrapper"
-                                                                              inManagedObjectContext:
-                                                                              foodProductService.managedObjectContext]
-                                              insertIntoManagedObjectContext:foodProduct.managedObjectContext];
-        stringWrapper.value = imagePath;
-        stringWrapper.synchronized = @NO;
-        stringWrapper.removed = @NO;
-        [foodProduct addImagesObject:stringWrapper];
+        Media *media = [[Media alloc] initWithEntity:[NSEntityDescription
+                                                      entityForName:@"Media"
+                                                      inManagedObjectContext:foodProductService.managedObjectContext]
+                      insertIntoManagedObjectContext:foodProduct.managedObjectContext];
+        media.filename = imagePath;
+        media.removed = @NO;
+        media.synchronized = @NO;
+
+        [foodProduct addImagesObject:media];
         
         [[foodProduct managedObjectContext] save:nil];
         [[foodProduct managedObjectContext] unlock];
@@ -422,7 +420,7 @@
     label.font = [UIFont boldSystemFontOfSize:20];
     label.textAlignment = NSTextAlignmentCenter;
     label.backgroundColor = [UIColor clearColor];
-    label.text = [categories objectAtIndex:row];
+    label.text = [(Category *)[categories objectAtIndex:row] value];
     return label;
 }
 

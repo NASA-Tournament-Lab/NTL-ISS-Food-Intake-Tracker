@@ -1,0 +1,28 @@
+{
+  "name": "CategoryUser",
+  "base": "PersistedModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "public",
+      "table": "category_user"
+    }
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {
+    "category": {
+      "type": "belongsTo",
+      "model": "Category",
+      "foreignKey": "category_uuid"
+    },
+    "foodProduct": {
+      "type": "belongsTo",
+      "model": "FoodProduct",
+      "foreignKey": "food_product_uuid"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

@@ -188,12 +188,12 @@
             NSArray *categoriesList = (NSArray *)[categories objectForKey:@"Food by Category"];
             NSMutableArray *array = [selectCategoryIndex objectForKey:@1];
 
-            for (StringWrapper *foodProductCategory in appDelegate.loggedInUser.lastUsedFoodProductFilter.categories) {
-                NSInteger foodProductCategoryIndex = [categoriesList indexOfObject:foodProductCategory.value];
+            for (Category *foodProductCategory in appDelegate.loggedInUser.lastUsedFoodProductFilter.categories) {
+                NSInteger foodProductCategoryIndex = [categoriesList indexOfObject:foodProductCategory];
                 if (foodProductCategoryIndex != NSNotFound) {
                     [array addObject:[NSNumber numberWithInteger:foodProductCategoryIndex]];
                     noFilter = NO;
-                } else if ([foodProductCategory.value isEqualToString:@"Vitamins / Supplements"]) {
+                } else if ([[foodProductCategory value] isEqualToString:@"Vitamins / Supplements"]) {
                     [selectCategoryIndex setObject:@0 forKey:@4];
                     noFilter = NO;
                 }
@@ -203,8 +203,8 @@
             NSArray *origins = (NSArray *)[categories objectForKey:@"Food by Country"];
             NSMutableArray *array = [selectCategoryIndex objectForKey:@2];
 
-            for (StringWrapper *foodProductOrigin in appDelegate.loggedInUser.lastUsedFoodProductFilter.origins) {
-                NSInteger foodProductOriginIndex = [origins indexOfObject:foodProductOrigin.value];
+            for (Origin *foodProductOrigin in appDelegate.loggedInUser.lastUsedFoodProductFilter.origins) {
+                NSInteger foodProductOriginIndex = [origins indexOfObject:foodProductOrigin];
                 if (foodProductOriginIndex < origins.count) {
                     [array addObject:[NSNumber numberWithInteger:foodProductOriginIndex]];
                     noFilter = NO;
@@ -269,43 +269,19 @@
     filter.favoriteWithinTimePeriod = @0;
 
     if ([[selectCategoryIndex objectForKey:@1] count] > 0) {
-        NSMutableSet *ct = [NSMutableSet set];
         for (NSNumber *index in [selectCategoryIndex objectForKey:@1]) {
-            NSString *foodProductCategory = [(NSArray *)[categories objectForKey:@"Food by Category"]
+            Category *foodProductCategory = [(NSArray *)[categories objectForKey:@"Food by Category"]
                                              objectAtIndex:index.intValue];
-            NSSet *set = [DataHelper convertNSStringToNSSet:foodProductCategory withEntityDescription:
-                          [NSEntityDescription entityForName:@"StringWrapper"
-                                      inManagedObjectContext:[DBHelper currentThreadMoc]]
-                                     inManagedObjectContext:context withSeparator:@";"];
-            [ct addObjectsFromArray:[set allObjects]];
+            [filter.categories addObject:foodProductCategory];
         }
-
-        filter.categories = ct;
-    }
-    if ([[selectCategoryIndex objectForKey:@4] intValue] != -1) {
-        if (filter.categories == nil) {
-            filter.categories = [NSMutableSet set];
-        }
-
-        NSSet *vt = [DataHelper convertNSStringToNSSet:@"Vitamins / Supplements" withEntityDescription:
-                     [NSEntityDescription entityForName:@"StringWrapper"
-                                 inManagedObjectContext:[DBHelper currentThreadMoc]]
-                                inManagedObjectContext:context withSeparator:@";"];
-        [filter.categories addObjectsFromArray:[vt allObjects]];
     }
 
     if ([[selectCategoryIndex objectForKey:@2] count] > 0) {
-        NSMutableSet *ct = [NSMutableSet set];
         for (NSNumber *index in [selectCategoryIndex objectForKey:@2]) {
-            NSString *foodOrigin = [(NSArray *)[categories objectForKey:@"Food by Country"]
+            Origin *foodOrigin = [(NSArray *)[categories objectForKey:@"Food by Country"]
                                     objectAtIndex:index.intValue];
-            NSSet *set = [DataHelper convertNSStringToNSSet:foodOrigin withEntityDescription:
-                              [NSEntityDescription entityForName:@"StringWrapper"
-                                          inManagedObjectContext:[DBHelper currentThreadMoc]]
-                                         inManagedObjectContext:context withSeparator:@";"];
-            [ct addObjectsFromArray:[set allObjects]];
+            [filter.origins addObject:foodOrigin];
         }
-        filter.origins = ct;
     }
     
     NSInteger index = [[selectCategoryIndex objectForKey:@3] intValue];
@@ -319,7 +295,7 @@
     }
     
     // Save last used food product filter
-    if (appDelegate.loggedInUser.useLastUsedFoodProductFilter && appDelegate.loggedInUser.lastUsedFoodProductFilter) {
+    if (appDelegate.loggedInUser.useLastUsedFoodProductFilter.boolValue && appDelegate.loggedInUser.lastUsedFoodProductFilter) {
         [userService saveUser:appDelegate.loggedInUser error:&error];
         if ([Helper displayError:error]) return;
     }
@@ -403,6 +379,10 @@
     
     [self.rightTable reloadData];
     [self listGridValueChanged:nil];
+
+    if (!appDelegate.loggedInUser.useLastUsedFoodProductFilter.boolValue) {
+        [foodProductService deleteFoodProductFilter:filter error:nil];
+    }
 }
 
 /**
@@ -956,7 +936,7 @@
         UIImageView *img = [[UIImageView alloc] initWithFrame:CGRectMake(18, 20, 127, 119)];
         img.layer.borderColor = [UIColor colorWithRed:0.54 green:0.79 blue:1 alpha:1].CGColor;
         img.layer.borderWidth = 1;
-        img.image = [Helper loadImage:item.productProfileImage];
+        img.image = [Helper loadImage:item.foodImage.filename];
         [v addSubview:img];
         UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(18, 150, 127, 20)];
         lbl.backgroundColor = [UIColor clearColor];
@@ -1242,7 +1222,14 @@
             [cell viewWithTag:100].hidden = NO;
         }
         cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Bold" size:16];
-        cell.textLabel.text = [[categories valueForKey:[categoriesKeys objectAtIndex:sec]] objectAtIndex:row];
+        id keyValue = [[categories valueForKey:[categoriesKeys objectAtIndex:sec]] objectAtIndex:row];
+        if ([keyValue isKindOfClass:[Category class]]) {
+            cell.textLabel.text = [(Category *)keyValue value];
+        } else if ([keyValue isKindOfClass:[Origin class]]) {
+            cell.textLabel.text = [(Origin *)keyValue value];
+        } else {
+            cell.textLabel.text = keyValue;
+        }
         
         AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
         NSString *categoryImageName = appDelegate.configuration[@"Categories"][cell.textLabel.text];

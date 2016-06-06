@@ -1,0 +1,58 @@
+{
+  "name": "BaseSyncModel",
+  "base": "PersistedModel",
+  "idInjection": false,
+  "scopes": {
+    "notRemoved": {
+      "where": {
+        "removed": false
+      }
+    }
+  },
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "public"
+    }
+  },
+  "properties": {
+    "id": {
+      "type": "string",
+      "id": true,
+      "required": true,
+      "defaultFn": "uuidv4",
+      "postgresql": {
+        "columnName": "uuid",
+        "dataType": "text"
+      }
+    },
+    "removed": {
+      "type": "boolean",
+      "required": true
+    },
+    "synchronized": {
+      "type": "boolean",
+      "required": true
+    },
+    "createdDate": {
+      "type": "date",
+      "required": true,
+      "postgresql": {
+        "columnName": "created_date",
+        "dataType": "timestamp without time zone"
+      }
+    },
+    "modifiedDate": {
+      "type": "date",
+      "required": true,
+      "postgresql": {
+        "columnName": "modified_date",
+        "dataType": "timestamp without time zone"
+      }
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

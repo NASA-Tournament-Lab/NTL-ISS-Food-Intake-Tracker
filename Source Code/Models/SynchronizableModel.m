@@ -26,5 +26,18 @@
 
 @dynamic removed;
 @dynamic synchronized;
+@dynamic createdDate;
+@dynamic modifiedDate;
+
+- (NSDictionary *)getAttributes {
+    NSDate *now = [NSDate date];
+    if (self.createdDate) {
+        [self setModifiedDate:now];
+    } else {
+        [self setCreatedDate:now];
+        [self setModifiedDate:now];
+    }
+    return [super getAttributes];
+}
 
 @end

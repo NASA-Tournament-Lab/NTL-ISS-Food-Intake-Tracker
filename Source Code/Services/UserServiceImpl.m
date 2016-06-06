@@ -43,8 +43,13 @@
     user.dailyTargetEnergy = @0;
     user.dailyTargetSodium = @0;
     user.maxPacketsPerFoodProductDaily = @0;
-    user.profileImage = nil;
     user.removed = @NO;
+
+    entity = [NSEntityDescription entityForName:@"Media"
+                                                                   inManagedObjectContext:[self managedObjectContext]];
+    user.profileImage = [[Media alloc] initWithEntity:entity insertIntoManagedObjectContext:nil];
+    user.profileImage.removed = @NO;
+    user.profileImage.synchronized = @NO;
     
     [LoggingHelper logMethodExit:methodName returnValue:user];
     return user;
@@ -80,6 +85,7 @@
     if (!(*error)) {
         if ([objects count] == 0) {
             // No existing user
+            [self.managedObjectContext insertObject:user.profileImage];
             [self.managedObjectContext insertObject:user];
             // Save changes in the managedObjectContext
             [self.managedObjectContext save:error];
@@ -94,7 +100,8 @@
                 existingUser.fullName = user.fullName;
                 existingUser.useLastUsedFoodProductFilter = user.useLastUsedFoodProductFilter;
                 if (user.lastUsedFoodProductFilter != nil) {
-                    existingUser.lastUsedFoodProductFilter = user.lastUsedFoodProductFilter;
+                    existingUser.lastUsedFoodProductFilter = [self.managedObjectContext
+                                                              objectWithID:user.lastUsedFoodProductFilter.objectID];
                     existingUser.lastUsedFoodProductFilter.synchronized = @NO;
                 }
                 existingUser.dailyTargetFluid = user.dailyTargetFluid;

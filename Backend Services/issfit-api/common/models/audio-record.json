@@ -1,0 +1,28 @@
+{
+  "name": "AudioRecord",
+  "base": "BaseModel",
+  "idInjection": false,
+  "options": {
+    "validateUpsert": true,
+    "postgresql": {
+      "schema": "public",
+      "table": "media_record"
+    }
+  },
+  "properties": {},
+  "validations": [],
+  "relations": {
+    "foodProductRecord": {
+      "type": "belongsTo",
+      "model": "FoodProductRecord",
+      "foreignKey": "food_record_uuid"
+    },
+    "media": {
+      "type": "belongsTo",
+      "model": "Media",
+      "foreignKey": "media_uuid"
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

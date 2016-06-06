@@ -48,4 +48,13 @@
  */
 @property (nonatomic, readonly, strong) NSString *voiceRecordingFileNameSuffix;
 
+/*!
+ @discussion This method will get entity object by id
+ @param entityName The object's entity name.
+ @param uuid The object's uuid.
+ @param error The error.
+ @return A NSArray contains objects.
+ */
+- (NSManagedObject *)getObjectById:(NSString *)entityName id:(NSString *)uuid error:(NSError **)error;
+
 @end

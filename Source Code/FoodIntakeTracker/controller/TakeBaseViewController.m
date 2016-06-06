@@ -152,7 +152,7 @@
             img.tag = 999;
             img.layer.borderColor = [UIColor colorWithRed:0.54 green:0.79 blue:1 alpha:1].CGColor;
             img.layer.borderWidth = 1;
-            img.image = [Helper loadImage:item.productProfileImage];
+            img.image = [Helper loadImage:item.foodImage.filename];
             [v addSubview:img];
             
             UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(15, 111, 105, 41)];
@@ -245,16 +245,16 @@
         record.comment = self.txtFoodComment.text;
         
         if (product.images.count > 0) {
-            for (StringWrapper *s in product.images) {
-                StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
-                                                                                  entityForName:@"StringWrapper"
-                                                                                  inManagedObjectContext:
-                                                                                  recordService.managedObjectContext]
-                                                      insertIntoManagedObjectContext:nil];
-                stringWrapper.value = [s value];
-                stringWrapper.synchronized = @NO;
-                stringWrapper.removed = @NO;
-                [record addImagesObject:stringWrapper];
+            for (Media *m in product.images) {
+                Media *media = [[Media alloc] initWithEntity:[NSEntityDescription
+                                                                      entityForName:@"Media"
+                                                                      inManagedObjectContext:recordService.managedObjectContext]
+                                      insertIntoManagedObjectContext:nil];
+                media.filename = [m filename];
+                media.removed = @NO;
+                media.synchronized = @YES;
+
+                [record addImagesObject:media];
             }
         }
         [recordService addFoodConsumptionRecord:appDelegate.loggedInUser record:record error:&error];
@@ -306,11 +306,8 @@
     NSManagedObjectContext *ctx = [DBHelper currentThreadMoc];
     [ctx lock];
     for (FoodProduct *food in resultFoods) {
-        for (StringWrapper *wrapper in food.categories) {
-            [ctx deleteObject:wrapper];
-        }
-        for (StringWrapper *wrapper in food.images) {
-            [self removeImage:wrapper.value];
+        for (Media *wrapper in food.images) {
+            [self removeImage:wrapper.filename];
             
             [ctx deleteObject:wrapper];
         }

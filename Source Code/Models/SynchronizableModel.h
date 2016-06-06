@@ -36,4 +36,8 @@
 //Indicates whether the changes of the data model have been synchronized. Each time the data is modified, this property will be changed to NO, and once the changes are synchronized to Shared File Server it will be updated to YES.
 @property (nonatomic, strong) NSNumber * synchronized;
 
+@property (nonatomic, strong) NSDate * createdDate;
+
+@property (nonatomic, strong) NSDate * modifiedDate;
+
 @end

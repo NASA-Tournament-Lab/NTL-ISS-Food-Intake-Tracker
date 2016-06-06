@@ -40,6 +40,16 @@
 		4B2C76E719908EA0009F8FB3 /* SSKeychain.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B2C76D619908EA0009F8FB3 /* SSKeychain.m */; };
 		4B2C76E819908EA0009F8FB3 /* SSKeychainQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B2C76D819908EA0009F8FB3 /* SSKeychainQuery.m */; };
 		4B2C773F19908FA9009F8FB3 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B2C773E19908FA9009F8FB3 /* Security.framework */; };
+		4B37DB931D04F81000EBE075 /* Origin+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B37DB881D04F81000EBE075 /* Origin+CoreDataProperties.m */; };
+		4B37DB941D04F81000EBE075 /* Origin.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B37DB8A1D04F81000EBE075 /* Origin.m */; };
+		4B37DB951D04F81000EBE075 /* FoodProduct+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B37DB8C1D04F81000EBE075 /* FoodProduct+CoreDataProperties.m */; };
+		4B37DB961D04F81000EBE075 /* FoodProduct.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B37DB8E1D04F81000EBE075 /* FoodProduct.m */; };
+		4B37DB971D04F81000EBE075 /* Category+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B37DB901D04F81000EBE075 /* Category+CoreDataProperties.m */; };
+		4B37DB981D04F81000EBE075 /* Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B37DB921D04F81000EBE075 /* Category.m */; };
+		4B3CD9441CFD3CAB0060EDCB /* Media+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3CD93B1CFD3CAB0060EDCB /* Media+CoreDataProperties.m */; };
+		4B3CD9451CFD3CAB0060EDCB /* Media.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3CD93D1CFD3CAB0060EDCB /* Media.m */; };
+		4B3CD94D1CFE66E00060EDCB /* WebserviceCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3CD94C1CFE66E00060EDCB /* WebserviceCoreData.m */; };
+		4B4810031CFFF6AA003C18C7 /* libLoopBack.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B480FF61CFFF377003C18C7 /* libLoopBack.a */; };
 		4B626FB4192B70B00080634C /* ISSFoodIntakeTracker23.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4B626FB3192B70B00080634C /* ISSFoodIntakeTracker23.xcmappingmodel */; };
 		4BA6D2FA19DE2283007A52A9 /* libstdc++.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BA6D2F919DE2283007A52A9 /* libstdc++.6.dylib */; };
 		4BA9B52419688E2D006B3689 /* defaultUserIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BA9B52319688E2D006B3689 /* defaultUserIcon.png */; };
@@ -218,9 +228,7 @@
 		4DF167DD17BD20E100D3633F /* LoggingHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167AA17BD20E100D3633F /* LoggingHelper.m */; };
 		4DF167DE17BD20E100D3633F /* AdhocFoodProduct.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167AD17BD20E100D3633F /* AdhocFoodProduct.m */; };
 		4DF167DF17BD20E100D3633F /* FoodConsumptionRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167AF17BD20E100D3633F /* FoodConsumptionRecord.m */; };
-		4DF167E017BD20E100D3633F /* FoodProduct.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167B117BD20E100D3633F /* FoodProduct.m */; };
 		4DF167E117BD20E100D3633F /* FoodProductFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167B317BD20E100D3633F /* FoodProductFilter.m */; };
-		4DF167E317BD20E100D3633F /* StringWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167B817BD20E100D3633F /* StringWrapper.m */; };
 		4DF167E417BD20E100D3633F /* SummaryGenerationHistory.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167BA17BD20E100D3633F /* SummaryGenerationHistory.m */; };
 		4DF167E517BD20E100D3633F /* SynchronizableModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167BC17BD20E100D3633F /* SynchronizableModel.m */; };
 		4DF167E617BD20E100D3633F /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 4DF167BE17BD20E100D3633F /* User.m */; };
@@ -429,6 +437,51 @@
 		E7FE308B176EF93800B19087 /* Helper.m in Sources */ = {isa = PBXBuildFile; fileRef = E7FE308A176EF93800B19087 /* Helper.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		4B480FF51CFFF377003C18C7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4B480FEB1CFFF376003C18C7 /* LoopBack.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = B3D220F717722AE800B7CB63;
+			remoteInfo = LoopBack;
+		};
+		4B480FF71CFFF377003C18C7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4B480FEB1CFFF376003C18C7 /* LoopBack.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = B3D2210817722AE800B7CB63;
+			remoteInfo = LoopBackTests;
+		};
+		4B480FF91CFFF377003C18C7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4B480FEB1CFFF376003C18C7 /* LoopBack.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 47D471B7196DF4A1002E2358;
+			remoteInfo = SLRemotingTests;
+		};
+		4B480FFB1CFFF377003C18C7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4B480FEB1CFFF376003C18C7 /* LoopBack.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E4C9BC2F1AD6F9C800D70046;
+			remoteInfo = LoopBackOSX;
+		};
+		4B480FFD1CFFF377003C18C7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4B480FEB1CFFF376003C18C7 /* LoopBack.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E4C9BC391AD6F9C800D70046;
+			remoteInfo = LoopBackOSXTests;
+		};
+		4B4810011CFFF6A5003C18C7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4B480FEB1CFFF376003C18C7 /* LoopBack.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = B3D220F617722AE800B7CB63;
+			remoteInfo = LoopBack;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		4B002C631B2684E500A6B098 /* image049.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image049.png; sourceTree = "<group>"; };
 		4B002C641B2684E500A6B098 /* image053.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = image053.jpg; sourceTree = "<group>"; };
@@ -562,6 +615,26 @@
 		4B2C773B19908ED8009F8FB3 /* pg_config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pg_config.h; sourceTree = "<group>"; };
 		4B2C773C19908ED8009F8FB3 /* postgres_ext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = postgres_ext.h; sourceTree = "<group>"; };
 		4B2C773E19908FA9009F8FB3 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		4B37DB871D04F81000EBE075 /* Origin+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Origin+CoreDataProperties.h"; sourceTree = "<group>"; };
+		4B37DB881D04F81000EBE075 /* Origin+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Origin+CoreDataProperties.m"; sourceTree = "<group>"; };
+		4B37DB891D04F81000EBE075 /* Origin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Origin.h; sourceTree = "<group>"; };
+		4B37DB8A1D04F81000EBE075 /* Origin.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Origin.m; sourceTree = "<group>"; };
+		4B37DB8B1D04F81000EBE075 /* FoodProduct+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "FoodProduct+CoreDataProperties.h"; sourceTree = "<group>"; };
+		4B37DB8C1D04F81000EBE075 /* FoodProduct+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "FoodProduct+CoreDataProperties.m"; sourceTree = "<group>"; };
+		4B37DB8D1D04F81000EBE075 /* FoodProduct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoodProduct.h; sourceTree = "<group>"; };
+		4B37DB8E1D04F81000EBE075 /* FoodProduct.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoodProduct.m; sourceTree = "<group>"; };
+		4B37DB8F1D04F81000EBE075 /* Category+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Category+CoreDataProperties.h"; sourceTree = "<group>"; };
+		4B37DB901D04F81000EBE075 /* Category+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Category+CoreDataProperties.m"; sourceTree = "<group>"; };
+		4B37DB911D04F81000EBE075 /* Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Category.h; sourceTree = "<group>"; };
+		4B37DB921D04F81000EBE075 /* Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Category.m; sourceTree = "<group>"; };
+		4B3CD9351CFD3BCC0060EDCB /* ISSFoodIntakeTracker 6.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ISSFoodIntakeTracker 6.xcdatamodel"; sourceTree = "<group>"; };
+		4B3CD93A1CFD3CAB0060EDCB /* Media+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Media+CoreDataProperties.h"; sourceTree = "<group>"; };
+		4B3CD93B1CFD3CAB0060EDCB /* Media+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Media+CoreDataProperties.m"; sourceTree = "<group>"; };
+		4B3CD93C1CFD3CAB0060EDCB /* Media.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Media.h; sourceTree = "<group>"; };
+		4B3CD93D1CFD3CAB0060EDCB /* Media.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Media.m; sourceTree = "<group>"; };
+		4B3CD94B1CFE66E00060EDCB /* WebserviceCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebserviceCoreData.h; sourceTree = "<group>"; };
+		4B3CD94C1CFE66E00060EDCB /* WebserviceCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebserviceCoreData.m; sourceTree = "<group>"; };
+		4B480FEB1CFFF376003C18C7 /* LoopBack.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LoopBack.xcodeproj; path = LoopBack/LoopBack.xcodeproj; sourceTree = "<group>"; };
 		4B48260C1CAD4B6B00A08E32 /* ISSFoodIntakeTracker 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ISSFoodIntakeTracker 5.xcdatamodel"; sourceTree = "<group>"; };
 		4B626FB3192B70B00080634C /* ISSFoodIntakeTracker23.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = ISSFoodIntakeTracker23.xcmappingmodel; sourceTree = "<group>"; };
 		4BA6D2F119DE2004007A52A9 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
@@ -766,13 +839,9 @@
 		4DF167AD17BD20E100D3633F /* AdhocFoodProduct.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdhocFoodProduct.m; sourceTree = "<group>"; };
 		4DF167AE17BD20E100D3633F /* FoodConsumptionRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoodConsumptionRecord.h; sourceTree = "<group>"; };
 		4DF167AF17BD20E100D3633F /* FoodConsumptionRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoodConsumptionRecord.m; sourceTree = "<group>"; };
-		4DF167B017BD20E100D3633F /* FoodProduct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoodProduct.h; sourceTree = "<group>"; };
-		4DF167B117BD20E100D3633F /* FoodProduct.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoodProduct.m; sourceTree = "<group>"; };
 		4DF167B217BD20E100D3633F /* FoodProductFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoodProductFilter.h; sourceTree = "<group>"; };
 		4DF167B317BD20E100D3633F /* FoodProductFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoodProductFilter.m; sourceTree = "<group>"; };
 		4DF167B617BD20E100D3633F /* Models.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Models.h; sourceTree = "<group>"; };
-		4DF167B717BD20E100D3633F /* StringWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StringWrapper.h; sourceTree = "<group>"; };
-		4DF167B817BD20E100D3633F /* StringWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StringWrapper.m; sourceTree = "<group>"; };
 		4DF167B917BD20E100D3633F /* SummaryGenerationHistory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SummaryGenerationHistory.h; sourceTree = "<group>"; };
 		4DF167BA17BD20E100D3633F /* SummaryGenerationHistory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SummaryGenerationHistory.m; sourceTree = "<group>"; };
 		4DF167BB17BD20E100D3633F /* SynchronizableModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SynchronizableModel.h; sourceTree = "<group>"; };
@@ -1030,6 +1099,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B4810031CFFF6AA003C18C7 /* libLoopBack.a in Frameworks */,
 				4BA6D2FA19DE2283007A52A9 /* libstdc++.6.dylib in Frameworks */,
 				4DF167FE17BD218900D3633F /* libresolv.dylib in Frameworks */,
 				4DF167FC17BD218000D3633F /* libiconv.dylib in Frameworks */,
@@ -1228,6 +1298,26 @@
 			path = openssl;
 			sourceTree = "<group>";
 		};
+		4B480FEA1CFFF35A003C18C7 /* LoopBack */ = {
+			isa = PBXGroup;
+			children = (
+				4B480FEB1CFFF376003C18C7 /* LoopBack.xcodeproj */,
+			);
+			name = LoopBack;
+			sourceTree = "<group>";
+		};
+		4B480FEC1CFFF376003C18C7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4B480FF61CFFF377003C18C7 /* libLoopBack.a */,
+				4B480FF81CFFF377003C18C7 /* LoopBackTests.xctest */,
+				4B480FFA1CFFF377003C18C7 /* SLRemotingTests.xctest */,
+				4B480FFC1CFFF377003C18C7 /* LoopBack.framework */,
+				4B480FFE1CFFF377003C18C7 /* LoopBackOSXTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		4BF7B7261AF1BEA700DCC514 /* MTBBarcodeScanner */ = {
 			isa = PBXGroup;
 			children = (
@@ -1407,6 +1497,7 @@
 		4DF1676A17BD20D500D3633F /* Third Party Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				4B480FEA1CFFF35A003C18C7 /* LoopBack */,
 				4B08FF021B15606F00015C6B /* CustomBadge */,
 				4BF7B7261AF1BEA700DCC514 /* MTBBarcodeScanner */,
 				4B2C76B419908E90009F8FB3 /* Postgresql */,
@@ -1442,20 +1533,32 @@
 		4DF167AB17BD20E100D3633F /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				4B37DB871D04F81000EBE075 /* Origin+CoreDataProperties.h */,
+				4B37DB881D04F81000EBE075 /* Origin+CoreDataProperties.m */,
+				4B37DB891D04F81000EBE075 /* Origin.h */,
+				4B37DB8A1D04F81000EBE075 /* Origin.m */,
+				4B37DB8B1D04F81000EBE075 /* FoodProduct+CoreDataProperties.h */,
+				4B37DB8C1D04F81000EBE075 /* FoodProduct+CoreDataProperties.m */,
+				4B37DB8D1D04F81000EBE075 /* FoodProduct.h */,
+				4B37DB8E1D04F81000EBE075 /* FoodProduct.m */,
+				4B37DB8F1D04F81000EBE075 /* Category+CoreDataProperties.h */,
+				4B37DB901D04F81000EBE075 /* Category+CoreDataProperties.m */,
+				4B37DB911D04F81000EBE075 /* Category.h */,
+				4B37DB921D04F81000EBE075 /* Category.m */,
+				4B3CD93A1CFD3CAB0060EDCB /* Media+CoreDataProperties.h */,
+				4B3CD93B1CFD3CAB0060EDCB /* Media+CoreDataProperties.m */,
+				4B3CD93C1CFD3CAB0060EDCB /* Media.h */,
+				4B3CD93D1CFD3CAB0060EDCB /* Media.m */,
 				4DF167AC17BD20E100D3633F /* AdhocFoodProduct.h */,
 				4DF167AD17BD20E100D3633F /* AdhocFoodProduct.m */,
 				4DF167AE17BD20E100D3633F /* FoodConsumptionRecord.h */,
 				4DF167AF17BD20E100D3633F /* FoodConsumptionRecord.m */,
-				4DF167B017BD20E100D3633F /* FoodProduct.h */,
-				4DF167B117BD20E100D3633F /* FoodProduct.m */,
 				4DF167B217BD20E100D3633F /* FoodProductFilter.h */,
 				4DF167B317BD20E100D3633F /* FoodProductFilter.m */,
 				4BE31E531911EA2A00402D94 /* ISSFoodIntakeTracker.xcmappingmodel */,
 				4B626FB3192B70B00080634C /* ISSFoodIntakeTracker23.xcmappingmodel */,
 				4BE31E36190EF4B600402D94 /* ISSFoodIntakeTracker.xcdatamodeld */,
 				4DF167B617BD20E100D3633F /* Models.h */,
-				4DF167B717BD20E100D3633F /* StringWrapper.h */,
-				4DF167B817BD20E100D3633F /* StringWrapper.m */,
 				4DF167B917BD20E100D3633F /* SummaryGenerationHistory.h */,
 				4DF167BA17BD20E100D3633F /* SummaryGenerationHistory.m */,
 				4DF167BB17BD20E100D3633F /* SynchronizableModel.h */,
@@ -1859,6 +1962,8 @@
 				4BF7B7221AF1BA1C00DCC514 /* PGManagedObject.h */,
 				4BF7B7231AF1BA1C00DCC514 /* PGManagedObject.m */,
 				4DF19F3D17C30FE200F8F744 /* Settings.h */,
+				4B3CD94B1CFE66E00060EDCB /* WebserviceCoreData.h */,
+				4B3CD94C1CFE66E00060EDCB /* WebserviceCoreData.m */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -1877,6 +1982,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				4B4810021CFFF6A5003C18C7 /* PBXTargetDependency */,
 			);
 			name = FoodIntakeTracker;
 			productName = FoodIntakeTracker;
@@ -1903,12 +2009,56 @@
 			mainGroup = E7C40718175FFA1F00C3649E;
 			productRefGroup = E7C40722175FFA1F00C3649E /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 4B480FEC1CFFF376003C18C7 /* Products */;
+					ProjectRef = 4B480FEB1CFFF376003C18C7 /* LoopBack.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				E7C40720175FFA1F00C3649E /* FoodIntakeTracker */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		4B480FF61CFFF377003C18C7 /* libLoopBack.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libLoopBack.a;
+			remoteRef = 4B480FF51CFFF377003C18C7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4B480FF81CFFF377003C18C7 /* LoopBackTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = LoopBackTests.xctest;
+			remoteRef = 4B480FF71CFFF377003C18C7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4B480FFA1CFFF377003C18C7 /* SLRemotingTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = SLRemotingTests.xctest;
+			remoteRef = 4B480FF91CFFF377003C18C7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4B480FFC1CFFF377003C18C7 /* LoopBack.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = LoopBack.framework;
+			remoteRef = 4B480FFB1CFFF377003C18C7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		4B480FFE1CFFF377003C18C7 /* LoopBackOSXTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = LoopBackOSXTests.xctest;
+			remoteRef = 4B480FFD1CFFF377003C18C7 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		E7C4071F175FFA1F00C3649E /* Resources */ = {
@@ -2265,6 +2415,9 @@
 				4B2C76DC19908EA0009F8FB3 /* NSURL+PGAdditions.m in Sources */,
 				4B2C76DD19908EA0009F8FB3 /* PGClientParams.m in Sources */,
 				E70A70521769EBB100712B47 /* AddFoodViewController.m in Sources */,
+				4B3CD94D1CFE66E00060EDCB /* WebserviceCoreData.m in Sources */,
+				4B37DB931D04F81000EBE075 /* Origin+CoreDataProperties.m in Sources */,
+				4B37DB971D04F81000EBE075 /* Category+CoreDataProperties.m in Sources */,
 				E70A705A176A18A100712B47 /* CalendarViewController.m in Sources */,
 				E75A69DE176AEC23003062B3 /* FoodDetailViewController.m in Sources */,
 				E75A6A06176B5A3D003062B3 /* VoiceSearchViewController.m in Sources */,
@@ -2289,15 +2442,15 @@
 				4DF167DD17BD20E100D3633F /* LoggingHelper.m in Sources */,
 				4DF167DE17BD20E100D3633F /* AdhocFoodProduct.m in Sources */,
 				4DF167DF17BD20E100D3633F /* FoodConsumptionRecord.m in Sources */,
-				4DF167E017BD20E100D3633F /* FoodProduct.m in Sources */,
 				4DF167E117BD20E100D3633F /* FoodProductFilter.m in Sources */,
-				4DF167E317BD20E100D3633F /* StringWrapper.m in Sources */,
 				4DF167E417BD20E100D3633F /* SummaryGenerationHistory.m in Sources */,
 				4B2C76E819908EA0009F8FB3 /* SSKeychainQuery.m in Sources */,
 				4DF167E517BD20E100D3633F /* SynchronizableModel.m in Sources */,
+				4B37DB941D04F81000EBE075 /* Origin.m in Sources */,
 				4BE31E39190EF4B600402D94 /* ISSFoodIntakeTracker.xcdatamodeld in Sources */,
 				4DF167E617BD20E100D3633F /* User.m in Sources */,
 				4BF7B7251AF1BA1C00DCC514 /* PGManagedObject.m in Sources */,
+				4B37DB961D04F81000EBE075 /* FoodProduct.m in Sources */,
 				4B2C76E119908EA0009F8FB3 /* PGPasswordStore.m in Sources */,
 				4B08FF071B15606F00015C6B /* BadgeStyle.m in Sources */,
 				4B2C76DF19908EA0009F8FB3 /* PGConverters+Data2Object.m in Sources */,
@@ -2312,14 +2465,18 @@
 				4D64994717CD13DC00C15B72 /* BNAppStats.m in Sources */,
 				4D64994817CD13DC00C15B72 /* BNColor.m in Sources */,
 				4D64994917CD13DC00C15B72 /* BNPieChart.m in Sources */,
+				4B3CD9441CFD3CAB0060EDCB /* Media+CoreDataProperties.m in Sources */,
 				4BF7B7241AF1BA1C00DCC514 /* PGCoreData.m in Sources */,
 				4D64994A17CD13DC00C15B72 /* CArray.m in Sources */,
 				4B2C76E319908EA0009F8FB3 /* PGResult.m in Sources */,
+				4B37DB981D04F81000EBE075 /* Category.m in Sources */,
 				4B08FF081B15606F00015C6B /* CustomBadge.m in Sources */,
 				4D64994B17CD13DC00C15B72 /* CodeTimestamps.m in Sources */,
 				4D64994D17CD13DC00C15B72 /* LineView.m in Sources */,
 				4D64994F17CD13DC00C15B72 /* NSObject+Be.m in Sources */,
+				4B37DB951D04F81000EBE075 /* FoodProduct+CoreDataProperties.m in Sources */,
 				4D64995017CD13DC00C15B72 /* NSString+HMAC.m in Sources */,
+				4B3CD9451CFD3CAB0060EDCB /* Media.m in Sources */,
 				4D64995217CD13DC00C15B72 /* UIView+Position.m in Sources */,
 				4D64995417CD13DC00C15B72 /* WipeView.m in Sources */,
 				4D7BB21D17D7BB1F001E51B1 /* TouchWindow.m in Sources */,
@@ -2329,6 +2486,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4B4810021CFFF6A5003C18C7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = LoopBack;
+			targetProxy = 4B4810011CFFF6A5003C18C7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		4B2C76D319908EA0009F8FB3 /* SSKeychain.strings */ = {
@@ -2428,11 +2593,14 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/library/LoopBack",
+				);
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FoodIntakeTracker/FoodIntakeTracker-Prefix.pch";
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/library/LoopBack/**";
 				INFOPLIST_FILE = "FoodIntakeTracker/FoodIntakeTracker-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
@@ -2455,11 +2623,14 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/library/LoopBack",
+				);
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FoodIntakeTracker/FoodIntakeTracker-Prefix.pch";
-				HEADER_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/library/LoopBack/**";
 				INFOPLIST_FILE = "FoodIntakeTracker/FoodIntakeTracker-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
@@ -2502,13 +2673,14 @@
 		4BE31E36190EF4B600402D94 /* ISSFoodIntakeTracker.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				4B3CD9351CFD3BCC0060EDCB /* ISSFoodIntakeTracker 6.xcdatamodel */,
 				4B48260C1CAD4B6B00A08E32 /* ISSFoodIntakeTracker 5.xcdatamodel */,
 				4B2AF55E19985AFF001259C2 /* ISSFoodIntakeTracker 4.xcdatamodel */,
 				4BB5B81A19272C7800C67690 /* ISSFoodIntakeTracker 3.xcdatamodel */,
 				4BE31E37190EF4B600402D94 /* ISSFoodIntakeTracker 2.xcdatamodel */,
 				4BE31E38190EF4B600402D94 /* ISSFoodIntakeTracker.xcdatamodel */,
 			);
-			currentVersion = 4B48260C1CAD4B6B00A08E32 /* ISSFoodIntakeTracker 5.xcdatamodel */;
+			currentVersion = 4B3CD9351CFD3BCC0060EDCB /* ISSFoodIntakeTracker 6.xcdatamodel */;
 			path = ISSFoodIntakeTracker.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

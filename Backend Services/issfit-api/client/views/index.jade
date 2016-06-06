@@ -1,0 +1,116 @@
+html
+	head
+		title ISS FIT - Admin Tool
+		link(rel='stylesheet', href='/css/style.css')
+		link(rel='stylesheet', href='/css/jquery.dataTables.css')
+		link(rel='stylesheet', href='/css/jquery-ui.min.css')
+		link(rel='stylesheet', href='/css/theme.css')
+		script(type='text/javascript', src='/js/jquery.min.js')
+		script(type='text/javascript', src='/js/jquery-ui.min.js')
+		script(type='text/javascript', src='/js/jquery.dataTables.min.js')
+		script.
+			var load_data = !{tabsData};
+		script.
+			var userTable = null, foodTable = null;
+			$(document).ready(function() {
+				$( "input[type=submit], input[type=button], a.button" ).button();
+				$("#tabs").tabs({
+					beforeLoad: function( event, ui) {
+						if (undefined != userTable) {
+							userTable.destroy();
+						}
+						if (foodTable != userTable) {
+							foodTable.destroy();
+						}
+					},
+					load: function( event, ui ) {
+						$( "input[type=submit], input[type=button]" ).button();
+						userTable = $('#userTable').DataTable( {
+							"columns": [
+								null,
+								{ "width": "70px" }
+							],
+							"language": {
+								"search": "Filter records:"
+							},
+							"order": [[ 0, "asc" ]],
+							"columnDefs": [ { "type": "string", "targets": 0 }, { "targets": 1, "orderable": false } ],
+							"infoCallback": function( settings, start, end, max, total, pre ) {
+								var txt = total == max ? '' : ' (filtered from ' + max + ' ' + ((max == 1) ? ' entry' : ' entries') + ')';								
+								if (total == 0) {
+									return ''
+								} else {
+									return 'Showing ' + start + ' to ' + end + ' of ' + total + ' ' + ((total == 1) ? ' entry' : ' entries') + txt
+								}
+							}
+						});
+						foodTable = $('#foodTable').DataTable( {
+							"columns": [
+								null,
+								{ "width": "150px" },
+								{ "width": "70px" }
+							],
+							"language": {
+								"search": "Filter records:"
+							},
+							"order": [[ 0, "asc" ]],
+							"columnDefs": [ { "type": "string", "targets": 0 }, { "targets": 2, "orderable": false } ],
+							"infoCallback": function( settings, start, end, max, total, pre ) {
+								var txt = total == max ? '' : ' (filtered from ' + max + ' ' + ((max == 1) ? ' entry' : ' entries') + ')';								
+								if (total == 0) {
+									return ''
+								} else {
+									return 'Showing ' + start + ' to ' + end + ' of ' + total + ' ' + ((total == 1) ? ' entry' : ' entries') + txt
+								}
+							}
+						});
+					},
+					create: function( event, ui ) {
+						$("#tabs").tabs("option", "active", load_data.selectedTab);
+					}
+				});
+				$('#dialog').dialog({
+					autoOpen: false,
+					modal: true,
+					buttons: {
+						Ok: function() {
+							$( this ).dialog( "close" );
+						}
+					}
+				});
+				if (undefined != load_data.error && load_data.error.length > 0) {
+					$('#message').text(load_data.error);
+					$('#dialog').dialog('option', 'title', 'Error');
+					$('#dialog').dialog('open');
+				} else if (undefined != load_data.message && load_data.message.length > 0) {
+					$('#message').text(load_data.message);
+					$('#dialog').dialog('option', 'title', 'Success');
+					$('#dialog').dialog('open');
+				}
+			});
+	body
+		.head
+			#sides
+				#left
+					img(src='/images/logo.png', alt='', style='float: left;height:144px;')
+				#right
+					h1(style='float: left;height:144px;') ISS FIT - Admin Tool		
+		.container
+			div(id='dialog')
+				p(id='message')
+			#tabs
+				ul
+					li
+						a(href="/users", id="user") User Data
+					li
+						a(href="/foods", id="food") Food Data
+					li
+						a(href="/reports", id="report") Reports
+					li
+						a(href="/import", id="import") Import
+					li
+						a(href="/instructions", id="instructions") Instructions
+		if hideLogout
+			.bottom
+				a(href='/logout', class='button') Logout
+

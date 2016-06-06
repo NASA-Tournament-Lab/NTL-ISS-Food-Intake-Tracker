@@ -25,6 +25,7 @@
 #import "FoodProductServiceImpl.h"
 #import "AppDelegate.h"
 #import "LoggingHelper.h"
+#import "Models.h"
 
 @implementation FoodProductServiceImpl
 
@@ -38,7 +39,7 @@
     product.name = @"";
     product.barcode = @"";
     product.images = [NSMutableSet set];
-    product.origin = @"";
+    product.origin = nil;
     product.categories = [NSMutableSet set];
     product.fluid = @0;
     product.energy = @0;
@@ -47,7 +48,7 @@
     product.carb = @0;
     product.fat = @0;
     product.active = @NO;
-    product.productProfileImage = nil;
+    product.foodImage = nil;
     product.user = nil;
     product.removed = @NO;
     product.consumptionRecord = [NSMutableSet set];
@@ -107,27 +108,11 @@
     
     //Add adhoc product
     [self.managedObjectContext lock];
-    product.synchronized = @NO;
-    NSSet *images = product.images;
-    product.images = nil;
-    NSSet *categories = product.categories;
-    product.categories = nil;
     [self.managedObjectContext insertObject:product];
-    // Save changes in the managedObjectContext
-    [self.managedObjectContext save:error];
-    
-    for (StringWrapper *s in images) {
-        [self.managedObjectContext insertObject:s];
-    }
-    
-    for (StringWrapper *s in categories) {
-        [self.managedObjectContext insertObject:s];
-    }
-    // Save changes in the managedObjectContext
-    [self.managedObjectContext save:error];
-    product.user = user;
-    product.images = images;
-    product.categories = categories;
+
+    product.user = [self.managedObjectContext objectWithID:user.objectID];
+    product.synchronized = @NO;
+
     [self.managedObjectContext save:error];
     [LoggingHelper logError:methodName error:*error];
     [self.managedObjectContext unlock];
@@ -224,22 +209,22 @@
     if (filter.origins && filter.origins.count) {
         [predicateString appendString:@" AND (origin IN %@)"];
         NSMutableArray *originsArray = [NSMutableArray arrayWithCapacity:filter.origins.count];
-        for(StringWrapper *stringWrapper in filter.origins) {
-            [originsArray addObject:stringWrapper.value];
+        for(Origin *origin in filter.origins) {
+            [originsArray addObject:origin.value];
         }
         [arguments addObject:originsArray];
     }
     if (filter.categories && filter.categories.count) {
         [predicateString appendString:@" AND ("];
         int i = 0;
-        for(StringWrapper *stringWrapper in filter.categories) {
+        for(Category *category in filter.categories) {
             if (i == filter.categories.count - 1) {
                 [predicateString appendString:@" (SUBQUERY(categories, $x, $x.value == %@).@count > 0) "];
             } else {
                 [predicateString appendString:@" (SUBQUERY(categories, $x, $x.value == %@).@count > 0) OR "];
             }
             i++;
-            [arguments addObject:[NSString stringWithFormat:@"%@", stringWrapper.value]];
+            [arguments addObject:[NSString stringWithFormat:@"%@", category.value]];
         }
         [predicateString appendString:@")"];
     }
@@ -370,24 +355,28 @@
     }
     if (filter.origins && filter.origins.count) {
         [predicateString appendString:@" AND (origin IN %@)"];
-        NSMutableArray *originsArray = [NSMutableArray arrayWithCapacity:filter.origins.count];
-        for(StringWrapper *stringWrapper in filter.origins) {
-            [originsArray addObject:stringWrapper.value];
+        /*NSMutableArray *originsArray = [NSMutableArray arrayWithCapacity:filter.origins.count];
+        for (Origin *origin in filter.origins) {
+            [originsArray addObject:origin];
         }
-        [arguments addObject:originsArray];
+        [arguments addObject:originsArray];*/
+        [arguments addObject:filter.origins];
     }
     if (filter.categories && filter.categories.count) {
         [predicateString appendString:@" AND ("];
-        int i = 0;
-        for(StringWrapper *stringWrapper in filter.categories) {
+        /*int i = 0;
+        for(Category *category in filter.categories) {
             if (i == filter.categories.count - 1) {
                 [predicateString appendString:@" (SUBQUERY(categories, $x, $x.value == %@).@count > 0) "];
             } else {
                 [predicateString appendString:@" (SUBQUERY(categories, $x, $x.value == %@).@count > 0) OR "];
             }
             i++;
-            [arguments addObject:[NSString stringWithFormat:@"%@", stringWrapper.value]];
-        }
+            [arguments addObject:[NSString stringWithFormat:@"%@", category.value]];
+        }*/
+        [predicateString appendString:@" (SUBQUERY(categories, $x, $x IN %@).@count > 0) "];
+        [arguments addObject:filter.categories];
+
         [predicateString appendString:@")"];
     }
 
@@ -494,30 +483,14 @@
     // Save filter and update user
     
     filter.synchronized = @NO;
-    
-    
+
     if (!filter.managedObjectContext) {
-        NSMutableSet *origins = filter.origins;
-        NSMutableSet *categories = filter.categories;
-        filter.origins = nil;
-        filter.categories = nil;
         [self.managedObjectContext insertObject:filter];
-        
         // Save changes in the managedObjectContext
-        [self.managedObjectContext save:error];
-        
-        for (StringWrapper *s in origins) {
-            [self.managedObjectContext insertObject:s];
-        }
-        for (StringWrapper *s in categories) {
-            [self.managedObjectContext insertObject:s];
-        }
-        filter.origins = [NSMutableSet setWithSet:origins];
-        filter.categories = [NSMutableSet setWithSet:categories];
         [self.managedObjectContext save:error];
     }
     
-    if (user) {
+    if (user && user.useLastUsedFoodProductFilter) {
         if (user.lastUsedFoodProductFilter != nil && ![filter isEqual:user.lastUsedFoodProductFilter]) {
             user.lastUsedFoodProductFilter.synchronized = @NO;
             user.lastUsedFoodProductFilter.removed = @YES;
@@ -713,34 +686,16 @@
     [self.managedObjectContext lock];
     //Fetch categories
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SUBQUERY(categories, $x, $x.value LIKE[c] 'Vitamins / Supplements').@count == 0 AND removed == NO"];
-    NSEntityDescription *description = [NSEntityDescription  entityForName:@"FoodProduct"
+    NSEntityDescription *description = [NSEntityDescription  entityForName:@"Category"
                                                     inManagedObjectContext:self.managedObjectContext];
-    //NSExpression *categoryExpression = [NSExpression expressionForKeyPath:@"categories"];
-    //NSExpressionDescription *expression = [[NSExpressionDescription alloc] init];
-    //expression.name = @"categories";
-    //expression.expression = categoryExpression;
-    //expression.expressionResultType = NSStringAttributeType;
     [request setEntity:description];
-    [request setPredicate:predicate];
-    //[request setResultType:NSDictionaryResultType];
-    //[request setReturnsDistinctResults:YES];
-    //[request setPropertiesToFetch:@[expression]];
-    
+
     NSArray *result = [self.managedObjectContext executeFetchRequest:request error:error];
     [LoggingHelper logError:methodName error:*error];
     [self.managedObjectContext unlock];
-    NSMutableArray *categories = [NSMutableArray arrayWithCapacity:result.count];
-    for (NSDictionary *category in result) {
-        for (StringWrapper *wrapper in [[category valueForKey:@"categories"] allObjects]) {
-            if (![categories containsObject:wrapper.value] && wrapper.value) {
-                [categories addObject:wrapper.value];
-            }
-        }
-    }
-    [LoggingHelper logMethodExit:methodName returnValue:categories];
-    return categories;
+
+    [LoggingHelper logMethodExit:methodName returnValue:result];
+    return result;
 }
 
 -(NSArray *)getAllProductOrigins:(NSError **)error {
@@ -749,29 +704,16 @@
     [self.managedObjectContext lock];
     //Fetch origins
     NSFetchRequest *request = [[NSFetchRequest alloc] init];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"origin != '' AND removed == NO"];
-    NSEntityDescription *description = [NSEntityDescription  entityForName:@"FoodProduct"
+    NSEntityDescription *description = [NSEntityDescription  entityForName:@"Origin"
                                                     inManagedObjectContext:self.managedObjectContext];
-    NSExpression *categoryExpression = [NSExpression expressionForKeyPath:@"origin"];
-    NSExpressionDescription *expression = [[NSExpressionDescription alloc] init];
-    expression.name = @"origin";
-    expression.expression = categoryExpression;
-    expression.expressionResultType = NSStringAttributeType;
     [request setEntity:description];
-    [request setPredicate:predicate];
-    [request setResultType:NSDictionaryResultType];
-    [request setReturnsDistinctResults:YES];
-    [request setPropertiesToFetch:@[expression]];
-    
+
     NSArray *result = [self.managedObjectContext executeFetchRequest:request error:error];
     [LoggingHelper logError:methodName error:*error];
     [self.managedObjectContext unlock];
-    NSMutableArray *origins = [NSMutableArray arrayWithCapacity:result.count];
-    for (NSDictionary *origin in result) {
-        [origins addObject:[origin valueForKey:@"origin"]];
-    }
-    [LoggingHelper logMethodExit:methodName returnValue:origins];
-    return origins;
+
+    [LoggingHelper logMethodExit:methodName returnValue:result];
+    return result;
 }
 
 -(NSComparisonResult)compareFoodProduct:(id)firstProduct secondProduct:(id)secondProduct error:(NSError **)error

@@ -23,7 +23,7 @@
 #import <CoreData/CoreData.h>
 #import "SynchronizableModel.h"
 
-@class FoodProductFilter, StringWrapper, FoodConsumptionRecord, AdhocFoodProduct;
+@class FoodProductFilter, Media, FoodConsumptionRecord, AdhocFoodProduct;
 
 //This represents a iPad app user.
 @interface User : SynchronizableModel
@@ -56,7 +56,7 @@
 @property (nonatomic, strong) NSNumber * maxPacketsPerFoodProductDaily;
 
 //Represents the profile image(file path) of the user.
-@property (nonatomic, strong) NSString * profileImage;
+@property (nonatomic, strong) Media * profileImage;
 
 //Indicates whether to use the last used food product filter to initialize the food filter UI.
 @property (nonatomic, strong) NSNumber * useLastUsedFoodProductFilter;

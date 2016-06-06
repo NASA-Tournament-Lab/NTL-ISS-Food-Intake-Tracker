@@ -7,15 +7,15 @@
 //
 
 #import <CoreData/CoreData.h>
-
-@class PGConnection;
+#import <LoopBack/LoopBack.h>
 
 @interface PGManagedObject : NSManagedObject
 
 /*! @description Unique uuid to be shared among devices */
-@property (nonatomic, strong) NSString *uuid;
+@property (nonatomic, strong, readonly) NSString *id;
 
+- (void)setId:(NSString *)theId;
+- (NSDictionary *)getAttributes;
 - (BOOL)updateObjects;
-- (BOOL)insertObjects;
 
 @end

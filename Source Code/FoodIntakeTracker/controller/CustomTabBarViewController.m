@@ -26,9 +26,9 @@
 #import "ManageUserProfileViewController.h"
 #import "AppDelegate.h"
 #import "UserServiceImpl.h"
-#import "PGCoreData.h"
 #import "Helper.h"
 #import "Settings.h"
+#import "WebserviceCoreData.h"
 
 @interface CustomTabBarViewController (){
     ConsumptionViewController *consumptionController;

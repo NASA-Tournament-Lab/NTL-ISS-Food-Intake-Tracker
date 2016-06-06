@@ -20,7 +20,6 @@
 //
 
 #import "FoodProductFilter.h"
-#import "StringWrapper.h"
 
 //FoodProductFilter implementation
 @implementation FoodProductFilter

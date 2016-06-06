@@ -42,6 +42,8 @@
 #import "BNPieChart.h"
 #import "BNColor.h"
 
+#import "Media.h"
+
 #define MAX_CALORIES 2800
 #define MAX_SODIUM 160
 #define MAX_FLUID 3000
@@ -117,9 +119,9 @@
     id filename = [self.fileNameQueue objectAtIndex:i];
     if ([filename isKindOfClass:[NSString class]]) {
         filePath = [additionalFileDirectory stringByAppendingFormat:@"/%@", filename];
-    } else if ([filename isKindOfClass:[StringWrapper class]]) {
-        StringWrapper *wrapper = (StringWrapper *) filename;
-        filePath = [additionalFileDirectory stringByAppendingFormat:@"/%@", [wrapper value]];
+    } else if ([filename isKindOfClass:[Media class]]) {
+        Media *media = (Media *) filename;
+        filePath = [additionalFileDirectory stringByAppendingFormat:@"/%@", [media filename]];
     } else {
         [Helper showAlert:@"Error" message:@"Could not find audio file"];
         
@@ -146,8 +148,8 @@
     
     index++;
 
-    foodDetail.commentInstructionLabel.text = [NSString stringWithFormat:@"Playing recording (%d of %lud)", index,
-                                               self.fileNameQueue.count];
+    foodDetail.commentInstructionLabel.text = [NSString stringWithFormat:@"Playing recording (%d of %d)", index,
+                                               (int) self.fileNameQueue.count];
     foodDetail.commentInstructionLabel.hidden = NO;
     foodDetail.commentInstructionLabel.layer.cornerRadius = 4.0f;
     [foodDetail.commentInstructionLabel sizeToFit];
@@ -980,16 +982,15 @@
         
         if (recorderFilePath && recorderFilePath.count > 0) {
             for (NSString *filePath in recorderFilePath) {
-                StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
-                                                                                      entityForName:@"StringWrapper"
-                                                                                      inManagedObjectContext:
-                                                                                      recordService.managedObjectContext]
-                                                      insertIntoManagedObjectContext:nil];
-                stringWrapper.value = filePath;
-                stringWrapper.synchronized = @NO;
-                stringWrapper.removed = @NO;
+                Media *media = [[Media alloc] initWithEntity:[NSEntityDescription
+                                                              entityForName:@"Media"
+                                                              inManagedObjectContext:recordService.managedObjectContext]
+                              insertIntoManagedObjectContext:nil];
+                media.filename = filePath;
+                media.removed = @NO;
+                media.synchronized = @YES;
 
-                [self.foodConsumptionRecordToAdd addVoiceRecordingsObject:stringWrapper];
+                [self.foodConsumptionRecordToAdd addVoiceRecordingsObject:media];
             }
         }
         
@@ -1170,24 +1171,15 @@
 
     if (recorderFilePath && recorderFilePath.count > 0) {
         for (NSString *filePath in recorderFilePath) {
-            [recordService.managedObjectContext lock];
+            Media *media = [[Media alloc] initWithEntity:[NSEntityDescription
+                                                          entityForName:@"Media"
+                                                          inManagedObjectContext:recordService.managedObjectContext]
+                          insertIntoManagedObjectContext:recordService.managedObjectContext];
+            media.filename = filePath;
+            media.removed = @NO;
+            media.synchronized = @YES;
 
-            StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
-                                                                                  entityForName:@"StringWrapper"
-                                                                                  inManagedObjectContext:
-                                                                                  recordService.managedObjectContext]
-                                                  insertIntoManagedObjectContext:nil];
-            stringWrapper.value = filePath;
-            stringWrapper.synchronized = @NO;
-            stringWrapper.removed = @NO;
-
-            [recordService.managedObjectContext insertObject:stringWrapper];
-            [recordService.managedObjectContext save:&error];
-            if ([Helper displayError:error]) return;
-            
-            [recordService.managedObjectContext unlock];
-
-            [foodDetail.foodConsumptionRecord addVoiceRecordingsObject:stringWrapper];
+            [foodDetail.foodConsumptionRecord addVoiceRecordingsObject:media];
         }
     }
     
@@ -1605,16 +1597,15 @@
 
             if (recorderFilePath && recorderFilePath.count > 0) {
                 for (NSString *filePath in recorderFilePath) {
-                    StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
-                                                                                          entityForName:@"StringWrapper"
-                                                                                          inManagedObjectContext:
-                                                                                          recordService.managedObjectContext]
-                                                          insertIntoManagedObjectContext:nil];
-                    stringWrapper.value = filePath;
-                    stringWrapper.synchronized = @NO;
-                    stringWrapper.removed = @NO;
+                    Media *media = [[Media alloc] initWithEntity:[NSEntityDescription
+                                                                  entityForName:@"Media"
+                                                                  inManagedObjectContext:recordService.managedObjectContext]
+                                  insertIntoManagedObjectContext:nil];
+                    media.filename = filePath;
+                    media.removed = @NO;
+                    media.synchronized = @YES;
 
-                    [record addVoiceRecordingsObject:stringWrapper];
+                    [record addVoiceRecordingsObject:media];
                 }
             }
             
@@ -1706,7 +1697,9 @@
                 record.timestamp = [Helper convertDateTimeToDate:self.dateListView.currentDate time:[NSDate date]];
                 
                 [recordService addFoodConsumptionRecord:appDelegate.loggedInUser record:record error:&error];
-                record.foodProduct = product;
+
+                record.foodProduct = [record.managedObjectContext objectWithID:product.objectID];
+                
                 [recordService saveFoodConsumptionRecord:record error:&error];
                 
                 if ([Helper displayError:error]) return;

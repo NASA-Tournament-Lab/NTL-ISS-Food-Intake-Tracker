@@ -476,7 +476,7 @@ static NSString* reachHostName = @"";
 - (BOOL)insertUserLock:(User *) user {
     NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"UUID"];
     NSError *error = nil;
-    NSArray *values = [NSArray arrayWithObjects:user.uuid, deviceUuid, nil];
+    NSArray *values = [NSArray arrayWithObjects:user.id, deviceUuid, nil];
     PGResult *result = [self execute:@"INSERT INTO user_lock values($1::varchar, $2::varchar)" format:PGClientTupleFormatText
                               values:values error:&error];
     if (result == nil || result.affectedRows != 1 || error) {

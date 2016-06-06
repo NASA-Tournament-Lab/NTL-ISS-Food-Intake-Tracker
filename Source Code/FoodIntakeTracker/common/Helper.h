@@ -20,6 +20,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Models.h"
 
 /* seconds for a day */
 #define DAY_SECONDS 24 * 60 * 60
@@ -64,6 +65,13 @@
  * @return the file path
  */
 + (NSString *)saveVoiceRecording:(NSData *)data;
+
+/*!
+ @discussion This method will get a voice recording from file system.
+ @param fileName the file name
+ @return the file data
+ */
++ (NSData *)getVoiceRecording:(NSString *)fileName;
 
 /*!
  @discussion This method shows an alert to the user.
@@ -140,6 +148,5 @@
 @interface NSManagedObject (CustomFunction)
 
 - (NSString *) getSavedObjectId;
-- (NSSet *) categoryToSet:(NSString *) category;
 
 @end

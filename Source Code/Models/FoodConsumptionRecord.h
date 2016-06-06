@@ -21,9 +21,9 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
-#import "SynchronizableModel.h"
+#import "Media.h"
 
-@class FoodProduct, StringWrapper, User;
+@class FoodProduct, Media, User;
 
 //Represents the food consumption record.
 @interface FoodConsumptionRecord : SynchronizableModel
@@ -76,10 +76,10 @@
 @interface FoodConsumptionRecord (CoreDataGeneratedAccessors)
 
 //Add image file name
-- (void)addImagesObject:(StringWrapper *)value;
+- (void)addImagesObject:(Media *)value;
 
 //Remove image file name
-- (void)removeImagesObject:(StringWrapper *)value;
+- (void)removeImagesObject:(Media *)value;
 
 //Add set of image file names
 - (void)addImages:(NSSet *)values;
@@ -87,12 +87,11 @@
 //Remove set of image file names
 - (void)removeImages:(NSSet *)values;
 
-
 //Add voice recording file name
-- (void)addVoiceRecordingsObject:(StringWrapper *)value;
+- (void)addVoiceRecordingsObject:(Media *)value;
 
 //Remove voice recording file name
-- (void)removeVoiceRecordingsObject:(StringWrapper *)value;
+- (void)removeVoiceRecordingsObject:(Media *)value;
 
 //Add set of voice recording file names
 - (void)addVoiceRecordings:(NSSet *)values;

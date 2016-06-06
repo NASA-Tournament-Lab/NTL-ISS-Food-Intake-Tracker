@@ -20,7 +20,7 @@
 
 #import "Helper.h"
 #import "AppDelegate.h"
-#import "PGCoreData.h"
+#import "WebserviceCoreData.h"
 
 #define MAX_WIDTH 768
 
@@ -127,6 +127,28 @@ static NSArray *monthNameArray = nil;
 }
 
 /*!
+ @discussion This method will get a voice recording from file system.
+ @param fileName the file name
+ @return the file data
+ */
++ (NSData *)getVoiceRecording:(NSString *)fileName {
+    AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsPath = [paths objectAtIndex:0];
+    NSString *additionalFileDirectory = [documentsPath stringByAppendingPathComponent:appDelegate.additionalFilesDirectory];
+
+    // Check if the directory already exists
+    if (![[NSFileManager defaultManager] fileExistsAtPath:additionalFileDirectory]) {
+        // Directory does not exist so create it
+        [[NSFileManager defaultManager] createDirectoryAtPath:additionalFileDirectory withIntermediateDirectories:YES attributes:nil error:nil];
+    }
+
+    NSString *filePath = [additionalFileDirectory stringByAppendingFormat:@"/%@", fileName];
+    return [NSData dataWithContentsOfFile:filePath];
+}
+
+
+/*!
  @discussion This method gets the default date formatter.
  @return the default formatter
  */
@@ -193,6 +215,10 @@ static NSArray *monthNameArray = nil;
  @return The image
  */
 +(UIImage *)loadImage:(NSString *)imagePath {
+    if (!imagePath) {
+        return nil;
+    }
+    
     AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsPath = [paths objectAtIndex:0];
@@ -313,16 +339,6 @@ static NSArray *monthNameArray = nil;
 
 - (NSString *)getSavedObjectId {
     return [self.objectID.URIRepresentation absoluteString];
-}
-
-- (NSSet *)categoryToSet:(NSString *) categoy {
-    StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
-                                                                          entityForName:@"StringWrapper"
-                                                                          inManagedObjectContext:
-                                                                          self.managedObjectContext]
-                                          insertIntoManagedObjectContext:self.managedObjectContext];
-    stringWrapper.value = categoy;
-    return [NSSet setWithObject:stringWrapper];
 }
 
 @end

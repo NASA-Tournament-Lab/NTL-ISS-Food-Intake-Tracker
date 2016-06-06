@@ -29,8 +29,7 @@
 #import "LoggingHelper.h"
 #import "DataHelper.h"
 #import "AppDelegate.h"
-
-#import "PGCoreData.h"
+#import "WebserviceCoreData.h"
 
 @implementation DataUpdateServiceImpl
 
@@ -93,13 +92,11 @@
     // Update progress
     [self updateProgress:@0.0];
     
-    PGCoreData *coreData = [PGCoreData instance];
-    if (![coreData isConnected]) {
-        if (![coreData connect]) {
-            return NO;
-        }
+    WebserviceCoreData *coreData = [WebserviceCoreData instance];
+    if (![coreData connect]) {
+        return NO;
     }
-    
+
     BOOL deviceRegistered = [coreData checkDeviceId];
     
     if (!deviceRegistered || force) {
@@ -112,29 +109,86 @@
         NSArray *allData = [coreData fetchAllObjects];
 
         NSError *e = nil;
-        float currentProgress = 0.1, progressDelta = 0.6, count = allData.count;
+        float currentProgress = 0.1, progressDelta = 0.4, count = [coreData fetchMediaCount] / 10 + 1;
+
+        if (![coreData startFetchMedia]) {
+            e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
+            CHECK_ERROR_AND_RETURN(e, error, @"Failed start fetch", DataUpdateErrorCode, YES, NO);
+            return NO;
+        }
+
+
+        if (count < 0) {
+            return NO;
+        }
+
+        for (int i = 0; i < count; i++) {
+            [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Getting image %d", (i+1)]];
+
+            NSArray *medias = [coreData fetchNextMedia];
+            if (medias != nil) {
+                for (NSDictionary *dictFile in medias) {
+                    NSString *oId = [dictFile objectForKey:@"id"];
+                    NSString *dataFile = [dictFile objectForKey:@"filename"];
+                    NSMutableData *data = [NSMutableData data];
+                    for (NSNumber *number in [[dictFile objectForKey:@"data"] objectForKey:@"data"]) {
+                        char byte = [number charValue];
+                        [data appendBytes: &byte length: 1];
+                    }
+
+                    if([dataFile hasSuffix:self.imageFileNameSuffix] || [dataFile hasSuffix:self.voiceRecordingFileNameSuffix]) {
+                        NSString *localDataFile = [[DataHelper getAbsoulteLocalDirectory:self.localFileSystemDirectory]
+                                                   stringByAppendingPathComponent:dataFile];
+                        if (![data writeToFile:localDataFile options:NSDataWritingAtomic error:&e]) {
+                            [LoggingHelper logError:methodName error:e];
+                            CHECK_ERROR_AND_RETURN(e, error, @"Cannot save file to local folder.", DataUpdateErrorCode, YES, NO);
+                        }
+
+                        NSMutableDictionary *newDict = [dictFile mutableCopy];
+                        [newDict removeObjectForKey:@"data"];
+                        [newDict removeObjectForKey:@"id"];
+                        if (![DataHelper convertJSONToObject:oId jsonValue:newDict  name:@"Media" managegObjectContext:self.managedObjectContext]) {
+                            e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
+                            CHECK_ERROR_AND_RETURN(e, error, @"Cannot insert object.", DataUpdateErrorCode, YES, YES);
+                        }
+                    }
+                }
+            }
+
+            // Update progress
+            currentProgress += progressDelta/count;
+            [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
+        }
+
+        if (![coreData endFetchMedia]) {
+            e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
+            CHECK_ERROR_AND_RETURN(e, error, @"Failed start fetch", DataUpdateErrorCode, YES, NO);
+            return NO;
+        }
+
+        currentProgress = 0.5, progressDelta = 0.49, count = allData.count;
         if (allData && allData.count > 0) {
             // Calculate the the delta progress
             for (int i = 0; i < allData.count; i++) {
                 NSDictionary *data = [allData objectAtIndex:i];
 
-                if (i % 100 == 0 || [data isEqual:allData.lastObject]) {
+                // if (i % 10 == 0 || [data isEqual:allData.lastObject]) {
                     [self startUndoActions];
-                }
+                // }
 
                 NSString *oId = [data objectForKey:@"id"];
                 NSString *name = [data objectForKey:@"name"];
-                NSString *value = [data objectForKey:@"value"];
+                NSDictionary *value = [data objectForKey:@"value"];
                 
                 // Convert from JSON
-                NSData *jsonData = [value dataUsingEncoding:NSUTF8StringEncoding];
-                NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&e];
-                CHECK_ERROR_AND_RETURN(e, error, @"Cannot convert JSON data to managed object.", DataUpdateErrorCode, YES, YES);
+                // NSData *jsonData = [value dataUsingEncoding:NSUTF8StringEncoding];
+                NSDictionary *jsonDictionary = [value copy];// [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&e];
+                // CHECK_ERROR_AND_RETURN(e, error, @"Cannot convert JSON data to managed object.", DataUpdateErrorCode, YES, YES);
 
                 if (deviceRegistered) {
                     // Check if object already exists
                     NSFetchRequest *request = [[NSFetchRequest alloc] init];
-                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(uuid == %@)", oId];
+                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(id == %@)", oId];
                     NSEntityDescription *description = [NSEntityDescription entityForName:name
                                                                    inManagedObjectContext:[self managedObjectContext]];
                     [request setEntity:description];
@@ -168,12 +222,12 @@
                     }
                 }
 
-                if (i % 100 == 0 || [data isEqual:allData.lastObject]) {
+                // if (i % 10 == 0 || [data isEqual:allData.lastObject]) {
                     [self endUndoActions];
                     if (![self.managedObjectContext save:&e]) {
                         CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
                     }
-                }
+                // }
                 
                 // Update progress
                 currentProgress += progressDelta/count;
@@ -185,53 +239,6 @@
             CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
         }
 
-        [coreData.pgConnection reset];
-        
-        if (![coreData startFetchMedia]) {
-            e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
-            CHECK_ERROR_AND_RETURN(e, error, @"Failed start fetch", DataUpdateErrorCode, YES, NO);
-            return NO;
-        }
-        
-        currentProgress = 0.7, progressDelta = 0.29, count = [coreData fetchMediaCount] / 10 + 1;
-        if (count < 0) {
-            return NO;
-        }
-        
-        for (int i = 0; i < count; i++) {
-            [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Getting image %d", (i+1)]];
-            
-            NSArray *medias = [coreData fetchNextMedia];
-            if (medias != nil) {
-                for (NSDictionary *dictFile in medias) {
-                    NSString *dataFile = [dictFile objectForKey:@"filename"];
-                    NSData *data = [dictFile objectForKey:@"data"];
-                    if([dataFile hasSuffix:self.imageFileNameSuffix] || [dataFile hasSuffix:self.voiceRecordingFileNameSuffix]) {
-                        NSString *localDataFile = [[DataHelper getAbsoulteLocalDirectory:self.localFileSystemDirectory]
-                                                   stringByAppendingPathComponent:dataFile];
-                        if (![data writeToFile:localDataFile options:NSDataWritingAtomic error:&e]) {
-                            [LoggingHelper logError:methodName error:e];
-                            CHECK_ERROR_AND_RETURN(e, error, @"Cannot save file to local folder.", DataUpdateErrorCode, YES, NO);
-                        }
-                    }
-                }
-            }
-            
-            // Update progress
-            currentProgress += progressDelta/count;
-            [self updateProgress:[NSNumber numberWithFloat:currentProgress]];
-        }
-        
-        [[PGCoreData instance] clearObjectSyncData];
-        
-        if (![coreData endFetchMedia]) {
-            e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
-            CHECK_ERROR_AND_RETURN(e, error, @"Failed start fetch", DataUpdateErrorCode, YES, NO);
-            return NO;
-        }
-        
-        [[PGCoreData instance] clearMediaSyncData];
-        
         [self updateSyncTime:[[NSDate date] timeIntervalSince1970] * 1000];
         
         // Unlock the managedObjectContext
