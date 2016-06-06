@@ -20,6 +20,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Models.h"
 
 /* seconds for a day */
 #define DAY_SECONDS 24 * 60 * 60

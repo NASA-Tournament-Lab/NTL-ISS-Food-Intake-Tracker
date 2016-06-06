@@ -271,12 +271,6 @@
                         }
                     } else {
                         if ([object updateObjects]) {
-                            [object setSynchronized:@NO];
-
-                            if (![self.managedObjectContext save:&e]) {
-                                CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
-                            }
-
                             if ([object isKindOfClass:[FoodConsumptionRecord class]]) {
                                 NSMutableSet *allSet = [NSMutableSet set];
                                 [allSet addObjectsFromArray: [[(FoodConsumptionRecord *) object voiceRecordings] allObjects]];
@@ -292,11 +286,11 @@
                                     NSString *newId = [coreData insertMediaRecord:dict foodConsumptionId:object.id pattern:pattern];
                                     if (newId) {
                                         [mediaObject setId:newId];
-
+                                    } else {
+                                        [object setSynchronized:@NO];
                                         if (![self.managedObjectContext save:&e]) {
                                             CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
                                         }
-                                    } else {
                                         return NO;
                                     }
                                 }

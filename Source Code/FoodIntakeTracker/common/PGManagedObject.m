@@ -69,9 +69,11 @@
             NSSet *setObj = (NSSet *) obj;
             NSMutableArray *strArray = [NSMutableArray array];
             for (PGManagedObject *s in setObj) {
-                NSNumber *removed = [s valueForKey:@"removed"];
-                if (![removed boolValue] && s.id) {
-                    [strArray addObject:[s id]];
+                if ([setObj isKindOfClass:[SynchronizableModel class]]) {
+                    NSNumber *removed = [s valueForKey:@"removed"];
+                    if (![removed boolValue] && s.id) {
+                        [strArray addObject:[s id]];
+                    }
                 }
             }
             NSString *newKey = [key copy];

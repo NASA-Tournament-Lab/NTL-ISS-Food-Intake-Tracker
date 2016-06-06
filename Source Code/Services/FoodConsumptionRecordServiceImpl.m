@@ -116,43 +116,27 @@
     copy.removed = @NO;
     copy.comment = @"";
     [self.managedObjectContext insertObject:copy];
-    [self.managedObjectContext save:error];
-    copy.foodProduct = record.foodProduct;
-    
-    NSMutableSet *set = [NSMutableSet set];
+
     for (Media *media in record.images) {
-        Media *newMedia = [[Media alloc] initWithEntity:[NSEntityDescription entityForName:@"Media"
-                                                                    inManagedObjectContext:self.managedObjectContext]
-                         insertIntoManagedObjectContext:nil];
-        newMedia.filename = [media.filename copy];
+        Media *newMedia = [[Media alloc] initWithEntity:media.entity insertIntoManagedObjectContext:self.managedObjectContext];
+        newMedia.filename = media.filename;
         newMedia.removed = @NO;
         newMedia.synchronized = @YES;
-
-        [set addObject:newMedia];
-        [self.managedObjectContext insertObject:newMedia];
+        [copy addImagesObject:newMedia];
     }
-    [self.managedObjectContext save:error];
-    
-    copy.images = [NSSet setWithSet:set];
-    
-    set = [NSMutableSet set];
     for (Media *media in record.voiceRecordings) {
-        Media *newMedia = [[Media alloc] initWithEntity:[NSEntityDescription entityForName:@"Media"
-                                                                    inManagedObjectContext:self.managedObjectContext]
-                         insertIntoManagedObjectContext:nil];
-        newMedia.filename = [media.filename copy];
+        Media *newMedia = [[Media alloc] initWithEntity:media.entity insertIntoManagedObjectContext:self.managedObjectContext];
+        newMedia.filename = media.filename;
         newMedia.removed = @NO;
         newMedia.synchronized = @YES;
-
-        [set addObject:newMedia];
-        [self.managedObjectContext insertObject:newMedia];
+        [copy addVoiceRecordingsObject:newMedia];
     }
-    [self.managedObjectContext save:error];
-    
-    copy.voiceRecordings = [NSSet setWithSet:set];
-    
+
+    copy.foodProduct = [self.managedObjectContext objectWithID:record.foodProduct.objectID];
     copy.user = record.user;
+
     [self.managedObjectContext save:error];
+
     [LoggingHelper logError:methodName error:*error];
     [self.managedObjectContext unlock];
     
@@ -178,29 +162,12 @@
     
     //Add food consumption record
     [self.managedObjectContext lock];
+
+    [self.managedObjectContext insertObject:record];
+    record.user = [self.managedObjectContext objectWithID:user.objectID];
     record.synchronized = @NO;
     user.synchronized = @NO;
 
-    if (user.managedObjectContext == nil) {
-        [self.managedObjectContext insertObject:user];
-    }
-    NSSet *voiceRecordings = record.voiceRecordings;
-    NSSet *images = record.images;
-    record.images = nil;
-    record.voiceRecordings = nil;
-    [self.managedObjectContext insertObject:record];
-    for (Media *s in images) {
-        [self.managedObjectContext insertObject:s];
-    }
-    for (Media *s in voiceRecordings) {
-        [self.managedObjectContext insertObject:s];
-    }
-    // Save changes in the managedObjectContext
-    [self.managedObjectContext save:error];
-
-    record.user = user;
-    record.images = images;
-    record.voiceRecordings = voiceRecordings;
     [self.managedObjectContext save:error];
     
     [LoggingHelper logError:methodName error:*error];

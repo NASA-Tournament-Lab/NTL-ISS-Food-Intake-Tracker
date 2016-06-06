@@ -14,6 +14,21 @@
 
 @implementation FoodProduct
 
-// Insert code here to add functionality to your managed object subclass
+@dynamic active;
+@dynamic barcode;
+@dynamic carb;
+@dynamic energy;
+@dynamic fat;
+@dynamic fluid;
+@dynamic name;
+@dynamic protein;
+@dynamic quantity;
+@dynamic sodium;
+@dynamic consumptionRecord;
+@dynamic foodImage;
+@dynamic images;
+@dynamic origin;
+@dynamic categories;
+
 
 @end

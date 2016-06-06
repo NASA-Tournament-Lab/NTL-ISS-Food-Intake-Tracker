@@ -179,7 +179,6 @@
         
         adhocFoodProduct.name = foodName;
         adhocFoodProduct.quantity = @1;
-        adhocFoodProduct.categories = [NSMutableSet set];
         
         CGFloat r = self.imgFood.image.size.width / self.imgFood.image.size.height;
         UIImage *resized = [self resizeImage:self.imgFood.image newSize:CGSizeMake(r * 800, 800)];
@@ -265,7 +264,6 @@
         
         adhocFoodProduct.name = foodName;
         adhocFoodProduct.quantity = @1;
-        adhocFoodProduct.categories = [NSMutableSet set];
         
         CGFloat r = self.imgFood.image.size.width / self.imgFood.image.size.height;
         UIImage *resized = [self resizeImage:self.imgFood.image newSize:CGSizeMake(r * 800, 800)];
@@ -279,7 +277,7 @@
         media.synchronized = @NO;
 
         adhocFoodProduct.foodImage = media;
-        adhocFoodProduct.images = [NSSet setWithObject:media];
+        // adhocFoodProduct.images = [NSSet setWithObject:media];
         
         [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser product:adhocFoodProduct error:&error];
 
@@ -422,7 +420,7 @@
     label.font = [UIFont boldSystemFontOfSize:20];
     label.textAlignment = NSTextAlignmentCenter;
     label.backgroundColor = [UIColor clearColor];
-    label.text = [categories objectAtIndex:row];
+    label.text = [(Category *)[categories objectAtIndex:row] value];
     return label;
 }
 

@@ -16,7 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface Origin (CoreDataProperties)
 
 @property (nullable, nonatomic, retain) NSString *value;
-@property (nullable, nonatomic, retain) FoodProduct *foods;
 
 @end
 

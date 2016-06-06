@@ -5,6 +5,7 @@
     </entity>
     <entity name="Category" representedClassName="Category" parentEntity="PGManagedObject" syncable="YES">
         <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="foods" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FoodProduct" inverseName="categories" inverseEntity="FoodProduct" syncable="YES"/>
     </entity>
     <entity name="FoodConsumptionRecord" representedClassName="FoodConsumptionRecord" parentEntity="SynchronizableModel" syncable="YES">
         <attribute name="adhocOnly" optional="YES" attributeType="Boolean" syncable="YES"/>
@@ -33,11 +34,11 @@
         <attribute name="protein" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="quantity" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="sodium" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <relationship name="categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Category" syncable="YES"/>
+        <relationship name="categories" toMany="YES" deletionRule="Deny" destinationEntity="Category" inverseName="foods" inverseEntity="Category" syncable="YES"/>
         <relationship name="consumptionRecord" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="FoodConsumptionRecord" inverseName="foodProduct" inverseEntity="FoodConsumptionRecord" syncable="YES"/>
         <relationship name="foodImage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Media" syncable="YES"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Media" syncable="YES"/>
-        <relationship name="origin" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Origin" syncable="YES"/>
+        <relationship name="origin" maxCount="1" deletionRule="Deny" destinationEntity="Origin" syncable="YES"/>
     </entity>
     <entity name="FoodProductFilter" representedClassName="FoodProductFilter" parentEntity="SynchronizableModel" syncable="YES">
         <attribute name="adhocOnly" optional="YES" attributeType="Boolean" syncable="YES"/>
@@ -89,7 +90,7 @@
     </entity>
     <elements>
         <element name="AdhocFoodProduct" positionX="178" positionY="-27" width="128" height="60"/>
-        <element name="Category" positionX="180" positionY="126" width="128" height="60"/>
+        <element name="Category" positionX="180" positionY="126" width="128" height="75"/>
         <element name="FoodConsumptionRecord" positionX="160" positionY="192" width="128" height="255"/>
         <element name="FoodProduct" positionX="-29" positionY="81" width="128" height="270"/>
         <element name="FoodProductFilter" positionX="160" positionY="192" width="128" height="165"/>

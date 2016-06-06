@@ -35,7 +35,7 @@
         NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
         if (self.food.origin != nil) {
             self.lblName.text = self.isUnique ? self.food.name : [NSString stringWithFormat:@"%@ - %@", self.food.name,
-                                                                  self.food.origin];
+                                                                  self.food.origin.value];
         } else {
             self.lblName.text = self.food.name;
         }

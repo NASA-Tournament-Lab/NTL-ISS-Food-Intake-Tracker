@@ -1174,7 +1174,7 @@
             Media *media = [[Media alloc] initWithEntity:[NSEntityDescription
                                                           entityForName:@"Media"
                                                           inManagedObjectContext:recordService.managedObjectContext]
-                          insertIntoManagedObjectContext:nil];
+                          insertIntoManagedObjectContext:recordService.managedObjectContext];
             media.filename = filePath;
             media.removed = @NO;
             media.synchronized = @YES;
@@ -1697,7 +1697,9 @@
                 record.timestamp = [Helper convertDateTimeToDate:self.dateListView.currentDate time:[NSDate date]];
                 
                 [recordService addFoodConsumptionRecord:appDelegate.loggedInUser record:record error:&error];
-                record.foodProduct = product;
+
+                record.foodProduct = [record.managedObjectContext objectWithID:product.objectID];
+                
                 [recordService saveFoodConsumptionRecord:record error:&error];
                 
                 if ([Helper displayError:error]) return;

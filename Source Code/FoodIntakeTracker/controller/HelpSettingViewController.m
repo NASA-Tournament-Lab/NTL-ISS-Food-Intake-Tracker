@@ -530,7 +530,10 @@
     } else {
         appDelegate.loggedInUser.useLastUsedFoodProductFilter = @YES;
     }
+    appDelegate.loggedInUser.synchronized = @NO;
     [userService saveUser:appDelegate.loggedInUser error:&error];
     if ([Helper displayError:error]) return;
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:nil];
 }
 @end

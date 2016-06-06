@@ -189,11 +189,11 @@
             NSMutableArray *array = [selectCategoryIndex objectForKey:@1];
 
             for (Category *foodProductCategory in appDelegate.loggedInUser.lastUsedFoodProductFilter.categories) {
-                NSInteger foodProductCategoryIndex = [categoriesList indexOfObject:foodProductCategory.value];
+                NSInteger foodProductCategoryIndex = [categoriesList indexOfObject:foodProductCategory];
                 if (foodProductCategoryIndex != NSNotFound) {
                     [array addObject:[NSNumber numberWithInteger:foodProductCategoryIndex]];
                     noFilter = NO;
-                } else if ([foodProductCategory.value isEqualToString:@"Vitamins / Supplements"]) {
+                } else if ([[foodProductCategory value] isEqualToString:@"Vitamins / Supplements"]) {
                     [selectCategoryIndex setObject:@0 forKey:@4];
                     noFilter = NO;
                 }
@@ -204,7 +204,7 @@
             NSMutableArray *array = [selectCategoryIndex objectForKey:@2];
 
             for (Origin *foodProductOrigin in appDelegate.loggedInUser.lastUsedFoodProductFilter.origins) {
-                NSInteger foodProductOriginIndex = [origins indexOfObject:foodProductOrigin.value];
+                NSInteger foodProductOriginIndex = [origins indexOfObject:foodProductOrigin];
                 if (foodProductOriginIndex < origins.count) {
                     [array addObject:[NSNumber numberWithInteger:foodProductOriginIndex]];
                     noFilter = NO;
@@ -269,43 +269,19 @@
     filter.favoriteWithinTimePeriod = @0;
 
     if ([[selectCategoryIndex objectForKey:@1] count] > 0) {
-        NSMutableSet *ct = [NSMutableSet set];
         for (NSNumber *index in [selectCategoryIndex objectForKey:@1]) {
-            NSString *foodProductCategory = [(NSArray *)[categories objectForKey:@"Food by Category"]
+            Category *foodProductCategory = [(NSArray *)[categories objectForKey:@"Food by Category"]
                                              objectAtIndex:index.intValue];
-            NSSet *set = [DataHelper convertNSStringToNSSet:foodProductCategory withEntityDescription:
-                          [NSEntityDescription entityForName:@"StringWrapper"
-                                      inManagedObjectContext:[DBHelper currentThreadMoc]]
-                                     inManagedObjectContext:context withSeparator:@";"];
-            [ct addObjectsFromArray:[set allObjects]];
+            [filter.categories addObject:foodProductCategory];
         }
-
-        filter.categories = ct;
-    }
-    if ([[selectCategoryIndex objectForKey:@4] intValue] != -1) {
-        if (filter.categories == nil) {
-            filter.categories = [NSMutableSet set];
-        }
-
-        NSSet *vt = [DataHelper convertNSStringToNSSet:@"Vitamins / Supplements" withEntityDescription:
-                     [NSEntityDescription entityForName:@"StringWrapper"
-                                 inManagedObjectContext:[DBHelper currentThreadMoc]]
-                                inManagedObjectContext:context withSeparator:@";"];
-        [filter.categories addObjectsFromArray:[vt allObjects]];
     }
 
     if ([[selectCategoryIndex objectForKey:@2] count] > 0) {
-        NSMutableSet *ct = [NSMutableSet set];
         for (NSNumber *index in [selectCategoryIndex objectForKey:@2]) {
-            NSString *foodOrigin = [(NSArray *)[categories objectForKey:@"Food by Country"]
+            Origin *foodOrigin = [(NSArray *)[categories objectForKey:@"Food by Country"]
                                     objectAtIndex:index.intValue];
-            NSSet *set = [DataHelper convertNSStringToNSSet:foodOrigin withEntityDescription:
-                              [NSEntityDescription entityForName:@"StringWrapper"
-                                          inManagedObjectContext:[DBHelper currentThreadMoc]]
-                                         inManagedObjectContext:context withSeparator:@";"];
-            [ct addObjectsFromArray:[set allObjects]];
+            [filter.origins addObject:foodOrigin];
         }
-        filter.origins = ct;
     }
     
     NSInteger index = [[selectCategoryIndex objectForKey:@3] intValue];
@@ -319,7 +295,7 @@
     }
     
     // Save last used food product filter
-    if (appDelegate.loggedInUser.useLastUsedFoodProductFilter && appDelegate.loggedInUser.lastUsedFoodProductFilter) {
+    if (appDelegate.loggedInUser.useLastUsedFoodProductFilter.boolValue && appDelegate.loggedInUser.lastUsedFoodProductFilter) {
         [userService saveUser:appDelegate.loggedInUser error:&error];
         if ([Helper displayError:error]) return;
     }
@@ -403,6 +379,10 @@
     
     [self.rightTable reloadData];
     [self listGridValueChanged:nil];
+
+    if (!appDelegate.loggedInUser.useLastUsedFoodProductFilter.boolValue) {
+        [foodProductService deleteFoodProductFilter:filter error:nil];
+    }
 }
 
 /**

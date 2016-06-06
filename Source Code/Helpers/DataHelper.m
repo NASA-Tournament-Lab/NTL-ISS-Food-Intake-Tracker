@@ -48,10 +48,9 @@
  @param separator The separator used to split the string.
  @return The NSSet with manged objects.
  */
-+ (NSSet*)convertNSStringToNSSet:(NSString *)str withEntityDescription:(NSEntityDescription *)entity
++ (NSSet *)convertNSStringToNSSet:(NSString *)str withEntityDescription:(NSEntityDescription *)entity
           inManagedObjectContext:(NSManagedObjectContext*)context withSeparator:(NSString *)separator {
-    NSMutableArray *stringWrappersArray = [NSMutableArray array];
-    return [NSSet setWithArray:stringWrappersArray];
+    return [[str componentsSeparatedByString:separator] mutableCopy];
 }
 
 /*!
@@ -62,6 +61,9 @@
  */
 + (NSString *)convertStringWrapperNSSetToNSString:(NSSet *)set withSeparator:(NSString *)separator {
     NSMutableArray *strArray = [NSMutableArray array];
+    for (Category *category in set) {
+        [strArray addObject:category.value];
+    }
     return [strArray componentsJoinedByString:separator];
 }
 
@@ -247,23 +249,30 @@
                 break;
         }
     }];
-    
+
     NSDictionary *relationships = [description relationshipsByName];
     [relationships enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        id tmpKey = [dict objectForKey:key];
+        NSString *newKey = [key copy];
+        if ([key isEqualToString:@"categories"] ) {
+            newKey = @"category_uuids";
+        } else if ([key isEqualToString:@"origins"]) {
+            newKey = @"origin_uuids";
+        }
+
+        id tmpKey = [dict objectForKey:newKey];
         if (tmpKey && ![tmpKey isEqual:[NSNull null]]) {
             NSRelationshipDescription *relDescription = (NSRelationshipDescription *) obj;
             NSFetchRequest *request = [[NSFetchRequest alloc] init];
-            if (relDescription.isToMany) {            
-                NSArray *extObjects = [dict objectForKey:key];
+            if (relDescription.isToMany) {
+                NSArray *extObjects = [dict objectForKey:newKey];
 
-                NSMutableSet *currentSet = [object valueForKey:key];
+                NSMutableSet *currentSet = [object mutableSetValueForKey:key];
                 if (!currentSet) {
                     currentSet = [NSMutableSet set];
                 }
                 
-                for (NSDictionary * relatDic in extObjects) {
-                    NSString *extId = [relatDic objectForKey:@"id"];
+                for (id relatDic in extObjects) {
+                    NSString *extId = [relatDic isKindOfClass:[NSDictionary class]] ? [relatDic objectForKey:@"id"] : relatDic;
                     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(id == %@)", extId];
                     [request setEntity:relDescription.destinationEntity];
                     [request setPredicate:predicate];
@@ -272,7 +281,7 @@
                     if (objects.count > 0) {
                         [currentSet addObject:[objects objectAtIndex:0]];
                     }
-                }
+                }                
             } else {
                 NSString *extId = [dict objectForKey:key];
                 NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(id == %@)", extId];
@@ -303,7 +312,7 @@
     if ([object isKindOfClass:[SynchronizableModel class]]) {
         [(SynchronizableModel *)object setPrimitiveValue:@NO forKey:@"removed"];
     }
-    
+
     [DataHelper updateObjectWithJSON:dict object:object managegObjectContext:managedObjectContext];
     
     [object setPrimitiveValue:theId forKey:@"id"];

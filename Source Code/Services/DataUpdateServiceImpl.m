@@ -172,9 +172,9 @@
             for (int i = 0; i < allData.count; i++) {
                 NSDictionary *data = [allData objectAtIndex:i];
 
-                if (i % 10 == 0 || [data isEqual:allData.lastObject]) {
+                // if (i % 10 == 0 || [data isEqual:allData.lastObject]) {
                     [self startUndoActions];
-                }
+                // }
 
                 NSString *oId = [data objectForKey:@"id"];
                 NSString *name = [data objectForKey:@"name"];
@@ -222,12 +222,12 @@
                     }
                 }
 
-                if (i % 10 == 0 || [data isEqual:allData.lastObject]) {
+                // if (i % 10 == 0 || [data isEqual:allData.lastObject]) {
                     [self endUndoActions];
                     if (![self.managedObjectContext save:&e]) {
                         CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
                     }
-                }
+                // }
                 
                 // Update progress
                 currentProgress += progressDelta/count;

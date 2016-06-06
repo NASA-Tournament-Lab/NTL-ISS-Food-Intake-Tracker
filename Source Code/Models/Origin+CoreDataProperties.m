@@ -14,6 +14,5 @@
 @implementation Origin (CoreDataProperties)
 
 @dynamic value;
-@dynamic foods;
 
 @end

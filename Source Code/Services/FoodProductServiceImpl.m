@@ -25,6 +25,7 @@
 #import "FoodProductServiceImpl.h"
 #import "AppDelegate.h"
 #import "LoggingHelper.h"
+#import "Models.h"
 
 @implementation FoodProductServiceImpl
 
@@ -107,27 +108,11 @@
     
     //Add adhoc product
     [self.managedObjectContext lock];
-    product.synchronized = @NO;
-    NSSet *images = product.images;
-    product.images = nil;
-    NSSet *categories = product.categories;
-    product.categories = nil;
     [self.managedObjectContext insertObject:product];
-    // Save changes in the managedObjectContext
-    [self.managedObjectContext save:error];
-    
-    for (Media *s in images) {
-        [self.managedObjectContext insertObject:s];
-    }
-    
-    for (Media *s in categories) {
-        [self.managedObjectContext insertObject:s];
-    }
-    // Save changes in the managedObjectContext
-    [self.managedObjectContext save:error];
-    product.user = user;
-    product.images = images;
-    product.categories = categories;
+
+    product.user = [self.managedObjectContext objectWithID:user.objectID];
+    product.synchronized = @NO;
+
     [self.managedObjectContext save:error];
     [LoggingHelper logError:methodName error:*error];
     [self.managedObjectContext unlock];
@@ -370,15 +355,16 @@
     }
     if (filter.origins && filter.origins.count) {
         [predicateString appendString:@" AND (origin IN %@)"];
-        NSMutableArray *originsArray = [NSMutableArray arrayWithCapacity:filter.origins.count];
-        for(Origin *origin in filter.origins) {
-            [originsArray addObject:origin.value];
+        /*NSMutableArray *originsArray = [NSMutableArray arrayWithCapacity:filter.origins.count];
+        for (Origin *origin in filter.origins) {
+            [originsArray addObject:origin];
         }
-        [arguments addObject:originsArray];
+        [arguments addObject:originsArray];*/
+        [arguments addObject:filter.origins];
     }
     if (filter.categories && filter.categories.count) {
         [predicateString appendString:@" AND ("];
-        int i = 0;
+        /*int i = 0;
         for(Category *category in filter.categories) {
             if (i == filter.categories.count - 1) {
                 [predicateString appendString:@" (SUBQUERY(categories, $x, $x.value == %@).@count > 0) "];
@@ -387,7 +373,10 @@
             }
             i++;
             [arguments addObject:[NSString stringWithFormat:@"%@", category.value]];
-        }
+        }*/
+        [predicateString appendString:@" (SUBQUERY(categories, $x, $x IN %@).@count > 0) "];
+        [arguments addObject:filter.categories];
+
         [predicateString appendString:@")"];
     }
 
@@ -501,7 +490,7 @@
         [self.managedObjectContext save:error];
     }
     
-    if (user) {
+    if (user && user.useLastUsedFoodProductFilter) {
         if (user.lastUsedFoodProductFilter != nil && ![filter isEqual:user.lastUsedFoodProductFilter]) {
             user.lastUsedFoodProductFilter.synchronized = @NO;
             user.lastUsedFoodProductFilter.removed = @YES;

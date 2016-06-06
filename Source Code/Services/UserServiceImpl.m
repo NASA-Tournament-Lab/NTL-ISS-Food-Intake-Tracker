@@ -100,7 +100,8 @@
                 existingUser.fullName = user.fullName;
                 existingUser.useLastUsedFoodProductFilter = user.useLastUsedFoodProductFilter;
                 if (user.lastUsedFoodProductFilter != nil) {
-                    existingUser.lastUsedFoodProductFilter = user.lastUsedFoodProductFilter;
+                    existingUser.lastUsedFoodProductFilter = [self.managedObjectContext
+                                                              objectWithID:user.lastUsedFoodProductFilter.objectID];
                     existingUser.lastUsedFoodProductFilter.synchronized = @NO;
                 }
                 existingUser.dailyTargetFluid = user.dailyTargetFluid;

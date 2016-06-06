@@ -37,11 +37,14 @@
     NSMutableArray *selectFoods;
     /* sort by options */
     NSMutableArray *sortByOptionArray;
+    /* current filter */
+    FoodProductFilter *filter;
 }
 
 @end
 
 @implementation PhotoListViewController
+
 /**
  * Called when view will be presented.
  * Update tab bar selected tab to nil here.
@@ -53,6 +56,54 @@
     self.customTabBarController.imgConsumption.image = [UIImage imageNamed:@"icon-consumption"];
     [self.customTabBarController.btnConsumption setImage:nil forState:UIControlStateNormal];
     self.customTabBarController.activeTab = 0;
+
+    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
+    NSError *error;
+
+    filter = [foodProductService buildFoodProductFilter:&error];
+    if ([Helper displayError:error]) return;
+    filter.adhocOnly = @YES;
+    foodItems = [NSMutableArray arrayWithArray:[foodProductService
+                                                filterFoodProducts:appDelegate.loggedInUser
+                                                filter:filter
+                                                error:&error]];
+
+    [self buildPhotos];
+
+    self.lblDeletePopupTitle.font = [UIFont fontWithName:@"Bebas" size:20];
+    self.lblTitle.font = [UIFont fontWithName:@"Bebas" size:24];
+
+    sortByOptionArray = [NSMutableArray arrayWithObjects:
+                         @"Alphabetically (A to Z)",
+                         @"Alphabetically (Z to A)",
+                         @"Nutrient Content (Calories)",
+                         @"Nutrient Content (Sodium)",
+                         @"Nutrient Content (Fluid)",
+                         @"Nutrient Content (Protein)",
+                         @"Nutrient Content (Carb)",
+                         @"Nutrient Content (Fat)",
+                         @"Frequency (High To Low)",
+                         @"Frequency (Low To High)",
+                         nil];
+
+
+    self.sortByListView.delegate = self;
+    self.sortByListView.options = sortByOptionArray;
+    self.sortByListView.selectIndex = 0;
+}
+
+/**
+ * Called when view will be dismissed.
+ * Remove used filter.
+ * @param animated If YES, the view is being added to the window using an animation.
+ */
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+
+    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
+    [foodProductService deleteFoodProductFilter:filter error:nil];
 }
 
 /**
@@ -72,40 +123,6 @@
     }
     
     selectFoods = [[NSMutableArray alloc] init];
-    AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
-    FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
-    NSError *error;
-    
-    FoodProductFilter *filter = [foodProductService buildFoodProductFilter:&error];
-    if ([Helper displayError:error]) return;
-    filter.adhocOnly = @YES;
-    foodItems = [NSMutableArray arrayWithArray:[foodProductService
-                                                filterFoodProducts:appDelegate.loggedInUser
-                                                filter:filter
-                                                error:&error]];
-    
-    [self buildPhotos];
-    
-    self.lblDeletePopupTitle.font = [UIFont fontWithName:@"Bebas" size:20];
-    self.lblTitle.font = [UIFont fontWithName:@"Bebas" size:24];
-    
-    sortByOptionArray = [NSMutableArray arrayWithObjects:
-                         @"Alphabetically (A to Z)",
-                         @"Alphabetically (Z to A)",
-                         @"Nutrient Content (Calories)",
-                         @"Nutrient Content (Sodium)",
-                         @"Nutrient Content (Fluid)",
-                         @"Nutrient Content (Protein)",
-                         @"Nutrient Content (Carb)",
-                         @"Nutrient Content (Fat)",
-                         @"Frequency (High To Low)",
-                         @"Frequency (Low To High)",
-                         nil];
-    
-    
-    self.sortByListView.delegate = self;
-    self.sortByListView.options = sortByOptionArray;
-    self.sortByListView.selectIndex = 0;
 }
 
 /**
@@ -343,7 +360,6 @@
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
     NSError *error;
-    FoodProductFilter *filter = [foodProductService buildFoodProductFilter:&error];
     if ([Helper displayError:error]) return;
     filter.adhocOnly = @YES;
     int sortOption = 0;
@@ -419,6 +435,7 @@
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar{
     [clearCover removeFromSuperview];
     clearCover = nil;
+    filter.name = nil;
     
     if (self.suggestionTableView) {
         [self.suggestionTableView.popController dismissPopoverAnimated:YES];
@@ -434,7 +451,6 @@
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
     NSError *error;
-    FoodProductFilter *filter = [foodProductService buildFoodProductFilter:&error];
     filter.adhocOnly = @YES;
     filter.name = searchText;
     foodItems = [NSMutableArray arrayWithArray:[foodProductService filterFoodProducts:appDelegate.loggedInUser
