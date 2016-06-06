@@ -936,10 +936,15 @@ app.post('/user/:id', function(req, res) {
 app.post('/reports', function(req, res) {
     console.log('Body: ' + JSON.stringify(req.body));
 
-    var args = [];
-    if (req.body.radioReport == "0") {
-        if (undefined != req.body.users && req.body.users.length > 0) {
-            var users = req.body.users instanceof Array ? req.body.users : new Array(req.body.users);
+    var args = ['--database=' + config.db.database,
+                '--user=' + config.db.username,
+                '--password=' + config.db.password,
+                '--host=' + config.db.host,
+                '--port=' + config.db.port];
+    var tmpBody = JSON.parse(JSON.stringify(req.body));
+    if (tmpBody.radioReport == "0") {
+        if (undefined != tmpBody.users && tmpBody.users.length > 0) {
+            var users = tmpBody.users instanceof Array ? tmpBody.users : new Array(tmpBody.users);
             args.push('--selected=' + users.join(","));
         } else {
             req.flash('currentSelectedTab', '2');
@@ -953,16 +958,17 @@ app.post('/reports', function(req, res) {
         args: args,
         mode: 'text',
         pythonPath: '/usr/bin/python',
-        scriptPath: __dirname
+        scriptPath: __dirname + '/..'
     }, function (err, results) {
         if (err) {
             console.log("Error: " + err.traceback);
+            res.status(err.status).end();
             return;
         }
         console.log('finished');
         console.log(results);
 
-        res.download(__dirname + '/reports/summary.zip', 'summary.zip', function (err) {
+        res.download(__dirname + '/../reports/summary.zip', 'summary.zip', function (err) {
             if (err) {
                 console.log('generateSummary.py error: ' + JSON.stringify(err));
                 res.status(err.status).end();

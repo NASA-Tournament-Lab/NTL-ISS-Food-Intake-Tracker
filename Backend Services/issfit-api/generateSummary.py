@@ -7,6 +7,12 @@ import zipfile, shutil
 def xstr(s):
     return "" if s is None else s.encode('utf-8')
 
+def xarray(s):
+    if s is None:
+       return []
+    else:
+       return s.split(',')
+
 def zipdir(path, zip):
     for root, dirs, files in os.walk(path):
         for dir in dirs:
@@ -68,11 +74,18 @@ try:
     cur = conn.cursor()
 
     # Loop over all users in database
-    for user in selected.split(','):
-        cur.execute("SELECT btrim(full_name) FROM w WHERE uuid = %s", user)
-        currentUser = cur.fetchOne()
-
-        fullName = xstr(currentUser[0]).strip()
+    selectedArray = []
+    if selected is None:
+        cur.execute("SELECT uuid, full_name FROM nasa_user;")
+        selectedArray = cur.fetchall()
+    else:
+        for user in selected.split(','):
+            cur.execute("SELECT uuid, full_name FROM nasa_user WHERE uuid = %s", (user,))
+            selectedArray.append(cur.fetchone())
+    
+    for cur_user in selectedArray:
+        user = cur_user[0]
+        fullName = xstr(cur_user[1]).strip()
         if not fullName:
             continue
 
@@ -94,35 +107,36 @@ try:
         # Create header
         wr.writerow(["Username", "Date Time", "Food Product", "Quantity", "Comments", "Images", "Voices"])
 
-        cur.execute("SELECT timestamp, food_name, quantity, comments, images, voicerecordings WHERE uuid = %s", user)
+        cur.execute("SELECT timestamp, name, quantity, comments, images, voicerecordings FROM summary_view WHERE uuid = %s AND timestamp BETWEEN %s AND %s", (user, sDate, eDate))
+        record = {}
         for cur_record in cur:
             record[u"timestamp"] = cur_record[0]
             record[u"food_name"] = cur_record[1]
             record[u"quantity"] = cur_record[2]
-            record[u"comments"] = cur_record[3]
-            record[u"images"] = cur_record[4]
-            record[u"voicerecordings"] = cur_record[5]
+            record[u"comments"] = xstr(cur_record[3])
+            record[u"images"] = xarray(cur_record[4])
+            record[u"voicerecordings"] = xarray(cur_record[5])
 
             try:
                 row = []
                 row.append(fullName)
-                row.append(record[u"timestamp"][:-6])
-                row.append(record[u"name"])
+                row.append(record[u"timestamp"].strftime("%Y-%m-%d %H:%M:%S"))
+                row.append(record[u"food_name"])
                 row.append(record[u"quantity"])
                 row.append(record[u"comments"])
 
                 imagesToSave = []
-                for image in filter(None, record.get(u"images", "").split(",")):
-                    cur.execute("SELECT filename, data FROM media WHERE id = %s", voice)
-                    match = fetchOne()
+                for image in filter(None, record[u"images"]):
+                    cur.execute("SELECT filename, data FROM media WHERE uuid = %s", (xstr(image),))
+                    match = cur.fetchone()
                     open("media/" + match[0], 'wb').write(str(match[1]))
                     imagesToSave.append(match[0])
                 row.append(";".join(imagesToSave))
 
                 voicesToSave = []
-                for voice in filter(None, record.get(u"voiceRecordings", "").split(";")):
-                    cur.execute("SELECT filename, data FROM media WHERE id = %s", voice)
-                    match = fetchOne()
+                for voice in filter(None, record[u"voicerecordings"]):
+                    cur.execute("SELECT filename, data FROM media WHERE uuid = %s", (xstr(voice),))
+                    match = cur.fetchone()
                     open("media/" + match[0], 'wb').write(str(match[1]))
                     voicesToSave.append(match[0])
                 row.append(";".join(voicesToSave))

@@ -5,7 +5,7 @@ config.useApache = true;
 config.db = {};
 config.db.database = 'pl_fit';
 config.db.username =  'pl_fit_db';
-config.db.password = 'CHANGEME';
+config.db.password = 'c5P8213BoKtH';
 config.db.host =  '192.168.60.53';
 config.db.port = 56283;
 
