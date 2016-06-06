@@ -163,7 +163,6 @@ var saveImageToDB = function(image, callback) {
                       "removed": 0,
                       "synchronized": 1
                     };
-                    console.log('media: ' + JSON.stringify(newMedia));
                     Media.create(newMedia, callback);
                 });
             });
@@ -626,8 +625,6 @@ app.post('/food', function(req, res) {
                   if (err) {
                       callback(err);
                   } else {
-                      console.log("media ==> " + JSON.stringify(media));
-
                       newValue["foodImage"] = media.id;
                       callback(null);
                   }
@@ -733,6 +730,7 @@ app.post('/user', function(req, res) {
     }
 
     queryFunctions.push(function(callback) {
+        console.log("==>  " + JSON.stringify(newValue));
         NasaUser.create(newValue, function(err, result) {
             if (err) {
                 console.log("Error");
