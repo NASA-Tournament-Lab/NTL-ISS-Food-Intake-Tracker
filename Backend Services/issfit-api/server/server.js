@@ -985,7 +985,6 @@ app.post('/import', function(req, res) {
     var files = req["files"] !== undefined ? JSON.parse(JSON.stringify(req["files"])) : undefined;
     if (!isEmpty(files)) {
         var functions = [];
-        console.log('Files: ' + JSON.stringify(files));
         for (var i = 0; i < files.length; i++) {
             var currentFile = files[i];
             if (currentFile.fieldname == 'userFileImport' && currentFile.mimetype == 'text/csv') {
@@ -996,6 +995,7 @@ app.post('/import', function(req, res) {
                       config.db.username,
                       config.db.database,
                       config.db.port,
+                      config.db.password,
                       path
                     ];
 
@@ -1017,6 +1017,7 @@ app.post('/import', function(req, res) {
                       config.db.username,
                       config.db.database,
                       config.db.port,
+                      config.db.password,
                       path
                     ];
 

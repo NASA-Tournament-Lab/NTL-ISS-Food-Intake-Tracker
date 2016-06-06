@@ -21,7 +21,7 @@ def zipdir(path, zip):
             zip.write(os.path.join(root, file), os.path.join(root, file), zipfile.ZIP_DEFLATED)
 
 try:
-    optlist, args = getopt.getopt(sys.argv[1:], 's:e:u:d:p:h:t', ["user=", "database=", "password=", "host=", "port=", "selected="])
+    optlist, args = getopt.getopt(sys.argv[1:], 's:e:u:d:p:h:t', ["user=", "database=", "password=", "host=", "port=", "selected=", "output="])
 
     user = None
     password = None
@@ -31,6 +31,7 @@ try:
     startDate = None
     endDate = None
     selected = None
+    destPath = None
     for o, a in optlist:
         if o in ("-u", "--user"):
             user = a
@@ -48,6 +49,8 @@ try:
             endDate = a
         elif o == "--selected":
             selected = a
+        elif o == "--output":
+            destPath = a
         else:
             assert False, "unhandled option"
 
@@ -162,6 +165,9 @@ try:
     zipdir(initialDirectory, zipf)
     zipf.printdir()
     zipf.close()
+  
+    if destPath is not None:
+        shutil.copy2('summary.zip', destPath)    
 
     shutil.rmtree(initialDirectory)
 except getopt.GetoptError as err:
