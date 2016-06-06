@@ -6,6 +6,7 @@
     "password": "c5P8213BoKtH",
     "name": "pl_fit_db",
     "user": "pl_fit_db",
-    "connector": "postgresql"
+    "connector": "postgresql",
+    "ssl": true
   }
 }

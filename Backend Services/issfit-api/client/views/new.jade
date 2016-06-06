@@ -87,7 +87,7 @@ html
 							select(id=key, name=key, style="width:200px;")
 								for originValue in origins
 									option(value=originValue, selected=value === originValue) #{originValue}
-						else if key == 'productProfileImage' || key == 'profileImage'
+						else if key == 'foodImage' || key == 'profileImage'
 							input(type='file', title='Choose a file', name=key, id=key, accept='image/jpg, image/jpeg' extension="jpg")
 						else if numerics.indexOf(key) != -1
 							input(type='text', value=value, name=key, id=key, style='width:200px;' required number)

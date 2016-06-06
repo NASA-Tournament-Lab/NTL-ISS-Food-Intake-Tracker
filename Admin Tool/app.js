@@ -1,10 +1,11 @@
+/**
+ * ISS Fit Admin Tool main app file.
+ */
 var express = require('express');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 var flash = require('connect-flash');
 var async = require('async');
-var pg = require('pg');
-var format = require('pg-format');
 var uuid = require('node-uuid');
 var bodyParser = require('body-parser');
 var multer = require('multer');
@@ -12,7 +13,7 @@ var fs = require('fs');
 var PythonShell = require('python-shell');
 var lwip = require('lwip');
 var config = require('./config');
-var format = require('pg-format');
+var unirest = require('unirest');
 var https = require('https');
 
 var app = express();
@@ -21,6 +22,8 @@ var app = express();
 app.locals.pretty = true;
 
 var maxAge = 60 * 60 * 1000;
+
+var baseUrl = "http://192.168.60.53:3000/api/";
 
 app.use( bodyParser.json() );  // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({
@@ -42,10 +45,7 @@ app.use(flash());
 app.set('views', './views');
 app.set('view engine', 'jade');
 
-var server, pgclient, MAX_SIZE = 1024;
-
-var conString = "postgres://" + config.db.username + ":" + config.db.password+ "@" + config.db.host+ ":" +
-                config.db.port + "/" + config.db.database + "?ssl=true";
+var server, MAX_SIZE = 1024;
 
 var foodKeys = ["name", "barcode", "energy", "sodium", "fluid", "protein", "carb", "fat", "categories", "origin",
                 "productProfileImage"];
@@ -129,17 +129,22 @@ var saveImageToDB = function(image, callback) {
                     callback('Error saving image file to database');
                     return;
                 }
-                var mediaQuery = format("INSERT INTO media VALUES(%L, %L, 'file_load');",
-                                        originalName, buffer);
-                console.log("Query (Media): " + mediaQuery);
-                pgclient.query(mediaQuery, function(err, results) {
-                    if (err != null) {
-                        console.log('Error: ' + JSON.stringify(err));
-                        callback('Error saving image file to database');
-                    } else {
-                        callback(null);
-                    }
-                });;
+                var now = new Date();
+            	var newMedia = { 
+            		"filename": originalName, 
+            		"data": buffer,
+            		"createdDate": now,
+            		"modifiedDate": now,
+            		"removed": 0,
+            		"synchronized": 1
+            	};
+                unirest.post(baseUrl + 'Media')
+				.headers({'Content-Type': 'application/json'})
+				.send(newMedia)
+				.end(function (response) {
+				  	console.log(response.body);
+				  	callback(null);
+				});
             });
         });
     } catch (err) {
@@ -194,37 +199,30 @@ var updateValue = function(req, res, remove) {
 
     // check userlock exists
     queryFunctions.push(function(callback) {
-        pgclient.query("SELECT id, deviceId FROM user_lock WHERE id = '" + req.params.id + "'", function(err, results) {
-            if (err) {
-                callback(err);
-            } else {
-                if (results.rows.length == 0) {
-	           callback(null);
-                } else {	           
-                   var row = results.rows[0]; 
-	           callback("User is being used by device: " + row.deviceid);
-	        }  
-            }
-        });
+    	unirest.get(baseUrl + 'UserLocks/' + req.params.id)
+    			.headers({'Content-Type': 'application/json'})
+				.end(function (response) {
+				  	console.log(response.body);
+				  	callback(null);
+				});
     });
     
     // check barcode exists
     queryFunctions.push(function(callback) {
-        pgclient.query("SELECT value FROM data WHERE name = 'FoodProduct'", function(err, results) {
-            if (err) {
-                callback(err);
-            } else {
-                for (var i = 0; i < results.rows.length; i++) {
-                    var row = results.rows[i];
-                    var value = JSON.parse(row.value);
-                    if (value.barcode != null && newValue["barcode"] != null && value.barcode.toString().trim() === newValue["barcode"].toString().trim()) {
-                        callback('Food with barcode "' + value.barcode + '" already exists');
-                        return;
-                    }
-                }
-                callback(null);
-            }
-        });
+    	unirest.get(baseUrl + 'FoodProducts')
+    			.headers({'Content-Type': 'application/json'})
+				.end(function (response) {
+				  	console.log(response.body);
+				  	/*for (var i = 0; i < results.rows.length; i++) {
+						var row = results.rows[i];
+						var value = JSON.parse(row.value);
+						if (value.barcode != null && newValue["barcode"] != null && value.barcode.toString().trim() === newValue["barcode"].toString().trim()) {
+							callback('Food with barcode "' + value.barcode + '" already exists');
+							return;
+						}
+					}*/
+				  	callback(null);
+				});
     });
 
     if (undefined != req.files) {
@@ -233,13 +231,12 @@ var updateValue = function(req, res, remove) {
         if (undefined != image) {
             var originalName = image.originalname;
             newValue[key] = originalName;
-            var deleteQuery = format("DELETE FROM media WHERE filename = %L", originalName);
-            queryFunctions.push(function(callback) {
-                console.log("Query (Media): " + deleteQuery);
-                pgclient.query(deleteQuery, function(err, results) {
-                    callback(err);
-                });
-            });
+            unirest.delete(baseUrl + 'Media?filter[where][filename]=' + originalName)
+    			.headers({'Content-Type': 'application/json'})
+				.end(function (response) {
+					console.log(response.body);
+					callback(null);
+				});            
 
             queryFunctions.push(function(callback) {
                 saveImageToDB(image, callback);

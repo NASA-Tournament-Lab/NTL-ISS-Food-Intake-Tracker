@@ -14,13 +14,23 @@
       {
         "relation": "images",
         "scope" : {
-          "fields": [ "id" ]
+          "fields": [ "id" ],
+          "where": {
+            "filename": {
+              "like": "%.jpg"
+            }
+          }
         }
       },
       {
         "relation": "voiceRecordings",
         "scope" : {
-          "fields": [ "id" ]
+          "fields": [ "id" ],
+          "where": {
+            "filename": {
+              "like": "%.aac"
+            }
+          }
         }
       }
     ]

@@ -1,21 +1,29 @@
-var multer      = require('multer');
-var loopback    = require('loopback');
-var boot        = require('loopback-boot');
-var bodyParser  = require('body-parser');
-var cookieParser = require('cookie-parser');
-var session     = require('express-session');
-var flash       = require('express-flash');
-var path        = require('path');
-var uuid        = require('node-uuid');
+/**
+ * Server file.
+ */
+var multer        = require('multer');
+var loopback      = require('loopback');
+var boot          = require('loopback-boot');
+var bodyParser    = require('body-parser');
+var cookieParser  = require('cookie-parser');
+var session       = require('express-session');
+var flash         = require('express-flash');
+var path          = require('path');
+var uuid          = require('node-uuid');
 
-var async       = require('async');
-var PythonShell = require('python-shell');
-var lwip        = require('lwip');
+var async         = require('async');
+var PythonShell   = require('python-shell');
+var lwip          = require('lwip');
+var fs            = require('fs');
+var config        = require('./config.js');
+
+var child_process = require('child_process');
 
 var maxAge = 60 * 60 * 1000;
+var MAX_SIZE = 1024;
 
 var foodKeys = ["name", "barcode", "energy", "sodium", "fluid", "protein", "carb", "fat", "categoriesName", "origin",
-                "productProfileImage"];
+                "foodImage"];
 var foodTitles = ["Name", "Barcode", "Energy", "Sodium", "Fluid", "Protein", "Carb", "Fat", "Categories", "Country Origin",
                   "Food Image"];
 
@@ -37,15 +45,7 @@ var app = module.exports = loopback();
 app.set('views', __dirname + '/../client/views');
 app.set('view engine', 'jade'); //Can use any express view engine(Jade/handlebars/haml/react)
 
-// to support JSON-encoded bodies
-app.middleware('parse', bodyParser.json());
-// to support URL-encoded bodies
-app.middleware('parse', bodyParser.urlencoded({
-  extended: true
-}));
-
-app.use(multer({ dest: '/tmp' }).single('photo'));
-
+app.use(multer({ dest: '/tmp' }).any());
 app.use(cookieParser('secret'));
 // app.use(session({cookie: { maxAge: 60000 }}));
 app.use(session({
@@ -55,10 +55,6 @@ app.use(session({
   cookie: { maxAge: maxAge }
 }));
 app.use(flash());
-
-//request limit 1gb
-app.use(loopback.bodyParser.json({limit: 524288000}));
-app.use(loopback.bodyParser.urlencoded({limit: 524288000, extended: true}));
 
 // Bootstrap the application, configure models, datasources and middleware.
 // Sub-apps like REST API are mounted via boot scripts.
@@ -128,6 +124,56 @@ var isEmpty = function(obj) {
     return true;
 }
 
+/**
+ * Save image to database.
+ */
+var saveImageToDB = function(image, callback) {
+    try {
+        // obtain an image object:
+        var originalName = image.originalname;
+        console.log("Open lwip: " + image.path);
+        fs.readFile(image.path, function(err, imageBuffer) {
+            lwip.open(imageBuffer, 'jpg', function(err, currentImage) {
+                console.log("Start batch");
+                var batch = currentImage.batch();
+                if (undefined != err) {
+                    console.log('Error ' + JSON.stringify(err));
+                    callback('Error opening image file');
+                } else if (currentImage.width() > MAX_SIZE || currentImage.height() > MAX_SIZE) {
+                    var rr = currentImage.width() > currentImage.height();
+                    var newWidth = rr ? MAX_SIZE : Math.floor(currentImage.width() * (MAX_SIZE / currentImage.height()));
+                    var newHeight = rr ? Math.floor(currentImage.height() * (MAX_SIZE / currentImage.width())) : MAX_SIZE;
+                    console.log('Old size: ' + currentImage.width() + ' x ' + currentImage.height());
+                    console.log('New size: ' + newWidth + ' x ' + newHeight);
+                    batch.resize(newWidth, newHeight);
+                }
+                console.log("To buffer");
+                batch.toBuffer("jpg", function(errToBuffer, buffer) {
+                    if (!isEmpty(errToBuffer)) {
+                        console.log('Error: ' + JSON.stringify(errToBuffer));
+                        callback('Error saving image file to database');
+                        return;
+                    }
+                    var now = new Date();
+                    var newMedia = {
+                      "filename": originalName,
+                      "data": buffer,
+                      "createdDate": now,
+                      "modifiedDate": now,
+                      "removed": 0,
+                      "synchronized": 1
+                    };
+                    console.log('media: ' + JSON.stringify(newMedia));
+                    Media.create(newMedia, callback);
+                });
+            });
+        });
+    } catch (err) {
+        console.log('Error: ' + err);
+        callback('Error saving image file to database');
+    }
+}
+
 var updateValue = function(req, res, remove) {
     var newValue = {};
 
@@ -190,9 +236,29 @@ var updateValue = function(req, res, remove) {
         });
     }
 
+    var files = req["files"] !== undefined ? JSON.parse(JSON.stringify(req["files"])) : undefined;
+    if (!isEmpty(files)) {
+        var key = files[0]["fieldname"];
+        var image = files[0];
+        if (undefined != image) {
+            var originalName = image.originalname;
+
+            queryFunctions.push(function(callback) {
+                saveImageToDB(image, function(err, media) {
+                      if (err) {
+                          callback(err);
+                      } else {
+                          newValue[key] = media.id;
+                          callback(null);
+                      }
+                });
+            });
+        }
+    }
+
     var message = "";
     if (remove) {
-        message = isFood ? "Food Deleted" : "User Profile Deleted";
+        message = isFood ? "Food Deleted" : "User Deleted";
     } else {
         message = isFood ? "Food Data Updated" : "User Profile Updated";
     }
@@ -412,7 +478,7 @@ app.get('/foods', function (req, res) {
 
 // report
 app.get('/reports', function(req, res) {
-    NasaUser.find(function(err, users) {
+    NasaUser.find(function(err, results) {
         if(err) {
             return console.error('error running query', err);
         }
@@ -470,9 +536,9 @@ app.get('/food', function(req, res) {
 
 // Create new food / user
 app.post('/food', function(req, res) {
-    var id = req.body["id"];
     var newValue = {};
     var tempBody = JSON.parse(JSON.stringify(req.body));
+    var id = tempBody["id"];
     for (var key in tempBody) {
         if (tempBody.hasOwnProperty(key) && key != "id") {
             var value = tempBody[key];
@@ -494,8 +560,6 @@ app.post('/food', function(req, res) {
     var now = new Date();
     newValue["createdDate"] = now;
     newValue["modifiedDate"] = now;
-
-    console.log("==>  " + JSON.stringify(newValue));
 
     var queryFunctions = [];
 
@@ -545,23 +609,34 @@ app.post('/food', function(req, res) {
         callback(null);
     });
 
-    if (undefined != req.files && undefined != req.files["productProfileImage"]) {
-        var productProfileImage = req.files["productProfileImage"];
-        var originalName = productProfileImage.originalname;
+    var files = req["files"] !== undefined ? JSON.parse(JSON.stringify(req["files"])) : undefined;
+    if (!isEmpty(files)) {
+        var foodImage = files[0];
+        var originalName = foodImage.originalname;
 
         queryFunctions.push(function(callback) {
-              callback(null);
+            Media.destroyAll({filename: originalName}, function(err) {
+                callback(err);
+            });
         });
 
         // obtain an image object:
         queryFunctions.push(function(callback) {
-             // saveImageToDB(productProfileImage, callback);
-              newValue["foodImage"] = originalName;
-              callback(null);
+            saveImageToDB(foodImage, function(err, media) {
+                  if (err) {
+                      callback(err);
+                  } else {
+                      console.log("media ==> " + JSON.stringify(media));
+
+                      newValue["foodImage"] = media.id;
+                      callback(null);
+                  }
+            });
         });
     }
 
     queryFunctions.push(function(callback) {
+        console.log("==>  " + JSON.stringify(newValue));
         FoodProduct.create(newValue, function(err, result) {
             if (err) {
                 console.log("Error");
@@ -633,19 +708,27 @@ app.post('/user', function(req, res) {
     });
 
     // check image file
-    if (undefined != req.files && undefined != req.files["profileImage"]) {
-        var profileImageFile = req.files["profileImage"];
+    var files = req["files"] !== undefined ? JSON.parse(JSON.stringify(req["files"])) : undefined;
+    if (!isEmpty(files)) {
+        var profileImageFile = files[0];
         var originalName = profileImageFile.originalname;
-        newValue["profileImage"] = originalName;
 
         queryFunctions.push(function(callback) {
-              callback(null);
+              Media.destroyAll({filename : originalName}, function(err) {
+                  callback(err);
+              });
         });
 
         // obtain an image object:
         queryFunctions.push(function(callback) {
-              // saveImageToDB(profileImageFile, callback);
-              callback(null);
+              saveImageToDB(profileImageFile, function(err, media) {
+                  if (err) {
+                      callback(err);
+                  } else {
+                      newValue["profileImage"] = media.id;
+                      callback(null);
+                  }
+              });
         });
     }
 
@@ -729,6 +812,23 @@ app.get('/food/:id', function(req, res) {
         });
     })
 
+    queryFunctions.push(function(callback) {
+        Media.findById(editObject["foodImage"], function(err, result) {
+            if (!isEmpty(err)) {
+                callback('error running query');
+                return;
+            }
+            if (!isEmpty(result)) {
+                var media = JSON.parse(JSON.stringify(result));
+                if (media.data && media.data["type"] == "Buffer") {
+                    var buffer = new Buffer(media.data["data"]);
+                    editImage = buffer.toString('base64');
+                }
+            }
+            callback(null);
+        });
+    });
+
     async.waterfall(
         queryFunctions,
         function (err, result) {
@@ -784,6 +884,23 @@ app.get('/user/:id', function(req, res) {
         });
     });
 
+    queryFunctions.push(function(callback) {
+        Media.findById(editObject["profileImage"], function(err, result) {
+            if (!isEmpty(err)) {
+                callback('error running query');
+                return;
+            }
+            if (!isEmpty(result)) {
+                var media = JSON.parse(JSON.stringify(result));
+                if (media.data && media.data["type"] == "Buffer") {
+                    var buffer = new Buffer(media.data["data"]);
+                    editImage = buffer.toString('base64');
+                }
+            }
+            callback(null);
+        });
+    });
+
     async.waterfall(
         queryFunctions,
         function (err, result) {
@@ -807,11 +924,12 @@ app.get('/user/:id', function(req, res) {
 });
 
 // Update food / user
-app.post('/user/:id', function(req, res) {
+
+app.post('/food/:id', function(req, res) {
     updateValue(req, res, false);
 });
 
-app.post('/food/:id', function(req, res) {
+app.post('/user/:id', function(req, res) {
     updateValue(req, res, false);
 });
 
@@ -858,55 +976,63 @@ app.post('/reports', function(req, res) {
 app.post('/import', function(req, res) {
     req.flash('currentSelectedTab', '3');
 
-    console.log('Files: ' + JSON.stringify(req.files));
-    if (undefined != req.files && !isEmpty(req.files)) {
+    var files = req["files"] !== undefined ? JSON.parse(JSON.stringify(req["files"])) : undefined;
+    if (!isEmpty(files)) {
         var functions = [];
-        if (undefined != req.files['userFileImport']) {
-            functions.push(function(callback) {
-                var userFileImport = req.files['userFileImport'];
-                var path = userFileImport['path'];
-                var args = [];
-                PythonShell.run('loadUser.py', {
-                    args: args,
-                    mode: 'text',
-                    pythonPath: '/usr/bin/python',
-                    scriptPath: __dirname
-                }, function (err, results) {
-                    if (err != null) {
-                        console.log("Food error: " + JSON.stringify(err));
-                        callback('Error loading user.\nPlease check the CSV file format.');
-                    } else {
-                        callback(null);
-                    }
-                });
-            });
+        console.log('Files: ' + JSON.stringify(files));
+        for (var i = 0; i < files.length; i++) {
+            var currentFile = files[i];
+            if (currentFile.fieldname == 'userFileImport' && currentFile.mimetype == 'text/csv') {
+                functions.push(function(callback) {
+                    var path = currentFile['path'];
+                    var args = [
+                      config.db.host,
+                      config.db.username,
+                      config.db.database,
+                      config.db.port,
+                      path
+                    ];
 
-        }
-        if (undefined != req.files['foodFileImport']) {
-            functions.push(function(callback) {
-                var foodFileImport = req.files['foodFileImport'];
-                var path = foodFileImport['path'];
-                var args = [];
-                PythonShell.run('loadFood.py', {
-                    args: args,
-                    mode: 'text',
-                    pythonPath: '/usr/bin/python',
-                    scriptPath: __dirname
-                }, function (err, results) {
-                    if (err != null) {
-                        console.log("Food error: " + err.traceback);
-                        callback('Error loading food.\nPlease check the CSV file format.');
-                    } else {
-                        callback(null);
-                    }
+                    child_process.execFile(__dirname + '/loadUser.sh', args, function(err, stdout, stderr) {
+                        if (err) {
+                            callback(err + '\n' + stderr);
+                        } else {
+                            console.log(stdout);
+                            callback(null);
+                        }
+                    });
                 });
-            });
+
+            } else if (currentFile.fieldname == 'foodFileImport' && currentFile.mimetype == 'text/csv') {
+                functions.push(function(callback) {
+                    var path = currentFile['path'];
+                    var args = [
+                      config.db.host,
+                      config.db.username,
+                      config.db.database,
+                      config.db.port,
+                      path
+                    ];
+
+                    child_process.execFile(__dirname + '/../loadFood.sh', args, function(err, stderr, stdout) {
+                        console.log('stdout: ' + stdout);
+                        if (err) {
+                            callback(stderr);
+                        } else {
+                            callback(null);
+                        }
+                    });
+                });
+            } else {
+                callback('Unknown file: ' + currentFile.originalname);
+            }
         }
 
         async.waterfall(
             functions,
             function (err, result) {
                 if (err) {
+                    console.log('Error: ' + err);
                     req.flash('error', err);
                 } else {
                     req.flash('message', 'Bulk Upload Successful');

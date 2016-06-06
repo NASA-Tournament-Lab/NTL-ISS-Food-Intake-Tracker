@@ -12,11 +12,11 @@
     },
     "json": {
       "strict": false,
-      "limit": "100kb"
+      "limit": "50Mb"
     },
     "urlencoded": {
       "extended": true,
-      "limit": "100kb"
+      "limit": "50Mb"
     },
     "cors": false,
     "errorHandler": {

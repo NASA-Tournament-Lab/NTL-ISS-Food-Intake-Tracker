@@ -2,12 +2,14 @@
 //  Origin.h
 //  FoodIntakeTracker
 //
-//  Created by PAULO VITOR MAGACHO DA SILVA on 5/31/16.
+//  Created by PAULO VITOR MAGACHO DA SILVA on 6/5/16.
 //  Copyright © 2016 topcoder. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import "PGManagedObject.h"
+
+@class FoodProduct;
 
 NS_ASSUME_NONNULL_BEGIN
 
