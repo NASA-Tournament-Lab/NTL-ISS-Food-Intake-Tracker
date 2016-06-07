@@ -147,10 +147,8 @@ var saveImageToDB = function(image, callback) {
                     console.log('New size: ' + newWidth + ' x ' + newHeight);
                     batch.resize(newWidth, newHeight);
                 }
-                console.log("To buffer");
                 batch.toBuffer("jpg", function(errToBuffer, buffer) {
                     if (!isEmpty(errToBuffer)) {
-                        console.log('Error: ' + JSON.stringify(errToBuffer));
                         callback('Error saving image file to database');
                         return;
                     }
@@ -219,8 +217,6 @@ var updateValue = function(req, res, remove) {
         // check userlock exists
         queryFunctions.push(function(callback) {
             UserLock.find({ where : {user_uuid : req.params.id} }, function(err, results) {
-                console.log("err :  " + JSON.stringify(err));
-                console.log("result :  " + JSON.stringify(results));
                 if (!isEmpty(err)) {
                     callback(err);
                 } else {
@@ -613,11 +609,11 @@ app.post('/food', function(req, res) {
         var foodImage = files[0];
         var originalName = foodImage.originalname;
 
-        queryFunctions.push(function(callback) {
+        /*queryFunctions.push(function(callback) {
             Media.destroyAll({filename: originalName}, function(err) {
                 callback(err);
             });
-        });
+        });*/
 
         // obtain an image object:
         queryFunctions.push(function(callback) {
@@ -633,7 +629,6 @@ app.post('/food', function(req, res) {
     }
 
     queryFunctions.push(function(callback) {
-        console.log("==>  " + JSON.stringify(newValue));
         FoodProduct.create(newValue, function(err, result) {
             if (err) {
                 console.log("Error");
@@ -710,11 +705,11 @@ app.post('/user', function(req, res) {
         var profileImageFile = files[0];
         var originalName = profileImageFile.originalname;
 
-        queryFunctions.push(function(callback) {
+        /*queryFunctions.push(function(callback) {
               Media.destroyAll({filename : originalName}, function(err) {
                   callback(err);
               });
-        });
+        });*/
 
         // obtain an image object:
         queryFunctions.push(function(callback) {
@@ -730,7 +725,6 @@ app.post('/user', function(req, res) {
     }
 
     queryFunctions.push(function(callback) {
-        console.log("==>  " + JSON.stringify(newValue));
         NasaUser.create(newValue, function(err, result) {
             if (err) {
                 console.log("Error");
