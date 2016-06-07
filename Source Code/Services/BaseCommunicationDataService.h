@@ -42,11 +42,6 @@
 @property (nonatomic, readonly, strong) NSString *sharedFileServerUsername;
 
 /*!
- @discussion Represents the database used to access the shared file server.
- */
-@property (nonatomic, readonly, strong) NSString *sharedFileServerDatabase;
-
-/*!
  @discussion Represents the password used to access the shared file server.
  */
 @property (nonatomic, readonly, strong) NSString *sharedFileServerPassword;

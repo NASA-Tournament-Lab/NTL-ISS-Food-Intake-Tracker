@@ -54,24 +54,6 @@
 			<key>AutocorrectionType</key>
 			<string>No</string>
 			<key>DefaultValue</key>
-			<string>pl_fit</string>
-			<key>IsSecure</key>
-			<false/>
-			<key>Key</key>
-			<string>database_preference</string>
-			<key>KeyboardType</key>
-			<string>URL</string>
-			<key>Title</key>
-			<string>Server Database:</string>
-			<key>Type</key>
-			<string>PSTextFieldSpecifier</string>
-		</dict>
-		<dict>
-			<key>AutocapitalizationType</key>
-			<string>None</string>
-			<key>AutocorrectionType</key>
-			<string>No</string>
-			<key>DefaultValue</key>
 			<string>CHANGEME</string>
 			<key>IsSecure</key>
 			<true/>

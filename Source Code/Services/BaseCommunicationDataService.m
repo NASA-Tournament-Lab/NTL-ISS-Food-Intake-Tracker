@@ -26,7 +26,6 @@
 
 @synthesize sharedFileServerPath = _sharedFileServerPath;
 @synthesize sharedFileServerUsername = _sharedFileServerUsername;
-@synthesize sharedFileServerDatabase = _sharedFileServerDatabase;
 @synthesize sharedFileServerPassword = _sharedFileServerPassword;
 
 /*!
@@ -40,7 +39,6 @@
     if (self) {
         _sharedFileServerPath = configuration[@"SharedFileServerPath"];
         _sharedFileServerUsername = configuration[@"SharedFileServerUsername"];
-        _sharedFileServerDatabase = configuration[@"SharedFileServerDatabase"];
         _sharedFileServerPassword = configuration[@"SharedFileServerPassword"];
     }
     return self;

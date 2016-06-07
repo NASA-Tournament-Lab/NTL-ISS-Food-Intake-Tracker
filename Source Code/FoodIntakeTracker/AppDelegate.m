@@ -115,7 +115,6 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
     if (![standardUserDefaults objectForKey:@"address_preference"] ||
         ![standardUserDefaults objectForKey:@"user_preference"] ||
-        ![standardUserDefaults objectForKey:@"database_preference"] ||
         ![standardUserDefaults objectForKey:@"password_preference"] ||
         ![standardUserDefaults objectForKey:@"port_preference"]) {
         [self registerDefaultsFromSettingsBundle];
@@ -163,7 +162,9 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                                                    object:nil];
 
         if (!changed) {
-            [self initialLoad];
+            if ([standardUserDefaults boolForKey:@"PasswordConfirm"]) {
+                [self initialLoad];
+            }
         }
 
         if (loadingFinished) {
@@ -235,6 +236,19 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive.
     // If the application was previously in the background, optionally refresh the user interface.
+    if (!loadingFinished) {
+        if (![[NSUserDefaults standardUserDefaults] boolForKey:@"PasswordConfirm"]) {
+            UIAlertView *alertview = [[UIAlertView alloc] initWithTitle:@"Confirmation"
+                                                                message:@"Please confirm/change password"
+                                                               delegate:self
+                                                      cancelButtonTitle:@"OK"
+                                                      otherButtonTitles:nil];
+            alertview.alertViewStyle = UIAlertViewStylePlainTextInput;
+            [alertview textFieldAtIndex:0].delegate = self;
+            [[alertview textFieldAtIndex:0] setText:[[NSUserDefaults standardUserDefaults] objectForKey:@"password_preference"]];
+            [alertview show];
+        }
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -465,7 +479,11 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                               otherButtonTitles:@"YES", nil] show];
         });
     } else {*/
-        [self alertView:nil clickedButtonAtIndex:1];
+    NSLog(@"Settings changed.");
+
+    [self.tabBarViewController logout];
+
+    [self performSelectorInBackground:@selector(resetData) withObject:nil];
     //}
 }
 
@@ -477,7 +495,6 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
     if (![self.configuration[@"SharedFileServerPath"] isEqualToString:[standardUserDefaults objectForKey:@"address_preference"]] ||
         ![self.configuration[@"SharedFileServerUsername"] isEqualToString:[standardUserDefaults objectForKey:@"user_preference"]] ||
-        ![self.configuration[@"SharedFileServerDatabase"] isEqualToString:[standardUserDefaults objectForKey:@"database_preference"]] ||
         ![self.configuration[@"SharedFileServerPassword"] isEqualToString:[standardUserDefaults objectForKey:@"password_preference"]] ||
         ![self.configuration[@"SharedFileServerPort"] isEqualToString:[standardUserDefaults objectForKey:@"port_preference"]]) {
         return YES;
@@ -494,7 +511,6 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     
     [self.configuration setObject:[standardUserDefaults objectForKey:@"address_preference"] forKey:@"SharedFileServerPath"];
     [self.configuration setObject:[standardUserDefaults objectForKey:@"user_preference"] forKey:@"SharedFileServerUsername"];
-    [self.configuration setObject:[standardUserDefaults objectForKey:@"database_preference"] forKey:@"SharedFileServerDatabase"];
     [self.configuration setObject:[standardUserDefaults objectForKey:@"password_preference"] forKey:@"SharedFileServerPassword"];
     [self.configuration setObject:[standardUserDefaults objectForKey:@"port_preference"] forKey:@"SharedFileServerPort"];
     
@@ -505,18 +521,12 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
 #pragma mark - UIAlertViewDelegate methods
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 0) {
-        NSDictionary *loadingEndParam = @{@"success": @YES};
-        [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
-                                                            object:loadingEndParam];
-        changed = NO;
-    } else {
-        NSLog(@"Settings changed.");
-        
-        [self.tabBarViewController logout];
-        
-        [self performSelectorInBackground:@selector(resetData) withObject:nil];
-    }
+    NSUserDefaults *standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    [standardUserDefaults setObject:@YES forKey:@"PasswordConfirm"];
+    [standardUserDefaults setObject:[alertView textFieldAtIndex:0].text forKey:@"password_preference"];
+    [standardUserDefaults synchronize];
+
+    [self doServerChange];
 }
 
 #pragma mark - User locks
