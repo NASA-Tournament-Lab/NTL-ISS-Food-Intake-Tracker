@@ -150,6 +150,21 @@ static NSString* reachHostName = @"";
 - (BOOL)connect {
     if (!canConnect) {
         NSLog(@"Unreachable");
+    } else {
+        NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
+        NSString *ipAddress = [standardUserDefaults objectForKey:@"address_preference"];
+        NSInteger port = [[standardUserDefaults objectForKey:@"port_preference"] integerValue];
+        NSString *url = [NSString stringWithFormat:@"http://%@:%d/api", ipAddress, port];
+
+        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]
+                                                 cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                             timeoutInterval:30];
+        NSError *error = nil;
+        NSURLResponse *response = nil;
+        [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+        if (error) {
+            canConnect = NO;
+        }
     }
     return canConnect;
 }

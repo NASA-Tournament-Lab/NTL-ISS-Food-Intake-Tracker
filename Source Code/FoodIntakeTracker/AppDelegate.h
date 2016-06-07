@@ -47,7 +47,7 @@ static dispatch_queue_t dataSyncUpdateQ;
  * @version 1.2
  * @since 1.0
  */
-@interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate, UITextFieldDelegate>
 
 /* the window */
 @property (strong, nonatomic) TouchWindow *window;
