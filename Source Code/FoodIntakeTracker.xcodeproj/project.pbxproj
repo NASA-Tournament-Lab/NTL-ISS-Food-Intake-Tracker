@@ -24,6 +24,7 @@
 		4B08FF081B15606F00015C6B /* CustomBadge.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B08FF061B15606F00015C6B /* CustomBadge.m */; };
 		4B08FF0A1B158A4B00015C6B /* btn-play-audio.png in Resources */ = {isa = PBXBuildFile; fileRef = 4B08FF091B158A4B00015C6B /* btn-play-audio.png */; };
 		4B2654B91D07DB6A009025DE /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B2654B81D07DB6A009025DE /* CoreLocation.framework */; };
+		4B2654C11D07DE61009025DE /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B2654C01D07DE61009025DE /* MobileCoreServices.framework */; };
 		4B26DC4A18FE3BAC001BE1B1 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4B26DC4918FE3BAC001BE1B1 /* Settings.bundle */; };
 		4B2C76D919908EA0009F8FB3 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B2C76B519908EA0009F8FB3 /* libcrypto.a */; };
 		4B2C76DA19908EA0009F8FB3 /* libpq.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B2C76B619908EA0009F8FB3 /* libpq.a */; };
@@ -503,6 +504,7 @@
 		4B08FF061B15606F00015C6B /* CustomBadge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomBadge.m; sourceTree = "<group>"; };
 		4B08FF091B158A4B00015C6B /* btn-play-audio.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn-play-audio.png"; sourceTree = "<group>"; };
 		4B2654B81D07DB6A009025DE /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		4B2654C01D07DE61009025DE /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		4B26DC4918FE3BAC001BE1B1 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = SOURCE_ROOT; };
 		4B2AF55E19985AFF001259C2 /* ISSFoodIntakeTracker 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ISSFoodIntakeTracker 4.xcdatamodel"; sourceTree = "<group>"; };
 		4B2C76B519908EA0009F8FB3 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = Postgresql/libcrypto.a; sourceTree = "<group>"; };
@@ -1109,6 +1111,7 @@
 				4B2C76D919908EA0009F8FB3 /* libcrypto.a in Frameworks */,
 				4B2C76DB19908EA0009F8FB3 /* libssl.a in Frameworks */,
 				4B2C76DA19908EA0009F8FB3 /* libpq.a in Frameworks */,
+				4B2654C11D07DE61009025DE /* MobileCoreServices.framework in Frameworks */,
 				4B2654B91D07DB6A009025DE /* CoreLocation.framework in Frameworks */,
 				4B2C773F19908FA9009F8FB3 /* Security.framework in Frameworks */,
 				4D9FEABA17C015DE001F92B5 /* AddressBook.framework in Frameworks */,
@@ -1646,6 +1649,7 @@
 		E7C40723175FFA1F00C3649E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4B2654C01D07DE61009025DE /* MobileCoreServices.framework */,
 				4B2654B81D07DB6A009025DE /* CoreLocation.framework */,
 				4DF167F917BD217700D3633F /* libz.dylib */,
 				4DF167FB17BD218000D3633F /* libiconv.dylib */,
