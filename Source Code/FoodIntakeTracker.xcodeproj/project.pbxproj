@@ -438,6 +438,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		4B2654B41D07CBD5009025DE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4B480FEB1CFFF376003C18C7 /* LoopBack.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = B3D220F617722AE800B7CB63;
+			remoteInfo = LoopBack;
+		};
 		4B480FF51CFFF377003C18C7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4B480FEB1CFFF376003C18C7 /* LoopBack.xcodeproj */;
@@ -472,13 +479,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = E4C9BC391AD6F9C800D70046;
 			remoteInfo = LoopBackOSXTests;
-		};
-		4B4810011CFFF6A5003C18C7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 4B480FEB1CFFF376003C18C7 /* LoopBack.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = B3D220F617722AE800B7CB63;
-			remoteInfo = LoopBack;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -1982,7 +1982,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				4B4810021CFFF6A5003C18C7 /* PBXTargetDependency */,
+				4B2654B51D07CBD5009025DE /* PBXTargetDependency */,
 			);
 			name = FoodIntakeTracker;
 			productName = FoodIntakeTracker;
@@ -2488,10 +2488,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		4B4810021CFFF6A5003C18C7 /* PBXTargetDependency */ = {
+		4B2654B51D07CBD5009025DE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = LoopBack;
-			targetProxy = 4B4810011CFFF6A5003C18C7 /* PBXContainerItemProxy */;
+			targetProxy = 4B2654B41D07CBD5009025DE /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

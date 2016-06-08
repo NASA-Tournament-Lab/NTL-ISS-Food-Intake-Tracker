@@ -131,9 +131,16 @@
                     NSString *oId = [dictFile objectForKey:@"id"];
                     NSString *dataFile = [dictFile objectForKey:@"filename"];
                     NSMutableData *data = [NSMutableData data];
-                    for (NSNumber *number in [[dictFile objectForKey:@"data"] objectForKey:@"data"]) {
-                        char byte = [number charValue];
-                        [data appendBytes: &byte length: 1];
+                    if ([[dictFile objectForKey:@"data"] isKindOfClass:[NSDictionary class]]) {
+                        for (NSNumber *number in [[dictFile objectForKey:@"data"] objectForKey:@"data"]) {
+                            char byte = [number charValue];
+                            [data appendBytes: &byte length:1];
+                        }
+                    } else {
+                        for (NSNumber *number in [dictFile objectForKey:@"data"]) {
+                            char byte = [number charValue];
+                            [data appendBytes: &byte length:1];
+                        }
                     }
 
                     if([dataFile hasSuffix:self.imageFileNameSuffix] || [dataFile hasSuffix:self.voiceRecordingFileNameSuffix]) {
