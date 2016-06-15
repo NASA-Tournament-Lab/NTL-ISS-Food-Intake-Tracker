@@ -80,8 +80,8 @@ html
 										option(value=catValue, selected="selected") #{catValue}
 						else if key == 'admin'
 							select(id=key, name=key)
-								option(value=0 selected=value == 0) No
-								option(value=1 selected=value == 1) Yes
+								option(value=0, selected=value) No
+								option(value=1, selected=value) Yes
 						else if key == 'origin'
 							- var origins = ["NASA Foods", "Russian Foods", "JAXA Foods", "CSA Foods", "ESA Foods"]
 							select(id=key, name=key, style="width:200px;")
@@ -98,4 +98,7 @@ html
 					input(type='hidden', value=uuid, key="id", name="id")
 					p
 						input(type='submit',value='Save')
-						a(href="/", class="button") Cancel
+						if action == '/user'
+							a(href="/?currentSelectedTab=0", class="button") Cancel
+						if action == '/food'
+							a(href="/?currentSelectedTab=1", class="button") Cancel

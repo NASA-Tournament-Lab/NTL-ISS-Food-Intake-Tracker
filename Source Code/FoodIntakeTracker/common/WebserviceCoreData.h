@@ -2,8 +2,8 @@
 //  WebserviceCoreData.h
 //  FoodIntakeTracker
 //
-//  Created by PAULO VITOR MAGACHO DA SILVA on 5/31/16.
-//  Copyright © 2016 topcoder. All rights reserved.
+//  Created by pvmagacho on 5/31/16.
+//  Copyright © pvmagacho All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -34,6 +34,7 @@
 - (BOOL)clearObjectSyncData;
 
 - (NSString *)insertMediaRecord:(NSDictionary *) dict foodConsumptionId:(NSString *)foodConsumptionId pattern:(NSString *) pattern;
+- (BOOL)uploadMedia:(NSString *) theId withData:(NSData *) data withFilename:(NSString *) filename;
 - (NSString *)saveMedia:(NSDictionary *) dict;
 - (NSString *)inserObject:(NSString *)prototypeName model:(NSDictionary *) dict;
 

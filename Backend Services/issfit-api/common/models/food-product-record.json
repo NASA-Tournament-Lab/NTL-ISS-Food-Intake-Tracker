@@ -12,17 +12,6 @@
   "scope": {
     "include": [
       {
-        "relation": "images",
-        "scope" : {
-          "fields": [ "id" ],
-          "where": {
-            "filename": {
-              "like": "%.jpg"
-            }
-          }
-        }
-      },
-      {
         "relation": "voiceRecordings",
         "scope" : {
           "fields": [ "id" ],
@@ -122,13 +111,6 @@
   },
   "validations": [],
   "relations": {
-    "images": {
-      "type": "hasMany",
-      "model": "Media",
-      "foreignKey": "food_record_uuid",
-      "through": "ImageRecord",
-      "keyThrough": "media_uuid"
-    },
     "voiceRecordings": {
       "type": "hasMany",
       "model": "Media",

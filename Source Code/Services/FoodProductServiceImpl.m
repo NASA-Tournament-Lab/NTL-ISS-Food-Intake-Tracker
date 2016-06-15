@@ -496,7 +496,7 @@
             user.lastUsedFoodProductFilter.removed = @YES;
         }
         
-        user.lastUsedFoodProductFilter = filter;
+        user.lastUsedFoodProductFilter = [user.managedObjectContext objectWithID:filter.objectID];
         user.synchronized = @NO;
     }
     

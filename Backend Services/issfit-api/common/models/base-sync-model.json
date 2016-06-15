@@ -2,13 +2,6 @@
   "name": "BaseSyncModel",
   "base": "PersistedModel",
   "idInjection": false,
-  "scopes": {
-    "notRemoved": {
-      "where": {
-        "removed": false
-      }
-    }
-  },
   "options": {
     "validateUpsert": true,
     "postgresql": {

@@ -977,6 +977,7 @@
         self.gridView.hidden = YES;
     }
     else if(self.segListGrid.selectedSegmentIndex == 1){
+        [self swiperight];
         self.rightView.hidden = YES;
         [self loadGridViews];
         self.gridView.hidden = NO;

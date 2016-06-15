@@ -53,7 +53,7 @@
                                      initWithEntity:entity insertIntoManagedObjectContext:nil];
     record.foodProduct = nil;
     record.timestamp = [NSDate date];
-    record.quantity = @0;
+    record.quantity = @0.0;
     record.comment = @"";
     record.images = [NSMutableSet set];
     record.voiceRecordings = [NSMutableSet set];
@@ -117,13 +117,6 @@
     copy.comment = @"";
     [self.managedObjectContext insertObject:copy];
 
-    for (Media *media in record.images) {
-        Media *newMedia = [[Media alloc] initWithEntity:media.entity insertIntoManagedObjectContext:self.managedObjectContext];
-        newMedia.filename = media.filename;
-        newMedia.removed = @NO;
-        newMedia.synchronized = @YES;
-        [copy addImagesObject:newMedia];
-    }
     for (Media *media in record.voiceRecordings) {
         Media *newMedia = [[Media alloc] initWithEntity:media.entity insertIntoManagedObjectContext:self.managedObjectContext];
         newMedia.filename = media.filename;

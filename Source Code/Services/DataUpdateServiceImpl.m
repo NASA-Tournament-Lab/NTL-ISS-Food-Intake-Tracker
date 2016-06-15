@@ -109,7 +109,7 @@
         NSArray *allData = [coreData fetchAllObjects];
 
         NSError *e = nil;
-        float currentProgress = 0.1, progressDelta = 0.4, count = [coreData fetchMediaCount] / 10 + 1;
+        float currentProgress = 0.05, progressDelta = 0.35, count = [coreData fetchMediaCount];
 
         if (![coreData startFetchMedia]) {
             e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
@@ -130,18 +130,7 @@
                 for (NSDictionary *dictFile in medias) {
                     NSString *oId = [dictFile objectForKey:@"id"];
                     NSString *dataFile = [dictFile objectForKey:@"filename"];
-                    NSMutableData *data = [NSMutableData data];
-                    if ([[dictFile objectForKey:@"data"] isKindOfClass:[NSDictionary class]]) {
-                        for (NSNumber *number in [[dictFile objectForKey:@"data"] objectForKey:@"data"]) {
-                            char byte = [number charValue];
-                            [data appendBytes: &byte length:1];
-                        }
-                    } else {
-                        for (NSNumber *number in [dictFile objectForKey:@"data"]) {
-                            char byte = [number charValue];
-                            [data appendBytes: &byte length:1];
-                        }
-                    }
+                    NSData *data = [dictFile objectForKey:@"data"];
 
                     if([dataFile hasSuffix:self.imageFileNameSuffix] || [dataFile hasSuffix:self.voiceRecordingFileNameSuffix]) {
                         NSString *localDataFile = [[DataHelper getAbsoulteLocalDirectory:self.localFileSystemDirectory]
@@ -173,25 +162,22 @@
             return NO;
         }
 
-        currentProgress = 0.5, progressDelta = 0.49, count = allData.count;
+        currentProgress = 0.4, progressDelta = 0.59, count = allData.count;
         if (allData && allData.count > 0) {
             // Calculate the the delta progress
             for (int i = 0; i < allData.count; i++) {
                 NSDictionary *data = [allData objectAtIndex:i];
 
-                // if (i % 10 == 0 || [data isEqual:allData.lastObject]) {
+                if (i % 50 == 0 || [data isEqual:allData.lastObject]) {
                     [self startUndoActions];
-                // }
+                }
 
                 NSString *oId = [data objectForKey:@"id"];
                 NSString *name = [data objectForKey:@"name"];
                 NSDictionary *value = [data objectForKey:@"value"];
                 
                 // Convert from JSON
-                // NSData *jsonData = [value dataUsingEncoding:NSUTF8StringEncoding];
-                NSDictionary *jsonDictionary = [value copy];// [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&e];
-                // CHECK_ERROR_AND_RETURN(e, error, @"Cannot convert JSON data to managed object.", DataUpdateErrorCode, YES, YES);
-
+                NSDictionary *jsonDictionary = [value copy];
                 if (deviceRegistered) {
                     // Check if object already exists
                     NSFetchRequest *request = [[NSFetchRequest alloc] init];
@@ -229,12 +215,12 @@
                     }
                 }
 
-                // if (i % 10 == 0 || [data isEqual:allData.lastObject]) {
+                if (i % 50 == 0 || [data isEqual:allData.lastObject]) {
                     [self endUndoActions];
                     if (![self.managedObjectContext save:&e]) {
                         CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
                     }
-                // }
+                }
                 
                 // Update progress
                 currentProgress += progressDelta/count;
@@ -246,7 +232,7 @@
             CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
         }
 
-        [self updateSyncTime:[[NSDate date] timeIntervalSince1970] * 1000];
+        [self updateSyncTime:[[NSDate date] timeIntervalSince1970]];
         
         // Unlock the managedObjectContext
         [[self managedObjectContext] unlock];
@@ -268,19 +254,20 @@
 @discussion This method will get all non synchronized entity objects.
 @return Current Timestamp in long.
 */
-- (long long)getLastSynchronizedTime{
+- (NSTimeInterval)getLastSynchronizedTime{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSNumber *lastSyncTime = [defaults objectForKey:@"LastSynchronizedTime"];
     if(lastSyncTime != nil) {
-       return [lastSyncTime longLongValue];
+        return lastSyncTime.doubleValue;
     }
     return 0;
 }
 
--(void)updateSyncTime:(long long)timestamp {
-    NSNumber *syncTime = [NSNumber numberWithLongLong:timestamp];
+-(void)updateSyncTime:(NSTimeInterval)timestamp {
+    NSNumber *syncTime = [NSNumber numberWithDouble:timestamp];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:syncTime forKey:@"LastSynchronizedTime"];
+    [defaults synchronize];
     return;
 }
 

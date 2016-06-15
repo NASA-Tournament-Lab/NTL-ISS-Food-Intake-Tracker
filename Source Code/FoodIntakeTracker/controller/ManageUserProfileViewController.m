@@ -144,7 +144,9 @@
         [self.rightView setFrame:CGRectMake(0, 52, 768, 952)];
     }
 
+    self.lblSelectedUserName.numberOfLines = 4;
     self.lblSelectedUserName.text = appDelegate.loggedInUser.fullName;
+    [self.lblSelectedUserName sizeToFit];
     self.imgProfilePhoto.image = self.imgSelectedUserPhoto.image = [Helper loadImage:appDelegate.loggedInUser.profileImage.filename];
     self.imgProfilePhoto.contentMode = UIViewContentModeScaleAspectFit;
     self.imgSelectedUserPhoto.contentMode = UIViewContentModeScaleAspectFit;
@@ -452,7 +454,7 @@
         
         User *user = [users objectAtIndex:self.selectIndex];
         user.fullName = [NSString stringWithFormat:@"%@ %@", self.txtFirstName.text, self.txtLastName.text];
-        user.synchronized = @0;
+        user.synchronized = @NO;
         [userService saveUser:user error:&error];
         if ([Helper displayError:error]) return;
         [self showPreviewProfile];
@@ -620,8 +622,10 @@
                                         animated:YES
                                   scrollPosition:UITableViewScrollPositionNone];
     }
-    
+
+    self.lblSelectedUserName.numberOfLines = 4;
     self.lblSelectedUserName.text = appDelegate.loggedInUser.fullName;
+    [self.lblSelectedUserName sizeToFit];
     self.imgProfilePhoto.image = self.imgSelectedUserPhoto.image =
     [Helper loadImage:appDelegate.loggedInUser.profileImage.filename];
 

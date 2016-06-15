@@ -7,6 +7,7 @@
     "name": "pl_fit_db",
     "user": "pl_fit_db",
     "connector": "postgresql",
-    "ssl": true
+    "ssl": true,
+    "dateStrings": true
   }
 }

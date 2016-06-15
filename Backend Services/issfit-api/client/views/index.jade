@@ -13,7 +13,7 @@ html
 		script.
 			var userTable = null, foodTable = null;
 			$(document).ready(function() {
-				$( "input[type=submit], input[type=button], a.button" ).button();
+				$("input[type=submit], input[type=button], a.button" ).button();
 				$("#tabs").tabs({
 					beforeLoad: function( event, ui) {
 						if (undefined != userTable) {
@@ -34,9 +34,9 @@ html
 								"search": "Filter records:"
 							},
 							"order": [[ 0, "asc" ]],
-							"columnDefs": [ { "type": "string", "targets": 0 }, { "targets": 1, "orderable": false } ],
+							"columnDefs": [ { "type": "string", "targets": 0 }, { "targets": 1, "orderable": false, "searchable": false } ],
 							"infoCallback": function( settings, start, end, max, total, pre ) {
-								var txt = total == max ? '' : ' (filtered from ' + max + ' ' + ((max == 1) ? ' entry' : ' entries') + ')';								
+								var txt = total == max ? '' : ' (filtered from ' + max + ' ' + ((max == 1) ? ' entry' : ' entries') + ')';
 								if (total == 0) {
 									return ''
 								} else {
@@ -54,9 +54,9 @@ html
 								"search": "Filter records:"
 							},
 							"order": [[ 0, "asc" ]],
-							"columnDefs": [ { "type": "string", "targets": 0 }, { "targets": 2, "orderable": false } ],
+							"columnDefs": [ { "type": "string", "targets": 0 }, { "searchable": false, "targets": 2, "orderable": false } ],
 							"infoCallback": function( settings, start, end, max, total, pre ) {
-								var txt = total == max ? '' : ' (filtered from ' + max + ' ' + ((max == 1) ? ' entry' : ' entries') + ')';								
+								var txt = total == max ? '' : ' (filtered from ' + max + ' ' + ((max == 1) ? ' entry' : ' entries') + ')';
 								if (total == 0) {
 									return ''
 								} else {
@@ -94,7 +94,7 @@ html
 				#left
 					img(src='/images/logo.png', alt='', style='float: left;height:144px;')
 				#right
-					h1(style='float: left;height:144px;') ISS FIT - Admin Tool		
+					h1(style='float: left;height:144px;') ISS FIT - Admin Tool
 		.container
 			div(id='dialog')
 				p(id='message')

@@ -1586,7 +1586,7 @@
         for (FoodProduct *product in voiceSearch.selectedFoodProducts) {
             FoodConsumptionRecord *record = [recordService buildFoodConsumptionRecord:&error];
             if ([Helper displayError:error]) return;
-            record.quantity = @1;
+            record.quantity = @1.0;
             record.foodProduct.fluid = product.fluid;
             record.foodProduct.sodium = product.sodium;
             record.foodProduct.energy = product.energy;
@@ -1594,13 +1594,16 @@
             record.foodProduct.carb = product.carb;
             record.foodProduct.fat = product.fat;
             record.timestamp = [Helper convertDateTimeToDate:self.dateListView.currentDate time:[NSDate date]];
+            
+            [recordService addFoodConsumptionRecord:appDelegate.loggedInUser record:record error:&error];
 
+            record.foodProduct = [record.managedObjectContext objectWithID:product.objectID];
             if (recorderFilePath && recorderFilePath.count > 0) {
                 for (NSString *filePath in recorderFilePath) {
                     Media *media = [[Media alloc] initWithEntity:[NSEntityDescription
                                                                   entityForName:@"Media"
-                                                                  inManagedObjectContext:recordService.managedObjectContext]
-                                  insertIntoManagedObjectContext:nil];
+                                                                  inManagedObjectContext:record.managedObjectContext]
+                                  insertIntoManagedObjectContext:record.managedObjectContext];
                     media.filename = filePath;
                     media.removed = @NO;
                     media.synchronized = @YES;
@@ -1608,9 +1611,7 @@
                     [record addVoiceRecordingsObject:media];
                 }
             }
-            
-            [recordService addFoodConsumptionRecord:appDelegate.loggedInUser record:record error:&error];
-            record.foodProduct = product;
+
             [recordService saveFoodConsumptionRecord:record error:&error];
             
             if ([Helper displayError:error]) return;
@@ -1687,7 +1688,7 @@
             for (FoodProduct *product in selectConsumption.selectFoods) {
                 FoodConsumptionRecord *record = [recordService buildFoodConsumptionRecord:&error];
                 if ([Helper displayError:error]) return;
-                record.quantity = @1;
+                record.quantity = @1.0;
                 record.fluid = product.fluid;
                 record.sodium = product.sodium;
                 record.energy = product.energy;
@@ -1940,11 +1941,11 @@
         if ([Helper displayError:error]) return;
         
         adhocFoodProduct.name = name;
-        adhocFoodProduct.quantity = @1;
+        adhocFoodProduct.quantity = @1.0;
         adhocFoodProduct.fluid = @250;
         
         record.foodProduct = adhocFoodProduct;
-        record.quantity = @1;
+        record.quantity = @1.0;
         record.fluid = @250;
         
         [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser product:adhocFoodProduct error:&error];
@@ -2224,7 +2225,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
         AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
         FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
         AdhocFoodProduct *product = [foodProductService buildAdhocFoodProduct:&error];
-        product.quantity = @1;
+        product.quantity = @1.0;
         product.name = name;
         [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser
                                         product:product

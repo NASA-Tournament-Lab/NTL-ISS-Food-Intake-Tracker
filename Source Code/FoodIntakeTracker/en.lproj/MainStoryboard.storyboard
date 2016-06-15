@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="ciN-Rv-ZGq">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="ciN-Rv-ZGq">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
     </dependencies>
     <scenes>
         <!--Navigation Controller-->
@@ -2651,15 +2651,15 @@ Sun,  21st April 2014</string>
                                 <rect key="frame" x="0.0" y="52" width="283" height="880"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="George Taylor" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="bg9-tf-aPM">
-                                        <rect key="frame" x="150" y="12" width="154" height="40"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" text="George Taylor" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="bg9-tf-aPM">
+                                        <rect key="frame" x="137" y="12" width="137" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="20"/>
                                         <color key="textColor" red="0.2666666667" green="0.2666666667" blue="0.2666666667" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="empty.png" id="DJw-Bl-qiT">
-                                        <rect key="frame" x="17" y="17" width="118" height="110"/>
+                                        <rect key="frame" x="11" y="17" width="118" height="110"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-green-header.png" id="KuH-7K-X9T">
@@ -2957,15 +2957,15 @@ Sun,  21st April 2014</string>
             <objects>
                 <viewController storyboardIdentifier="HourPickerView" id="Azo-XO-ktF" customClass="HourPickerView" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ez7-dE-Z5C" userLabel="View - timePicker">
-                        <rect key="frame" x="0.0" y="0.0" width="290" height="267"/>
+                        <rect key="frame" x="0.0" y="0.0" width="290" height="250"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker.png" id="CKa-jb-yJo">
-                                <rect key="frame" x="0.0" y="16" width="290" height="250"/>
+                                <rect key="frame" x="0.0" y="16" width="290" height="233"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </imageView>
                             <view clipsSubviews="YES" contentMode="scaleToFill" id="VHE-GR-L05">
-                                <rect key="frame" x="9" y="60" width="272" height="198"/>
+                                <rect key="frame" x="9" y="60" width="272" height="181"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" id="2Y1-N0-KAU">
@@ -3035,29 +3035,29 @@ Sun,  21st April 2014</string>
                     <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="290" height="267"/>
+                    <size key="freeformSize" width="290" height="250"/>
                     <connections>
                         <outlet property="timePicker" destination="2Y1-N0-KAU" id="Q6f-Y0-dL7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pm8-zS-3Ce" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2462" y="-2003"/>
+            <point key="canvasLocation" x="-2622" y="-1941.5"/>
         </scene>
         <!--Quantity Picker View-->
         <scene sceneID="3Y0-L2-6Ns">
             <objects>
                 <viewController storyboardIdentifier="QuantityPickerView" id="AT8-HW-Tau" customClass="QuantityPickerView" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="1zq-W2-d8n" userLabel="View - timePicker">
-                        <rect key="frame" x="0.0" y="0.0" width="240" height="267"/>
+                        <rect key="frame" x="0.0" y="0.0" width="240" height="250"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" image="bg-time-picker.png" id="Hd1-OC-URQ">
-                                <rect key="frame" x="0.0" y="16" width="240" height="250"/>
+                                <rect key="frame" x="0.0" y="16" width="240" height="233"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             </imageView>
                             <view clipsSubviews="YES" contentMode="scaleToFill" id="K0b-i5-OcC">
-                                <rect key="frame" x="7" y="60" width="226" height="198"/>
+                                <rect key="frame" x="7" y="60" width="226" height="181"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" id="GCH-yn-OwM">
@@ -3112,7 +3112,7 @@ Sun,  21st April 2014</string>
                     <nil key="simulatedStatusBarMetrics"/>
                     <nil key="simulatedTopBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-                    <size key="freeformSize" width="240" height="267"/>
+                    <size key="freeformSize" width="240" height="250"/>
                     <connections>
                         <outlet property="timePicker" destination="GCH-yn-OwM" id="gyf-i2-lke"/>
                     </connections>
@@ -3542,7 +3542,7 @@ Sun,  21st April 2014</string>
                                 <subviews>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="George Taylor" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="jS2-8t-llY">
                                         <rect key="frame" x="150" y="12" width="154" height="40"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="20"/>
                                         <color key="textColor" red="0.2666666667" green="0.2666666667" blue="0.2666666667" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>

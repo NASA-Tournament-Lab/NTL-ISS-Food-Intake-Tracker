@@ -2,8 +2,8 @@
 //  WebserviceCoreData.m
 //  FoodIntakeTracker
 //
-//  Created by PAULO VITOR MAGACHO DA SILVA on 5/31/16.
-//  Copyright © 2016 topcoder. All rights reserved.
+//  Created by pvmagacho on 5/31/16.
+//  Copyright © pvmagacho All rights reserved.
 //
 
 #import "WebserviceCoreData.h"
@@ -11,8 +11,9 @@
 #import "Helper.h"
 #import "Settings.h"
 #import "AppDelegate.h"
+#import "SLStreamParam.h"
 
-#define kTimerInterval 60
+#define kTimerInterval 30
 
 static WebserviceCoreData *instance;
 static Reachability* reach;
@@ -23,33 +24,113 @@ static NSString* reachHostName = @"";
 
     BOOL alertShow;
 
+    UIAlertView *popupAlertView;
+
     NSTimer *pingTimer;
 
-    NSInteger currentMedia;
-
     NSDate *lastSync;
+
+    NSMutableArray *mediaArray;
+
+    NSInteger currentMedia;
+}
+
++ (NSString *) base64EncodedStringFromString:(NSString *) string {
+    NSData *data = [NSData dataWithBytes:[string UTF8String] length:[string lengthOfBytesUsingEncoding:NSUTF8StringEncoding]];
+    NSUInteger length = [data length];
+    NSMutableData *mutableData = [NSMutableData dataWithLength:((length + 2) / 3) * 4];
+
+    uint8_t *input = (uint8_t *)[data bytes];
+    uint8_t *output = (uint8_t *)[mutableData mutableBytes];
+
+    for (NSUInteger i = 0; i < length; i += 3) {
+        NSUInteger value = 0;
+        for (NSUInteger j = i; j < (i + 3); j++) {
+            value <<= 8;
+            if (j < length) {
+                value |= (0xFF & input[j]);
+            }
+        }
+
+        static uint8_t const kAFBase64EncodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+        NSUInteger idx = (i / 3) * 4;
+        output[idx + 0] = kAFBase64EncodingTable[(value >> 18) & 0x3F];
+        output[idx + 1] = kAFBase64EncodingTable[(value >> 12) & 0x3F];
+        output[idx + 2] = (i + 1) < length ? kAFBase64EncodingTable[(value >> 6)  & 0x3F] : '=';
+        output[idx + 3] = (i + 2) < length ? kAFBase64EncodingTable[(value >> 0)  & 0x3F] : '=';
+    }
+
+    return [[NSString alloc] initWithData:mutableData encoding:NSASCIIStringEncoding];
 }
 
 + (WebserviceCoreData *)instance {
     if (!instance) {
         NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
         NSString *ipAddress = [standardUserDefaults objectForKey:@"address_preference"];
+        NSString *username = [standardUserDefaults objectForKey:@"username_preference"];
+        NSString *password = [standardUserDefaults objectForKey:@"password_preference"];
         NSInteger port = [[standardUserDefaults objectForKey:@"port_preference"] integerValue];
         NSString *url = [NSString stringWithFormat:@"http://%@:%d/api", ipAddress, port];
 
+        NSString *token = [self base64EncodedStringFromString:[NSString stringWithFormat:@"%@:%@", username, password]];
+
         instance = [[WebserviceCoreData alloc] init];
         instance.adapter = [LBRESTAdapter adapterWithURL:[NSURL URLWithString:url]];
+        [instance.adapter setAccessToken:token];
     }
+
     return instance;
 }
 
 - (id)init {
     self = [super init];
     if (self) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateLastSync:) name:UpdateLastSync object:nil];
         [self startReachbility];
     }
     return self;
+}
+
+- (BOOL)connect_url {
+    NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
+    NSString *ipAddress = [standardUserDefaults objectForKey:@"address_preference"];
+    NSInteger port = [[standardUserDefaults objectForKey:@"port_preference"] integerValue];
+    NSString *url = [NSString stringWithFormat:@"http://%@:%d/api", ipAddress, port];
+
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]
+                                             cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                         timeoutInterval:30];
+    NSError *error = nil;
+    NSURLResponse *response = nil;
+    [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    return error == nil;
+}
+
+- (void)testPing {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSLog(@"Test ping");
+        if ([self connect_url]) {
+            @synchronized(self) {
+                if (!canConnect) {
+                    [self closeAllAlerts];
+                    popupAlertView = [Helper showAlert:@"Connection Re-established"
+                                               message:@"This iPad now has a network connection. Any food that you've entered will now be saved to the database."
+                                              delegate:self];
+                }
+                canConnect = YES;
+            }
+        } else {
+            @synchronized(self) {
+                if (canConnect) {
+                    [self closeAllAlerts];
+                    popupAlertView = [Helper showAlert:@"Network Connection Error"
+                                               message:@"This iPad has lost its network connection. You can still use the ISS FIT app, and we will attempt to sync with the central food database when it's available."
+                                              delegate:self];
+                }
+                canConnect = NO;
+            }
+        }
+    });
 }
 
 - (void)startReachbility {
@@ -107,12 +188,10 @@ static NSString* reachHostName = @"";
                     }
                 });
 
-                if (!alertShow) {
-                    alertShow = YES;
-                    [Helper showAlert:@"Connection Re-established"
-                              message:@"This iPad now has a network connection. Any food that you've entered will now be saved to the database."
-                             delegate:self];
-                }
+                [self closeAllAlerts];
+                popupAlertView = [Helper showAlert:@"Connection Re-established"
+                                           message:@"This iPad now has a network connection. Any food that you've entered will now be saved to the database."
+                                          delegate:self];
             }
         };
 
@@ -127,12 +206,10 @@ static NSString* reachHostName = @"";
                 canConnect = NO;
                 NSLog(@"This iPad has lost its network connection.");
 
-                if (!alertShow) {
-                    alertShow = YES;
-                    [Helper showAlert:@"Network Connection Error"
-                              message:@"This iPad has lost its network connection. You can still use the ISS FIT app, and we will attempt to sync with the central food database when it's available."
-                             delegate:self];
-                }
+                [self closeAllAlerts];
+                popupAlertView = [Helper showAlert:@"Network Connection Error"
+                                           message:@"This iPad has lost its network connection. You can still use the ISS FIT app, and we will attempt to sync with the central food database when it's available."
+                                          delegate:self];
             }
         };
 
@@ -145,26 +222,20 @@ static NSString* reachHostName = @"";
         // query status at first try
         canConnect = [reach isReachable];
     }
+
+    if (!pingTimer) {
+        pingTimer = [NSTimer timerWithTimeInterval:kTimerInterval target:self selector:@selector(testPing) userInfo:nil
+                                           repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:pingTimer forMode:NSDefaultRunLoopMode];
+    }
 }
 
 - (BOOL)connect {
-    if (!canConnect) {
-        NSLog(@"Unreachable");
+    if (canConnect) {
+        [self closeAllAlerts];
+        canConnect = [self connect_url];
     } else {
-        NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
-        NSString *ipAddress = [standardUserDefaults objectForKey:@"address_preference"];
-        NSInteger port = [[standardUserDefaults objectForKey:@"port_preference"] integerValue];
-        NSString *url = [NSString stringWithFormat:@"http://%@:%d/api", ipAddress, port];
-
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]
-                                                 cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
-                                             timeoutInterval:30];
-        NSError *error = nil;
-        NSURLResponse *response = nil;
-        [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-        if (error) {
-            canConnect = NO;
-        }
+        NSLog(@"Unreachable");
     }
     return canConnect;
 }
@@ -361,7 +432,9 @@ static NSString* reachHostName = @"";
 
 - (NSString *)insertMediaRecord:(NSDictionary *)dict foodConsumptionId:(NSString *)foodConsumptionId pattern:(NSString *)pattern {
     LBPersistedModelRepository *rep = [instance.adapter repositoryWithPersistedModelName:@"FoodProductRecords"];
-    [instance.adapter.contract addItem:[SLRESTContractItem itemWithPattern:[NSString stringWithFormat:@"/FoodProductRecords/:id/%@", pattern] verb:@"POST"]
+    [instance.adapter.contract addItem:[SLRESTContractItem itemWithPattern:[NSString
+                                                                            stringWithFormat:@"/FoodProductRecords/:id/%@", pattern]
+                                                                      verb:@"POST"]
                              forMethod:[NSString stringWithFormat:@"FoodProductRecords.%@", pattern]];
 
     __block LBPersistedModel *model = nil;
@@ -379,15 +452,57 @@ static NSString* reachHostName = @"";
     });
 
     while (result < 0) {
-        NSLog(@"waiting");
         [NSThread sleepForTimeInterval:0.5];
     }
 
     return [model _id];
 }
 
+- (BOOL)uploadMedia:(NSString *) theId withData:(NSData *) data withFilename:(NSString *) filename {
+    LBPersistedModelRepository *rep = [instance.adapter repositoryWithPersistedModelName:@"Media"];
+    [instance.adapter.contract addItem:[SLRESTContractItem itemWithPattern:@"/media/upload/:id"
+                                                                      verb:@"POST"
+                                                                 multipart:YES] forMethod:@"Media.upload"];
+
+    __block NSInteger result = -1;
+    NSInputStream *inputStream = [[NSInputStream alloc] initWithData:data];
+    NSString *contentType = [filename hasSuffix:@"jpg"] ? @"image/jpg" : @"audio/aac";
+    SLStreamParam *param = [SLStreamParam streamParamWithInputStream:inputStream
+                                                            fileName:filename contentType:contentType
+                                                              length:data.length];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [rep.adapter invokeStaticMethod:@"Media.upload" parameters:@{ @"id": theId, @"file": param } bodyParameters:nil
+                           outputStream:nil
+                                success:^(id values) {
+                                    result = 1;
+                                } failure:^(NSError *error) {
+                                    NSLog(@"Error: %@", error);
+                                    result = 0;
+                                }];
+    });
+
+    while (result < 0) {
+        [NSThread sleepForTimeInterval:0.5];
+    }
+
+    return result == 1;
+}
+
 - (NSString *)saveMedia:(NSDictionary *) dict {
-    return [self inserObject:@"Media" model:dict];
+    NSData *data = [dict objectForKey:@"data"];
+
+    NSMutableDictionary *mDict = [dict mutableCopy];
+    [mDict removeObjectForKey:@"data"];
+
+    // save the media
+    NSString *newId = [self inserObject:@"Media" model:mDict];
+
+    // save the data
+    if (newId && data) {
+        [self uploadMedia:newId withData:data withFilename:dict[@"filename"]];
+    }
+    
+    return newId;
 }
 
 - (BOOL)insertUserLock:(User *) user {
@@ -472,59 +587,66 @@ static NSString* reachHostName = @"";
 
 - (NSArray *)fetchNextMedia {
     NSMutableArray *array = [NSMutableArray array];
+    NSOutputStream *outputStream = [[NSOutputStream alloc] initToMemory];
     LBPersistedModelRepository *rep = [instance.adapter repositoryWithPersistedModelName:@"Media"];
-    [instance.adapter.contract addItem:[SLRESTContractItem itemWithPattern:@"/media" verb:@"GET"] forMethod:@"Media.filter"];
+    [instance.adapter.contract addItem:[SLRESTContractItem itemWithPattern:@"/media/download/:id"
+                                                                      verb:@"GET"] forMethod:@"Media.download"];
 
+    NSMutableDictionary *objMedia = [[mediaArray objectAtIndex:currentMedia] mutableCopy];
     __block NSInteger result = -1;
-    NSNumber *skip = [NSNumber numberWithInteger:currentMedia];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [rep invokeStaticMethod:@"filter" parameters:@{ @"filter[limit]": @10, @"filter[skip]": skip }
-                        success:^(id value) {
-            NSAssert([[value class] isSubclassOfClass:[NSArray class]], @"Received non-Array: %@", value);
-
-            NSMutableArray *models = [NSMutableArray array];
-
-            [value enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-                [array addObject:obj];
-            }];
-
-            currentMedia += models.count;
-            result = 1;
-        } failure:^(NSError *error) {
-            NSLog(@"Error: %@", error);
-            [array removeAllObjects];
-            result = 0;
-        }];
+        [rep invokeStaticMethod:@"download"
+                     parameters:@{ @"id": [objMedia objectForKey:@"id"] }
+                   outputStream:outputStream
+                        success:^(id values) {
+                [objMedia setObject:values forKey:@"data"];
+                [array addObject:objMedia];
+                result = 1;
+           } failure:^(NSError *error) {
+                NSLog(@"Error: %@", error);
+                [array removeAllObjects];
+                result = 0;
+           }];
     });
 
     while (result < 0) {
         [NSThread sleepForTimeInterval:0.5];
     }
+    
+    currentMedia++;
 
     return array;
 }
 
 - (NSInteger)fetchMediaCount {
+    mediaArray = [NSMutableArray array];
     LBPersistedModelRepository *rep = [instance.adapter repositoryWithPersistedModelName:@"Media"];
-    [instance.adapter.contract addItem:[SLRESTContractItem itemWithPattern:@"/media" verb:@"GET"] forMethod:@"Media.count"];
+    [instance.adapter.contract addItem:[SLRESTContractItem itemWithPattern:@"/media"
+                                                                      verb:@"GET"] forMethod:@"Media.filter"];
 
-    __block NSInteger count = 0;
     __block NSInteger result = -1;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [rep invokeStaticMethod:@"count" parameters:nil success:^(NSArray *value){
-            count = [[value.lastObject objectForKey:@"count"] integerValue];
-            result = 1;
-        } failure:^(NSError *error){
-            NSLog(@"Error: %@", error);
-            result = 0;
-        }];
-    });
+        [rep invokeStaticMethod:@"filter" parameters:@{ @"filter[fields][data]": @"false", }
+            success:^(id value) {
+                NSAssert([[value class] isSubclassOfClass:[NSArray class]], @"Received non-Array: %@", value);
 
+                [value enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+                    [mediaArray addObject:obj];
+                }];
+
+                result = 1;
+            } failure:^(NSError *error) {
+                NSLog(@"Error: %@", error);
+                mediaArray = nil;
+                result = 0;
+            }];
+    });
+    
     while (result < 0) {
         [NSThread sleepForTimeInterval:0.5];
     }
-
-    return count;
+    
+    return [mediaArray count];
 }
 
 - (BOOL)clearMediaSyncData {
@@ -541,8 +663,6 @@ static NSString* reachHostName = @"";
 
     __block NSInteger result = -1;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-
-
         SLFailureBlock failure = ^(NSError *error) {
             NSLog(@"Error: %@", error);
             result = 0;
@@ -562,22 +682,15 @@ static NSString* reachHostName = @"";
 
 #pragma mark - private methods
 
-- (void)updateLastSync:(NSNotification *) notif {
-    lastSync = notif.object;
-}
-
 - (void)getFilteredAll:(NSString *) prototypename success:(SLSuccessBlock)success failure:(SLFailureBlock)failure {
     NSString *pattern = [NSString stringWithFormat:@"/%@", [prototypename lowercaseString]];
     NSString *method = [NSString stringWithFormat:@"%@.filterAll", prototypename];
     LBPersistedModelRepository *rep = [instance.adapter repositoryWithPersistedModelName:prototypename];
     [instance.adapter.contract addItem:[SLRESTContractItem itemWithPattern:pattern verb:@"GET"] forMethod:method];
 
-    if (!lastSync) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSNumber *lastSyncTime = [defaults objectForKey:@"LastSynchronizedTime"];
-        if (lastSyncTime != nil) {
-            lastSync = [NSDate dateWithTimeIntervalSince1970:[lastSyncTime longLongValue]/1000];
-        }
+    NSNumber *lastSyncTime = [[NSUserDefaults standardUserDefaults] objectForKey:@"LastSynchronizedTime"];
+    if (lastSyncTime != nil) {
+        lastSync = [NSDate dateWithTimeIntervalSince1970:(lastSyncTime.doubleValue - 10.f)];
     }
 
     [rep invokeStaticMethod:@"filterAll" parameters:@{ @"filter[where][modifiedDate][gt]" : lastSync } success:^(id value) {
@@ -599,10 +712,19 @@ static NSString* reachHostName = @"";
     [rep allWithSuccess:success failure:failure];
 }
 
+- (void)closeAllAlerts {
+    if (popupAlertView) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [popupAlertView dismissWithClickedButtonIndex:0 animated:NO];
+        });
+    }
+}
+
 #pragma mark - UIAlertViewDelegate methods
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     alertShow = NO;
+    popupAlertView = nil;
 }
 
 @end
