@@ -372,7 +372,7 @@ var checkCategoryOrigin = function(queryFunctions) {
 // Root page
 app.get('/', function (req, res) {
     var query = req.query && req.query['currentSelectedTab'] ? req.query['currentSelectedTab'].toString() : undefined;
-    var currentSelectedTab =  req.flash('currentSelectedTab') || query;
+    var currentSelectedTab =  query || req.flash('currentSelectedTab');
     var message = req.flash('message');
     var error = req.flash('error');
 

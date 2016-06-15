@@ -147,9 +147,9 @@ html
 					p
 						if !editLock
 							input(type='submit',value='Save')
-						if action == '/user'
+						if action.indexOf('/user') != -1
 							a(href="/?currentSelectedTab=0", class="button") Cancel
-						if action == '/food'
+						if action.indexOf('/food') != -1
 							a(href="/?currentSelectedTab=1", class="button") Cancel
 						if !editLock
 							span(id="delete-button", class="button") Delete
