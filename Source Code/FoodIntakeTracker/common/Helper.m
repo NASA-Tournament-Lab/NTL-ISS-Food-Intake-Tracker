@@ -116,6 +116,7 @@ static NSArray *monthNameArray = nil;
     }
     
     NSDateFormatter *defaultFormatter = [Helper defaultFormatter];
+    [defaultFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
     [defaultFormatter setDateFormat:@"yyyyddMMHHmmss"];
     NSString *dateString = [defaultFormatter stringFromDate:[NSDate date]];
     NSString *fileName = [NSString stringWithFormat:@"%@.aac", dateString];
@@ -165,14 +166,7 @@ static NSArray *monthNameArray = nil;
         message The message body.
  */
 +(void)showAlert:(NSString *)title message:(NSString *)message {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
-                                                        message:message
-                                                       delegate:nil
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
-        [alert show];
-    });
+    [Helper showAlert:title message:message delegate:nil];
 }
 
 /*!
@@ -181,15 +175,26 @@ static NSArray *monthNameArray = nil;
     message The message body.
     delegate The alert delegate
  */
-+(void)showAlert:(NSString *)title message:(NSString *)message delegate:(id)delegate {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
-                                                        message:message
-                                                       delegate:delegate
-                                              cancelButtonTitle:@"OK"
-                                              otherButtonTitles:nil];
++(UIAlertView *)showAlert:(NSString *)title message:(NSString *)message delegate:(id)delegate {
+    __block UIAlertView *alert = nil;
+    if ([[NSThread currentThread] isMainThread]) {
+        alert = [[UIAlertView alloc] initWithTitle:title
+                                           message:message
+                                          delegate:delegate
+                                 cancelButtonTitle:@"OK"
+                                 otherButtonTitles:nil];
         [alert show];
-    });
+    } else {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            alert = [[UIAlertView alloc] initWithTitle:title
+                                               message:message
+                                              delegate:delegate
+                                     cancelButtonTitle:@"OK"
+                                     otherButtonTitles:nil];
+            [alert show];
+        });
+    }
+    return alert;
 }
 
 /*!

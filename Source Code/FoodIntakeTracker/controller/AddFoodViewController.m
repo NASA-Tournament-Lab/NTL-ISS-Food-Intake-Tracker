@@ -56,6 +56,7 @@
     self.inputView.layer.masksToBounds = YES;
     self.commentInstructionLabel.text = @"";
     NSDateFormatter *defaultFormatter = [Helper defaultFormatter];
+    [defaultFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
     [defaultFormatter setDateFormat:@"HH:mm"];
     self.timeLabel.text = [defaultFormatter stringFromDate:[NSDate date]];
     filtersToRemove = [NSMutableArray array];

@@ -58,7 +58,7 @@
     }
     self.line.frame = CGRectMake(14, rect.size.height - 1, rect.size.width - 26, 1);
     self.scrollView.contentSize = CGSizeMake(570, 54);
-    [self.scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+    // [self.scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
     CGRect nutrientFrame;
     
     CGRect frame = self.lblName.frame;
@@ -138,7 +138,7 @@
     };
     
     if(rect.size.width > 454){
-        [self.scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
+        //[self.scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
         self.scrollView.userInteractionEnabled = YES;
         [UIView beginAnimations:nil context:nil];
         [UIView setAnimationDuration:0.5];
@@ -146,6 +146,7 @@
         [UIView commitAnimations];
     }
     else{
+        [self.scrollView scrollRectToVisible:CGRectMake(0, 0, 1, 1) animated:NO];
         self.scrollView.userInteractionEnabled = NO;
         if(self.scrollView.frame.origin.x == 285){
             [UIView beginAnimations:nil context:nil];

@@ -24,12 +24,12 @@ var MAX_SIZE = 1024;
 
 var foodKeys = ["name", "barcode", "energy", "sodium", "fluid", "protein", "carb", "fat", "categoriesName", "origin",
                 "foodImage"];
-var foodTitles = ["Name", "Barcode", "Energy", "Sodium", "Fluid", "Protein", "Carb", "Fat", "Categories", "Country Origin",
+var foodTitles = ["Name", "Barcode", "Calories", "Sodium", "Fluid", "Protein", "Carb", "Fat", "Categories", "Country Origin",
                   "Food Image"];
 
 var userKeys = ["fullName", "dailyTargetEnergy", "dailyTargetSodium", "dailyTargetFluid",
                 "dailyTargetProtein", "dailyTargetCarb", "dailyTargetFat", "weight", "admin", "profileImage"];
-var userTitles = ["Name", "Daily Target - Energy", "Daily Target - Sodium", "Daily Target - Fluid",
+var userTitles = ["Name", "Daily Target - Calories", "Daily Target - Sodium", "Daily Target - Fluid",
                   "Daily Target - Protein", "Daily Target - Carb", "Daily Target - Fat", "Weight",
                   "Admin", "Profile Image"];
 var defaultValues = { "dailyTargetEnergy": "3500", "dailyTargetSodium": "3500", "dailyTargetFluid": "2500",
@@ -47,7 +47,6 @@ app.set('view engine', 'jade'); //Can use any express view engine(Jade/handlebar
 
 app.use(multer({ dest: '/tmp' }).any());
 app.use(cookieParser('secret'));
-// app.use(session({cookie: { maxAge: 60000 }}));
 app.use(session({
   resave: false, // don't save session if unmodified
   saveUninitialized: false, // don't create session until something stored
@@ -158,8 +157,8 @@ var saveImageToDB = function(image, callback) {
                       "data": buffer,
                       "createdDate": now,
                       "modifiedDate": now,
-                      "removed": 0,
-                      "synchronized": 1
+                      "removed": false,
+                      "synchronized": true
                     };
                     Media.create(newMedia, callback);
                 });
@@ -200,9 +199,13 @@ var updateValue = function(req, res, remove) {
                     }
                 }
 
-                newValue["removed"] = remove ? 1 : 0;
-                newValue["active"] = 1;
-                newValue["synchronized"] = 1;
+                newValue["removed"] = remove == 1;
+                if (isFood) {
+                  newValue["active"] = true;
+                } else {
+                  newValue["admin"] = newValue["admin"] == 1;
+                }
+                newValue["synchronized"] = true;
                 newValue["modifiedDate"] = new Date();
 
                 console.log("New value: " + JSON.stringify(newValue));
@@ -366,8 +369,10 @@ var checkCategoryOrigin = function(queryFunctions) {
     }
 }
 
+// Root page
 app.get('/', function (req, res) {
-    var currentSelectedTab = req.flash('currentSelectedTab');
+    var query = req.query && req.query['currentSelectedTab'] ? req.query['currentSelectedTab'].toString() : undefined;
+    var currentSelectedTab =  query || req.flash('currentSelectedTab');
     var message = req.flash('message');
     var error = req.flash('error');
 
@@ -397,7 +402,7 @@ app.get('/', function (req, res) {
     });
 });
 
-
+// Get user and foods list
 app.get('/users', function (req, res) {
     NasaUser.find(function(err, results) {
         if(err) {
@@ -431,6 +436,12 @@ app.get('/users', function (req, res) {
 });
 
 app.get('/foods', function (req, res) {
+    if (allCategories === undefined || allOrigins === undefined) {
+        req.flash('currentSelectedTab', '1');
+        res.redirect('/');
+        return;
+    }
+
     FoodProduct.find(function(err, results) {
         if(err) {
             return console.error('error running query', err);
@@ -499,6 +510,7 @@ app.get('/reports', function(req, res) {
     });
 });
 
+// import data
 app.get('/import', function(req, res) {
     res.render('import', {
             message: 'Import CSV file',
@@ -508,6 +520,7 @@ app.get('/import', function(req, res) {
         });
 });
 
+// instructions - help
 app.get('/instructions', function(req, res) {
     res.render('instructions', {
             message: 'Instructions'
@@ -546,9 +559,9 @@ app.post('/food', function(req, res) {
     }
     newValue["name"] = newValue["name"].toString();
     newValue["origin"] = newValue["origin"].toString();
-    newValue["active"] = 1;
-    newValue["removed"] = 0;
-    newValue["synchronized"] = 1;
+    newValue["active"] = true;
+    newValue["removed"] = false;
+    newValue["synchronized"] = true;
 
     newValue["quantity"] = 0.0;
 
@@ -561,16 +574,27 @@ app.post('/food', function(req, res) {
     checkCategoryOrigin(queryFunctions);
 
     queryFunctions.push(function(callback) {
+        // update origin
+        var origin = '';
+        var originName = '';
+        allOrigins.forEach(function(o) {
+          if (o.value == newValue["origin"])
+            origin = o.id;
+        });
+        originName = newValue["origin"];
+        newValue["origin"] = origin;
+
         FoodProduct.find(function(err, results) {
             if (err) {
                 callback(err);
             } else {
                 var foods = JSON.parse(JSON.stringify(results));
+
                 for (var i = 0; i < foods.length; i++) {
                     var value = foods[i];
                     if (!isEmpty(value.name) && value.name.toString().trim().toLowerCase() === newValue["name"].trim().toLowerCase() &&
-                        !isEmpty(value.origin) != null && value.origin.trim() == newValue["origin"].trim()) {
-                        callback('Food with name "' + value.name + '" and origin "' + value.origin + '" already exists');
+                        !isEmpty(value.origin) && value.origin.trim().toLowerCase() == newValue["origin"].trim().toLowerCase()) {
+                        callback('Food with name "' + value.name + '" and origin "' + originName + '" already exists');
                         return;
                     }
                     if (!isEmpty(value.barcode) && !isEmpty(newValue["barcode"]) && value.barcode.toString().trim() === newValue["barcode"].toString().trim()) {
@@ -583,6 +607,7 @@ app.post('/food', function(req, res) {
         });
     });
 
+    // fetch categories
     queryFunctions.push(function(callback) {
         var newCategories = newValue["categoriesName"] instanceof Array ? newValue["categoriesName"] : new Array(newValue["categoriesName"]);
         var catIds = [];
@@ -593,13 +618,6 @@ app.post('/food', function(req, res) {
             });
         }
         newValue["category_uuids"] = catIds;
-
-        var origin;
-        allOrigins.forEach(function(o) {
-            if (o.value == newValue["origin"])
-                origin = o.id;
-        });
-        newValue["origin"] = origin;
 
         callback(null);
     });
@@ -650,6 +668,7 @@ app.post('/food', function(req, res) {
                 res.redirect('/food');
             } else {
                 req.flash('message', 'New Food Data Created');
+                req.flash('currentSelectedTab', '1');
                 res.redirect('/');
             }
     });
@@ -669,10 +688,10 @@ app.post('/user', function(req, res) {
             }
         }
     }
-    newValue["fullName"] = newValue["fullName"].toString();
-    newValue["active"] = 1;
-    newValue["removed"] = 0;
-    newValue["synchronized"] = 1;
+    newValue["fullName"] = newValue["fullName"].toString();;
+    newValue["removed"] = false;
+    newValue["synchronized"] = true;
+    newValue["admin"] = newValue["admin"] == 1;
 
     var now = new Date();
     newValue["createdDate"] = now;
@@ -682,13 +701,13 @@ app.post('/user', function(req, res) {
 
     // check user exists
     queryFunctions.push(function(callback) {
-        FoodProduct.find(function(err, results) {
+        NasaUser.find(function(err, results) {
             if (err) {
                 callback(err);
             } else {
-                var foods = JSON.parse(JSON.stringify(results));
-                for (var i = 0; i < foods.length; i++) {
-                    var value = foods[i];
+                var users = JSON.parse(JSON.stringify(results));
+                for (var i = 0; i < users.length; i++) {
+                    var value = users[i];
                     if (!isEmpty(value.fullName) && value.fullName.toString().trim().toLowerCase() === newValue["fullName"].trim().toLowerCase()) {
                         callback('User with name "' + value.fullName + '" already exists!');
                         return;
@@ -745,6 +764,7 @@ app.post('/user', function(req, res) {
                 res.redirect('/user');
             } else {
                 req.flash('message', 'New User Profile Created');
+                req.flash('currentSelectedTab', '0');
                 res.redirect('/');
             }
     });
@@ -889,7 +909,6 @@ app.get('/user/:id', function(req, res) {
                 callback('error running query');
                 return;
             }
-            console.log("Media result: " + JSON.stringify(result));
             if (!isEmpty(result)) {
                 var media = JSON.parse(JSON.stringify(result));
                 if (!isEmpty(media.data)) {

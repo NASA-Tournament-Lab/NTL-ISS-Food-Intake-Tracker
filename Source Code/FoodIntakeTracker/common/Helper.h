@@ -86,7 +86,7 @@
     message The message body.
     delegate The alert delegate
  */
-+(void)showAlert:(NSString *)title message:(NSString *)message delegate:(id) delegate;
++(UIAlertView *)showAlert:(NSString *)title message:(NSString *)message delegate:(id) delegate;
 
 /*!
  @discussion This method displays error to the user.

@@ -87,9 +87,9 @@
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSNumber *lastSyncTime = [defaults objectForKey:@"LastSynchronizedTime"];
-    if(lastSyncTime != nil) {
+    if (lastSyncTime != nil) {
         [self updateLastSyncLabel:[NSDate
-                                   dateWithTimeIntervalSince1970:[lastSyncTime longLongValue]/1000]];
+                                   dateWithTimeIntervalSince1970:lastSyncTime.doubleValue]];
     }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(renewAutoLogout)
@@ -419,6 +419,7 @@
     }
     if (date) {
         NSDateFormatter *f = [[NSDateFormatter alloc] init];
+        [f setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
         [f setLocale:[NSLocale localeWithLocaleIdentifier:@"en_US"]];
         [f setDateStyle:NSDateFormatterMediumStyle];
         [f setTimeStyle:NSDateFormatterMediumStyle];

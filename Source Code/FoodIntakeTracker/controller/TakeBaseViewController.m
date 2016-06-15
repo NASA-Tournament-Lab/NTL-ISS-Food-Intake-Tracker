@@ -234,7 +234,7 @@
     NSError *error;
     for (FoodProduct *product in selectFoods) {
         FoodConsumptionRecord *record = [recordService buildFoodConsumptionRecord:&error];
-        record.quantity = @1;
+        record.quantity = @1.0;
         record.sodium = product.sodium;
         record.energy = product.energy;
         record.fluid = product.fluid;
@@ -243,23 +243,17 @@
         record.fat = product.fat;
         record.timestamp = [Helper convertDateTimeToDate:consumptionViewController.dateListView.currentDate time:[NSDate date]];
         record.comment = self.txtFoodComment.text;
-        
-        if (product.images.count > 0) {
-            for (Media *m in product.images) {
-                Media *media = [[Media alloc] initWithEntity:[NSEntityDescription
-                                                                      entityForName:@"Media"
-                                                                      inManagedObjectContext:recordService.managedObjectContext]
-                                      insertIntoManagedObjectContext:nil];
-                media.filename = [m filename];
-                media.removed = @NO;
-                media.synchronized = @YES;
 
-                [record addImagesObject:media];
-            }
-        }
         [recordService addFoodConsumptionRecord:appDelegate.loggedInUser record:record error:&error];
         
         record.foodProduct = product;
+
+        if (product.images.count > 0) {
+            for (Media *m in product.images) {
+                [record addImagesObject:m];
+            }
+        }
+
         [recordService saveFoodConsumptionRecord:record error:&error];
 
         if ([Helper displayError:error]) return;

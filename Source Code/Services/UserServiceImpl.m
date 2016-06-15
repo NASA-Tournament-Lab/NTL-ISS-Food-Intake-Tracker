@@ -100,7 +100,7 @@
                 existingUser.fullName = user.fullName;
                 existingUser.useLastUsedFoodProductFilter = user.useLastUsedFoodProductFilter;
                 if (user.lastUsedFoodProductFilter != nil) {
-                    existingUser.lastUsedFoodProductFilter = [self.managedObjectContext
+                    existingUser.lastUsedFoodProductFilter = [existingUser.managedObjectContext
                                                               objectWithID:user.lastUsedFoodProductFilter.objectID];
                     existingUser.lastUsedFoodProductFilter.synchronized = @NO;
                 }
@@ -108,7 +108,7 @@
                 existingUser.dailyTargetEnergy = user.dailyTargetEnergy;
                 existingUser.dailyTargetSodium = user.dailyTargetSodium;
                 existingUser.maxPacketsPerFoodProductDaily = user.maxPacketsPerFoodProductDaily;
-                existingUser.profileImage = user.profileImage;
+                existingUser.profileImage = [existingUser.managedObjectContext objectWithID:user.profileImage.objectID];
                 existingUser.removed = user.removed;
                 existingUser.synchronized = @NO;
             }

@@ -45,6 +45,7 @@
     //self.lblQuantityUnit.frame = CGRectMake(startX + size1.width + 2, 16, size2.width, size2.height);
     self.lblName.text = self.foodConsumptionRecord.foodProduct.name;
     NSDateFormatter *defaultFormatter = [Helper defaultFormatter];
+    [defaultFormatter setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
     [defaultFormatter setDateFormat:@"HH:mm"];
     self.lblTime.text = [defaultFormatter stringFromDate:self.foodConsumptionRecord.timestamp];
     [defaultFormatter setDateFormat:@"MM/dd/YY"];
@@ -117,8 +118,10 @@
     [users sortUsingComparator:^(User *obj1, User *obj2){
         return [obj1.fullName compare:obj2.fullName];
     }];
-    
+
+    self.lblSelectedUserName.numberOfLines = 4;
     self.lblSelectedUserName.text = appDelegate.loggedInUser.fullName;
+    [self.lblSelectedUserName sizeToFit];
     self.imgProfilePhoto.image = self.imgSelectedUserPhoto.image =
     [Helper loadImage:appDelegate.loggedInUser.profileImage.filename];
     self.imgProfilePhoto.contentMode = UIViewContentModeScaleAspectFit;
@@ -178,7 +181,9 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
+    self.lblSelectedUserName.numberOfLines = 4;
     self.lblSelectedUserName.text = appDelegate.loggedInUser.fullName;
+    [self.lblSelectedUserName sizeToFit];
     self.imgSelectedUserPhoto.image = [Helper loadImage:appDelegate.loggedInUser.profileImage.filename];
     [self reloadUsers];
     
@@ -189,6 +194,8 @@
      [recordService getFoodConsumptionRecords:[users objectAtIndex:selectIndex]
                                         error:&error]];
     [self.consumptionTable reloadData];
+
+    [self hideFoodComment];
 }
 
 /**

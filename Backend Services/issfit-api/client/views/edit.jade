@@ -113,8 +113,8 @@ html
 								input(type='hidden', value=value, name=key, id=key)
 							else if key == 'admin'
 								select(id=key, name=key)
-									option(value=0, selected=value === 0) No
-									option(value=1, selected=value === 1) Yes
+									option(value=0, selected=value) No
+									option(value=1, selected=value) Yes
 							else if key == 'categoriesName'
 								- var cats = ["Vegetables / Sides", "Meat / Fish", "Drink", "Dessert & Snacks", "Breakfast", "Fruit & Nuts"]
 								select(id=key, name=key, style="width:200px;height:80px;", multiple="multiple")
@@ -147,7 +147,10 @@ html
 					p
 						if !editLock
 							input(type='submit',value='Save')
-						a(href="/", class="button") Cancel
+						if action.indexOf('/user') != -1
+							a(href="/?currentSelectedTab=0", class="button") Cancel
+						if action.indexOf('/food') != -1
+							a(href="/?currentSelectedTab=1", class="button") Cancel
 						if !editLock
 							span(id="delete-button", class="button") Delete
 						if editLock

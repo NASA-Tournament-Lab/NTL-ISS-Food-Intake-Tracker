@@ -178,7 +178,7 @@
         }
         
         adhocFoodProduct.name = foodName;
-        adhocFoodProduct.quantity = @1;
+        adhocFoodProduct.quantity = @1.0;
         
         CGFloat r = self.imgFood.image.size.width / self.imgFood.image.size.height;
         UIImage *resized = [self resizeImage:self.imgFood.image newSize:CGSizeMake(r * 800, 800)];
@@ -263,27 +263,29 @@
         }
         
         adhocFoodProduct.name = foodName;
-        adhocFoodProduct.quantity = @1;
+        adhocFoodProduct.quantity = @1.0;
         
         CGFloat r = self.imgFood.image.size.width / self.imgFood.image.size.height;
         UIImage *resized = [self resizeImage:self.imgFood.image newSize:CGSizeMake(r * 800, 800)];
         NSString *imagePath = [Helper saveImage:UIImageJPEGRepresentation(resized, 0.9)];
+        
+        [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser product:adhocFoodProduct error:&error];
+        if ([Helper displayError:error]) return;
+        
         Media *media = [[Media alloc] initWithEntity:[NSEntityDescription
                                                       entityForName:@"Media"
                                                       inManagedObjectContext:foodProductService.managedObjectContext]
-                      insertIntoManagedObjectContext:nil];
+                      insertIntoManagedObjectContext:foodProductService.managedObjectContext];
         media.filename = imagePath;
         media.removed = @NO;
         media.synchronized = @NO;
 
         adhocFoodProduct.foodImage = media;
-        // adhocFoodProduct.images = [NSSet setWithObject:media];
-        
-        [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser product:adhocFoodProduct error:&error];
+        adhocFoodProduct.images = [NSSet setWithObject:media];
 
-        if ([Helper displayError:error]) {
-            return;
-        }
+        error = nil;
+        [foodProductService updateAdhocFoodProduct:adhocFoodProduct error:&error];
+        if ([Helper displayError:error]) return;
         
         [resultFoods addObject:adhocFoodProduct];
         
@@ -302,6 +304,7 @@
         NSString *imagePath = [Helper saveImage:UIImageJPEGRepresentation(resized, 0.9)];
 
         [[foodProduct managedObjectContext] lock];
+
         Media *media = [[Media alloc] initWithEntity:[NSEntityDescription
                                                       entityForName:@"Media"
                                                       inManagedObjectContext:foodProductService.managedObjectContext]
@@ -310,6 +313,7 @@
         media.removed = @NO;
         media.synchronized = @NO;
 
+        foodProduct.foodImage = media;
         [foodProduct addImagesObject:media];
         
         [[foodProduct managedObjectContext] save:nil];

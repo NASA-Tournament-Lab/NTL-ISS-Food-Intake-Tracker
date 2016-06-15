@@ -2,8 +2,8 @@
 //  Media.h
 //  FoodIntakeTracker
 //
-//  Created by PAULO VITOR MAGACHO DA SILVA on 5/31/16.
-//  Copyright © 2016 topcoder. All rights reserved.
+//  Created by pvmagacho on 5/31/16.
+//  Copyright © pvmagacho All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

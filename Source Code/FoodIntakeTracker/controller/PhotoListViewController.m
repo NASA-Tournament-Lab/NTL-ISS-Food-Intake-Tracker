@@ -245,7 +245,7 @@
     ConsumptionViewController *consumptionViewController = [self.customTabBarController getConsumptionViewController];
     for (FoodProduct *product in selectFoods) {
         FoodConsumptionRecord *record = [recordService buildFoodConsumptionRecord:&error];
-        record.quantity = @1;
+        record.quantity = @1.0;
         record.sodium = product.sodium;
         record.energy = product.energy;
         record.fluid = product.fluid;

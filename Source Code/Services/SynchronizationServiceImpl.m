@@ -81,25 +81,26 @@
 - (long long)getLastSynchronizedTime{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSNumber *lastSyncTime = [defaults objectForKey:@"LastSynchronizedTime"];
-    if(lastSyncTime != nil) {
+    if (lastSyncTime != nil) {
         [[NSNotificationCenter defaultCenter] postNotificationName:UpdateLastSync
                                                             object:[NSDate
-                                                                    dateWithTimeIntervalSince1970:[lastSyncTime longLongValue]/1000]];
+                                                                    dateWithTimeIntervalSince1970:lastSyncTime.doubleValue]];
         
-        return [lastSyncTime longLongValue];    
+        return lastSyncTime.doubleValue;
     }
     return 0;
 }
 
--(void)updateSyncTime:(long long)timestamp {
-    NSNumber *syncTime = [NSNumber numberWithLongLong:timestamp];
+-(void)updateSyncTime:(NSTimeInterval)timestamp {
+    NSNumber *syncTime = [NSNumber numberWithDouble:timestamp];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:syncTime forKey:@"LastSynchronizedTime"];
+    [defaults synchronize];
     
-    NSLog(@"\tUpdated last sync to %@", [NSDate dateWithTimeIntervalSince1970:timestamp/1000]);
+    NSLog(@"\tUpdated last sync to %@", [NSDate dateWithTimeIntervalSince1970:timestamp]);
     
     [[NSNotificationCenter defaultCenter] postNotificationName:UpdateLastSync
-                                                        object:[NSDate dateWithTimeIntervalSince1970:timestamp/1000]];
+                                                        object:[NSDate dateWithTimeIntervalSince1970:timestamp]];
     return;
 }
 
@@ -274,19 +275,27 @@
                             if ([object isKindOfClass:[FoodConsumptionRecord class]]) {
                                 NSMutableSet *allSet = [NSMutableSet set];
                                 [allSet addObjectsFromArray: [[(FoodConsumptionRecord *) object voiceRecordings] allObjects]];
-                                [allSet addObjectsFromArray: [[(FoodConsumptionRecord *) object images] allObjects]];
+                                // [allSet addObjectsFromArray: [[(FoodConsumptionRecord *) object images] allObjects]];
                                 for (Media *mediaObject in allSet) {
                                     NSString *localPath = [[DataHelper getAbsoulteLocalDirectory:self.localFileSystemDirectory]
                                                            stringByAppendingPathComponent:mediaObject.filename];
                                     NSData *data = [NSData dataWithContentsOfFile:localPath];
-                                    NSMutableDictionary *dict = [[mediaObject getAttributes] mutableCopy];
-                                    [dict setObject:data forKey:@"data"];
 
                                     NSString *pattern = [mediaObject.filename hasSuffix:self.imageFileNameSuffix] ? @"images" : @"voiceRecordings";
-                                    NSString *newId = [coreData insertMediaRecord:dict foodConsumptionId:object.id pattern:pattern];
+                                    NSString *newId = mediaObject.id ? mediaObject.id : [coreData insertMediaRecord:[mediaObject getAttributes]
+                                                                                                  foodConsumptionId:object.id
+                                                                                                            pattern:pattern];
                                     if (newId) {
                                         [mediaObject setId:newId];
                                     } else {
+                                        [object setSynchronized:@NO];
+                                        if (![self.managedObjectContext save:&e]) {
+                                            CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+                                        }
+                                        return NO;
+                                    }
+
+                                    if (![coreData uploadMedia:newId withData:data withFilename:mediaObject.filename]) {
                                         [object setSynchronized:@NO];
                                         if (![self.managedObjectContext save:&e]) {
                                             CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
@@ -314,7 +323,7 @@
     }
 
     if (totalChange > 0) {
-        [self updateSyncTime:[[NSDate date] timeIntervalSince1970] * 1000];
+        [self updateSyncTime:[[NSDate date] timeIntervalSince1970]];
     }
 
     if (![self.managedObjectContext save:&e]) {
@@ -356,9 +365,7 @@
             NSDictionary *value = [data objectForKey:@"value"];
             
             // Convert from JSON
-            // NSData *jsonData = [value dataUsingEncoding:NSUTF8StringEncoding];
-            NSDictionary *jsonDictionary = [value copy]; // [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&e];
-            CHECK_ERROR_AND_RETURN(e, error, @"Cannot convert JSON data to managed object.", DataUpdateErrorCode, YES, YES);
+            NSDictionary *jsonDictionary = [value copy];
             
             [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"JSON for %@ dict %@", name,
                                                         jsonDictionary]];
@@ -388,8 +395,6 @@
                         CHECK_ERROR_AND_RETURN(e, error, @"Cannot update object.", DataUpdateErrorCode, YES, YES);
                     }
 
-                    NSLog(@"Updated object %@", object);
-
                     NSManagedObjectID *currentUserId = AppDelegate.shareDelegate.loggedInUser.objectID;
                     if ([object isKindOfClass:[User class]] && [object.objectID isEqual:currentUserId]) {
                         AppDelegate.shareDelegate.loggedInUser = (User *) object;
@@ -410,7 +415,7 @@
             }
         }
         
-        [self updateSyncTime:[[NSDate date] timeIntervalSince1970] * 1000];
+        [self updateSyncTime:[[NSDate date] timeIntervalSince1970]];
     }
 
     // will merge the local changes to database
@@ -418,17 +423,70 @@
     for (SynchronizableModel *object in postponedObjects) {
         object.synchronized = @NO;
         NSLog(@"Not synchronized %@", object);
-        if ([object updateObjects] && [self saveMedia:object]) {
-            // success
-            [object setSynchronized:@YES];
-            totalChange++;
+        if ([object isKindOfClass:[Media class]]) {
+            if ([self saveMedia:object]) {
+                // success
+                [object setSynchronized:@YES];
+
+                if (![self.managedObjectContext save:&e]) {
+                    CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+                }
+
+                totalChange++;
+            } else {
+                return NO;
+            }
         } else {
-            return NO;
+            if ([object updateObjects]) {
+                if ([object isKindOfClass:[FoodConsumptionRecord class]]) {
+                    NSMutableSet *allSet = [NSMutableSet set];
+                    [allSet addObjectsFromArray: [[(FoodConsumptionRecord *) object voiceRecordings] allObjects]];
+                    // [allSet addObjectsFromArray: [[(FoodConsumptionRecord *) object images] allObjects]];
+                    for (Media *mediaObject in allSet) {
+                        NSString *localPath = [[DataHelper getAbsoulteLocalDirectory:self.localFileSystemDirectory]
+                                               stringByAppendingPathComponent:mediaObject.filename];
+                        NSData *data = [NSData dataWithContentsOfFile:localPath];
+
+                        NSString *pattern = [mediaObject.filename hasSuffix:self.imageFileNameSuffix] ? @"images" : @"voiceRecordings";
+                        NSString *newId = mediaObject.id ? mediaObject.id : [coreData insertMediaRecord:[mediaObject getAttributes]
+                                                                                      foodConsumptionId:object.id
+                                                                                                pattern:pattern];
+                        if (newId) {
+                            [mediaObject setId:newId];
+                        } else {
+                            [object setSynchronized:@NO];
+                            if (![self.managedObjectContext save:&e]) {
+                                CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+                            }
+                            return NO;
+                        }
+
+                        if (![coreData uploadMedia:newId withData:data withFilename:mediaObject.filename]) {
+                            [object setSynchronized:@NO];
+                            if (![self.managedObjectContext save:&e]) {
+                                CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+                            }
+                            return NO;
+                        }
+                    }
+                }
+
+                // success
+                [object setSynchronized:@YES];
+
+                if (![self.managedObjectContext save:&e]) {
+                    CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
+                }
+
+                totalChange++;
+            } else {
+                return NO;
+            }
         }
     }
 
     if (totalChange > 0) {
-        [self updateSyncTime:[[NSDate date] timeIntervalSince1970] * 1000];
+        [self updateSyncTime:[[NSDate date] timeIntervalSince1970]];
     }
 
     // Unlock the managedObjectContext
@@ -436,9 +494,9 @@
 
     // Update progress
     [self updateProgress:@1.0];
-    
+
     [LoggingHelper logMethodExit:methodName returnValue:@YES];
-    
+
     return YES;
 }
 

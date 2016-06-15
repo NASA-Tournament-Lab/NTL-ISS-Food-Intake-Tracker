@@ -2,8 +2,8 @@
 //  Category.h
 //  FoodIntakeTracker
 //
-//  Created by PAULO VITOR MAGACHO DA SILVA on 6/5/16.
-//  Copyright © 2016 topcoder. All rights reserved.
+//  Created by pvmagacho on 6/5/16.
+//  Copyright © pvmagacho All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

@@ -9,4 +9,13 @@ div
 		p
 			input(type='file', id='foodFileImport', title='Choose a file', name='foodFileImport', accept='text/comma-separated-values, text/csv, application/csv')
 		p
-			input(type='submit',value='Import', class="goButton")
+			input(type='submit', disabled='disabled', value='Import', class="goButton")
+script.
+	$("input[type=file]").change(function () {
+		var fileName = $(this).val();
+		if (fileName && fileName.length > 0) {
+			$("input[type=submit]").button("enable");
+		} else {
+			$("input[type=submit]").button("disable");
+		}
+	});
