@@ -32,10 +32,26 @@ html
 				$( "input[type=submit], input[type=button], a.button" ).button();
 
 				// create validation
+				jQuery.validator.addMethod("nowhitespace", function(value, element) {
+					var hasWhitespace = /\s/g.test(value);
+					return !hasWhitespace;
+				}, "String cannot have whitespaces");
 				var errorMessage = 'Please select an image file that ends in ".jpg"';
 				$("#form").validate({
+					rules: {
+						firstName: {
+							required: true,
+							maxlength: 35,
+							nowhitespace: true
+						},
+						lastName: {
+							required: true,
+							maxlength: 35,
+							nowhitespace: true
+						}
+					},
 					messages: {
-						productProfileImage: {
+						foodImage: {
 							accept: errorMessage,
 							extension: errorMessage
 						},

@@ -22,7 +22,7 @@
 //  F2Finish - NASA iPad App Updates - Round 3
 //
 
-#define FACTOR 10
+#define FACTOR 1
 #define RFACTOR (60 / FACTOR)
 
 #import "CustomPickerViewController.h"

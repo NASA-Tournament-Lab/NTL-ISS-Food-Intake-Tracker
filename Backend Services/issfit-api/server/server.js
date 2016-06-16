@@ -24,14 +24,17 @@ var MAX_SIZE = 1024;
 
 var foodKeys = ["name", "barcode", "energy", "sodium", "fluid", "protein", "carb", "fat", "categoriesName", "origin",
                 "foodImage"];
+
 var foodTitles = ["Name", "Barcode", "Calories", "Sodium", "Fluid", "Protein", "Carb", "Fat", "Categories", "Country Origin",
                   "Food Image"];
 
-var userKeys = ["fullName", "dailyTargetEnergy", "dailyTargetSodium", "dailyTargetFluid",
+var userKeys = ["firstName", "lastName", "dailyTargetEnergy", "dailyTargetSodium", "dailyTargetFluid",
                 "dailyTargetProtein", "dailyTargetCarb", "dailyTargetFat", "weight", "admin", "profileImage"];
-var userTitles = ["Name", "Daily Target - Calories", "Daily Target - Sodium", "Daily Target - Fluid",
+
+var userTitles = ["First Name", "Last Name", "Daily Target - Calories", "Daily Target - Sodium", "Daily Target - Fluid",
                   "Daily Target - Protein", "Daily Target - Carb", "Daily Target - Fat", "Weight",
                   "Admin", "Profile Image"];
+
 var defaultValues = { "dailyTargetEnergy": "3500", "dailyTargetSodium": "3500", "dailyTargetFluid": "2500",
                       "dailyTargetProtein": "100", "dailyTargetCarb": "500", "dailyTargetFat": "60" };
 
@@ -204,6 +207,9 @@ var updateValue = function(req, res, remove) {
                   newValue["active"] = true;
                 } else {
                   newValue["admin"] = newValue["admin"] == 1;
+                  newValue["fullName"] = newValue["firstName"].toString() + " " + newValue["lastName"].toString();
+                  delete newValue["firstName"];
+                  delete newValue["lastName"];
                 }
                 newValue["synchronized"] = true;
                 newValue["modifiedDate"] = new Date();
@@ -688,7 +694,10 @@ app.post('/user', function(req, res) {
             }
         }
     }
-    newValue["fullName"] = newValue["fullName"].toString();;
+    newValue["fullName"] = newValue["firstName"].toString() + " " + newValue["lastName"].toString();
+    delete newValue["firstName"];
+    delete newValue["lastName"];
+
     newValue["removed"] = false;
     newValue["synchronized"] = true;
     newValue["admin"] = newValue["admin"] == 1;
@@ -895,6 +904,8 @@ app.get('/user/:id', function(req, res) {
             }
 
             editObject = JSON.parse(JSON.stringify(result));
+            editObject["firstName"] = editObject["fullName"].split(" ")[0];
+            editObject["lastName"] = editObject["fullName"].split(" ")[1];
             locked = !isEmpty(editObject.userLock);
 
             console.log("Result: " + JSON.stringify(editObject));

@@ -1785,10 +1785,6 @@
             _addFood.btnDone.enabled = NO;
         }
         
-        //[self.pocketsphinxController startListeningWithLanguageModelAtPath:[self.lmPaths valueForKey:@"LMPath"]
-        //                                                  dictionaryAtPath:[self.lmPaths valueForKey:@"DictionaryPath"]
-        //                                               languageModelIsJSGF:FALSE];
-        
         NSDictionary *recordSetting = @{AVFormatIDKey: @(kAudioFormatMPEG4AAC),
                                         AVEncoderAudioQualityKey: @(AVAudioQualityMedium),
                                         AVNumberOfChannelsKey: @2};        
@@ -1796,7 +1792,7 @@
         NSError *err = nil;
         recorder = [[ AVAudioRecorder alloc] initWithURL:url settings:recordSetting error:&err];
         if(!recorder){
-            NSLog(@"recorder: %@ %ld %@", [err domain], [err code], [[err userInfo] description]);
+            NSLog(@"recorder: %@ %d %@", [err domain], (int) [err code], [[err userInfo] description]);
             UIAlertView *alert =
             [[UIAlertView alloc] initWithTitle: @"Warning"
                                        message: [err localizedDescription]
