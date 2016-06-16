@@ -84,6 +84,8 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:AutoLogoutRenewEvent object:nil];
     
     self.btnVoicePlay.enabled = ([self.foodConsumptionRecord.voiceRecordings count] > 0);
+
+    self.btnSave.enabled = NO;
 }
 
 /**
@@ -160,8 +162,14 @@
  */
 - (void)Picker:(BaseCustomPickerView *)picker DidSelectedValue:(NSString *)val{
     if([picker isKindOfClass:[HourPickerView class]]){
+        if (!self.btnSave.enabled) {
+            self.btnSave.enabled = ![self.lblTime.text isEqualToString:val];
+        }
         self.lblTime.text = val;
     } else {
+        if (!self.btnSave.enabled) {
+            self.btnSave.enabled = self.txtQuantity.text.floatValue != val.floatValue;
+        }
         self.txtQuantity.text = val;
     }
 }
@@ -191,6 +199,8 @@
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     [numberFormatter setPositiveFormat:@"#.##"];
     self.txtQuantity.text = [numberFormatter stringFromNumber:[NSNumber numberWithFloat:quantity]];
+
+    self.btnSave.enabled = YES;
 }
 
 @end
