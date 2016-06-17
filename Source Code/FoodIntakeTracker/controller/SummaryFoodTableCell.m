@@ -104,7 +104,7 @@
     timePicker.delegate = self;
     UIPopoverController *popController = [[UIPopoverController alloc] initWithContentViewController:timePicker];
     popController.popoverBackgroundViewClass = [PopoverBackgroundView class];
-    popController.popoverContentSize = CGSizeMake(290, 267);
+    popController.popoverContentSize = CGSizeMake(290, 245);
     timePicker.popController = popController;
     [timePicker setSelectedVal:self.lblTime.text];
     CGRect popoverRect = CGRectMake(btn.bounds.origin.x, btn.bounds.origin.y, 240, 23);
@@ -128,7 +128,7 @@
     picker.delegate = self;
     UIPopoverController *popController = [[UIPopoverController alloc] initWithContentViewController:picker];
     popController.popoverBackgroundViewClass = [PopoverBackgroundView class];
-    popController.popoverContentSize = CGSizeMake(240, 267);
+    popController.popoverContentSize = CGSizeMake(240, 245);
     picker.popController = popController;
     [picker setSelectedVal:[NSString stringWithFormat:@"%.2f", self.foodConsumptionRecord.quantity.floatValue]];
     CGRect popoverRect = CGRectMake(btn.bounds.origin.x, btn.bounds.origin.y, 1, 30);

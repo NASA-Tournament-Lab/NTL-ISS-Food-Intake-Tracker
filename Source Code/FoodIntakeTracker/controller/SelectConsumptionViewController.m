@@ -305,9 +305,17 @@
     [foodKeys removeAllObjects];
     [foodDict removeAllObjects];
     [foodList removeAllObjects];
-    
+
+    // add letters
     for(int i = 0; i < 26; i++){
         NSString *key = [NSString stringWithFormat:@"%c", (char)(65 + i)];
+        [foodKeys addObject:key];
+        NSMutableArray *foodProducts = [[NSMutableArray alloc] init];
+        [foodDict setValue:foodProducts forKey:key];
+    }
+    // add numbers
+    for(int i = 0; i < 10; i++){
+        NSString *key = [NSString stringWithFormat:@"%c", (char)(48 + i)];
         [foodKeys addObject:key];
         NSMutableArray *foodProducts = [[NSMutableArray alloc] init];
         [foodDict setValue:foodProducts forKey:key];

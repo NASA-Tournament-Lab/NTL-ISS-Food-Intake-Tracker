@@ -269,6 +269,14 @@ var updateValue = function(req, res, remove) {
 
     if (isFood) { // execute for FoodProduct only
         queryFunctions.push(function(callback) {
+            var origin, originName;
+            allOrigins.forEach(function(o) {
+                if (o.value == newValue["origin"])
+                    origin = o.id;
+            });
+            originName = newValue["origin"];
+            newValue["origin"] = origin;
+
             FoodProduct.find(function(err, results) {
                 if (err) {
                     callback(err);
@@ -276,6 +284,11 @@ var updateValue = function(req, res, remove) {
                     var foods = JSON.parse(JSON.stringify(results));
                     for (var i = 0; i < foods.length; i++) {
                         var value = foods[i];
+                        if (!isEmpty(value.name) && value.name.toString().trim().toLowerCase() === newValue["name"].trim().toLowerCase() &&
+                            !isEmpty(value.origin) && value.origin.trim().toLowerCase() == newValue["origin"].trim().toLowerCase()) {
+                            callback('Food with name "' + value.name + '" and origin "' + originName + '" already exists');
+                            return;
+                        }
                         if (!isEmpty(value.barcode) && !isEmpty(newValue["barcode"]) && value.barcode.toString().trim() === newValue["barcode"].toString().trim()) {
                             callback('Food with barcode "' + value.barcode + '" already exists');
                             return;
@@ -304,13 +317,6 @@ var updateValue = function(req, res, remove) {
             } else if (undefined !== newValue["categoriesId"]) {
                 newValue["category_uuids"] = newValue["categoriesId"].split(',');
             }
-
-            var origin;
-            allOrigins.forEach(function(o) {
-                if (o.value == newValue["origin"])
-                    origin = o.id;
-            });
-            newValue["origin"] = origin;
 
             // clean up
             delete newValue["categories"];

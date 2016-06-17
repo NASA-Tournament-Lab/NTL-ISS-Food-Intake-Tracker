@@ -260,7 +260,7 @@
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     User *user = [users objectAtIndex:self.selectIndex];
     self.btnCancel.hidden = YES;
-    self.btnDelete.hidden = ![appDelegate.loggedInUser.admin boolValue];
+    self.btnDelete.hidden = ![appDelegate.loggedInUser.admin boolValue] || [appDelegate.loggedInUser.objectID isEqual:user.objectID];
     [self.btnUpdateSave setTitle:@"Update" forState:UIControlStateNormal];
     self.profileView.hidden = NO;
     self.profileTable.hidden = NO;
