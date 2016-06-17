@@ -712,12 +712,12 @@
  * update progress in the bottom info bar.
  */
 - (void)updateProgress{
-    int caloriesTotal = 0;
-    int sodiumTotal = 0;
+    float caloriesTotal = 0;
+    float sodiumTotal = 0;
     float fluidTotal = 0;
-    int proteinTotal = 0;
-    int carbTotal = 0;
-    int fatTotal = 0;
+    float proteinTotal = 0;
+    float carbTotal = 0;
+    float fatTotal = 0;
     for (FoodConsumptionRecord *item in self.foodConsumptionRecords) {
         caloriesTotal += [item.foodProduct.energy intValue] * [item.quantity floatValue];
         sodiumTotal += [item.foodProduct.sodium intValue] * [item.quantity floatValue];
@@ -727,8 +727,8 @@
         fatTotal += [item.foodProduct.fat floatValue] * [item.quantity floatValue];
     }
     
-    self.caloriesProgess.lblCurrent.text = [NSString stringWithFormat:@"%d", caloriesTotal];
-    self.sodiumProgress.lblCurrent.text = [NSString stringWithFormat:@"%d", sodiumTotal];
+    self.caloriesProgess.lblCurrent.text = [NSString stringWithFormat:@"%d", (int) caloriesTotal];
+    self.sodiumProgress.lblCurrent.text = [NSString stringWithFormat:@"%d", (int) sodiumTotal];
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
     [numberFormatter setPositiveFormat:@"#.##"];
@@ -769,9 +769,9 @@
     
     int maxConsumption = [appDelegate.loggedInUser.dailyTargetEnergy intValue];
     
-    self.proteinProgess.lblPercent.text = [NSString stringWithFormat:@"%10d g", proteinTotal];
-    self.carbProgress.lblPercent.text = [NSString stringWithFormat:@"%10d g", carbTotal];
-    self.fatProgress.lblPercent.text = [NSString stringWithFormat:@"%10d g", fatTotal];
+    self.proteinProgess.lblPercent.text = [NSString stringWithFormat:@"%10d g", (int) proteinTotal];
+    self.carbProgress.lblPercent.text = [NSString stringWithFormat:@"%10d g", (int) carbTotal];
+    self.fatProgress.lblPercent.text = [NSString stringWithFormat:@"%10d g", (int) fatTotal];
     
     self.proteinProgess.currentProgress = 1.0;
     self.carbProgress.currentProgress =  1.0;

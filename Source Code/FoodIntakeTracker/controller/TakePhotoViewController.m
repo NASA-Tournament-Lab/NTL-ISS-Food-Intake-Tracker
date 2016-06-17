@@ -183,34 +183,24 @@
         CGFloat r = self.imgFood.image.size.width / self.imgFood.image.size.height;
         UIImage *resized = [self resizeImage:self.imgFood.image newSize:CGSizeMake(r * 800, 800)];
         NSString *imagePath = [Helper saveImage:UIImageJPEGRepresentation(resized, 0.9)];
-        adhocFoodProduct.foodImage.filename = imagePath;
 
-        // @TODO
-        /*StringWrapper *stringWrapper = [[StringWrapper alloc] initWithEntity:[NSEntityDescription
-                                                                              entityForName:@"StringWrapper"
-                                                                              inManagedObjectContext:
-                                                                              foodProductService.managedObjectContext]
-                                              insertIntoManagedObjectContext:nil];
-        stringWrapper.value = self.lblFoodCategory.text;
-        stringWrapper.synchronized = @NO;
-        stringWrapper.removed = @NO;
-        adhocFoodProduct.categories = [NSMutableSet setWithObject:stringWrapper];*/
-        
+        [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser product:adhocFoodProduct error:&error];
+        if ([Helper displayError:error]) return;
+
         Media *media = [[Media alloc] initWithEntity:[NSEntityDescription
                                                       entityForName:@"Media"
                                                       inManagedObjectContext:foodProductService.managedObjectContext]
-                      insertIntoManagedObjectContext:nil];
+                      insertIntoManagedObjectContext:foodProductService.managedObjectContext];
         media.filename = imagePath;
         media.removed = @NO;
         media.synchronized = @NO;
 
-        adhocFoodProduct.images = [NSSet setWithObject:media];
-        
-        [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser product:adhocFoodProduct error:&error];
-        
-        if ([Helper displayError:error]) {
-            return;
-        }
+        adhocFoodProduct.foodImage = media;
+        [adhocFoodProduct addImagesObject:media];
+
+        error = nil;
+        [foodProductService updateAdhocFoodProduct:adhocFoodProduct error:&error];
+        if ([Helper displayError:error]) return;
         
         [resultFoods addObject:adhocFoodProduct];
         [self buildResults];
@@ -281,7 +271,7 @@
         media.synchronized = @NO;
 
         adhocFoodProduct.foodImage = media;
-        adhocFoodProduct.images = [NSSet setWithObject:media];
+        [adhocFoodProduct addImagesObject:media];
 
         error = nil;
         [foodProductService updateAdhocFoodProduct:adhocFoodProduct error:&error];
@@ -315,6 +305,8 @@
 
         foodProduct.foodImage = media;
         [foodProduct addImagesObject:media];
+
+        foodProduct.synchronized = @NO;
         
         [[foodProduct managedObjectContext] save:nil];
         [[foodProduct managedObjectContext] unlock];

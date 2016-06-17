@@ -182,6 +182,8 @@ var updateValue = function(req, res, remove) {
     checkCategoryOrigin(queryFunctions);
 
     var object = isFood ? FoodProduct : NasaUser;
+    var origin, originName;
+    var originChanged = false, barcodeChanged = false, fullnameChanged = false;
     queryFunctions.push(function(callback) {
         object.findById(req.params.id, function(err, result) {
             if (!isEmpty(err)) {
@@ -189,6 +191,12 @@ var updateValue = function(req, res, remove) {
             } else {
                 newValue = JSON.parse(JSON.stringify(result));
                 var tmpBody = JSON.parse(JSON.stringify(req.body));
+
+                origin = newValue["origin"];
+                allOrigins.forEach(function(o) {
+                    if (o.id == origin) originName = o.value;
+                });
+
                 for (var key in tmpBody) {
                     if (tmpBody.hasOwnProperty(key)) {
                         var value = tmpBody[key];
@@ -197,6 +205,7 @@ var updateValue = function(req, res, remove) {
                         } else if (isEmpty(value)) {
                             delete newValue[key];
                         } else {
+                            barcodeChanged = (key == 'barcode' && newValue[key] !== value);
                             newValue[key] = value;
                         }
                     }
@@ -205,9 +214,17 @@ var updateValue = function(req, res, remove) {
                 newValue["removed"] = remove == 1;
                 if (isFood) {
                   newValue["active"] = true;
+
+                  allOrigins.forEach(function(o) {
+                      if (o.value == newValue["origin"]) newValue["origin"] = o.id;
+                  });
+                  originChanged = (origin !== newValue["origin"]);
                 } else {
+                  var fullName = newValue["firstName"].toString() + " " + newValue["lastName"].toString();
+                  fullnameChanged = newValue["fullName"] != fullName;
+                  newValue["fullName"] = fullName;
                   newValue["admin"] = newValue["admin"] == 1;
-                  newValue["fullName"] = newValue["firstName"].toString() + " " + newValue["lastName"].toString();
+
                   delete newValue["firstName"];
                   delete newValue["lastName"];
                 }
@@ -276,7 +293,12 @@ var updateValue = function(req, res, remove) {
                     var foods = JSON.parse(JSON.stringify(results));
                     for (var i = 0; i < foods.length; i++) {
                         var value = foods[i];
-                        if (!isEmpty(value.barcode) && !isEmpty(newValue["barcode"]) && value.barcode.toString().trim() === newValue["barcode"].toString().trim()) {
+                        if (!isEmpty(value.name) && value.name.toString().trim().toLowerCase() === newValue["name"].trim().toLowerCase() &&
+                            !isEmpty(value.origin) && value.origin.trim().toLowerCase() == newValue["origin"].trim().toLowerCase() && originChanged) {
+                            callback('Food with name "' + value.name + '" and origin "' + originName + '" already exists');
+                            return;
+                        }
+                        if (!isEmpty(value.barcode) && !isEmpty(newValue["barcode"]) && value.barcode.toString().trim() === newValue["barcode"].toString().trim() && barcodeChanged) {
                             callback('Food with barcode "' + value.barcode + '" already exists');
                             return;
                         }
@@ -305,13 +327,6 @@ var updateValue = function(req, res, remove) {
                 newValue["category_uuids"] = newValue["categoriesId"].split(',');
             }
 
-            var origin;
-            allOrigins.forEach(function(o) {
-                if (o.value == newValue["origin"])
-                    origin = o.id;
-            });
-            newValue["origin"] = origin;
-
             // clean up
             delete newValue["categories"];
             delete newValue["categoriesId"];
@@ -319,6 +334,25 @@ var updateValue = function(req, res, remove) {
 
             callback(null);
         });
+    } else {
+      // check user exists
+      queryFunctions.push(function(callback) {
+          NasaUser.find(function(err, results) {
+              if (err) {
+                  callback(err);
+              } else {
+                  var users = JSON.parse(JSON.stringify(results));
+                  for (var i = 0; i < users.length; i++) {
+                      var value = users[i];
+                      if (!isEmpty(value.fullName) && value.fullName.toString().trim().toLowerCase() === newValue["fullName"].trim().toLowerCase() && fullnameChanged) {
+                          callback('User with name "' + value.fullName + '" already exists!');
+                          return;
+                      }
+                  }
+                  callback(null);
+              }
+          });
+      });
     }
 
     queryFunctions.push(function(callback) {
@@ -581,11 +615,9 @@ app.post('/food', function(req, res) {
 
     queryFunctions.push(function(callback) {
         // update origin
-        var origin = '';
-        var originName = '';
+        var origin, originName;
         allOrigins.forEach(function(o) {
-          if (o.value == newValue["origin"])
-            origin = o.id;
+          if (o.value == newValue["origin"]) origin = o.id;
         });
         originName = newValue["origin"];
         newValue["origin"] = origin;
@@ -823,8 +855,7 @@ app.get('/food/:id', function(req, res) {
             }
 
             allOrigins.forEach(function(o) {
-                if (o.id == editObject["origin"])
-                    editObject["origin"] = o.value;
+                if (o.id == editObject["origin"]) editObject["origin"] = o.value;
             });
 
             console.log("Result: " + JSON.stringify(editObject));
