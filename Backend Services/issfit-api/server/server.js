@@ -325,6 +325,25 @@ var updateValue = function(req, res, remove) {
 
             callback(null);
         });
+    } else {
+      // check user exists
+      queryFunctions.push(function(callback) {
+          NasaUser.find(function(err, results) {
+              if (err) {
+                  callback(err);
+              } else {
+                  var users = JSON.parse(JSON.stringify(results));
+                  for (var i = 0; i < users.length; i++) {
+                      var value = users[i];
+                      if (!isEmpty(value.fullName) && value.fullName.toString().trim().toLowerCase() === newValue["fullName"].trim().toLowerCase()) {
+                          callback('User with name "' + value.fullName + '" already exists!');
+                          return;
+                      }
+                  }
+                  callback(null);
+              }
+          });
+      });
     }
 
     queryFunctions.push(function(callback) {
