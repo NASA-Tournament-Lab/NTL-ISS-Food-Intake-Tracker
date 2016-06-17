@@ -183,7 +183,7 @@ var updateValue = function(req, res, remove) {
 
     var object = isFood ? FoodProduct : NasaUser;
     var origin, originName;
-    var originChanged = false, barcodeChanged = false, fullnameChanged = false;
+    var foodChanged = false, barcodeChanged = false, fullnameChanged = false;
     queryFunctions.push(function(callback) {
         object.findById(req.params.id, function(err, result) {
             if (!isEmpty(err)) {
@@ -205,7 +205,8 @@ var updateValue = function(req, res, remove) {
                         } else if (isEmpty(value)) {
                             delete newValue[key];
                         } else {
-                            barcodeChanged = (key == 'barcode' && newValue[key] !== value);
+                            if (key == 'barcode') barcodeChanged = newValue[key] != value;
+                            if (key == 'name') foodChanged = newValue[key] != value;
                             newValue[key] = value;
                         }
                     }
@@ -218,7 +219,7 @@ var updateValue = function(req, res, remove) {
                   allOrigins.forEach(function(o) {
                       if (o.value == newValue["origin"]) newValue["origin"] = o.id;
                   });
-                  originChanged = (origin !== newValue["origin"]);
+                  foodChanged = foodChanged || (origin !== newValue["origin"]);
                 } else {
                   var fullName = newValue["firstName"].toString() + " " + newValue["lastName"].toString();
                   fullnameChanged = newValue["fullName"] != fullName;
@@ -294,7 +295,7 @@ var updateValue = function(req, res, remove) {
                     for (var i = 0; i < foods.length; i++) {
                         var value = foods[i];
                         if (!isEmpty(value.name) && value.name.toString().trim().toLowerCase() === newValue["name"].trim().toLowerCase() &&
-                            !isEmpty(value.origin) && value.origin.trim().toLowerCase() == newValue["origin"].trim().toLowerCase() && originChanged) {
+                            !isEmpty(value.origin) && value.origin.trim().toLowerCase() == newValue["origin"].trim().toLowerCase() && foodChanged) {
                             callback('Food with name "' + value.name + '" and origin "' + originName + '" already exists');
                             return;
                         }

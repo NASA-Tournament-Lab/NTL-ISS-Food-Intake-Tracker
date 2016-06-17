@@ -124,10 +124,7 @@ html
 						h3!=title
 						if editKeys.indexOf(key) != -1
 							- var value = obj[key]
-							if key == 'name'
-								p=value
-								input(type='hidden', value=value, name=key, id=key)
-							else if key == 'admin'
+							if key == 'admin'
 								select(id=key, name=key)
 									option(value=0, selected=value) No
 									option(value=1, selected=value) Yes
@@ -170,4 +167,4 @@ html
 						if !editLock
 							span(id="delete-button", class="button") Delete
 						if editLock
-							span(id="force-origin", class="button") Release Lock
+							span(id="force-button", class="button") Release Lock
