@@ -1145,6 +1145,7 @@ app.get('/delete/user/:id', function(req, res) {
 
     queryFunctions.push(function(object, callback) {
         object.removed = true;
+        object.modifiedDate = new Date();
         object.save(function(err) {
             callback(err);
         });
@@ -1180,6 +1181,7 @@ app.get('/delete/food/:id', function(req, res) {
 
     queryFunctions.push(function(object, callback) {
         object.removed = true;
+        object.modifiedDate = new Date();
         object.save(function(err) {
             callback(err);
         });
