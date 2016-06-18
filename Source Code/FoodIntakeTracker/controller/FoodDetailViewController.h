@@ -33,7 +33,7 @@
  * @version 1.1
  * @since 1.0
  */
-@interface FoodDetailViewController : UIViewController
+@interface FoodDetailViewController : UIViewController<UITextFieldDelegate>
 
 /* the comment text view */
 @property (weak, nonatomic) IBOutlet UITextView *txtComment;

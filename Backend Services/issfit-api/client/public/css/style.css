@@ -53,5 +53,6 @@ select.error, textarea.error, input.error {
     outline-color: #FF0000;
 }
 .ui-dialog {
-	position: fixed !important;
+    position: fixed !important;
+    top: 30% !important;
 }

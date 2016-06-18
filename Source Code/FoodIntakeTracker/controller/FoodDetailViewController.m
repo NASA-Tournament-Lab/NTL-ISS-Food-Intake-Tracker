@@ -48,6 +48,7 @@
     [super viewDidLoad];
     self.txtFoodName.text = self.foodConsumptionRecord.foodProduct.name;
     self.txtFoodName.userInteractionEnabled = [self.foodConsumptionRecord.foodProduct isKindOfClass:[AdhocFoodProduct class]];
+    self.txtFoodName.delegate = self;
     self.lbltitle.font = [UIFont fontWithName:@"Bebas" size:24];
     
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
@@ -201,6 +202,11 @@
     self.txtQuantity.text = [numberFormatter stringFromNumber:[NSNumber numberWithFloat:quantity]];
 
     self.btnSave.enabled = YES;
+}
+
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    self.btnSave.enabled = ![self.foodConsumptionRecord.foodProduct.name isEqualToString:textField.text];
+    return YES;
 }
 
 @end
