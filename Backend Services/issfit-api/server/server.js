@@ -173,7 +173,7 @@ var saveImageToDB = function(image, callback) {
     }
 }
 
-var updateValue = function(req, res, remove) {
+var updateValue = function(req, res) {
     var newValue = {};
 
     var isFood = req.url.indexOf('food') != -1;
@@ -212,7 +212,7 @@ var updateValue = function(req, res, remove) {
                     }
                 }
 
-                newValue["removed"] = remove == 1;
+                newValue["removed"] = false;
                 if (isFood) {
                   newValue["active"] = true;
 
@@ -278,13 +278,7 @@ var updateValue = function(req, res, remove) {
         }
     }
 
-    var message = "";
-    if (remove) {
-        message = isFood ? "Food Deleted" : "User Deleted";
-    } else {
-        message = isFood ? "Food Data Updated" : "User Profile Updated";
-    }
-
+    var message = isFood ? "Food Data Updated" : "User Profile Updated";
     if (isFood) { // execute for FoodProduct only
         queryFunctions.push(function(callback) {
             FoodProduct.find(function(err, results) {
@@ -445,7 +439,7 @@ app.get('/', function (req, res) {
 
 // Get user and foods list
 app.get('/users', function (req, res) {
-    NasaUser.find(function(err, results) {
+    NasaUser.find({ where : {removed: false} }, function(err, results) {
         if(err) {
             return console.error('error running query', err);
         }
@@ -483,7 +477,7 @@ app.get('/foods', function (req, res) {
         return;
     }
 
-    FoodProduct.find(function(err, results) {
+    FoodProduct.find({ where : {removed: false} }, function(err, results) {
         if(err) {
             return console.error('error running query', err);
         }
@@ -993,11 +987,11 @@ app.get('/user/:id', function(req, res) {
 // Update food / user
 
 app.post('/food/:id', function(req, res) {
-    updateValue(req, res, false);
+    updateValue(req, res);
 });
 
 app.post('/user/:id', function(req, res) {
-    updateValue(req, res, false);
+    updateValue(req, res);
 });
 
 app.post('/reports', function(req, res) {
@@ -1121,11 +1115,89 @@ app.post('/import', function(req, res) {
 
 // Delete food/user and user lock
 app.get('/delete/user/:id', function(req, res) {
-    updateValue(req, res, true);
+    var queryFunctions = [];
+
+	// check userlock exists
+	queryFunctions.push(function(callback) {
+		UserLock.find({ where : {user_uuid : req.params.id} }, function(err, results) {
+			if (!isEmpty(err)) {
+				callback(err);
+			} else {
+				if (!isEmpty(results)) {
+					var rows = JSON.parse(JSON.stringify(results));
+					callback("User is being used by device: " + rows[0]["device_uuid"]);
+				} else {
+					callback(null);
+				}
+			}
+		});
+	});
+
+    queryFunctions.push(function(callback) {
+        NasaUser.findById(req.params.id, function(err, object) {
+            if (!isEmpty(err)) {
+                callback(err);
+            } else {
+                callback(null, object);
+            }
+        });
+    });
+
+    queryFunctions.push(function(object, callback) {
+        object.removed = true;
+        object.save(function(err) {
+            callback(err);
+        });
+    });
+
+    async.waterfall(
+        queryFunctions,
+        function (err) {
+            if (err != null) {
+                console.log("Error while updating value:\n\t" + JSON.stringify(err));
+                req.flash('error', JSON.stringify(err));
+                res.redirect('/user/' + req.params.id);
+            } else {
+                req.flash('currentSelectedTab', '0');
+                req.flash('message', "User Deleted");
+                res.redirect('/');
+            }
+    });
 });
 
 app.get('/delete/food/:id', function(req, res) {
-    updateValue(req, res, true);
+    var queryFunctions = [];
+
+    queryFunctions.push(function(callback) {
+        FoodProduct.findById(req.params.id, function(err, object) {
+            if (!isEmpty(err)) {
+                callback(err);
+            } else {
+                callback(null, object);
+            }
+        });
+    });
+
+    queryFunctions.push(function(object, callback) {
+        object.removed = true;
+        object.save(function(err) {
+            callback(err);
+        });
+    });
+
+    async.waterfall(
+        queryFunctions,
+        function (err) {
+            if (err != null) {
+                console.log("Error while updating value:\n\t" + JSON.stringify(err));
+                req.flash('error', JSON.stringify(err));
+                res.redirect('/food/' + req.params.id);
+            } else {
+                req.flash('currentSelectedTab', '1');
+                req.flash('message', "Food Deleted");
+                res.redirect('/');
+            }
+    });
 });
 
 app.get('/force/user/:id', function(req, res) {
