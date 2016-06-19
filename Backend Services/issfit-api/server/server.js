@@ -206,8 +206,8 @@ var updateValue = function(req, res) {
                             delete newValue[key];
                         } else {
                             if (key == 'barcode') barcodeChanged = newValue[key] != value;
-                            if (key == 'name') foodChanged = newValue[key] != value;
-                            newValue[key] = value;
+                            if (key == 'name') foodChanged = newValue[key] != value.trim();
+                            newValue[key] = value !== undefined ? value.trim() : value;
                         }
                     }
                 }
@@ -221,8 +221,8 @@ var updateValue = function(req, res) {
                   });
                   foodChanged = foodChanged || (origin !== newValue["origin"]);
                 } else {
-                  var fullName = newValue["firstName"].toString() + " " + newValue["lastName"].toString();
-                  fullnameChanged = newValue["fullName"] != fullName;
+                  var fullName = newValue["firstName"].trim().toString() + " " + newValue["lastName"].trim().toString();
+                  fullnameChanged = newValue["fullName"].toLowerCase() != fullName.toLowerCase();
                   newValue["fullName"] = fullName;
                   newValue["admin"] = newValue["admin"] == 1;
 
