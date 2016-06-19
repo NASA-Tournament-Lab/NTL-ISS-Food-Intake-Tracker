@@ -14,6 +14,8 @@
 	<string>data</string>
 	<key>HelpData</key>
 	<dict>
+		<key>Startup Screen</key>
+		<string>1-0-Startup-Screen</string>
 		<key>How to Login</key>
 		<string>1-1-How-to-Login</string>
 		<key>How to Register</key>

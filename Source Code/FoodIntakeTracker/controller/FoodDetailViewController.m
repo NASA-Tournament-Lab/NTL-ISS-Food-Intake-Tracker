@@ -204,8 +204,17 @@
     self.btnSave.enabled = YES;
 }
 
--(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    self.btnSave.enabled = ![self.foodConsumptionRecord.foodProduct.name isEqualToString:textField.text];
+#pragma mark - Delegate
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    self.btnSave.enabled = ![self.foodConsumptionRecord.foodProduct.name isEqualToString:newString];
+    return YES;
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    NSString *newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
+    self.btnSave.enabled = ![self.foodConsumptionRecord.comment isEqualToString:newString];
     return YES;
 }
 
