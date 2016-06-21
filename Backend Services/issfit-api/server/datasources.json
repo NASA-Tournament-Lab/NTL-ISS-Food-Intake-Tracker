@@ -3,7 +3,7 @@
     "host": "192.168.60.53",
     "port": 56283,
     "database": "pl_fit",
-    "password": "c5P8213BoKtH",
+    "password": "CHANGEME",
     "name": "pl_fit_db",
     "user": "pl_fit_db",
     "connector": "postgresql",
