@@ -17,6 +17,9 @@ var lwip          = require('lwip');
 var fs            = require('fs');
 var config        = require('./config.js');
 
+var https         = require('https');
+var sslConfig     = require('./ssl-config');
+
 var child_process = require('child_process');
 
 var maxAge = 60 * 60 * 1000;
@@ -1212,16 +1215,18 @@ app.get('/force/user/:id', function(req, res) {
     });
 });
 
+var httpsOptions = {
+  key: sslConfig.privateKey,
+  cert: sslConfig.certificate
+};
+
 app.start = function() {
   // start the web server
-  return app.listen(function() {
+  var port = app.get('port');
+
+  https.createServer(httpsOptions, app).listen(port, function() {
     app.emit('started');
-    var baseUrl = app.get('url').replace(/\/$/, '');
-    console.log('Web server listening at: %s', baseUrl);
-    if (app.get('loopback-component-explorer')) {
-      var explorerPath = app.get('loopback-component-explorer').mountPath;
-      console.log('Browse your REST API at %s%s', baseUrl, explorerPath);
-    }
+    console.log('Web server listening at: %s', app.get('url'));
   });
 };
 

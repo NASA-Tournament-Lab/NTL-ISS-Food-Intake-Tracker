@@ -32,7 +32,7 @@
       "required": true,
       "postgresql": {
         "columnName": "created_date",
-        "dataType": "timestamp without time zone"
+        "dataType": "timestamp with time zone"
       }
     },
     "modifiedDate": {
@@ -40,7 +40,7 @@
       "required": true,
       "postgresql": {
         "columnName": "modified_date",
-        "dataType": "timestamp without time zone"
+        "dataType": "timestamp with time zone"
       }
     }
   },
