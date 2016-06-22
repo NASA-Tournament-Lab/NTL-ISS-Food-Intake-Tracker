@@ -72,7 +72,7 @@ try:
     os.chdir(initialDirectory)
 
     # Connect to an existing database
-    conn = psycopg2.connect("dbname=" + database + " user=" + user + " password=" + password + " host=" + host+ " port=" + port)
+    conn = psycopg2.connect("dbname=" + database + " user=" + user + " password=" + password + " host=" + host+ " port=" + port + " sslmode=require")
     # Open a cursor to perform database operations
     cur = conn.cursor()
 
