@@ -1,8 +1,37 @@
 #! /usr/bin/python
 
 import getopt, sys, psycopg2, json, csv, os
-from datetime import datetime, date, timedelta
 import zipfile, shutil
+
+from datetime import datetime, date, timedelta
+from uuid import UUID
+
+def is_valid_uuid(uuid_to_test, version=4):
+    """
+    Check if uuid_to_test is a valid UUID.
+
+    Parameters
+    ----------
+    uuid_to_test : str
+    version : {1, 2, 3, 4}
+
+    Returns
+    -------
+    `True` if uuid_to_test is a valid UUID, otherwise `False`.
+
+    Examples
+    --------
+    >>> is_valid_uuid('c9bf9e57-1685-4c89-bafb-ff5af830be8a')
+    True
+    >>> is_valid_uuid('c9bf9e58')
+    False
+    """
+    try:
+        uuid_obj = UUID(uuid_to_test, version=version)
+    except:
+        return False
+
+    return str(uuid_obj) == uuid_to_test
 
 def xstr(s):
     return "" if s is None else s.encode('utf-8')
@@ -56,11 +85,11 @@ try:
 
     if startDate is None:
         sDate = datetime.strptime("19700101", "%Y%m%d")
-        eDate = datetime.combine(datetime.utcnow().date() + timedelta(180), datetime.min.time())
+        eDate = datetime.combine(datetime.utcnow().date() + timedelta(1), datetime.min.time())
     else:
         sDate = datetime.strptime(startDate, "%Y%m%d")
         if endDate is None:
-            eDate = datetime.combine(sDate + timedelta(180), datetime.min.time())
+            eDate = datetime.combine(sDate + timedelta(1), datetime.min.time())
         else:
             eDate = datetime.strptime(endDate, "%Y%m%d")
 
@@ -83,9 +112,12 @@ try:
         selectedArray = cur.fetchall()
     else:
         for user in selected.split(','):
-            cur.execute("SELECT uuid, full_name FROM nasa_user WHERE uuid = %s", (user,))
+            if is_valid_uuid(user):
+                cur.execute("SELECT uuid, full_name FROM nasa_user WHERE uuid = %s", (user,))
+            else:
+                cur.execute("SELECT uuid, full_name FROM nasa_user WHERE full_name =%s", (user,))
             selectedArray.append(cur.fetchone())
-    
+
     for cur_user in selectedArray:
         user = cur_user[0]
         fullName = xstr(cur_user[1]).strip()
@@ -112,6 +144,7 @@ try:
 
         cur.execute("SELECT timestamp, name, quantity, comments, images, voicerecordings FROM summary_view WHERE uuid = %s AND timestamp BETWEEN %s AND %s", (user, sDate, eDate))
         record = {}
+
         for cur_record in cur:
             record[u"timestamp"] = cur_record[0]
             record[u"food_name"] = cur_record[1]
@@ -130,18 +163,22 @@ try:
 
                 imagesToSave = []
                 for image in filter(None, record[u"images"]):
-                    cur.execute("SELECT filename, data FROM media WHERE uuid = %s", (xstr(image),))
-                    match = cur.fetchone()
+                    image_cur = conn.cursor()
+                    image_cur.execute("SELECT filename, data FROM media WHERE uuid = %s", (xstr(image),))
+                    match = image_cur.fetchone()
                     open("media/" + match[0], 'wb').write(str(match[1]))
                     imagesToSave.append(match[0])
+                    image_cur.close()
                 row.append(";".join(imagesToSave))
 
                 voicesToSave = []
                 for voice in filter(None, record[u"voicerecordings"]):
-                    cur.execute("SELECT filename, data FROM media WHERE uuid = %s", (xstr(voice),))
-                    match = cur.fetchone()
+                    voice_cur = conn.cursor()
+                    voice_cur.execute("SELECT filename, data FROM media WHERE uuid = %s", (xstr(voice),))
+                    match = voice_cur.fetchone()
                     open("media/" + match[0], 'wb').write(str(match[1]))
                     voicesToSave.append(match[0])
+                    voice_cur.close()
                 row.append(";".join(voicesToSave))
 
                 wr.writerow(row)
@@ -165,9 +202,9 @@ try:
     zipdir(initialDirectory, zipf)
     zipf.printdir()
     zipf.close()
-  
+
     if destPath is not None:
-        shutil.copy2('summary.zip', destPath)    
+        shutil.copy2('summary.zip', destPath + "/summary_" + datetime.utcnow().strftime("%Y%m%d%H%M%S") + ".zip")
 
     shutil.rmtree(initialDirectory)
 except getopt.GetoptError as err:
