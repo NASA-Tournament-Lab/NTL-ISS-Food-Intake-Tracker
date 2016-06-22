@@ -19,6 +19,10 @@ static WebserviceCoreData *instance;
 static Reachability* reach;
 static NSString* reachHostName = @"";
 
+@interface NSURLRequest (DummyInterface)
++ (void)setAllowsAnyHTTPSCertificate:(BOOL)allow forHost:(NSString*)host;
+@end
+
 @implementation WebserviceCoreData {
     BOOL canConnect;
 
@@ -68,16 +72,16 @@ static NSString* reachHostName = @"";
     if (!instance) {
         NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
         NSString *ipAddress = [standardUserDefaults objectForKey:@"address_preference"];
-        NSString *username = [standardUserDefaults objectForKey:@"username_preference"];
+        NSString *username = [standardUserDefaults objectForKey:@"user_preference"];
         NSString *password = [standardUserDefaults objectForKey:@"password_preference"];
         NSInteger port = [[standardUserDefaults objectForKey:@"port_preference"] integerValue];
-        NSString *url = [NSString stringWithFormat:@"http://%@:%d/api", ipAddress, port];
+        NSString *url = [NSString stringWithFormat:@"https://%@:%d/api", ipAddress, port];
 
-        NSString *token = [self base64EncodedStringFromString:[NSString stringWithFormat:@"%@:%@", username, password]];
+        NSString *base64token = [WebserviceCoreData base64EncodedStringFromString:[NSString stringWithFormat:@"%@:%@", username, password]];
 
         instance = [[WebserviceCoreData alloc] init];
         instance.adapter = [LBRESTAdapter adapterWithURL:[NSURL URLWithString:url]];
-        [instance.adapter setAccessToken:token];
+        [instance.adapter setAccessToken:[NSString stringWithFormat:@"Basic %@", base64token]];
     }
 
     return instance;
@@ -94,15 +98,27 @@ static NSString* reachHostName = @"";
 - (BOOL)connect_url {
     NSUserDefaults * standardUserDefaults = [NSUserDefaults standardUserDefaults];
     NSString *ipAddress = [standardUserDefaults objectForKey:@"address_preference"];
+    NSString *username = [standardUserDefaults objectForKey:@"user_preference"];
+    NSString *password = [standardUserDefaults objectForKey:@"password_preference"];
     NSInteger port = [[standardUserDefaults objectForKey:@"port_preference"] integerValue];
-    NSString *url = [NSString stringWithFormat:@"http://%@:%d/api", ipAddress, port];
+    NSString *url = [NSString stringWithFormat:@"https://%@:%d/api/Categories", ipAddress, port];
 
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]
-                                             cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
-                                         timeoutInterval:30];
+    NSString *token = [WebserviceCoreData base64EncodedStringFromString:[NSString stringWithFormat:@"%@:%@", username, password]];
+    NSString *authValue = [NSString stringWithFormat:@"Basic %@", token];
+
+
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]
+                                                           cachePolicy:NSURLRequestReloadIgnoringLocalAndRemoteCacheData
+                                                       timeoutInterval:30];
+    [request setValue:authValue forHTTPHeaderField:@"Authorization"];
+
     NSError *error = nil;
     NSURLResponse *response = nil;
+    [NSURLRequest setAllowsAnyHTTPSCertificate:YES forHost:[[NSURL URLWithString:url] host]];
     [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    if (error) {
+        NSLog(@"Connect error: %@", error);
+    }
     return error == nil;
 }
 
