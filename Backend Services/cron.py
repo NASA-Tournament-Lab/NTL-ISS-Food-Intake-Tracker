@@ -19,7 +19,7 @@ def ConfigSectionMap(section):
     return dict1
     
 Config = ConfigParser.ConfigParser()
-Config.read("/home/app/pl_fit/report/config.ini")
+Config.read("./config.ini")
 
 Crontab=ConfigSectionMap("Crontab")
 current_user=Crontab['current_user']
@@ -28,14 +28,14 @@ output_path=Crontab['path']
 users=Crontab['users']
 schedule=Crontab['schedule']
 
-Crontab=ConfigSectionMap("Database")
-host=Crontab['host']
-port=Crontab['port']
-user=Crontab['user']
-password=Crontab['password']
-database=Crontab['database']
+Database=ConfigSectionMap("Database")
+host=Database['host']
+port=Database['port']
+user=Database['user']
+password=Database['password']
+database=Database['database']
 
-users_cron = CronTab(user=True)
+users_cron = CronTab(user=current_user)
 
 args = " --host " + host + " --port " + port + " --user " + user + " --password " + password + " --database " + database + " --output " + output_path
 selected = None
