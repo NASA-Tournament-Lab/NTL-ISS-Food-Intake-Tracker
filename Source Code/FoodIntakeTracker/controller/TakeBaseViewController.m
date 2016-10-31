@@ -300,13 +300,15 @@
     NSManagedObjectContext *ctx = [DBHelper currentThreadMoc];
     [ctx lock];
     for (FoodProduct *food in resultFoods) {
-        for (Media *wrapper in food.images) {
-            [self removeImage:wrapper.filename];
+        if ([food isKindOfClass:[AdhocFoodProduct class]]) {
+            for (Media *wrapper in food.images) {
+                [self removeImage:wrapper.filename];
+                
+                [ctx deleteObject:wrapper];
+            }
             
-            [ctx deleteObject:wrapper];
+            [ctx deleteObject:food];
         }
-        
-        [ctx deleteObject:food];
     }
     [ctx save:nil];
     [ctx unlock];

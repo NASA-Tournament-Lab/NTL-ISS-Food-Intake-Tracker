@@ -58,5 +58,7 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>Can we access your camera in order to scan barcodes?</string>
 </dict>
 </plist>

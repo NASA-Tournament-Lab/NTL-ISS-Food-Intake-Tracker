@@ -583,16 +583,15 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         if (userLocks) {
             for (NSDictionary *dict in userLocks) {
                 NSString *uid = [dict objectForKey:@"userId"];
-                NSString *deviceId = [dict objectForKey:@"deviceid"];
+                NSString *deviceId = [dict objectForKey:@"deviceId"];
                 if ([uid isEqualToString:user.id]) {
                     result = [deviceId isEqualToString:deviceUuid];
+                    return;
                 }
             }
         }
 
-        [[WebserviceCoreData instance] insertUserLock:user];
-        
-        result = YES;
+        result = [[WebserviceCoreData instance] insertUserLock:user];
     });
 
     return result;

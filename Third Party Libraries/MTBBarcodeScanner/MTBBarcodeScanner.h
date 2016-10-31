@@ -34,6 +34,12 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 @property (nonatomic, assign) MTBTorchMode torchMode;
 
 /**
+ *  Allow the user to tap the previewView to focus a specific area.
+ *  Defaults to YES.
+ */
+@property (nonatomic, assign) BOOL allowTapToFocus;
+
+/**
  *  If set, only barcodes inside this area will be scanned.
  */
 @property (nonatomic, assign) CGRect scanRect;
@@ -48,7 +54,7 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  @property didStartScanningBlock
  @abstract
  Optional callback block that's called when the scanner finished initializing.
- 
+
  @discussion
  Optional callback that will be called when the scanner is initialized and the view
  is presented on the screen. This is useful for presenting an activity indicator
@@ -57,10 +63,18 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 @property (nonatomic, copy) void (^didStartScanningBlock)();
 
 /*!
+ @property didTapToFocusBlock
+ @abstract
+ Block that's called when the user taps the screen to focus the camera. If allowsTapToFocus
+ is set to NO, this will never be called.
+ */
+@property (nonatomic, copy) void (^didTapToFocusBlock)(CGPoint point);
+
+/*!
  @property resultBlock
  @abstract
  Block that's called for every barcode captured. Returns an array of AVMetadataMachineReadableCodeObjects.
- 
+
  @discussion
  The resultBlock is called once for every frame that at least one valid barcode is found.
  The returned array consists of AVMetadataMachineReadableCodeObject objects.
@@ -121,16 +135,19 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
  *  to the UIView given for previewView during initialization.
  *
  *  This method assumes you have already set the `resultBlock` property directly.
+ *
+ *  @param error Error supplied if the scanning could not start.
  */
-- (void)startScanning;
+- (void)startScanningWithError:(NSError **)error;
 
 /**
  *  Start scanning for barcodes. The camera input will be added as a sublayer
  *  to the UIView given for previewView during initialization.
  *
  *  @param resultBlock Callback block for captured codes. If the scanner was instantiated with initWithMetadataObjectTypes:previewView, only codes with a type given in metaDataObjectTypes will be reported.
+ *  @param error Error supplied if the scanning could not start.
  */
-- (void)startScanningWithResultBlock:(void (^)(NSArray *codes))resultBlock;
+- (void)startScanningWithResultBlock:(void (^)(NSArray *codes))resultBlock error:(NSError **)error;
 
 /**
  *  Stop scanning for barcodes. The live feed from the camera will be removed as a sublayer from the previewView given during initialization.
@@ -147,8 +164,18 @@ typedef NS_ENUM(NSUInteger, MTBTorchMode) {
 /**
  *  If using the front camera, switch to the back, or visa-versa.
  *  If this method is called when isScanning=NO, it has no effect
+ *
+ *  If the opposite camera is not available, this method will do nothing.
  */
 - (void)flipCamera;
+
+/**
+ *  If using the front camera, switch to the back, or visa-versa.
+ *  If this method is called when isScanning=NO, it has no effect
+ *
+ *  If the opposite camera is not available, the error property will explain the error.
+ */
+- (void)flipCameraWithError:(NSError **)error;
 
 /**
  *  Return a BOOL value that specifies whether the current capture device has a torch.

@@ -105,6 +105,8 @@
 
         // Update progress
         [self updateProgress:@0.05];
+
+        NSTimeInterval updateTime = [[NSDate date] timeIntervalSince1970];
         
         NSArray *allData = [coreData fetchAllObjects];
 
@@ -116,7 +118,6 @@
             CHECK_ERROR_AND_RETURN(e, error, @"Failed start fetch", DataUpdateErrorCode, YES, NO);
             return NO;
         }
-
 
         if (count < 0) {
             return NO;
@@ -232,7 +233,7 @@
             CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
         }
 
-        [self updateSyncTime:[[NSDate date] timeIntervalSince1970]];
+        [self updateSyncTime:updateTime];
         
         // Unlock the managedObjectContext
         [[self managedObjectContext] unlock];
