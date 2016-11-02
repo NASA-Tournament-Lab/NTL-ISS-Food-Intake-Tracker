@@ -706,7 +706,8 @@ static NSString* reachHostName = @"";
 
     NSNumber *lastSyncTime = [[NSUserDefaults standardUserDefaults] objectForKey:@"LastSynchronizedTime"];
     if (lastSyncTime != nil) {
-        lastSync = [NSDate dateWithTimeIntervalSince1970:(lastSyncTime.doubleValue - 10.f)];
+        const NSTimeInterval intervalMin = 10 * 60; // 10 minutes
+        lastSync = [NSDate dateWithTimeIntervalSince1970:(lastSyncTime.doubleValue - intervalMin)];
     }
 
     [rep invokeStaticMethod:@"filterAll" parameters:@{ @"filter[where][modifiedDate][gt]" : lastSync } success:^(id value) {

@@ -108,6 +108,7 @@
     [MTBBarcodeScanner requestCameraPermissionWithSuccess:^(BOOL success) {
         if (success) {
             isBusy = NO;
+            NSError *scanError;
             [scanner startScanningWithResultBlock:^(NSArray *codes) {
                 [scanner stopScanning];
                 
@@ -119,7 +120,7 @@
                 AVMetadataMachineReadableCodeObject *code = [codes firstObject];
                 NSString *result = code.stringValue;
                 
-                if ([code.type isEqualToString:AVMetadataObjectTypeEAN13Code]) {
+                if ([code.type isEqualToString:AVMetadataObjectTypeEAN13Code]) { // UPC A barcode
                     if ([result hasPrefix:@"0"] && [result length] > 1) {
                         result = [result substringFromIndex:1];
                     }
@@ -178,7 +179,9 @@
                 
                 [[self.view viewWithTag:BARCODE_VIEW_TAG] removeFromSuperview];
                 scanner = nil;
-            }];
+            } error:&scanError];
+
+           [Helper displayError:scanError];
         } else {
             [self.btnTake setHidden:NO];
             [self.lblTakeButtonTitle setHidden:NO];

@@ -199,12 +199,14 @@
     [[self managedObjectContext] lock];
 
     NSError *e = nil;
-    
+
     // Save any pending data
     [[self managedObjectContext] processPendingChanges];
     if (![self.managedObjectContext save:&e]) {
         CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
     }
+
+    NSTimeInterval updateTime = [[NSDate date] timeIntervalSince1970];
 
     // fetch all new objects from other devices
     NSArray *allData = [coreData fetchObjects];
@@ -323,7 +325,7 @@
     }
 
     if (totalChange > 0) {
-        [self updateSyncTime:[[NSDate date] timeIntervalSince1970]];
+        [self updateSyncTime:updateTime];
     }
 
     if (![self.managedObjectContext save:&e]) {
@@ -415,7 +417,7 @@
             }
         }
         
-        [self updateSyncTime:[[NSDate date] timeIntervalSince1970]];
+        [self updateSyncTime:updateTime];
     }
 
     // will merge the local changes to database
@@ -486,7 +488,7 @@
     }
 
     if (totalChange > 0) {
-        [self updateSyncTime:[[NSDate date] timeIntervalSince1970]];
+        [self updateSyncTime:updateTime];
     }
 
     // Unlock the managedObjectContext
