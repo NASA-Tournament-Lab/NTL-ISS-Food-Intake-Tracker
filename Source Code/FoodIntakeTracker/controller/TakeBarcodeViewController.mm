@@ -104,7 +104,8 @@
     [previewView setTag:BARCODE_VIEW_TAG];
     [self.view addSubview:previewView];
     scanner = [[MTBBarcodeScanner alloc] initWithPreviewView:previewView];
-    
+
+
     [MTBBarcodeScanner requestCameraPermissionWithSuccess:^(BOOL success) {
         if (success) {
             isBusy = NO;
@@ -143,16 +144,11 @@
                                  delegate:self];
                     }
                     else {
-                        [Helper displayError:error];
-                        return;
+                        [Helper showAlert:@"Error" message:error.userInfo[NSLocalizedDescriptionKey]
+                                 delegate:self];
                     }
                 } else {
-                    if ([resultFoods containsObject:foodProduct]) {
-                        float value = [foodProduct.quantity floatValue];
-                        foodProduct.quantity = [NSNumber numberWithFloat:value + 1.0f];
-                    } else {
-                        [resultFoods addObject:foodProduct];
-                    }
+                    [resultFoods addObject:foodProduct];
                     
                     self.resultView.hidden = NO;
                     self.imgFood.image = [Helper loadImage:foodProduct.foodImage.filename];
@@ -181,7 +177,7 @@
                 scanner = nil;
             } error:&scanError];
 
-           [Helper displayError:scanError];
+            [Helper displayError:scanError];
         } else {
             [self.btnTake setHidden:NO];
             [self.lblTakeButtonTitle setHidden:NO];
@@ -193,11 +189,29 @@
 }
 
 /**
+ * show the results panel.
+ * @param sender the button.
+ */
+- (IBAction)showResults:(id)sender {
+    if ([scanner isScanning]) {
+        [scanner stopScanning];
+        [self.btnTake setHidden:NO];
+        [self.lblTakeButtonTitle setHidden:NO];
+        [[self.view viewWithTag:BARCODE_VIEW_TAG] removeFromSuperview];
+        scanner = nil;
+    }
+
+    [super showResults:sender];
+}
+/**
  * This method will take another picture.
  * @param sender the button.
  */
 - (IBAction)takeAnotherPhoto:(id)sender {
     self.resultView.hidden = YES;
+    [self.btnTake setHidden:YES];
+    [self.lblTakeButtonTitle setHidden:YES];
+
     [self.foodAddedPopup setHidden:YES];
     
     [self startScan];

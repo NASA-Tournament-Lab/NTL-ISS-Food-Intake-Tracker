@@ -138,11 +138,16 @@
 - (void)buildResults {
     UIScrollView *scroll = self.resultsContentScrollView;
     scroll.contentSize = CGSizeMake(120 * resultFoods.count, 152);
+    int j = 0;
     for (int i = 0; i < resultFoods.count; i++) {
-        int x = i * 120;
-        
+
         FoodProduct *item = [resultFoods objectAtIndex:i];
-        
+        NSNumber *count = [self countFood:item] ;
+        if ([self containsFood:item endIndex:i]) {
+            continue;
+        }
+
+        int x = j * 120;
         UIView *v = [scroll viewWithTag:i + 1000];
         if (v == nil) {
             v = [[UIView alloc] initWithFrame:CGRectMake(x, 0, 120, 152)];
@@ -175,25 +180,53 @@
             UIImageView *imgCheck = [[UIImageView alloc] initWithFrame:CGRectMake(17, 22, 29, 29)];
             imgCheck.tag = i + 1000;
             [v addSubview:imgCheck];
-            
-            CustomBadge *badge = [CustomBadge customBadgeWithString:[item.quantity stringValue]
+
+            CustomBadge *badge = [CustomBadge customBadgeWithString:[count stringValue]
                                                           withStyle:[BadgeStyle oldStyle]];
             badge.frame = CGRectMake(87, 20, 27, 27);
+            badge.tag = i + 2000;
             [v addSubview:badge];
             
             [scroll addSubview:v];
+        } else {
+            CustomBadge *badge = [scroll viewWithTag:i + 2000];
+            [badge autoBadgeSizeWithString:[count stringValue]];
+            [badge setNeedsLayout];
         }
-        
+
         UIImageView *view = (UIImageView *) [v viewWithTag:i + 1000];
         if ([selectFoods containsObject:item]) {
             view.image = [UIImage imageNamed:@"btn-checkmark.png"];
         } else {
             view.image = nil;
         }
+
+        j++;
     }
     //[self.resultsContentScrollView.superview insertSubview:scroll belowSubview:self.resultsContentScrollView];
     //[self.resultsContentScrollView removeFromSuperview];
     //self.resultsContentScrollView = scroll;
+}
+
+
+- (BOOL)containsFood:(FoodProduct *) foodProduct endIndex:(NSInteger) end {
+    for (NSInteger i = 0; i < end; i++) {
+        FoodProduct *f = [resultFoods objectAtIndex:i];
+        if ([f.objectID isEqual:foodProduct.objectID]) {
+            return YES;
+        }
+    }
+    return NO;
+}
+
+- (NSNumber *)countFood:(FoodProduct *) foodProduct {
+    NSInteger count = 0;
+    for (FoodProduct *f in resultFoods) {
+        if ([f.objectID isEqual:foodProduct.objectID]) {
+            count++;
+        }
+    }
+    return [NSNumber numberWithInteger:count];
 }
 
 /**
@@ -219,9 +252,10 @@
  */
 - (void)addSelectedFoodsToConsumption {
     if ([selectFoods count] == 0) {
-        // Add the first one if none selected
-        // [selectFoods addObject:[resultFoods objectAtIndex:0]];
-        [selectFoods addObjectsFromArray:resultFoods];
+        [selectFoods addObjectsFromArray:resultFoods]; // no selection. Add all
+    } else {
+        [resultFoods removeAllObjects];
+        [resultFoods addObjectsFromArray:selectFoods];
     }
     
     consumptionViewController = [self.customTabBarController getConsumptionViewController];
@@ -232,9 +266,14 @@
         selectedDate = [NSDate date];
     }
     NSError *error;
-    for (FoodProduct *product in selectFoods) {
+    for (int i = 0; i < selectFoods.count; i++) {
+        FoodProduct *product = [selectFoods objectAtIndex:i];
+        if ([self containsFood:product endIndex:i]) {
+            continue;
+        }
+
         FoodConsumptionRecord *record = [recordService buildFoodConsumptionRecord:&error];
-        record.quantity = @1.0;
+        record.quantity = [self countFood:product];
         record.sodium = product.sodium;
         record.energy = product.energy;
         record.fluid = product.fluid;
@@ -373,6 +412,7 @@
     [UIView setAnimationDelegate:self];
     self.resultsView.frame = frame;
     [UIView commitAnimations];
+
 }
 
 /**
