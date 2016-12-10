@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+
+set -e
+set -x
 
 if [ "$#" -ne 6 ]; then
   echo "Usage: $0 host user db port FILE" >&2
@@ -18,9 +21,16 @@ PORT=$4
 PASSWORD=$5
 FILE_NAME=$6
 
-LOAD_CMD="copy food_tmp_table (name, categories, origin, barcode, fluid, energy, sodium, protein, carb, fat, image, deleted, version) FROM STDIN WITH (FORMAT 'csv', DELIMITER E',', HEADER);"
+if [ "$#" -eq 7 ]; then
+   DROP=$7
+fi
 
+LOAD_CMD="copy food_tmp_table (name, categories, origin, barcode, fluid, energy, sodium, protein, carb, fat, image, deleted, version) FROM STDIN WITH (FORMAT 'csv', DELIMITER E',', HEADER);"
 CONN_STR="postgresql://${USER}:${PASSWORD}@${HOST}:${PORT}/${DB}?sslmode=require"
+
+psql "${CONN_STR}" << EOF
+  TRUNCATE TABLE food_tmp_table;
+EOF
 
 cat "${FILE_NAME}" | psql "${CONN_STR}" -c "${LOAD_CMD}" > /dev/null
 ret=$?
@@ -29,7 +39,13 @@ if [ $ret -ne 0 ]; then
    exit $?
 fi
 
-psql "${CONN_STR}" -f loadFood.sql > /dev/null 2> /dev/null
+if [ "${DROP}" -eq "1" ]; then
+psql "${CONN_STR}" << EOF
+  UPDATE food_product SET removed = TRUE;
+EOF
+fi
+psql "${CONN_STR}" -f loadFood.sql > /dev/null 
+
 if [ $ret -ne 0 ]; then
    echo "Error update database"
    exit $?

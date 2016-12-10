@@ -21,7 +21,7 @@ def ConfigSectionMap(section):
 Config = ConfigParser.ConfigParser()
 Config.read("./config.ini")
 
-Crontab=ConfigSectionMap("Crontab")
+Crontab=ConfigSectionMap('Crontab')
 current_user=Crontab['current_user']
 base_path=Crontab['base_path']
 output_path=Crontab['path']
@@ -35,7 +35,7 @@ user=Database['user']
 password=Database['password']
 database=Database['database']
 
-users_cron = CronTab(user=current_user)
+users_cron = CronTab(user=True)
 
 args = " --host " + host + " --port " + port + " --user " + user + " --password " + password + " --database " + database + " --output " + output_path
 selected = None
@@ -55,5 +55,6 @@ elif schedule == 'monthly':
 else:
      assert False, "unknown schedule"
 
-users_cron.write()
+print job
 
+users_cron.write()	

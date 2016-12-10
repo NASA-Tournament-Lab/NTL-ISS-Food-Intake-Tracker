@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+
+set -e
+set -x
 
 if [ "$#" -ne 6 ]; then
   echo "Usage: $0 host user db port FILE" >&2
@@ -22,7 +25,7 @@ LOAD_CMD="copy user_tmp_table (full_name, admin, fluid, energy, sodium, protein,
 
 CONN_STR="postgresql://${USER}:${PASSWORD}@${HOST}:${PORT}/${DB}?sslmode=require"
 
-cat "${FILE_NAME}" | psql "${CONN_STR}" -w -c "${LOAD_CMD}" > /dev/null
+cat "${FILE_NAME}" | psql "${CONN_STR}" -w -c "${LOAD_CMD}"
 ret=$?
 if [ $ret -ne 0 ]; then
    echo "Error in CSV file"

@@ -13,4 +13,19 @@ div
 			input(type='radio', value='1', id='radioReport', name='radioReport')
 			| All Users Food Data Reports
 		p
-			input(type='submit',value='Run', class="goButton")
+			input(type='checkbox', name='details')
+			| Add food nutrition information in report
+		div(style='height: 50px; width: 80%;')
+			div(style='width:41%;float:left;')
+				input(type='text', id='startDate', name='startDate', style='margin-right: 1%;')
+				| Start date
+			div(style='width:41%;float:left;')
+				input(type='text', id='endDate', name='endDate', style='margin-right: 1%;')
+				| End date
+		p
+			input(type='submit',value='Run', class='goButton')
+script.
+	$(function() {
+		$( "#startDate" ).datepicker();
+		$( "#endDate" ).datepicker();
+	});
