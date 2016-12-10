@@ -39,6 +39,8 @@
 		4B3CD9441CFD3CAB0060EDCB /* Media+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3CD93B1CFD3CAB0060EDCB /* Media+CoreDataProperties.m */; };
 		4B3CD9451CFD3CAB0060EDCB /* Media.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3CD93D1CFD3CAB0060EDCB /* Media.m */; };
 		4B3CD94D1CFE66E00060EDCB /* WebserviceCoreData.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B3CD94C1CFE66E00060EDCB /* WebserviceCoreData.m */; };
+		4B3DA5B81DD3FEFE00B0F2FE /* HockeySDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B3DA5B61DD3FEFE00B0F2FE /* HockeySDK.framework */; };
+		4B3DA5B91DD3FEFE00B0F2FE /* HockeySDKResources.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 4B3DA5B71DD3FEFE00B0F2FE /* HockeySDKResources.bundle */; };
 		4B4810031CFFF6AA003C18C7 /* libLoopBack.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B480FF61CFFF377003C18C7 /* libLoopBack.a */; };
 		4B626FB4192B70B00080634C /* ISSFoodIntakeTracker23.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 4B626FB3192B70B00080634C /* ISSFoodIntakeTracker23.xcmappingmodel */; };
 		4BA6D2FA19DE2283007A52A9 /* libstdc++.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BA6D2F919DE2283007A52A9 /* libstdc++.6.dylib */; };
@@ -517,6 +519,8 @@
 		4B3CD93D1CFD3CAB0060EDCB /* Media.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Media.m; sourceTree = "<group>"; };
 		4B3CD94B1CFE66E00060EDCB /* WebserviceCoreData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebserviceCoreData.h; sourceTree = "<group>"; };
 		4B3CD94C1CFE66E00060EDCB /* WebserviceCoreData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebserviceCoreData.m; sourceTree = "<group>"; };
+		4B3DA5B61DD3FEFE00B0F2FE /* HockeySDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = HockeySDK.framework; sourceTree = "<group>"; };
+		4B3DA5B71DD3FEFE00B0F2FE /* HockeySDKResources.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = HockeySDKResources.bundle; sourceTree = "<group>"; };
 		4B480FEB1CFFF376003C18C7 /* LoopBack.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LoopBack.xcodeproj; path = LoopBack/LoopBack.xcodeproj; sourceTree = "<group>"; };
 		4B48260C1CAD4B6B00A08E32 /* ISSFoodIntakeTracker 5.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "ISSFoodIntakeTracker 5.xcdatamodel"; sourceTree = "<group>"; };
 		4B626FB3192B70B00080634C /* ISSFoodIntakeTracker23.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = ISSFoodIntakeTracker23.xcmappingmodel; sourceTree = "<group>"; };
@@ -983,6 +987,7 @@
 				4DF167FE17BD218900D3633F /* libresolv.dylib in Frameworks */,
 				4DF167FC17BD218000D3633F /* libiconv.dylib in Frameworks */,
 				4DF167FA17BD217700D3633F /* libz.dylib in Frameworks */,
+				4B3DA5B81DD3FEFE00B0F2FE /* HockeySDK.framework in Frameworks */,
 				4B2654C11D07DE61009025DE /* MobileCoreServices.framework in Frameworks */,
 				4B2654B91D07DB6A009025DE /* CoreLocation.framework in Frameworks */,
 				4B2C773F19908FA9009F8FB3 /* Security.framework in Frameworks */,
@@ -1015,11 +1020,21 @@
 			path = CustomBadge;
 			sourceTree = "<group>";
 		};
-		4B2C76B419908E90009F8FB3 /* Postgresql */ = {
+		4B3DA5B41DD3FEFE00B0F2FE /* HockeyappSDK */ = {
 			isa = PBXGroup;
 			children = (
+				4B3DA5B51DD3FEFE00B0F2FE /* HockeySDK.embeddedframework */,
 			);
-			name = Postgresql;
+			path = HockeyappSDK;
+			sourceTree = "<group>";
+		};
+		4B3DA5B51DD3FEFE00B0F2FE /* HockeySDK.embeddedframework */ = {
+			isa = PBXGroup;
+			children = (
+				4B3DA5B61DD3FEFE00B0F2FE /* HockeySDK.framework */,
+				4B3DA5B71DD3FEFE00B0F2FE /* HockeySDKResources.bundle */,
+			);
+			path = HockeySDK.embeddedframework;
 			sourceTree = "<group>";
 		};
 		4B480FEA1CFFF35A003C18C7 /* LoopBack */ = {
@@ -1223,10 +1238,10 @@
 		4DF1676A17BD20D500D3633F /* Third Party Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				4B3DA5B41DD3FEFE00B0F2FE /* HockeyappSDK */,
 				4B480FEA1CFFF35A003C18C7 /* LoopBack */,
 				4B08FF021B15606F00015C6B /* CustomBadge */,
 				4BF7B7261AF1BEA700DCC514 /* MTBBarcodeScanner */,
-				4B2C76B419908E90009F8FB3 /* Postgresql */,
 				4D64992C17CD13DC00C15B72 /* BNPieChart */,
 				4DF1678017BD20D500D3633F /* Reachability */,
 			);
@@ -1727,6 +1742,11 @@
 				TargetAttributes = {
 					E7C40720175FFA1F00C3649E = {
 						DevelopmentTeam = QTR37VF4PV;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};
@@ -2020,6 +2040,7 @@
 				4B0222401ADCC09900B0FF25 /* btn-delete-enabled-orange.png in Resources */,
 				E764ECC21788708700E7A98E /* Granola Bars.jpg in Resources */,
 				E764ECC31788708700E7A98E /* Granola Cereal.JPG in Resources */,
+				4B3DA5B91DD3FEFE00B0F2FE /* HockeySDKResources.bundle in Resources */,
 				4BDD29561AEA16BB006B3478 /* image074.jpg in Resources */,
 				4BDD279D1AEA12B6006B3478 /* 1-5-6-Add-Drinking-Water.html in Resources */,
 				4BDD29681AEA16BB006B3478 /* image059.png in Resources */,
@@ -2309,6 +2330,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/library/LoopBack",
+					"$(PROJECT_DIR)/library/HockeyappSDK/HockeySDK.embeddedframework",
 				);
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2340,6 +2362,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/library/LoopBack",
+					"$(PROJECT_DIR)/library/HockeyappSDK/HockeySDK.embeddedframework",
 				);
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
