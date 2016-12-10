@@ -2337,7 +2337,7 @@
 				GCC_PREFIX_HEADER = "FoodIntakeTracker/FoodIntakeTracker-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/library/LoopBack/**";
 				INFOPLIST_FILE = "FoodIntakeTracker/FoodIntakeTracker-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/library/Postgresql",
@@ -2369,7 +2369,7 @@
 				GCC_PREFIX_HEADER = "FoodIntakeTracker/FoodIntakeTracker-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/library/LoopBack/**";
 				INFOPLIST_FILE = "FoodIntakeTracker/FoodIntakeTracker-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/library/Postgresql",
