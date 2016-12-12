@@ -25,6 +25,8 @@
 //  F2Finish - NASA iPad App Updates - Round 3
 //
 
+#import <HockeySDK/HockeySDK.h>;
+
 #import "AppDelegate.h"
 #import "UserServiceImpl.h"
 #import "FoodProductServiceImpl.h"
@@ -108,6 +110,10 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
    
     lock = [[NSLock alloc] init];
     [lock setName:@"UpdateLock"];
+
+    [[BITHockeyManager sharedHockeyManager] configureWithIdentifier:@"c855ecd9723742fda8ec4e71c2228b8a"];
+    [[BITHockeyManager sharedHockeyManager] startManager];
+    [[BITHockeyManager sharedHockeyManager].authenticator authenticateInstallation];
     
     //http://stackoverflow.com/questions/17678881/how-to-change-status-bar-text-color-in-ios-7
     [application setStatusBarStyle:UIStatusBarStyleLightContent];

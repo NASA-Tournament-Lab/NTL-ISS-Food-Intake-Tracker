@@ -134,20 +134,32 @@
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
     NSError *error;
+
+    Category *vitamins = nil;
+    NSArray *resultCat = [foodProductService getAllProductCategories:&error];
+    NSMutableArray *filtered = [resultCat mutableCopy];
+    for (Category *category in resultCat) {
+        if ([[category value] isEqualToString:@"Vitamins / Supplements"]) {
+            vitamins = category;
+            [filtered removeObject:category];
+            break;
+        }
+    }
+
     categories = [NSDictionary dictionaryWithObjectsAndKeys:
                   [NSArray arrayWithObjects:@"All Food", nil],
                   @"All",
-                  [foodProductService getAllProductCategories:&error],
+                  filtered,
                   @"Food by Category",
                   [foodProductService getAllProductOrigins:&error],
                   @"Food by Country",
+                  [NSArray arrayWithObjects:vitamins, nil],
+                  @"Vitamins / Supplements",
                   [NSArray arrayWithObjects:@"All", @"This Week", @"This Month", nil],
                   @"My Recorded Foods",
-                  [NSArray arrayWithObjects:@"Vitamins / Supplements", nil],
-                  @"Vitamins / Supplements",
                   nil];
     categoriesKeys = [NSArray arrayWithObjects:@"All", @"Food by Category",
-                      @"Food by Country", @"My Recorded Foods", @"Vitamins / Supplements", nil];
+                      @"Food by Country", @"Vitamins / Supplements", @"My Recorded Foods", nil];
     
     sortByOptionArray = [NSMutableArray arrayWithObjects:
                          @"Alphabetically (A to Z)",
@@ -170,7 +182,7 @@
     [selectCategoryIndex setObject:@-1 forKey:@0];
     [selectCategoryIndex setObject:[NSMutableArray array] forKey:@1];
     [selectCategoryIndex setObject:[NSMutableArray array] forKey:@2];
-    [selectCategoryIndex setObject:@-1 forKey:@3];
+    [selectCategoryIndex setObject:[NSMutableArray array] forKey:@3];
     [selectCategoryIndex setObject:@-1 forKey:@4];
     
     UISwipeGestureRecognizer *ges = [[UISwipeGestureRecognizer alloc] initWithTarget:self
@@ -193,8 +205,16 @@
                 if (foodProductCategoryIndex != NSNotFound) {
                     [array addObject:[NSNumber numberWithInteger:foodProductCategoryIndex]];
                     noFilter = NO;
-                } else if ([[foodProductCategory value] isEqualToString:@"Vitamins / Supplements"]) {
-                    [selectCategoryIndex setObject:@0 forKey:@4];
+                }
+            }
+
+            categoriesList = (NSArray *)[categories objectForKey:@"Vitamins / Supplements"];
+            array = [selectCategoryIndex objectForKey:@3];
+
+            for (Category *foodProductCategory in appDelegate.loggedInUser.lastUsedFoodProductFilter.categories) {
+                NSInteger foodProductCategoryIndex = [categoriesList indexOfObject:foodProductCategory];
+                if (foodProductCategoryIndex != NSNotFound) {
+                    [array addObject:[NSNumber numberWithInteger:foodProductCategoryIndex]];
                     noFilter = NO;
                 }
             }
@@ -213,10 +233,10 @@
         }
         int favoriteWithinTimePeriod = [appDelegate.loggedInUser.lastUsedFoodProductFilter.favoriteWithinTimePeriod intValue];
         if (favoriteWithinTimePeriod == 7) {
-            [selectCategoryIndex setObject:@1 forKey:@3];
+            [selectCategoryIndex setObject:@1 forKey:@4];
             noFilter = NO;
         } else if (favoriteWithinTimePeriod == 30) {
-            [selectCategoryIndex setObject:@2 forKey:@3];
+            [selectCategoryIndex setObject:@2 forKey:@4];
             noFilter = NO;
         }
         self.optionListView.selectIndex = [self getSortOptionFromFilter:appDelegate.loggedInUser.lastUsedFoodProductFilter.sortOption.intValue];
@@ -283,8 +303,16 @@
             [filter.origins addObject:foodOrigin];
         }
     }
-    
-    NSInteger index = [[selectCategoryIndex objectForKey:@3] intValue];
+
+    if ([[selectCategoryIndex objectForKey:@3] count] > 0) {
+        for (NSNumber *index in [selectCategoryIndex objectForKey:@3]) {
+            Category *foodProductCategory = [(NSArray *)[categories objectForKey:@"Vitamins / Supplements"]
+                                             objectAtIndex:index.intValue];
+            [filter.categories addObject:foodProductCategory];
+        }
+    }
+
+    NSInteger index = [[selectCategoryIndex objectForKey:@4] intValue];
     if (index != -1) {
         filter.fetchUserAll = @YES;
         if (index == 1) {
@@ -1214,7 +1242,7 @@
         cell.textLabel.backgroundColor = [UIColor clearColor];
         
         BOOL found = false;
-        if (sec == 1 || sec == 2) {
+        if (sec > 0 && sec < 4) {
             found = [[selectCategoryIndex objectForKey:[NSNumber numberWithInteger:sec]]
                      containsObject:[NSNumber numberWithInteger:row]];
         } else {
@@ -1419,16 +1447,15 @@
     if(self.leftTable == tableView){
         if (indexPath.section == 0) {
             [selectCategoryIndex setObject:@0 forKey:@0];
-            for (int i = 1; i < 3; i++) {
+            for (int i = 1; i <= 3; i++) {
                 [selectCategoryIndex setObject:[NSMutableArray array] forKey:[NSNumber numberWithInt:i]];
             }
-            [selectCategoryIndex setObject:@-1 forKey:@3];
             [selectCategoryIndex setObject:@-1 forKey:@4];
         }
         else {
             NSNumber *key = [NSNumber numberWithInteger:indexPath.section];
             
-            if (indexPath.section == 1 || indexPath.section == 2) {
+            if (indexPath.section > 0 && indexPath.section < 4) {
                 NSMutableArray *array = [selectCategoryIndex objectForKey:key];
                 NSInteger index = [array indexOfObject:[NSNumber numberWithInteger:indexPath.row]];
                 if (index != NSNotFound) {
@@ -1445,16 +1472,14 @@
             }
         
             bool hasSelection = NO;
-            for (int i = 1; i < 3; i++) {
+            for (int i = 1; i <= 3; i++) {
                 if ([[selectCategoryIndex objectForKey:[NSNumber numberWithInt:i]] count] > 0) {
                     hasSelection = YES;
                 }
             }
-            if (hasSelection || [[selectCategoryIndex objectForKey:@3] intValue] != -1 ||
-                [[selectCategoryIndex objectForKey:@4] intValue] != -1) {
+            if (hasSelection || [[selectCategoryIndex objectForKey:@4] intValue] != -1) {
                 [selectCategoryIndex setObject:@-1 forKey:@0];
-            }
-            else {
+            } else {
                 [selectCategoryIndex setObject:@0 forKey:@0];
             }
             

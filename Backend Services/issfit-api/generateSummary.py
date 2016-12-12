@@ -50,7 +50,7 @@ def zipdir(path, zip):
             zip.write(os.path.join(root, file), os.path.join(root, file), zipfile.ZIP_DEFLATED)
 
 try:
-    optlist, args = getopt.getopt(sys.argv[1:], 's:e:u:d:p:h:t', ["user=", "database=", "password=", "host=", "port=", "selected=", "output="])
+    optlist, args = getopt.getopt(sys.argv[1:], 's:e:u:d:fp:h:t', ["user=", "database=", "password=", "host=", "port=", "selected=", "output="])
 
     user = None
     password = None
@@ -59,6 +59,7 @@ try:
     port  = None
     startDate = None
     endDate = None
+    foodDetail = False
     selected = None
     destPath = None
     for o, a in optlist:
@@ -76,6 +77,8 @@ try:
             startDate = a
         elif o == "-e":
             endDate = a
+        elif o == "-f":
+            foodDetail = True
         elif o == "--selected":
             selected = a
         elif o == "--output":
@@ -92,6 +95,9 @@ try:
             eDate = datetime.combine(sDate + timedelta(1), datetime.min.time())
         else:
             eDate = datetime.strptime(endDate, "%Y%m%d")
+
+    if eDate <= sDate:
+        assert False, "End date must be after start date"
 
     os.chdir("./reports")
 
@@ -140,18 +146,27 @@ try:
         wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
 
         # Create header
-        wr.writerow(["Username", "Date Time", "Food Product", "Quantity", "Comments", "Images", "Voices"])
+        if foodDetail == True:
+            wr.writerow(["Username", "Date Time", "Food Product", "Quantity", "Comments", "Images", "Voices", "Carb", "Energy", "Fat", "Fluid", "Protein", "Sodium"])
+        else:
+            wr.writerow(["Username", "Date Time", "Food Product", "Quantity", "Comments", "Images", "Voices"])
 
-        cur.execute("SELECT timestamp, name, quantity, comments, images, voicerecordings FROM summary_view WHERE uuid = %s AND timestamp BETWEEN %s AND %s", (user, sDate, eDate))
+        cur.execute("SELECT timestamp, name, carb, energy, fat, fluid, protein, sodium, quantity, comments, images, voicerecordings FROM summary_view WHERE uuid = %s AND timestamp BETWEEN %s AND %s", (user, sDate, eDate))
         record = {}
 
         for cur_record in cur:
             record[u"timestamp"] = cur_record[0]
             record[u"food_name"] = cur_record[1]
-            record[u"quantity"] = cur_record[2]
-            record[u"comments"] = xstr(cur_record[3])
-            record[u"images"] = xarray(cur_record[4])
-            record[u"voicerecordings"] = xarray(cur_record[5])
+            record[u"carb"] = cur_record[2]
+            record[u"energy"] = cur_record[3]
+            record[u"fat"] = cur_record[4]
+            record[u"fluid"] = cur_record[5]
+            record[u"protein"] = cur_record[6]
+            record[u"sodium"] = cur_record[7]
+            record[u"quantity"] = cur_record[8]
+            record[u"comments"] = xstr(cur_record[9])
+            record[u"images"] = xarray(cur_record[10])
+            record[u"voicerecordings"] = xarray(cur_record[11])
 
             try:
                 row = []
@@ -170,7 +185,7 @@ try:
                     imagesToSave.append(match[0])
                     image_cur.close()
                 row.append(";".join(imagesToSave))
-
+                
                 voicesToSave = []
                 for voice in filter(None, record[u"voicerecordings"]):
                     voice_cur = conn.cursor()
@@ -180,6 +195,14 @@ try:
                     voicesToSave.append(match[0])
                     voice_cur.close()
                 row.append(";".join(voicesToSave))
+
+                if foodDetail == True: 
+                    row.append(record[u"carb"])
+                    row.append(record[u"energy"])
+                    row.append(record[u"fat"])
+                    row.append(record[u"fluid"])
+                    row.append(record[u"protein"])
+                    row.append(record[u"protein"])
 
                 wr.writerow(row)
             except Exception as err:

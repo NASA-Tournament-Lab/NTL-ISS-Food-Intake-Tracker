@@ -5,9 +5,16 @@ div
 		p User CSV file:
 		p
 			input(type='file', id='userFileImport', title='Choose a file', name='userFileImport', accept='text/comma-separated-values, text/csv, application/csv')
+		p User ZIP file with images:
+		p
+			input(type='file', id='userImageFileImport', title='Choose a file', name='userImageFileImport', accept='application/zip, application/octet-stream')
+		p
 		p Food CSV file:
 		p
 			input(type='file', id='foodFileImport', title='Choose a file', name='foodFileImport', accept='text/comma-separated-values, text/csv, application/csv')
+		p
+			input(type="checkbox", name="clear", checked="true")
+			| Mark existing food as deleted	
 		p
 			input(type='submit', disabled='disabled', value='Import', class="goButton")
 script.

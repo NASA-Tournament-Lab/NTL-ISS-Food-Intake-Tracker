@@ -20,7 +20,12 @@ var config        = require('./config.js');
 var https         = require('https');
 var sslConfig     = require('./ssl-config');
 
+var unzip         = require('unzip');
+
 var child_process = require('child_process');
+
+var pg            = require('pg');
+var knex          = require('knex');
 
 var maxAge = 60 * 60 * 1000;
 var MAX_SIZE = 1024;
@@ -71,6 +76,15 @@ var NasaUser = app.loopback.getModel('NasaUser');
 var FoodProduct = app.loopback.getModel('FoodProduct');
 var Media = app.loopback.getModel('Media');
 var UserLock = app.loopback.getModel('UserLock');
+
+var connstr = 'postgres://' + config.db.username + ':' + config.db.password + '@' + config.db.host + ':' + config.db.port + '/' + config.db.database + '?ssl=true';
+
+
+pg.defaults.ssl = true;
+var knex = require('knex')({
+  client: 'pg',
+  connection: connstr
+});
 
 /**
  * Return an Object sorted by it's Key
@@ -127,6 +141,73 @@ var isEmpty = function(obj) {
     }
 
     return true;
+}
+
+var saveImageFromZip = function(zipFile) {
+    if (zipFile && zipFile.length > 0) {
+        var zip = zipFile[0].path;
+        console.log('Unzip file ' + zip);
+        var tmpzipDir = '/tmp/image-' + new Date().getTime();
+        fs.mkdirSync(tmpzipDir);
+        fs.createReadStream(zip).pipe(unzip.Extract({ path: tmpzipDir })).on('close', function() {
+            var queryFunctions = [];
+            var imageFiles = fs.readdirSync(tmpzipDir);
+            imageFiles.forEach(function(file) {
+                queryFunctions.push(function(callback) {
+                    saveImageToDB({originalname: file, path: tmpzipDir + '/' + file}, function(err, media) {
+                        if (!isEmpty(err)) {
+                            callback(err);
+                            return;
+                        }
+                        
+                        knex('nasa_user')
+                           .innerJoin('user_tmp_table', 'nasa_user.full_name', 'user_tmp_table.full_name')
+                           .where('user_tmp_table.profile_image', file)
+                           .pluck('uuid').then(function(uuids) {
+                                var innerQueryFunctions = [];
+                                console.log('uuids: ' + JSON.stringify(uuids));
+                                
+                                uuids.forEach(function(uuid) {
+                                   innerQueryFunctions.push(function(innerCallback) {
+                                       NasaUser.findById(uuid, function(err, result) {
+                                           if (!isEmpty(err)) {
+                                                innerCallback(err);
+                                                return;
+                                            }
+                                            if (!isEmpty(result)) {
+                                                var newValue = JSON.parse(JSON.stringify(result));
+                                                newValue['profileImage'] = media.id;
+                                                console.log('newValue' + JSON.stringify(newValue));
+                                                
+                                                NasaUser.upsert(newValue);
+                                                innerCallback(err);
+                                            }
+                                       });
+                                   });
+                                });
+                                
+                                async.waterfall(
+                                    innerQueryFunctions,
+                                    function (err, result) {
+                                        console.log('ended');
+                                        callback(err);
+                                    });
+                                
+                            });
+                    });
+                });
+            });
+            
+            async.waterfall(
+                queryFunctions,
+                function (err, result) {
+                    console.log('truncate');
+                    knex.table('user_tmp_table').truncate().return('finished');
+                });
+        });
+    } else {
+        knex.table('user_tmp_table').truncate().return('finished');
+    }
 }
 
 /**
@@ -1017,6 +1098,17 @@ app.post('/reports', function(req, res) {
             return;
         }
     }
+    if (tmpBody.details == "on") {
+        args.push('-f');
+    }
+    if (tmpBody.startDate && tmpBody.startDate.trim().length > 0) {
+       var dates = tmpBody.startDate.split('/');
+       args.push('-s' + parseInt(dates[2]) + parseInt(dates[0]) + parseInt(dates[1]));   
+    }
+    if (tmpBody.endDate && tmpBody.endDate.trim().length > 0) {
+       var dates = tmpBody.endDate.split('/');
+       args.push('-e' + parseInt(dates[2]) + parseInt(dates[0]) + parseInt(dates[1])); 
+    }
 
     PythonShell.run('generateSummary.py', {
         args: args,
@@ -1046,11 +1138,21 @@ app.post('/reports', function(req, res) {
 app.post('/import', function(req, res) {
     req.flash('currentSelectedTab', '3');
 
+    var body = JSON.parse(JSON.stringify(req.body));
     var files = req["files"] !== undefined ? JSON.parse(JSON.stringify(req["files"])) : undefined;
     if (!isEmpty(files)) {
         var functions = [];
+        var zipFile = files.filter(function(file) { 
+            return file.fieldname == 'userImageFileImport';
+        });
+        
+        files = files.filter(function(file) { 
+            return file.fieldname != 'userImageFileImport';
+        });
+        
         for (var i = 0; i < files.length; i++) {
             var currentFile = files[i];
+            console.log('Current file: ' + JSON.stringify(currentFile));
             if (currentFile.fieldname == 'userFileImport' && currentFile.mimetype == 'text/csv') {
                 functions.push(function(callback) {
                     var path = currentFile['path'];
@@ -1063,7 +1165,7 @@ app.post('/import', function(req, res) {
                       path
                     ];
 
-                    child_process.execFile(__dirname + '/loadUser.sh', args, function(err, stdout, stderr) {
+                    child_process.execFile(__dirname + '/../loadUser.sh', args, function(err, stdout, stderr) {
                         if (err) {
                             callback(err + '\n' + stderr);
                         } else {
@@ -1085,6 +1187,10 @@ app.post('/import', function(req, res) {
                       path
                     ];
 
+                    if (body.clear == "on") {
+                        args.push("1");
+                    }
+
                     child_process.execFile(__dirname + '/../loadFood.sh', args, function(err, stderr, stdout) {
                         console.log('stdout: ' + stdout);
                         if (err) {
@@ -1094,8 +1200,6 @@ app.post('/import', function(req, res) {
                         }
                     });
                 });
-            } else {
-                callback('Unknown file: ' + currentFile.originalname);
             }
         }
 
@@ -1106,6 +1210,7 @@ app.post('/import', function(req, res) {
                     console.log('Error: ' + err);
                     req.flash('error', err);
                 } else {
+                    saveImageFromZip(zipFile);
                     req.flash('message', 'Bulk Upload Successful');
                 }
                 res.redirect('/');
@@ -1120,21 +1225,21 @@ app.post('/import', function(req, res) {
 app.get('/delete/user/:id', function(req, res) {
     var queryFunctions = [];
 
-	// check userlock exists
-	queryFunctions.push(function(callback) {
-		UserLock.find({ where : {user_uuid : req.params.id} }, function(err, results) {
-			if (!isEmpty(err)) {
-				callback(err);
-			} else {
-				if (!isEmpty(results)) {
-					var rows = JSON.parse(JSON.stringify(results));
-					callback("User is being used by device: " + rows[0]["device_uuid"]);
-				} else {
-					callback(null);
-				}
-			}
-		});
-	});
+    // check userlock exists
+    queryFunctions.push(function(callback) {
+        UserLock.find({ where : {user_uuid : req.params.id} }, function(err, results) {
+            if (!isEmpty(err)) {
+                callback(err);
+            } else {
+                if (!isEmpty(results)) {
+                    var rows = JSON.parse(JSON.stringify(results));
+                    callback("User is being used by device: " + rows[0]["device_uuid"]);
+                } else {
+                    callback(null);
+                }
+            }
+        });
+    });
 
     queryFunctions.push(function(callback) {
         NasaUser.findById(req.params.id, function(err, object) {
