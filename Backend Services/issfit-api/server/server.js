@@ -1287,10 +1287,9 @@ app.get('/delete/:id', function(req, res) {
                   });
                   queryFunctions.push(function(callback) {
                       var innerQueryFunctions = [];
-
                       user.toJSON().consumptionRecord.forEach(function(record) {
                           innerQueryFunctions.push(function(cb) {
-                              record.voiceRecordings.destroyAll(function(err, result) {
+                              record.toObject().voiceRecordings.destroyAll(function(err, result) {
                                   console.log('Deleted voiceRecordings with result: ' + JSON.stringify(result));
                                   cb(err);
                               });
