@@ -1286,12 +1286,6 @@ app.get('/delete/:id', function(req, res) {
                       });
                   });
                   queryFunctions.push(function(callback) {
-                      user.adhocFoodProduct.destroyAll(function(err, result) {
-                          console.log('Deleted AdhocFoodProduct with result: ' + JSON.stringify(result));
-                          callback(err);
-                      });
-                  });
-                  queryFunctions.push(function(callback) {
                       var innerQueryFunctions = [];
 
                       user.toJSON().consumptionRecord.forEach(function(record) {
@@ -1318,6 +1312,12 @@ app.get('/delete/:id', function(req, res) {
                   queryFunctions.push(function(callback) {
                       FoodProductFilter.destroyAll( { user_uuid : user.id }, function(err, result) {
                           console.log('Deleted FoodProductFilter with result: ' + JSON.stringify(result));
+                          callback(err);
+                      });
+                  });
+                  queryFunctions.push(function(callback) {
+                      user.adhocFoodProduct.destroyAll(function(err, result) {
+                          console.log('Deleted AdhocFoodProduct with result: ' + JSON.stringify(result));
                           callback(err);
                       });
                   });
