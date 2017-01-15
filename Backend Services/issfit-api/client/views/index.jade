@@ -11,6 +11,7 @@ html
 		script.
 			var load_data = !{tabsData};
 		script.
+			var downloadTimer, attempts = 30, deleteBusy = false;
 			var userTable = null, deletedTable = null, foodTable = null;
 			var userId = null;
 			var deleteUser = function(id) {
@@ -22,7 +23,6 @@ html
 				$("input[type=submit], input[type=button], a.button, span.button, button" ).button();
 				$("#tabs").tabs({
 					beforeLoad: function( event, ui) {
-						
 						if (undefined != userTable) {
 							userTable.destroy();
 						}
@@ -107,15 +107,40 @@ html
 						}
 					}
 				});
+				function startDownloadCheck(checkDownload) {
+					downloadTimer = window.setInterval( function() {
+						$.get('/delete/refresh/' + userId, function(data) {
+							if (data) {
+								if (data.success) {
+									window.clearInterval( downloadTimer );
+									window.location.href = '/delete/execute/' + userId;
+									userId = null;
+									return;
+								} else if (data.downloadComplete == -1) {
+									userId = null;
+									return window.clearInterval( downloadTimer );
+								}
+							}
+							attempts--;
+							if (attempts <= 0) {
+								userId = null;
+								window.clearInterval( downloadTimer );
+							}
+						});
+					}, 1000 );
+				}
 				$("#dialog-confirm").dialog({
 					autoOpen: false,
 					modal: true,
 					position: { my: 'bottom', at: 'center', of : window },
 					buttons: {
 						Ok: function() {
-							window.location.href = '/delete/' + userId;
+							if (deleteBusy) return;
+							deleteBusy = true;
 							$( this ).dialog( "close" );
-							userId = null;
+							window.location.href = '/delete/' + userId;
+							setTimeout(function() { deleteBusy = false; }, 300);
+							setTimeout(function() { startDownloadCheck(); }, 1000);
 						},
 						Cancel: function() {
 							$( this ).dialog( "close" );

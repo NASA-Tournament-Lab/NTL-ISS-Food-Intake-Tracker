@@ -27,7 +27,7 @@ var child_process = require('child_process');
 var pg            = require('pg');
 var knex          = require('knex');
 
-var maxAge = 60 * 60 * 1000;
+var maxAge = 24 * 3600 * 1000; // 1 day
 var MAX_SIZE = 1024;
 
 var foodKeys = ["name", "barcode", "energy", "sodium", "fluid", "protein", "carb", "fat", "categoriesName", "origin",
@@ -635,6 +635,7 @@ app.get('/import', function(req, res) {
 
 // Get user and foods list
 app.get('/delete', function (req, res) {
+    req.session.downloadComplete = 0;
     NasaUser.find({ where : { removed: true } }, function(err, results) {
         if (err) {
             return console.error('error running query', err);
@@ -1249,107 +1250,144 @@ app.post('/import', function(req, res) {
 });
 
 // Delete user food records
-app.get('/delete/:id', function(req, res) {
-  var args = ['--database=' + config.db.database,
-              '--user=' + config.db.username,
-              '--password=' + config.db.password,
-              '--host=' + config.db.host,
-              '--port=' + config.db.port,
-              '--selected=' + req.params.id,
-              '-f'];
+app.get('/delete/execute/:id', function(req, res) {
+    NasaUser.findById(req.params.id, function(err, user) {
+        var queryFunctions = [];
+        var profileImageId = user.profileImage;
 
-  PythonShell.run('generateSummary.py', {
-      args: args,
-      mode: 'text',
-      pythonPath: '/usr/bin/python',
-      scriptPath: __dirname + '/..'
-  }, function (err, results) {
-      if (err) {
-          console.log("Error: " + err.traceback);
-          res.status(err.status).end();
-          return;
-      }
-
-      res.download(__dirname + '/../reports/summary.zip', 'summary.zip', function (err) {
-          if (err) {
-              console.log('generateSummary.py error: ' + JSON.stringify(err));
-              res.status(err.status).end();
-          } else {
-              NasaUser.findById(req.params.id, function(err, user) {
-                  var queryFunctions = [];
-                  var profileImageId = user.profileImage;
-
-                  queryFunctions.push(function(callback) {
-                      UserLock.destroyAll({ user_uuid: user.id }, function(err, result) {
-                          console.log('Deleted UserLock with result: ' + JSON.stringify(result));
-                          callback(err);
-                      });
-                  });
-                  queryFunctions.push(function(callback) {
-                      var innerQueryFunctions = [];
-                      user.toJSON().consumptionRecord.forEach(function(record) {
-                          innerQueryFunctions.push(function(cb) {
-                              record.toObject().voiceRecordings.destroyAll(function(err, result) {
-                                  console.log('Deleted voiceRecordings with result: ' + JSON.stringify(result));
-                                  cb(err);
-                              });
-                          });
-                      });
-                      innerQueryFunctions.push(function(cb) {
-                          user.consumptionRecord.destroyAll(function(err, result) {
-                              console.log('Deleted FoodProductRecord with result: ' + JSON.stringify(result));
-                              cb(err);
-                          })
-                      });
-
-                      async.waterfall(
-                          innerQueryFunctions,
-                          function (err) {
-                              callback(err);
-                      });
-                  });
-                  queryFunctions.push(function(callback) {
-                      FoodProductFilter.destroyAll( { user_uuid : user.id }, function(err, result) {
-                          console.log('Deleted FoodProductFilter with result: ' + JSON.stringify(result));
-                          callback(err);
-                      });
-                  });
-                  queryFunctions.push(function(callback) {
-                      user.adhocFoodProduct.destroyAll(function(err, result) {
-                          console.log('Deleted AdhocFoodProduct with result: ' + JSON.stringify(result));
-                          callback(err);
-                      });
-                  });
-                  queryFunctions.push(function(callback) {
-                      user.destroy(function(err, result) {
-                          console.log('Deleted user with result: ' + JSON.stringify(result));
-                          callback(err);
-                      });
-                  });
-                  if (profileImageId) {
-                    queryFunctions.push(function(callback) {
-                        Media.destroyById(profileImageId, function(err, mediaResult) {
-                            console.log('Deleted media with result: ' + JSON.stringify(mediaResult));
-                            callback(err);
+        queryFunctions.push(function(callback) {
+            UserLock.destroyAll({ user_uuid: user.id }, function(err, result) {
+                console.log('Deleted UserLock with result: ' + JSON.stringify(result));
+                callback(err);
+            });
+        });
+        queryFunctions.push(function(callback) {
+            var innerQueryFunctions = [];
+            user.toJSON().consumptionRecord.forEach(function(record) {
+                innerQueryFunctions.push(function(cb) {
+                    if (record.voiceRecordings && record.voiceRecordings.length > 0) {
+                      FoodProductRecord.findById(record.id, function(err, r) {
+                        if (err) {
+                          cb(err); return;
+                        }
+                        r.voiceRecordings.destroyAll(function(err, result) {
+                            console.log('Deleted voiceRecordings with result: ' + JSON.stringify(result));
+                            cb(err);
                         });
-                    });
-                  }
+                      });
+                    } else {
+                      cb(null);
+                    }
+                });
+            });
+            innerQueryFunctions.push(function(cb) {
+                user.consumptionRecord.destroyAll(function(err, result) {
+                    console.log('Deleted FoodProductRecord with result: ' + JSON.stringify(result));
+                    cb(err);
+                })
+            });
 
-                  async.waterfall(
-                      queryFunctions,
-                      function (err, result) {
-                          if (err) {
-                              console.log('Error: ' + err);
-                              res.status(500).end();
-                          } else {
-                              req.flash('message', 'User Food Data Deleted');
-                              res.status(200).end();
-                          }
-                  });
+            async.waterfall(
+                innerQueryFunctions,
+                function (err) {
+                    callback(err);
+            });
+        });
+        queryFunctions.push(function(callback) {
+            FoodProductFilter.destroyAll( { user_uuid : user.id }, function(err, result) {
+                console.log('Deleted FoodProductFilter with result: ' + JSON.stringify(result));
+                callback(err);
+            });
+        });
+        queryFunctions.push(function(callback) {
+            user.adhocFoodProduct.destroyAll(function(err, result) {
+                console.log('Deleted AdhocFoodProduct with result: ' + JSON.stringify(result));
+                callback(err);
+            });
+        });
+        queryFunctions.push(function(callback) {
+            user.destroy(function(err, result) {
+                console.log('Deleted user with result: ' + JSON.stringify(result));
+                callback(err);
+            });
+        });
+        if (profileImageId) {
+          queryFunctions.push(function(callback) {
+              Media.destroyById(profileImageId, function(err, mediaResult) {
+                  console.log('Deleted media with result: ' + JSON.stringify(mediaResult));
+                  callback(err);
               });
-          }
-      });
-  });
+          });
+        }
+
+        async.waterfall(
+            queryFunctions,
+            function (err, result) {
+                if (err) {
+                    console.log('Error: ' + err);
+                    req.flash('error', 'User not deleted');
+                    req.flash('currentSelectedTab', '4');
+                    res.redirect('/');
+                } else {
+                    req.flash('message', 'User deleted');
+                    req.flash('currentSelectedTab', '4');
+                    res.redirect('/');
+                }
+        });
+    });
+})
+
+app.get('/delete/refresh/:id', function(req, res) {
+    if (req.session.downloadComplete == null || req.session.downloadComplete < 2) {
+        return res.json({
+          success: false,
+          downloadComplete: req.session.downloadComplete
+        });
+    }
+
+    res.json({
+      success: true
+    })
+});
+
+app.get('/delete/:id', function(req, res) {
+    var args = ['--database=' + config.db.database,
+                '--user=' + config.db.username,
+                '--password=' + config.db.password,
+                '--host=' + config.db.host,
+                '--port=' + config.db.port,
+                '--selected=' + req.params.id,
+                '-f'];
+
+    req.session.downloadComplete = 1;
+    PythonShell.run('generateSummary.py', {
+        args: args,
+        mode: 'text',
+        pythonPath: '/usr/bin/python',
+        scriptPath: __dirname + '/..'
+    }, function (err, results) {
+        if (err) {
+            console.log("Error: " + err.traceback);
+            res.status(err.status).end();
+            return;
+        }
+
+        console.log('Before download');
+        res.download(__dirname + '/../reports/summary.zip', 'summary.zip', function (err) {
+            if (err) {
+                console.log('generateSummary.py error: ' + JSON.stringify(err));
+                req.session.downloadComplete = -1;
+                req.session.save(function(err) {
+                  res.status(err.status).end();
+                });
+            } else {
+                req.session.downloadComplete = 2;
+                req.session.save(function(err) {
+                  res.end();
+                });
+            }
+        });
+    });
 });
 
 // Delete food/user and user lock
