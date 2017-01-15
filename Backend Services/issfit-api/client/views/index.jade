@@ -115,6 +115,7 @@ html
 									window.clearInterval( downloadTimer );
 									window.location.href = '/delete/execute/' + userId;
 									userId = null;
+									$('#dialog').dialog('close');
 									return;
 								} else if (data.downloadComplete == -1) {
 									userId = null;
@@ -141,6 +142,10 @@ html
 							window.location.href = '/delete/' + userId;
 							setTimeout(function() { deleteBusy = false; }, 300);
 							setTimeout(function() { startDownloadCheck(); }, 1000);
+
+							$('#message').text('Wait for operation to finish');
+							$('#dialog').dialog('option', 'title', 'Progress');
+							$('#dialog').dialog('open');
 						},
 						Cancel: function() {
 							$( this ).dialog( "close" );
