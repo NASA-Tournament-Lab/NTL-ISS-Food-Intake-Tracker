@@ -1325,11 +1325,11 @@ app.get('/delete/execute/:id', function(req, res) {
             function (err, result) {
                 if (err) {
                     console.log('Error: ' + err);
-                    req.flash('error', 'User not deleted');
+                    req.flash('error', 'User data was not removed');
                     req.flash('currentSelectedTab', '4');
                     res.redirect('/');
                 } else {
-                    req.flash('message', 'User deleted');
+                    req.flash('message', 'User data was removed from database');
                     req.flash('currentSelectedTab', '4');
                     res.redirect('/');
                 }
