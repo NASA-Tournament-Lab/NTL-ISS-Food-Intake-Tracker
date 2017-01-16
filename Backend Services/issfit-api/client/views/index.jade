@@ -11,24 +11,53 @@ html
 		script.
 			var load_data = !{tabsData};
 		script.
-			var userTable = null, foodTable = null;
+			var downloadTimer, attempts = 30, deleteBusy = false;
+			var userTable = null, deletedTable = null, foodTable = null;
+			var userId = null;
+			var deleteUser = function(id) {
+				userId = id;
+				$("#dialog-confirm").dialog('option', 'title', 'Confirmation');
+				$("#dialog-confirm").dialog('open');
+			};
 			$(document).ready(function() {
-				$("input[type=submit], input[type=button], a.button" ).button();
+				$("input[type=submit], input[type=button], a.button, span.button, button" ).button();
 				$("#tabs").tabs({
 					beforeLoad: function( event, ui) {
 						if (undefined != userTable) {
 							userTable.destroy();
+						}
+						if (undefined != deletedTable) {
+							deletedTable.destroy();
 						}
 						if (foodTable != userTable) {
 							foodTable.destroy();
 						}
 					},
 					load: function( event, ui ) {
-						$( "input[type=submit], input[type=button]" ).button();
+						$("input[type=submit], input[type=button], button" ).button();
 						userTable = $('#userTable').DataTable( {
 							"columns": [
 								null,
 								{ "width": "70px" }
+							],
+							"language": {
+								"search": "Filter records:"
+							},
+							"order": [[ 0, "asc" ]],
+							"columnDefs": [ { "type": "string", "targets": 0 }, { "targets": 1, "orderable": false, "searchable": false } ],
+							"infoCallback": function( settings, start, end, max, total, pre ) {
+								var txt = total == max ? '' : ' (filtered from ' + max + ' ' + ((max == 1) ? ' entry' : ' entries') + ')';
+								if (total == 0) {
+									return ''
+								} else {
+									return 'Showing ' + start + ' to ' + end + ' of ' + total + ' ' + ((total == 1) ? ' entry' : ' entries') + txt
+								}
+							}
+						});
+						deletedTable = $('#deletedTable').DataTable( {
+							"columns": [
+								null,
+								{ "width": "150px" }
 							],
 							"language": {
 								"search": "Filter records:"
@@ -78,6 +107,52 @@ html
 						}
 					}
 				});
+				function startDownloadCheck(checkDownload) {
+					downloadTimer = window.setInterval( function() {
+						$.get('/delete/refresh/' + userId, function(data) {
+							if (data) {
+								if (data.success) {
+									window.clearInterval( downloadTimer );
+									window.location.href = '/delete/execute/' + userId;
+									userId = null;
+									$('#dialog').dialog('close');
+									return;
+								} else if (data.downloadComplete == -1) {
+									userId = null;
+									return window.clearInterval( downloadTimer );
+								}
+							}
+							attempts--;
+							if (attempts <= 0) {
+								userId = null;
+								window.clearInterval( downloadTimer );
+							}
+						});
+					}, 1000 );
+				}
+				$("#dialog-confirm").dialog({
+					autoOpen: false,
+					modal: true,
+					position: { my: 'bottom', at: 'center', of : window },
+					buttons: {
+						Ok: function() {
+							if (deleteBusy) return;
+							deleteBusy = true;
+							$( this ).dialog( "close" );
+							window.location.href = '/delete/' + userId;
+							setTimeout(function() { deleteBusy = false; }, 300);
+							setTimeout(function() { startDownloadCheck(); }, 1000);
+
+							$('#message').text('Wait for operation to finish');
+							$('#dialog').dialog('option', 'title', 'Progress');
+							$('#dialog').dialog('open');
+						},
+						Cancel: function() {
+							$( this ).dialog( "close" );
+							userId = null;
+						}
+					}
+				});
 				if (undefined != load_data.error && load_data.error.length > 0) {
 					$('#message').text(load_data.error);
 					$('#dialog').dialog('option', 'title', 'Error');
@@ -98,6 +173,9 @@ html
 		.container
 			div(id='dialog')
 				p(id='message')
+			div(id='dialog-confirm')
+				p.
+					Are you sure you want to delete all food record data?
 			#tabs
 				ul
 					li
@@ -109,8 +187,9 @@ html
 					li
 						a(href="/import", id="import") Import
 					li
+						a(href="/delete", id="delete") Delete
+					li
 						a(href="/instructions", id="instructions") Instructions
 		if hideLogout
 			.bottom
 				a(href='/logout', class='button') Logout
-

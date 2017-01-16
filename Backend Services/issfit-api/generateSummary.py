@@ -135,14 +135,13 @@ try:
         directory = fullNameAscii.replace("/", "_")
         if not os.path.exists(directory):
             os.makedirs(directory)
-        os.chdir(directory)
 
         directory = "media"
         if not os.path.exists(directory):
             os.makedirs(directory)
 
         # Create summary.csv file
-        myfile = open("summary.csv", "w")
+        myfile = open(directory + "/summary.csv", "w")
         wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
 
         # Create header
@@ -185,7 +184,7 @@ try:
                     imagesToSave.append(match[0])
                     image_cur.close()
                 row.append(";".join(imagesToSave))
-                
+
                 voicesToSave = []
                 for voice in filter(None, record[u"voicerecordings"]):
                     voice_cur = conn.cursor()
@@ -196,7 +195,7 @@ try:
                     voice_cur.close()
                 row.append(";".join(voicesToSave))
 
-                if foodDetail == True: 
+                if foodDetail == True:
                     row.append(record[u"carb"])
                     row.append(record[u"energy"])
                     row.append(record[u"fat"])
@@ -211,7 +210,6 @@ try:
                 raise exc_info[1], None, exc_info[2]
 
         myfile.close()
-        os.chdir("../")
 
     os.chdir("../")
 
@@ -238,4 +236,3 @@ except getopt.GetoptError as err:
 except psycopg2.Error as e:
     exc_info = sys.exc_info()
     raise exc_info[1], None, exc_info[2]
-

@@ -979,21 +979,7 @@
         components.hour = [[time substringToIndex:2] intValue];
         components.minute = [[time substringFromIndex:3] intValue];
         self.foodConsumptionRecordToAdd.timestamp = [components date];
-        
-        if (recorderFilePath && recorderFilePath.count > 0) {
-            for (NSString *filePath in recorderFilePath) {
-                Media *media = [[Media alloc] initWithEntity:[NSEntityDescription
-                                                              entityForName:@"Media"
-                                                              inManagedObjectContext:recordService.managedObjectContext]
-                              insertIntoManagedObjectContext:nil];
-                media.filename = filePath;
-                media.removed = @NO;
-                media.synchronized = @YES;
 
-                [self.foodConsumptionRecordToAdd addVoiceRecordingsObject:media];
-            }
-        }
-        
         [recordService addFoodConsumptionRecord:appDelegate.loggedInUser
                                          record:self.foodConsumptionRecordToAdd
                                           error:&error];
@@ -1009,7 +995,24 @@
         
         [recordService saveFoodConsumptionRecord:self.foodConsumptionRecordToAdd error:&error];
         if ([Helper displayError:error]) return;
-        
+
+        if (recorderFilePath && recorderFilePath.count > 0) {
+            for (NSString *filePath in recorderFilePath) {
+                Media *media = [[Media alloc] initWithEntity:[NSEntityDescription
+                                                              entityForName:@"Media"
+                                                              inManagedObjectContext:self.foodConsumptionRecordToAdd.managedObjectContext]
+                              insertIntoManagedObjectContext:self.foodConsumptionRecordToAdd.managedObjectContext];
+                media.filename = filePath;
+                media.removed = @NO;
+                media.synchronized = @YES;
+
+                [self.foodConsumptionRecordToAdd addVoiceRecordingsObject:media];
+            }
+        }
+
+        [recordService saveFoodConsumptionRecord:self.foodConsumptionRecordToAdd error:&error];
+        if ([Helper displayError:error]) return;
+
         [self.foodConsumptionRecords addObject:self.foodConsumptionRecordToAdd];
         [self.foodTableView reloadData];
         [_addFood.view removeFromSuperview];

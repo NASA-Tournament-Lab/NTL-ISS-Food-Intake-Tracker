@@ -27,7 +27,7 @@ var child_process = require('child_process');
 var pg            = require('pg');
 var knex          = require('knex');
 
-var maxAge = 60 * 60 * 1000;
+var maxAge = 24 * 3600 * 1000; // 1 day
 var MAX_SIZE = 1024;
 
 var foodKeys = ["name", "barcode", "energy", "sodium", "fluid", "protein", "carb", "fat", "categoriesName", "origin",
@@ -74,11 +74,13 @@ var Category = app.loopback.getModel('Category');
 var Origin = app.loopback.getModel('Origin');
 var NasaUser = app.loopback.getModel('NasaUser');
 var FoodProduct = app.loopback.getModel('FoodProduct');
+var FoodProductRecord = app.loopback.getModel('FoodProductRecord');
+var AdhocFoodProduct = app.loopback.getModel('AdhocFoodProduct');
+var FoodProductFilter = app.loopback.getModel('FoodProductFilter');
 var Media = app.loopback.getModel('Media');
 var UserLock = app.loopback.getModel('UserLock');
 
 var connstr = 'postgres://' + config.db.username + ':' + config.db.password + '@' + config.db.host + ':' + config.db.port + '/' + config.db.database + '?ssl=true';
-
 
 pg.defaults.ssl = true;
 var knex = require('knex')({
@@ -146,7 +148,6 @@ var isEmpty = function(obj) {
 var saveImageFromZip = function(zipFile) {
     if (zipFile && zipFile.length > 0) {
         var zip = zipFile[0].path;
-        console.log('Unzip file ' + zip);
         var tmpzipDir = '/tmp/image-' + new Date().getTime();
         fs.mkdirSync(tmpzipDir);
         fs.createReadStream(zip).pipe(unzip.Extract({ path: tmpzipDir })).on('close', function() {
@@ -159,14 +160,12 @@ var saveImageFromZip = function(zipFile) {
                             callback(err);
                             return;
                         }
-                        
+
                         knex('nasa_user')
                            .innerJoin('user_tmp_table', 'nasa_user.full_name', 'user_tmp_table.full_name')
                            .where('user_tmp_table.profile_image', file)
                            .pluck('uuid').then(function(uuids) {
                                 var innerQueryFunctions = [];
-                                console.log('uuids: ' + JSON.stringify(uuids));
-                                
                                 uuids.forEach(function(uuid) {
                                    innerQueryFunctions.push(function(innerCallback) {
                                        NasaUser.findById(uuid, function(err, result) {
@@ -177,31 +176,27 @@ var saveImageFromZip = function(zipFile) {
                                             if (!isEmpty(result)) {
                                                 var newValue = JSON.parse(JSON.stringify(result));
                                                 newValue['profileImage'] = media.id;
-                                                console.log('newValue' + JSON.stringify(newValue));
-                                                
                                                 NasaUser.upsert(newValue);
                                                 innerCallback(err);
                                             }
                                        });
                                    });
                                 });
-                                
+
                                 async.waterfall(
                                     innerQueryFunctions,
                                     function (err, result) {
-                                        console.log('ended');
                                         callback(err);
                                     });
-                                
+
                             });
                     });
                 });
             });
-            
+
             async.waterfall(
                 queryFunctions,
                 function (err, result) {
-                    console.log('truncate');
                     knex.table('user_tmp_table').truncate().return('finished');
                 });
         });
@@ -220,7 +215,6 @@ var saveImageToDB = function(image, callback) {
         console.log("Open lwip: " + image.path);
         fs.readFile(image.path, function(err, imageBuffer) {
             lwip.open(imageBuffer, 'jpg', function(err, currentImage) {
-                console.log("Start batch");
                 var batch = currentImage.batch();
                 if (undefined != err) {
                     console.log('Error ' + JSON.stringify(err));
@@ -229,8 +223,8 @@ var saveImageToDB = function(image, callback) {
                     var rr = currentImage.width() > currentImage.height();
                     var newWidth = rr ? MAX_SIZE : Math.floor(currentImage.width() * (MAX_SIZE / currentImage.height()));
                     var newHeight = rr ? Math.floor(currentImage.height() * (MAX_SIZE / currentImage.width())) : MAX_SIZE;
-                    console.log('Old size: ' + currentImage.width() + ' x ' + currentImage.height());
-                    console.log('New size: ' + newWidth + ' x ' + newHeight);
+                    // console.log('Old size: ' + currentImage.width() + ' x ' + currentImage.height());
+                    // console.log('New size: ' + newWidth + ' x ' + newHeight);
                     batch.resize(newWidth, newHeight);
                 }
                 batch.toBuffer("jpg", function(errToBuffer, buffer) {
@@ -561,8 +555,8 @@ app.get('/foods', function (req, res) {
         return;
     }
 
-    FoodProduct.find({ where : {removed: false} }, function(err, results) {
-        if(err) {
+    FoodProduct.find({ where : { removed: false } }, function(err, results) {
+        if (err) {
             return console.error('error running query', err);
         }
 
@@ -637,6 +631,40 @@ app.get('/import', function(req, res) {
         }, function(err, html) {
             res.send(html);
         });
+});
+
+// Get user and foods list
+app.get('/delete', function (req, res) {
+    req.session.downloadComplete = 0;
+    NasaUser.find({ where : { removed: true } }, function(err, results) {
+        if (err) {
+            return console.error('error running query', err);
+        }
+
+        var rows = [];
+        var users = JSON.parse(JSON.stringify(results));
+        for (var i = 0; i < users.length; i++) {
+            var value = users[i];
+            if (value.removed == 1) {
+                var obj = {
+                    "id": value.id,
+                    "name": value.fullName
+                };
+                rows.push(obj);
+            }
+        }
+
+        res.render('tabs',
+            {
+                message: 'Deleted User Data',
+                action: '/delete',
+                rows: rows,
+                tableId: 'deletedTable'
+            },
+            function(err, html) {
+                res.send(html);
+        });
+    });
 });
 
 // instructions - help
@@ -1103,11 +1131,11 @@ app.post('/reports', function(req, res) {
     }
     if (tmpBody.startDate && tmpBody.startDate.trim().length > 0) {
        var dates = tmpBody.startDate.split('/');
-       args.push('-s' + parseInt(dates[2]) + parseInt(dates[0]) + parseInt(dates[1]));   
+       args.push('-s' + parseInt(dates[2]) + parseInt(dates[0]) + parseInt(dates[1]));
     }
     if (tmpBody.endDate && tmpBody.endDate.trim().length > 0) {
        var dates = tmpBody.endDate.split('/');
-       args.push('-e' + parseInt(dates[2]) + parseInt(dates[0]) + parseInt(dates[1])); 
+       args.push('-e' + parseInt(dates[2]) + parseInt(dates[0]) + parseInt(dates[1]));
     }
 
     PythonShell.run('generateSummary.py', {
@@ -1142,14 +1170,14 @@ app.post('/import', function(req, res) {
     var files = req["files"] !== undefined ? JSON.parse(JSON.stringify(req["files"])) : undefined;
     if (!isEmpty(files)) {
         var functions = [];
-        var zipFile = files.filter(function(file) { 
+        var zipFile = files.filter(function(file) {
             return file.fieldname == 'userImageFileImport';
         });
-        
-        files = files.filter(function(file) { 
+
+        files = files.filter(function(file) {
             return file.fieldname != 'userImageFileImport';
         });
-        
+
         for (var i = 0; i < files.length; i++) {
             var currentFile = files[i];
             console.log('Current file: ' + JSON.stringify(currentFile));
@@ -1219,6 +1247,147 @@ app.post('/import', function(req, res) {
         req.flash('error', 'Please select a file');
         res.redirect('/');
     }
+});
+
+// Delete user food records
+app.get('/delete/execute/:id', function(req, res) {
+    NasaUser.findById(req.params.id, function(err, user) {
+        var queryFunctions = [];
+        var profileImageId = user.profileImage;
+
+        queryFunctions.push(function(callback) {
+            UserLock.destroyAll({ user_uuid: user.id }, function(err, result) {
+                console.log('Deleted UserLock with result: ' + JSON.stringify(result));
+                callback(err);
+            });
+        });
+        queryFunctions.push(function(callback) {
+            var innerQueryFunctions = [];
+            user.toJSON().consumptionRecord.forEach(function(record) {
+                innerQueryFunctions.push(function(cb) {
+                    if (record.voiceRecordings && record.voiceRecordings.length > 0) {
+                      FoodProductRecord.findById(record.id, function(err, r) {
+                        if (err) {
+                          cb(err); return;
+                        }
+                        r.voiceRecordings.destroyAll(function(err, result) {
+                            console.log('Deleted voiceRecordings with result: ' + JSON.stringify(result));
+                            cb(err);
+                        });
+                      });
+                    } else {
+                      cb(null);
+                    }
+                });
+            });
+            innerQueryFunctions.push(function(cb) {
+                user.consumptionRecord.destroyAll(function(err, result) {
+                    console.log('Deleted FoodProductRecord with result: ' + JSON.stringify(result));
+                    cb(err);
+                })
+            });
+
+            async.waterfall(
+                innerQueryFunctions,
+                function (err) {
+                    callback(err);
+            });
+        });
+        queryFunctions.push(function(callback) {
+            FoodProductFilter.destroyAll( { user_uuid : user.id }, function(err, result) {
+                console.log('Deleted FoodProductFilter with result: ' + JSON.stringify(result));
+                callback(err);
+            });
+        });
+        queryFunctions.push(function(callback) {
+            user.adhocFoodProduct.destroyAll(function(err, result) {
+                console.log('Deleted AdhocFoodProduct with result: ' + JSON.stringify(result));
+                callback(err);
+            });
+        });
+        queryFunctions.push(function(callback) {
+            user.destroy(function(err, result) {
+                console.log('Deleted user with result: ' + JSON.stringify(result));
+                callback(err);
+            });
+        });
+        if (profileImageId) {
+          queryFunctions.push(function(callback) {
+              Media.destroyById(profileImageId, function(err, mediaResult) {
+                  console.log('Deleted media with result: ' + JSON.stringify(mediaResult));
+                  callback(err);
+              });
+          });
+        }
+
+        async.waterfall(
+            queryFunctions,
+            function (err, result) {
+                if (err) {
+                    console.log('Error: ' + err);
+                    req.flash('error', 'User data was not removed');
+                    req.flash('currentSelectedTab', '4');
+                    res.redirect('/');
+                } else {
+                    req.flash('message', 'User data was removed from database');
+                    req.flash('currentSelectedTab', '4');
+                    res.redirect('/');
+                }
+        });
+    });
+})
+
+app.get('/delete/refresh/:id', function(req, res) {
+    if (req.session.downloadComplete == null || req.session.downloadComplete < 2) {
+        return res.json({
+          success: false,
+          downloadComplete: req.session.downloadComplete
+        });
+    }
+
+    res.json({
+      success: true
+    })
+});
+
+app.get('/delete/:id', function(req, res) {
+    var args = ['--database=' + config.db.database,
+                '--user=' + config.db.username,
+                '--password=' + config.db.password,
+                '--host=' + config.db.host,
+                '--port=' + config.db.port,
+                '--selected=' + req.params.id,
+                '-f'];
+
+    req.session.downloadComplete = 1;
+    PythonShell.run('generateSummary.py', {
+        args: args,
+        mode: 'text',
+        pythonPath: '/usr/bin/python',
+        scriptPath: __dirname + '/..'
+    }, function (err, results) {
+        if (err) {
+            console.log("Error: " + err.traceback);
+            res.status(err.status).end();
+            return;
+        }
+
+        console.log('Before download');
+        res.download(__dirname + '/../reports/summary.zip', 'summary.zip', function (err) {
+            if (err) {
+                console.log('generateSummary.py error: ' + JSON.stringify(err));
+                req.session.downloadComplete = -1;
+                req.session.save(function(err) {
+                  res.status(err.status).end();
+                });
+            } else {
+                req.session.downloadComplete = 2;
+                req.session.save(function(err) {
+                  res.end();
+                });
+            }
+        });
+    });
 });
 
 // Delete food/user and user lock

@@ -1,8 +1,9 @@
 .page-header
 	h2!= message
-div
-	form(action=action,method='GET')
-		input(type='submit',value='New',class="btn")
+if (tableId != 'deletedTable')
+	div
+		form(action=action,method='GET')
+			input(type='submit',value='New',class="btn")
 div
 	table(id="#{tableId}", style="padding-top:10px")
 		thead
@@ -10,7 +11,10 @@ div
 				th(style="text-align:left") Name
 				if (tableId == 'foodTable')
 					th(style="text-align:left") Origin
-				th Edit
+				if (tableId == 'deletedTable')
+					th Delete
+				else
+					th Edit
 		tbody
 			each row, i in rows
 				tr
@@ -18,5 +22,8 @@ div
 					if (tableId == 'foodTable')
 						td(style="text-align:left") #{row.origin}
 					td(style='text-align:center')
-						form(action=action + '/' + row.id,method='get')
-							input(type='submit',value='Go', class="goButton", style='margin: 0')
+						if (tableId == 'deletedTable')
+							button(onclick='deleteUser("#{row.id}")', class="goButton", style='margin-bottom: 16px') Delete
+						else
+							form(action=action + '/' + row.id, method='get')
+								input(type='submit',value='Go', class="goButton", style='margin: 0')
