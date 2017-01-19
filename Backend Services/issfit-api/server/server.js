@@ -1167,6 +1167,7 @@ app.post('/import', function(req, res) {
     req.flash('currentSelectedTab', '3');
 
     var body = JSON.parse(JSON.stringify(req.body));
+    var isScript = body.script === 'on';
     var files = req["files"] !== undefined ? JSON.parse(JSON.stringify(req["files"])) : undefined;
     if (!isEmpty(files)) {
         var functions = [];
@@ -1234,14 +1235,22 @@ app.post('/import', function(req, res) {
         async.waterfall(
             functions,
             function (err, result) {
-                if (err) {
-                    console.log('Error: ' + err);
-                    req.flash('error', err);
+                if (isScript) {
+                  if (err) {
+                      res.status(500).send({success: false, error: err});
+                  } else {
+                    res.json({success: true})
+                  }
                 } else {
-                    saveImageFromZip(zipFile);
-                    req.flash('message', 'Bulk Upload Successful');
+                  if (err) {
+                      console.log('Error: ' + err);
+                      req.flash('error', err);
+                  } else {
+                      saveImageFromZip(zipFile);
+                      req.flash('message', 'Bulk Upload Successful');
+                  }
+                  res.redirect('/');
                 }
-                res.redirect('/');
         });
     } else {
         req.flash('error', 'Please select a file');
