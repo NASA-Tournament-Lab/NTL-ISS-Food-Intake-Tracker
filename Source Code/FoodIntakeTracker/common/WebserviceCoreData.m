@@ -189,7 +189,7 @@ static NSString* reachHostName = @"";
                         [NSThread sleepForTimeInterval:0.5];
 
                         AppDelegate *appDelegate = AppDelegate.shareDelegate;
-                        if (![appDelegate acquireLock:appDelegate.loggedInUser]) {
+                        if (appDelegate.loggedInUser && ![appDelegate acquireLock:appDelegate.loggedInUser]) {
                             [Helper showAlert:@"Error"
                                       message:@"User already logged in another device."];
 
