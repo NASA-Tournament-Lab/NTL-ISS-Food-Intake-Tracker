@@ -1261,6 +1261,12 @@ app.post('/import', function(req, res) {
 // Delete user food records
 app.get('/delete/execute/:id', function(req, res) {
     NasaUser.findById(req.params.id, function(err, user) {
+        if (!user) {
+            req.flash('error', 'User not found for id: ' + req.params.id);
+            req.flash('currentSelectedTab', '4');
+            return res.redirect('/');
+        }
+
         var queryFunctions = [];
         var profileImageId = user.profileImage;
 

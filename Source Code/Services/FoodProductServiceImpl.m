@@ -522,6 +522,15 @@
         }
         return nil;
     }
+    if (barcode.length < 4) {
+        if(error) {
+            *error = [NSError errorWithDomain:@"FoodProductServiceImpl" code:IllegalArgumentErrorCode
+                                     userInfo:@{NSUnderlyingErrorKey: @"barcode length should be at least 4 characters"}];
+
+            [LoggingHelper logError:methodName error:*error];
+        }
+        return nil;
+    }
   
     if (user != nil) {
         [LoggingHelper logMethodEntrance:methodName paramNames:@[@"user", @"barcode"] params:@[user, barcode]];
