@@ -36,6 +36,6 @@
 - (NSString *)insertMediaRecord:(NSDictionary *) dict foodConsumptionId:(NSString *)foodConsumptionId pattern:(NSString *) pattern;
 - (BOOL)uploadMedia:(NSString *) theId withData:(NSData *) data withFilename:(NSString *) filename;
 - (NSString *)saveMedia:(NSDictionary *) dict;
-- (NSString *)inserObject:(NSString *)prototypeName model:(NSDictionary *) dict;
+- (NSString *)insertObject:(NSString *)prototypeName model:(NSDictionary *) dict;
 
 @end

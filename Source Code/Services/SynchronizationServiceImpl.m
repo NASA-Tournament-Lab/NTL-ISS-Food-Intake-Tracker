@@ -23,9 +23,7 @@
 //
 
 #import "SynchronizationServiceImpl.h"
-#import "UserServiceImpl.h"
 #import "FoodConsumptionRecordServiceImpl.h"
-#import "FoodProductServiceImpl.h"
 #import "Models.h"
 #import "LoggingHelper.h"
 #import "Helper.h"
@@ -217,6 +215,7 @@
     // fetch all new objects from other devices
     NSArray *allData = [coreData fetchObjects];
     BOOL hasData = allData && allData.count > 0;
+
     NSMutableArray *postponedObjects = [NSMutableArray array];
 
     // check for unsychronized objects
@@ -238,7 +237,7 @@
         
         return [n1 compare:n2];
     }];
-    
+
     NSInteger totalChange = 0;
     for (NSEntityDescription *description in sd) {
         if ([description.name isEqualToString:@"Category"] ||
@@ -248,7 +247,7 @@
             [description.name isEqualToString:@"FoodProduct"]) {
             continue;
         }
-        
+
         NSFetchRequest *request = [[NSFetchRequest alloc] init];
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(synchronized == NO)"];
         [request setEntity:description];
@@ -396,11 +395,11 @@
             if (objects.count > 0) {
                 SynchronizableModel *object = [objects objectAtIndex:0];
                 if (isRemoved) {
-                    [self.managedObjectContext deleteObject:object];
-                    // check if current user has been removed
                     if (!forceLogout) {
                         forceLogout = [loggedInUser.objectID isEqual:object.objectID];
+                        loggedInUser.removed = @YES;
                     }
+                    [self.managedObjectContext deleteObject:object];
                 } else {
                     if (![DataHelper updateObjectWithJSON:jsonDictionary object:object
                                      managegObjectContext:self.managedObjectContext]) {
@@ -450,7 +449,8 @@
                 return NO;
             }
         } else {
-            if ([object updateObjects]) {
+            BOOL ignore = ([object.objectID isEqual:loggedInUser.objectID] && forceLogout);
+            if (!ignore && [object updateObjects]) {
                 if ([object isKindOfClass:[FoodConsumptionRecord class]]) {
                     NSMutableSet *allSet = [NSMutableSet set];
                     [allSet addObjectsFromArray: [[(FoodConsumptionRecord *) object voiceRecordings] allObjects]];
@@ -521,8 +521,6 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
                                                                 object:loadingEndParam];
         });
-
-        return NO;
     }
 
     [LoggingHelper logMethodExit:methodName returnValue:@YES];

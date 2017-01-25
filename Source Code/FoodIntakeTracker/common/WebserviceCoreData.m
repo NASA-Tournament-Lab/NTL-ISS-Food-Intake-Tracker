@@ -511,7 +511,7 @@ static NSString* reachHostName = @"";
     [mDict removeObjectForKey:@"data"];
 
     // save the media
-    NSString *newId = [self inserObject:@"Media" model:mDict];
+    NSString *newId = [self insertObject:@"Media" model:mDict];
 
     // save the data
     if (newId && data) {
@@ -673,7 +673,7 @@ static NSString* reachHostName = @"";
     return YES;
 }
 
-- (NSString *)inserObject:(NSString *)prototypeName model:(NSDictionary *) dict {
+- (NSString *)insertObject:(NSString *)prototypeName model:(NSDictionary *) dict {
     LBPersistedModelRepository *rep = [instance.adapter repositoryWithPersistedModelName:prototypeName];
     LBPersistedModel *model = (LBPersistedModel *) [rep modelWithDictionary:dict];
 

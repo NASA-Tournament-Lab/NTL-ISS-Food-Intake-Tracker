@@ -105,7 +105,7 @@
         return NO;
     }
 
-    NSString *newId = [coreData inserObject:name model:[self getAttributes]];
+    NSString *newId = [coreData insertObject:name model:[self getAttributes]];
     if (!newId) {
         return NO;
     }
