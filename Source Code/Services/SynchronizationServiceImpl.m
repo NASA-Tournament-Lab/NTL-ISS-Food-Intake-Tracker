@@ -190,7 +190,13 @@
 
         [Helper displayError:*error];
 
-        [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
+
+            NSDictionary *loadingEndParam = @{@"success": @YES};
+            [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
+                                                                object:loadingEndParam];
+        });
 
         return NO;
     }
@@ -358,6 +364,7 @@
         }
     }
 
+    BOOL forceLogout = NO;
     if (hasData) {
         for (NSDictionary *data in allData) {
             [self startUndoActions];
@@ -390,6 +397,10 @@
                 SynchronizableModel *object = [objects objectAtIndex:0];
                 if (isRemoved) {
                     [self.managedObjectContext deleteObject:object];
+                    // check if current user has been removed
+                    if (!forceLogout) {
+                        forceLogout = [loggedInUser.objectID isEqual:object.objectID];
+                    }
                 } else {
                     if (![DataHelper updateObjectWithJSON:jsonDictionary object:object
                                      managegObjectContext:self.managedObjectContext]) {
@@ -496,6 +507,23 @@
 
     // Update progress
     [self updateProgress:@1.0];
+
+    if (forceLogout) {
+        NSString *errorMsg = @"User was removed.";
+        *error = [NSError errorWithDomain:@"LockDomain" code:UserRemovedErrorCode userInfo:@{NSUnderlyingErrorKey:errorMsg}];
+
+        [Helper displayError:*error];
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
+
+            NSDictionary *loadingEndParam = @{@"success": @YES};
+            [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
+                                                                object:loadingEndParam];
+        });
+
+        return NO;
+    }
 
     [LoggingHelper logMethodExit:methodName returnValue:@YES];
 

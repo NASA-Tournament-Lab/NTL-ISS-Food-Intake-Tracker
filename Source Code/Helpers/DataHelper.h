@@ -76,6 +76,12 @@
  */
 + (NSString *)getAbsoulteLocalDirectory:(NSString *)localDirectory;
 
+/*!
+ @discussion This method will sort the array by the id of the object.
+ @param array The NSArray with the objects
+ @return the sorted array
+ */
++ (NSArray *)orderByDate:(NSArray *)array;
 
 + (BOOL)updateObjectWithJSON:(NSDictionary *) dict  object:(NSManagedObject *)object
         managegObjectContext:(NSManagedObjectContext *) managedObjectContext;

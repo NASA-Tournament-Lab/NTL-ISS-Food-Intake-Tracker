@@ -20,6 +20,7 @@
 //
 
 #import "UserServiceImpl.h"
+#import "DataHelper.h"
 #import "LoggingHelper.h"
 
 @implementation UserServiceImpl
@@ -186,7 +187,7 @@
     [self.managedObjectContext unlock];
     
     [LoggingHelper logMethodExit:methodName returnValue:result];
-    return result;
+    return [DataHelper orderByDate:result];
 }
 
 -(User *)loginUser:(NSString *)fullName error:(NSError **)error {

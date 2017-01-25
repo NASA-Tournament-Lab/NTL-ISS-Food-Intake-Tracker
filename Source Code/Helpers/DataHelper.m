@@ -202,6 +202,24 @@
     return result;
 }
 
+/*!
+ @discussion This method will sort the array by the id of the object.
+ @param array The NSArray with the objects
+ @return the sorted array
+ */
++ (NSArray *)orderByDate:(NSArray *)array {
+    if (array == nil || array.count < 2) {
+        return array;
+    }
+
+    return [array sortedArrayUsingComparator:^NSComparisonResult(SynchronizableModel *obj1, SynchronizableModel *obj2) {
+        NSDate *date1 = [obj1 createdDate];
+        NSDate *date2 = [obj2 createdDate];
+
+        return [date1 compare:date2];
+    }];
+}
+
 + (BOOL)updateObjectWithJSON:(NSDictionary *) dict  object:(NSManagedObject *)object
         managegObjectContext:(NSManagedObjectContext *) managedObjectContext {
     NSEntityDescription *description = object.entity;
