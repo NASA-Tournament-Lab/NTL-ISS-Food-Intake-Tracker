@@ -73,6 +73,13 @@
  */
 + (NSData *)getVoiceRecording:(NSString *)fileName;
 
+/*
+ * This method will delete a media file.
+ * @param media The Media object
+ * @return True if file was deleted, false otherwise
+ */
++ (BOOL)deleteMediaFile:(Media *)media;
+
 /*!
  @discussion This method shows an alert to the user.
  @param title The message title.

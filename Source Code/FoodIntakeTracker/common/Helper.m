@@ -149,6 +149,26 @@ static NSArray *monthNameArray = nil;
 }
 
 
+/*
+ * This method will delete a media file.
+ * @param media The Media object
+ * @return True if file was deleted, false otherwise
+ */
++ (BOOL)deleteMediaFile:(Media *)media {
+    AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsPath = [paths objectAtIndex:0];
+    NSString *additionalFileDirectory = [documentsPath stringByAppendingPathComponent:appDelegate.additionalFilesDirectory];
+
+    NSString *filePath = [additionalFileDirectory stringByAppendingFormat:@"/%@", media.filename];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:additionalFileDirectory]) {
+        return NO;
+    }
+
+    return [[NSFileManager defaultManager] removeItemAtPath:filePath error:nil];
+}
+
+
 /*!
  @discussion This method gets the default date formatter.
  @return the default formatter
