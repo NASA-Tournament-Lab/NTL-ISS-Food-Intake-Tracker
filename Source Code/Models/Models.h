@@ -126,6 +126,9 @@ typedef enum {
 
     // Indicate errors during lock acquisition
     UserLockErrorCode,
+
+    // Indicate errors during user acquisition
+    UserRemovedErrorCode,
     
 } ServiceErrorCode;
 

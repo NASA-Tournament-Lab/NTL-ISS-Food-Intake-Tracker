@@ -330,13 +330,22 @@
     if ([Helper displayError:error]) return;
 
     selectedUserFullName = user.fullName;
-    self.loginPanel.hidden = YES;
-    self.registerPanel.hidden = NO;
-    self.registerUserNamePanel.hidden = YES;
-    self.registerPhotoPanel.hidden = YES;
-    self.registerFinishPanel.hidden = NO;
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:nil];
+    self.loadingPanel.hidden = NO;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [appDelegate doSyncUpdateWithBlock:^(BOOL result) {
+            self.loadingPanel.hidden = YES;
+            self.loginPanel.hidden = YES;
+            self.registerPanel.hidden = NO;
+            self.registerUserNamePanel.hidden = YES;
+            self.registerPhotoPanel.hidden = YES;
+            self.registerFinishPanel.hidden = NO;
+
+            NSDictionary *loadingEndParam = @{@"success": [NSNumber numberWithBool:result]};
+            [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
+                                                                object:loadingEndParam];
+        }];
+    });
 }
 /**
  * action for login button.

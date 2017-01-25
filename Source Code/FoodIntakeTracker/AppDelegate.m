@@ -304,7 +304,8 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
 
             BOOL result = [self.synchronizationService synchronize:&error];
 
-            if (error.code == UserLockErrorCode) {
+            if (error.code == UserLockErrorCode ||
+                error.code == UserRemovedErrorCode) {
                 status = SyncStatusFinished;
                 NSLog(@"Sync interrupted at: %@", [NSDate date]);
                 return;

@@ -201,7 +201,7 @@ try:
                     row.append(record[u"fat"])
                     row.append(record[u"fluid"])
                     row.append(record[u"protein"])
-                    row.append(record[u"protein"])
+                    row.append(record[u"sodium"])
 
                 wr.writerow(row)
             except Exception as err:

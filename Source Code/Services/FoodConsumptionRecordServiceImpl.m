@@ -285,7 +285,7 @@
     [LoggingHelper logError:methodName error:*error];
     [self.managedObjectContext unlock];
     [LoggingHelper logMethodExit:methodName returnValue:result];
-    return result;
+    return [DataHelper orderByDate:result];
 }
 
 -(NSArray *)getFoodConsumptionRecords:(User *)user error:(NSError **)error {
@@ -317,7 +317,7 @@
     [LoggingHelper logError:methodName error:*error];
     [self.managedObjectContext unlock];
     [LoggingHelper logMethodExit:methodName returnValue:result];
-    return result;
+    return [DataHelper orderByDate:result];
 }
 
 -(BOOL)expireFoodConsumptionRecords:(NSError **)error {
