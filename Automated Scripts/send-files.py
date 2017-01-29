@@ -50,12 +50,16 @@ class SendFiles:
         configObject = ConfigParser.ConfigParser()
         configObject.read(self.configFile)
 
-        self.network = configSectionMap(configObject, 'Network')
-        self.foodFile = getFile(configSectionMap(configObject, 'Food'))
-        self.userFile = getFile(configSectionMap(configObject, 'User'))
-        self.userImageFile = getFile(configSectionMap(configObject, 'UserImage'))
+        try:
+            self.network = configSectionMap(configObject, 'Network')
+            self.foodFile = getFile(configSectionMap(configObject, 'Food'))
+            self.userFile = getFile(configSectionMap(configObject, 'User'))
+            self.userImageFile = getFile(configSectionMap(configObject, 'UserImage'))
 
-        self.executedFolder = configSectionMap(configObject, 'Executed')['folder']
+            self.executedFolder = configSectionMap(configObject, 'Executed')['folder']
+        except Exception, e:
+            print 'Configuration error: ' + str(e)
+            exit(1)
 
     def closeFiles(self, files):
         for key, file in files.iteritems():
@@ -82,6 +86,11 @@ class SendFiles:
         username = self.network['username']
         password = self.network['password']
         files = {}
+
+        # check for executed folder exists
+        if self.executedFolder is None or not os.path.exists(self.executedFolder):
+            print 'Executed Folder must exist'
+            exit(1)
 
         # check for food file
         if self.foodFile is not None and os.path.exists(self.foodFile):
