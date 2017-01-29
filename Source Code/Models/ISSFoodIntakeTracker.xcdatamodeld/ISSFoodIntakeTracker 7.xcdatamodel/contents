@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11542" systemVersion="15G1108" minimumToolsVersion="Xcode 7.3" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="">
+    <entity name="AdhocFoodProduct" representedClassName="AdhocFoodProduct" parentEntity="FoodProduct" syncable="YES">
+        <relationship name="user" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="adhocFoodProduct" inverseEntity="User" syncable="YES"/>
+    </entity>
+    <entity name="Category" representedClassName="Category" parentEntity="PGManagedObject" syncable="YES">
+        <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="foods" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FoodProduct" inverseName="categories" inverseEntity="FoodProduct" syncable="YES"/>
+    </entity>
+    <entity name="FoodConsumptionRecord" representedClassName="FoodConsumptionRecord" parentEntity="SynchronizableModel" syncable="YES">
+        <attribute name="adhocOnly" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="carb" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="comments" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="energy" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="fat" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="fluid" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="protein" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="quantity" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="sodium" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="foodProduct" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="FoodProduct" inverseName="consumptionRecord" inverseEntity="FoodProduct" syncable="YES"/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Media" syncable="YES"/>
+        <relationship name="user" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="consumptionRecord" inverseEntity="User" syncable="YES"/>
+        <relationship name="voiceRecordings" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Media" syncable="YES"/>
+    </entity>
+    <entity name="FoodProduct" representedClassName="FoodProduct" parentEntity="SynchronizableModel" syncable="YES">
+        <attribute name="active" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="barcode" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="carb" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="energy" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="fat" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="fluid" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="protein" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="quantity" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="sodium" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Category" inverseName="foods" inverseEntity="Category" syncable="YES"/>
+        <relationship name="consumptionRecord" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="FoodConsumptionRecord" inverseName="foodProduct" inverseEntity="FoodConsumptionRecord" syncable="YES"/>
+        <relationship name="foodImage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Media" syncable="YES"/>
+        <relationship name="images" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Media" syncable="YES"/>
+        <relationship name="origin" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Origin" syncable="YES"/>
+    </entity>
+    <entity name="FoodProductFilter" representedClassName="FoodProductFilter" parentEntity="SynchronizableModel" syncable="YES">
+        <attribute name="adhocOnly" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="favoriteWithinTimePeriod" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="fetchUserAll" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sortOption" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Category" syncable="YES"/>
+        <relationship name="origins" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Origin" syncable="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="lastUsedFoodProductFilter" inverseEntity="User" syncable="YES"/>
+    </entity>
+    <entity name="Media" representedClassName="Media" parentEntity="SynchronizableModel" syncable="YES">
+        <attribute name="data" optional="YES" attributeType="Binary" syncable="YES"/>
+        <attribute name="filename" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Origin" representedClassName="Origin" parentEntity="PGManagedObject" syncable="YES">
+        <attribute name="value" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="PGManagedObject" representedClassName="PGManagedObject" syncable="YES">
+        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="SummaryGenerationHistory" representedClassName="SummaryGenerationHistory" parentEntity="SynchronizableModel" syncable="YES">
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="user" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="User" syncable="YES"/>
+    </entity>
+    <entity name="SynchronizableModel" representedClassName="SynchronizableModel" parentEntity="PGManagedObject" syncable="YES">
+        <attribute name="createdDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="modifiedDate" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="removed" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="synchronized" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <entity name="User" representedClassName="User" parentEntity="SynchronizableModel" syncable="YES">
+        <attribute name="admin" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="dailyTargetCarb" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="dailyTargetEnergy" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="dailyTargetFat" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="dailyTargetFluid" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="dailyTargetProtein" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="dailyTargetSodium" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="fullName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="maxPacketsPerFoodProductDaily" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="useLastUsedFoodProductFilter" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="weight" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="adhocFoodProduct" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="AdhocFoodProduct" inverseName="user" inverseEntity="AdhocFoodProduct" syncable="YES"/>
+        <relationship name="consumptionRecord" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="FoodConsumptionRecord" inverseName="user" inverseEntity="FoodConsumptionRecord" syncable="YES"/>
+        <relationship name="lastUsedFoodProductFilter" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="FoodProductFilter" inverseName="user" inverseEntity="FoodProductFilter" syncable="YES"/>
+        <relationship name="profileImage" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Media" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="AdhocFoodProduct" positionX="178" positionY="-27" width="128" height="60"/>
+        <element name="Category" positionX="180" positionY="126" width="128" height="75"/>
+        <element name="FoodConsumptionRecord" positionX="160" positionY="192" width="128" height="255"/>
+        <element name="FoodProduct" positionX="-29" positionY="81" width="128" height="270"/>
+        <element name="FoodProductFilter" positionX="160" positionY="192" width="128" height="165"/>
+        <element name="Media" positionX="198" positionY="144" width="128" height="75"/>
+        <element name="Origin" positionX="189" positionY="135" width="128" height="60"/>
+        <element name="PGManagedObject" positionX="180" positionY="126" width="128" height="60"/>
+        <element name="SummaryGenerationHistory" positionX="160" positionY="192" width="128" height="90"/>
+        <element name="SynchronizableModel" positionX="160" positionY="192" width="128" height="105"/>
+        <element name="User" positionX="358" positionY="225" width="128" height="270"/>
+    </elements>
+</model>

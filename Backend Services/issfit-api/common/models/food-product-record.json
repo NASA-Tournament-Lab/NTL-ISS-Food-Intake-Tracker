@@ -87,7 +87,7 @@
     "comments": {
       "type": "string",
       "postgresql": {
-        "dataType": "integer"
+        "dataType": "text"
       }
     },
     "timestamp": {

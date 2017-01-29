@@ -27,7 +27,7 @@
 //FoodConsumptionRecord implementation
 @implementation FoodConsumptionRecord
 
-@dynamic comment;
+@dynamic comments;
 @dynamic energy;
 @dynamic fluid;
 @dynamic quantity;

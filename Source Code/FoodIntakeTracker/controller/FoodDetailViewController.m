@@ -64,7 +64,7 @@
     self.lblCarb.text = [NSString stringWithFormat:@"%@", self.foodConsumptionRecord.foodProduct.carb];
     self.lblFat.text = [NSString stringWithFormat:@"%@", self.foodConsumptionRecord.foodProduct.fat];
    
-    self.txtComment.text = self.foodConsumptionRecord.comment;
+    self.txtComment.text = self.foodConsumptionRecord.comments;
     
     self.img.layer.borderColor = [UIColor colorWithRed:0.54 green:0.79 blue:1 alpha:1].CGColor;
     self.img.image = [Helper loadImage:self.foodConsumptionRecord.foodProduct.foodImage.filename];
@@ -214,7 +214,7 @@
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     NSString *newString = [textView.text stringByReplacingCharactersInRange:range withString:text];
-    self.btnSave.enabled = ![self.foodConsumptionRecord.comment isEqualToString:newString];
+    self.btnSave.enabled = ![self.foodConsumptionRecord.comments isEqualToString:newString];
     return YES;
 }
 

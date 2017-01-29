@@ -54,7 +54,7 @@
     record.foodProduct = nil;
     record.timestamp = [NSDate date];
     record.quantity = @0.0;
-    record.comment = @"";
+    record.comments = @"";
     record.images = [NSMutableSet set];
     record.voiceRecordings = [NSMutableSet set];
     record.fluid = @0;
@@ -114,7 +114,7 @@
     copy.timestamp = [copyToDayComponents date];
     copy.synchronized = @NO;
     copy.removed = @NO;
-    copy.comment = @"";
+    copy.comments = @"";
     [self.managedObjectContext insertObject:copy];
 
     for (Media *media in record.voiceRecordings) {

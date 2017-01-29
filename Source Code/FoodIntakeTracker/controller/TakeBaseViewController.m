@@ -281,7 +281,7 @@
         record.carb = product.carb;
         record.fat = product.fat;
         record.timestamp = [Helper convertDateTimeToDate:consumptionViewController.dateListView.currentDate time:[NSDate date]];
-        record.comment = self.txtFoodComment.text;
+        record.comments = self.txtFoodComment.text;
 
         [recordService addFoodConsumptionRecord:appDelegate.loggedInUser record:record error:&error];
         
