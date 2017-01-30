@@ -29,7 +29,7 @@
 @interface FoodConsumptionRecord : SynchronizableModel
 
 //Represents iPad user comment.
-@property (nonatomic, strong) NSString * comment;
+@property (nonatomic, strong) NSString * comments;
 
 //Represents the total consumed energy.
 @property (nonatomic, strong) NSNumber * energy;

@@ -114,14 +114,14 @@ try:
     # Loop over all users in database
     selectedArray = []
     if selected is None:
-        cur.execute("SELECT uuid, full_name FROM nasa_user;")
+        cur.execute("SELECT uuid, full_name FROM nasa_user WHERE removed = false;")
         selectedArray = cur.fetchall()
     else:
         for user in selected.split(','):
             if is_valid_uuid(user):
-                cur.execute("SELECT uuid, full_name FROM nasa_user WHERE uuid = %s", (user,))
+                cur.execute("SELECT uuid, full_name FROM nasa_user WHERE uuid = %s AND removed = false;", (user,))
             else:
-                cur.execute("SELECT uuid, full_name FROM nasa_user WHERE full_name =%s", (user,))
+                cur.execute("SELECT uuid, full_name FROM nasa_user WHERE full_name =%s AND removed = false;", (user,))
             selectedArray.append(cur.fetchone())
 
     for cur_user in selectedArray:

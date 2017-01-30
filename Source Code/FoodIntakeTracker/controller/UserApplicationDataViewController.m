@@ -50,7 +50,7 @@
     self.lblTime.text = [defaultFormatter stringFromDate:self.foodConsumptionRecord.timestamp];
     [defaultFormatter setDateFormat:@"MM/dd/YY"];
     self.lblDay.text = [defaultFormatter stringFromDate:self.foodConsumptionRecord.timestamp];
-    if(self.foodConsumptionRecord.comment.length > 0){
+    if(self.foodConsumptionRecord.comments.length > 0){
         self.btnComment.hidden = NO;
     }
     else{
@@ -260,7 +260,7 @@
     self.commentView.hidden = NO;
     
     FoodConsumptionRecord *item = [foodConsumptionRecords objectAtIndex:row];
-    self.commentText.text = item.comment;
+    self.commentText.text = item.comments;
     
     btn = [[UIButton alloc] initWithFrame:self.view.frame];
     [self.view addSubview:btn];

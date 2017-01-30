@@ -88,6 +88,15 @@ var knex = require('knex')({
   connection: connstr
 });
 
+// override String
+String.prototype.startsWith = function(prefix) {
+    return this.indexOf(prefix) === 0;
+}
+
+String.prototype.endsWith = function(suffix) {
+    return this.match(suffix+"$") == suffix;
+};
+
 /**
  * Return an Object sorted by it's Key
  */
@@ -145,7 +154,7 @@ var isEmpty = function(obj) {
     return true;
 }
 
-var saveImageFromZip = function(zipFile) {
+var saveImageFromZip = function(zipFile, done) {
     if (zipFile && zipFile.length > 0) {
         var zip = zipFile[0].path;
         var tmpzipDir = '/tmp/image-' + new Date().getTime();
@@ -154,6 +163,9 @@ var saveImageFromZip = function(zipFile) {
             var queryFunctions = [];
             var imageFiles = fs.readdirSync(tmpzipDir);
             imageFiles.forEach(function(file) {
+                if (!file.toUpperCase().endsWith('JPG')) {
+                    return;
+                }
                 queryFunctions.push(function(callback) {
                     saveImageToDB({originalname: file, path: tmpzipDir + '/' + file}, function(err, media) {
                         if (!isEmpty(err)) {
@@ -177,7 +189,8 @@ var saveImageFromZip = function(zipFile) {
                                                 var newValue = JSON.parse(JSON.stringify(result));
                                                 newValue['profileImage'] = media.id;
                                                 NasaUser.upsert(newValue);
-                                                innerCallback(err);
+                                                console.log('Updating profile image for user' + result.fullName);
+                                                innerCallback();
                                             }
                                        });
                                    });
@@ -197,11 +210,16 @@ var saveImageFromZip = function(zipFile) {
             async.waterfall(
                 queryFunctions,
                 function (err, result) {
+                    if (err) {
+                       console.log('Error saving profile image: ' + JSON.stringify(err));
+                    }
                     knex.table('user_tmp_table').truncate().return('finished');
+                    done();
                 });
         });
     } else {
         knex.table('user_tmp_table').truncate().return('finished');
+        done();
     }
 }
 
@@ -1183,18 +1201,19 @@ app.post('/import', function(req, res) {
             var currentFile = files[i];
             console.log('Current file: ' + JSON.stringify(currentFile));
             if (currentFile.fieldname == 'userFileImport' && currentFile.mimetype == 'text/csv') {
-                functions.push(function(callback) {
-                    var path = currentFile['path'];
-                    var args = [
-                      config.db.host,
-                      config.db.username,
-                      config.db.database,
-                      config.db.port,
-                      config.db.password,
-                      path
-                    ];
+                var argsUser = [
+                    config.db.host,
+                    config.db.username,
+                    config.db.database,
+                    config.db.port,
+                    config.db.password,
+                    currentFile['path']
+                ];
 
-                    child_process.execFile(__dirname + '/../loadUser.sh', args, function(err, stdout, stderr) {
+                console.log('Preparing user: ' + JSON.stringify(argsUser));
+                functions.push(function(callback) {
+                    console.log('Executing user: ' + JSON.stringify(argsUser));
+                    child_process.execFile(__dirname + '/../loadUser.sh', argsUser, function(err, stderr, stdout) {
                         if (err) {
                             callback(err + '\n' + stderr);
                         } else {
@@ -1205,26 +1224,28 @@ app.post('/import', function(req, res) {
                 });
 
             } else if (currentFile.fieldname == 'foodFileImport' && currentFile.mimetype == 'text/csv') {
+                var argsFood = [
+                    config.db.host,
+                    config.db.username,
+                    config.db.database,
+                    config.db.port,
+                    config.db.password,
+                    currentFile['path']
+                ];
+                if (body.clear == "on") {
+                    argsFood.push("1");
+                } else {
+                    argsFood.push("0");
+                }
+
+                console.log('Preparing food: ' + JSON.stringify(argsFood));
                 functions.push(function(callback) {
-                    var path = currentFile['path'];
-                    var args = [
-                      config.db.host,
-                      config.db.username,
-                      config.db.database,
-                      config.db.port,
-                      config.db.password,
-                      path
-                    ];
-
-                    if (body.clear == "on") {
-                        args.push("1");
-                    }
-
-                    child_process.execFile(__dirname + '/../loadFood.sh', args, function(err, stderr, stdout) {
-                        console.log('stdout: ' + stdout);
+                    console.log('Executing food: ' + JSON.stringify(argsFood));
+                    child_process.execFile(__dirname + '/../loadFood.sh', argsFood, function(err, stderr, stdout) {
                         if (err) {
-                            callback(stderr);
+                            callback(err + '\n' + stderr);
                         } else {
+                            console.log(stdout);
                             callback(null);
                         }
                     });
@@ -1236,20 +1257,25 @@ app.post('/import', function(req, res) {
             functions,
             function (err, result) {
                 if (isScript) {
-                  if (err) {
-                      res.status(500).send({success: false, error: err});
-                  } else {
-                    res.json({success: true})
-                  }
+                    if (err) {
+                        console.log('Error: ' + err);
+                        res.status(500).send({success: false, error: err});
+                    } else {
+                        saveImageFromZip(zipFile, function() {
+                            res.json({success: true})
+                        });
+                    }
                 } else {
-                  if (err) {
-                      console.log('Error: ' + err);
-                      req.flash('error', err);
-                  } else {
-                      saveImageFromZip(zipFile);
-                      req.flash('message', 'Bulk Upload Successful');
-                  }
-                  res.redirect('/');
+                    if (err) {
+                        console.log('Error: ' + err);
+                        req.flash('error', err);
+                        res.redirect('/');
+                    } else {
+                        saveImageFromZip(zipFile, function() {
+                            req.flash('message', 'Bulk Upload Successful');
+                            res.redirect('/');
+                        });
+                    }
                 }
         });
     } else {

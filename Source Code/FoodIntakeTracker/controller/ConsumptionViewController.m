@@ -963,7 +963,7 @@
             }
         }
         
-        self.foodConsumptionRecordToAdd.comment = _addFood.txtComment.text;
+        self.foodConsumptionRecordToAdd.comments = _addFood.txtComment.text;
         self.foodConsumptionRecordToAdd.quantity = [NSNumber numberWithFloat:_addFood.txtQuantity.text.floatValue];
         
         NSString *time = _addFood.timeLabel.text;
@@ -1154,7 +1154,7 @@
     }
     
     foodDetail.foodConsumptionRecord.quantity = [NSNumber numberWithFloat:foodDetail.txtQuantity.text.floatValue];
-    foodDetail.foodConsumptionRecord.comment = foodDetail.txtComment.text;
+    foodDetail.foodConsumptionRecord.comments = foodDetail.txtComment.text;
     
     NSString *timeString = foodDetail.lblTime.text;
     // set date
@@ -2082,7 +2082,7 @@
     }
     
     cell.btnComment.hidden = YES;
-    if(item.comment.length > 0){
+    if(item.comments.length > 0){
         cell.btnComment.hidden = NO;
     }
     if(cell.editing){

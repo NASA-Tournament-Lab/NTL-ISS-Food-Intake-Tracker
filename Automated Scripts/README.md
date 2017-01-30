@@ -31,6 +31,12 @@ Run the following command to execute script:
 $ python send-files.py -c config.ini
 ```
 
+If you want to mark as removed all existing food, execute the script like this:
+
+```
+$ python send-files.py -c config.ini -f
+```
+
 ## Schedule windows tasks
 
 Check this [link](http://desktop.arcgis.com/en/arcmap/10.3/analyze/executing-tools/scheduling-a-python-script-to-run-at-prescribed-times.htm) on how to schedule a task.
