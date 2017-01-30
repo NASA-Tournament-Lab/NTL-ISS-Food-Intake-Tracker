@@ -1200,7 +1200,7 @@ app.post('/import', function(req, res) {
             var currentFile = files[i];
             console.log('Current file: ' + JSON.stringify(currentFile));
             if (currentFile.fieldname == 'userFileImport' && currentFile.mimetype == 'text/csv') {
-                var args = [
+                var argsUser = [
                     config.db.host,
                     config.db.username,
                     config.db.database,
@@ -1209,10 +1209,10 @@ app.post('/import', function(req, res) {
                     currentFile['path']
                 ];
 
-                console.log('Preparing user: ' + JSON.stringify(args));
+                console.log('Preparing user: ' + JSON.stringify(argsUser));
                 functions.push(function(callback) {
-                    console.log('Executing user: ' + JSON.stringify(args));
-                    child_process.execFile(__dirname + '/../loadUser.sh', args, function(err, stdout, stderr) {
+                    console.log('Executing user: ' + JSON.stringify(argsUser));
+                    child_process.execFile(__dirname + '/../loadUser.sh', argsUser, function(err, stdout, stderr) {
                         if (err) {
                             callback(err + '\n' + stderr);
                         } else {
@@ -1223,7 +1223,7 @@ app.post('/import', function(req, res) {
                 });
 
             } else if (currentFile.fieldname == 'foodFileImport' && currentFile.mimetype == 'text/csv') {
-                var args = [
+                var argsFood = [
                     config.db.host,
                     config.db.username,
                     config.db.database,
@@ -1232,15 +1232,15 @@ app.post('/import', function(req, res) {
                     currentFile['path']
                 ];
                 if (body.clear == "on") {
-                    args.push("1");
+                    argsFood.push("1");
                 } else {
-                    args.push("0");
+                    argsFood.push("0");
                 }
 
-                console.log('Preparing food: ' + JSON.stringify(args));
+                console.log('Preparing food: ' + JSON.stringify(argsFood));
                 functions.push(function(callback) {
-                    console.log('Executing food: ' + JSON.stringify(args));
-                    child_process.execFile(__dirname + '/../loadFood.sh', args, function(err, stderr, stdout) {
+                    console.log('Executing food: ' + JSON.stringify(argsFood));
+                    child_process.execFile(__dirname + '/../loadFood.sh', argsFood, function(err, stderr, stdout) {
                         if (err) {
                             callback(err + '\n' + stderr);
                         } else {
