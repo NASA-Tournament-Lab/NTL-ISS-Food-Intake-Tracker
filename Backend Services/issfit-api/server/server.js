@@ -1238,20 +1238,21 @@ app.post('/import', function(req, res) {
             functions,
             function (err, result) {
                 if (isScript) {
-                  if (err) {
-                      res.status(500).send({success: false, error: err});
-                  } else {
-                    res.json({success: true})
-                  }
+                    if (err) {
+                        console.log('Error: ' + err);
+                        res.status(500).send({success: false, error: err});
+                    } else {
+                        res.json({success: true})
+                    }
                 } else {
-                  if (err) {
-                      console.log('Error: ' + err);
-                      req.flash('error', err);
-                  } else {
-                      saveImageFromZip(zipFile);
-                      req.flash('message', 'Bulk Upload Successful');
-                  }
-                  res.redirect('/');
+                    if (err) {
+                        console.log('Error: ' + err);
+                        req.flash('error', err);
+                    } else {
+                        saveImageFromZip(zipFile);
+                        req.flash('message', 'Bulk Upload Successful');
+                    }
+                    res.redirect('/');
                 }
         });
     } else {
