@@ -1200,17 +1200,18 @@ app.post('/import', function(req, res) {
             var currentFile = files[i];
             console.log('Current file: ' + JSON.stringify(currentFile));
             if (currentFile.fieldname == 'userFileImport' && currentFile.mimetype == 'text/csv') {
-                functions.push(function(callback) {
-                    var path = currentFile['path'];
-                    var args = [
-                      config.db.host,
-                      config.db.username,
-                      config.db.database,
-                      config.db.port,
-                      config.db.password,
-                      path
-                    ];
+                var args = [
+                    config.db.host,
+                    config.db.username,
+                    config.db.database,
+                    config.db.port,
+                    config.db.password,
+                    currentFile['path']
+                ];
 
+                console.log('Preparing user: ' + JSON.stringify(args));
+                functions.push(function(callback) {
+                    console.log('Executing user: ' + JSON.stringify(args));
                     child_process.execFile(__dirname + '/../loadUser.sh', args, function(err, stdout, stderr) {
                         if (err) {
                             callback(err + '\n' + stderr);
@@ -1222,23 +1223,23 @@ app.post('/import', function(req, res) {
                 });
 
             } else if (currentFile.fieldname == 'foodFileImport' && currentFile.mimetype == 'text/csv') {
+                var args = [
+                    config.db.host,
+                    config.db.username,
+                    config.db.database,
+                    config.db.port,
+                    config.db.password,
+                    currentFile['path']
+                ];
+                if (body.clear == "on") {
+                    args.push("1");
+                } else {
+                    args.push("0");
+                }
+
+                console.log('Preparing food: ' + JSON.stringify(args));
                 functions.push(function(callback) {
-                    var path = currentFile['path'];
-                    var args = [
-                      config.db.host,
-                      config.db.username,
-                      config.db.database,
-                      config.db.port,
-                      config.db.password,
-                      path
-                    ];
-
-                    if (body.clear == "on") {
-                        args.push("1");
-                    } else {
-                        args.push("0");
-                    }
-
+                    console.log('Executing food: ' + JSON.stringify(args));
                     child_process.execFile(__dirname + '/../loadFood.sh', args, function(err, stderr, stdout) {
                         if (err) {
                             callback(err + '\n' + stderr);
