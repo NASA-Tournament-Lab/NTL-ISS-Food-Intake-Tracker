@@ -145,7 +145,7 @@ var isEmpty = function(obj) {
     return true;
 }
 
-var saveImageFromZip = function(zipFile) {
+var saveImageFromZip = function(zipFile, done) {
     if (zipFile && zipFile.length > 0) {
         var zip = zipFile[0].path;
         var tmpzipDir = '/tmp/image-' + new Date().getTime();
@@ -198,10 +198,12 @@ var saveImageFromZip = function(zipFile) {
                 queryFunctions,
                 function (err, result) {
                     knex.table('user_tmp_table').truncate().return('finished');
+                    done();
                 });
         });
     } else {
         knex.table('user_tmp_table').truncate().return('finished');
+        done();
     }
 }
 
@@ -1242,17 +1244,21 @@ app.post('/import', function(req, res) {
                         console.log('Error: ' + err);
                         res.status(500).send({success: false, error: err});
                     } else {
-                        res.json({success: true})
+                        saveImageFromZip(zipFile, function() {
+                            res.json({success: true})
+                        });
                     }
                 } else {
                     if (err) {
                         console.log('Error: ' + err);
                         req.flash('error', err);
+                        res.redirect('/');
                     } else {
-                        saveImageFromZip(zipFile);
-                        req.flash('message', 'Bulk Upload Successful');
+                        saveImageFromZip(zipFile, function() {
+                            req.flash('message', 'Bulk Upload Successful');
+                            res.redirect('/');
+                        });
                     }
-                    res.redirect('/');
                 }
         });
     } else {
