@@ -114,7 +114,7 @@ try:
     # Loop over all users in database
     selectedArray = []
     if selected is None:
-        cur.execute("SELECT uuid, full_name FROM nasa_user AND removed = false;")
+        cur.execute("SELECT uuid, full_name FROM nasa_user WHERE removed = false;")
         selectedArray = cur.fetchall()
     else:
         for user in selected.split(','):
