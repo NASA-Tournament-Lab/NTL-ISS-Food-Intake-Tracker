@@ -189,7 +189,8 @@ var saveImageFromZip = function(zipFile, done) {
                                                 var newValue = JSON.parse(JSON.stringify(result));
                                                 newValue['profileImage'] = media.id;
                                                 NasaUser.upsert(newValue);
-                                                innerCallback(err);
+                                                console.log('Updating profile image for user' + result.fullName);
+                                                innerCallback();
                                             }
                                        });
                                    });
