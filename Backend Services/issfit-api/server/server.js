@@ -1212,7 +1212,7 @@ app.post('/import', function(req, res) {
                 console.log('Preparing user: ' + JSON.stringify(argsUser));
                 functions.push(function(callback) {
                     console.log('Executing user: ' + JSON.stringify(argsUser));
-                    child_process.execFile(__dirname + '/../loadUser.sh', argsUser, function(err, stdout, stderr) {
+                    child_process.execFile(__dirname + '/../loadUser.sh', argsUser, function(err, stderr, stdout) {
                         if (err) {
                             callback(err + '\n' + stderr);
                         } else {
