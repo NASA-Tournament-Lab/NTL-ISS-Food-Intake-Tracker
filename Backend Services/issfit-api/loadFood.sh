@@ -3,15 +3,14 @@
 set -e
 set -x
 
-if [ "$#" -ne 6 ]; then
-  echo "Usage: $0 host user db port FILE" >&2
+if [ "$#" -ne 7 ]; then
+  echo "Usage: $0 host user db port file drop" >&2
   exit 1
 fi
 
-if [ ! -f "$6" ]
-  then
-    echo "File $6 not found"
-    exit 1
+if [ ! -f "$6" ]; then
+  echo "File $6 not found"
+  exit 1
 fi
 
 HOST=$1
@@ -22,7 +21,7 @@ PASSWORD=$5
 FILE_NAME=$6
 
 if [ "$#" -eq 7 ]; then
-   DROP=$7
+  DROP=$7
 fi
 
 LOAD_CMD="copy food_tmp_table (name, categories, origin, barcode, fluid, energy, sodium, protein, carb, fat, image, deleted, version) FROM STDIN WITH (FORMAT 'csv', DELIMITER E',', HEADER);"
@@ -44,7 +43,7 @@ psql "${CONN_STR}" << EOF
   UPDATE food_product SET removed = TRUE;
 EOF
 fi
-psql "${CONN_STR}" -f loadFood.sql > /dev/null 
+psql "${CONN_STR}" -f loadFood.sql > /dev/null
 
 if [ $ret -ne 0 ]; then
    echo "Error update database"

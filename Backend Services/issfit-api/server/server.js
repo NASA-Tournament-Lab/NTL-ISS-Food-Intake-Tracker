@@ -1218,6 +1218,8 @@ app.post('/import', function(req, res) {
 
                     if (body.clear == "on") {
                         args.push("1");
+                    } else {
+                        args.push("0");
                     }
 
                     child_process.execFile(__dirname + '/../loadFood.sh', args, function(err, stderr, stdout) {
