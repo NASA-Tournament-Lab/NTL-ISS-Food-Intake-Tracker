@@ -209,6 +209,9 @@ var saveImageFromZip = function(zipFile, done) {
             async.waterfall(
                 queryFunctions,
                 function (err, result) {
+                    if (err) {
+                       console.log('Error saving profile image: ' + JSON.stringify(err));
+                    }
                     knex.table('user_tmp_table').truncate().return('finished');
                     done();
                 });
