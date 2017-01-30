@@ -1240,10 +1240,10 @@ app.post('/import', function(req, res) {
                     }
 
                     child_process.execFile(__dirname + '/../loadFood.sh', args, function(err, stderr, stdout) {
-                        console.log('stdout: ' + stdout);
                         if (err) {
-                            callback(stderr);
+                            callback(err + '\n' + stderr);
                         } else {
+                            console.log(stdout);
                             callback(null);
                         }
                     });

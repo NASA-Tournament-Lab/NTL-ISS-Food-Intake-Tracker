@@ -4,7 +4,7 @@ set -e
 set -x
 
 if [ "$#" -ne 6 ]; then
-  echo "Usage: $0 host user db port FILE" >&2
+  echo "Usage: $0 host user db port password file" >&2
   exit 1
 fi
 

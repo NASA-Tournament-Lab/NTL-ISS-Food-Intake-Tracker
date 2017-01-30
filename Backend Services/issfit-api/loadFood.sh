@@ -4,7 +4,7 @@ set -e
 set -x
 
 if [ "$#" -ne 7 ]; then
-  echo "Usage: $0 host user db port file drop" >&2
+  echo "Usage: $0 host user db port password file drop" >&2
   exit 1
 fi
 
