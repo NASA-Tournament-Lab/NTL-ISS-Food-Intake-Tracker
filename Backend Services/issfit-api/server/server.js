@@ -88,6 +88,15 @@ var knex = require('knex')({
   connection: connstr
 });
 
+// override String
+String.prototype.startsWith = function(prefix) {
+    return this.indexOf(prefix) === 0;
+}
+
+String.prototype.endsWith = function(suffix) {
+    return this.match(suffix+"$") == suffix;
+};
+
 /**
  * Return an Object sorted by it's Key
  */
@@ -154,6 +163,9 @@ var saveImageFromZip = function(zipFile, done) {
             var queryFunctions = [];
             var imageFiles = fs.readdirSync(tmpzipDir);
             imageFiles.forEach(function(file) {
+                if (!file.toUpperCase().endsWith('JPG')) {
+                    return;
+                }
                 queryFunctions.push(function(callback) {
                     saveImageToDB({originalname: file, path: tmpzipDir + '/' + file}, function(err, media) {
                         if (!isEmpty(err)) {
