@@ -135,13 +135,14 @@ try:
         directory = fullNameAscii.replace("/", "_")
         if not os.path.exists(directory):
             os.makedirs(directory)
+        os.chdir(directory)
 
         directory = "media"
         if not os.path.exists(directory):
             os.makedirs(directory)
 
         # Create summary.csv file
-        myfile = open(directory + "/summary.csv", "w")
+        myfile = open("summary.csv", "w")
         wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
 
         # Create header
@@ -210,6 +211,7 @@ try:
                 raise exc_info[1], None, exc_info[2]
 
         myfile.close()
+        os.chdir("../")
 
     os.chdir("../")
 
