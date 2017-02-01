@@ -521,10 +521,10 @@ static NSString* reachHostName = @"";
     return newId;
 }
 
-- (BOOL)insertUserLock:(User *) user {
+- (BOOL)insertUserLock:(NSString *) userId {
     NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"DEVICE_UUID"];
     LBPersistedModelRepository *rep = [instance.adapter repositoryWithPersistedModelName:@"UserLocks"];
-    LBPersistedModel *model = (LBPersistedModel *) [ rep modelWithDictionary:@{ @"userId" : user.id, @"deviceId" : deviceUuid } ];
+    LBPersistedModel *model = (LBPersistedModel *) [ rep modelWithDictionary:@{ @"userId" : userId, @"deviceId" : deviceUuid } ];
 
     __block NSInteger result = -1;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{

@@ -66,6 +66,8 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     SyncStatus status;
     
     UIBackgroundTaskIdentifier backgroundTask;
+
+    NSInteger dataUpdateCount;
 }
 
 @synthesize tabBarViewController;
@@ -105,6 +107,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
  */
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    dataUpdateCount = 0;
     status = SyncStatusNone;
     dataSyncUpdateQ = dispatch_queue_create("Data Sync Update", NULL);
    
@@ -273,10 +276,12 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
 - (void) doSyncUpdate:(NSNotification *) notif {
     // Skip the sync/update if the initial load is still in progress.
     if (loadingFinished) {
-        [self doSyncUpdateWithBlock:^(BOOL result){
-            NSDictionary *loadingEndParam = @{@"success": [NSNumber numberWithBool:result]};
-            [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
-                                                            object:loadingEndParam];
+        [self doSyncUpdateWithBlock:^(BOOL result) {
+            if (dataUpdateCount <= 0) {
+                NSDictionary *loadingEndParam = @{@"success": [NSNumber numberWithBool:result]};
+                [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
+                                                                    object:loadingEndParam];
+            }
         }];
     }
 }
@@ -286,10 +291,14 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
  @param block code to be executed when synchronization has finished
  */
 - (void) doSyncUpdateWithBlock:(void (^) (BOOL) ) block {
+    // new call to sync update
+    dataUpdateCount++;
+
     dispatch_async(dataSyncUpdateQ, ^{
         @autoreleasepool {
             if (!loadingFinished) {
                 dispatch_async(dispatch_get_main_queue(), ^{
+                    dataUpdateCount--;
                     block(NO);
                 });
                 
@@ -307,11 +316,13 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
             if (error.code == UserLockErrorCode ||
                 error.code == UserRemovedErrorCode) {
                 status = SyncStatusFinished;
+                dataUpdateCount--;
                 NSLog(@"Sync interrupted at: %@", [NSDate date]);
                 return;
             }
 
             dispatch_async(dispatch_get_main_queue(), ^{
+                dataUpdateCount--;
                 block(result);
             });
 
@@ -582,23 +593,24 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
 - (BOOL)acquireLock:(User *)user {
     // check if current user has been lock by another device
     NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"DEVICE_UUID"];
-    NSLog(@"Acquiring lock for user %@", user.fullName);
+    NSLog(@"Acquiring lock for user %@", [user fullName]);
 
     __block BOOL result = NO;
+    __block NSString *userId = [NSString stringWithString:user.id];
     dispatch_sync(dataSyncUpdateQ, ^{
         NSArray *userLocks = [[WebserviceCoreData instance] fetchUserLocks];
         if (userLocks) {
             for (NSDictionary *dict in userLocks) {
                 NSString *uid = [dict objectForKey:@"userId"];
                 NSString *deviceId = [dict objectForKey:@"deviceId"];
-                if ([uid isEqualToString:user.id]) {
+                if ([uid isEqualToString:userId]) {
                     result = [deviceId isEqualToString:deviceUuid];
                     return;
                 }
             }
         }
 
-        result = [[WebserviceCoreData instance] insertUserLock:user];
+        result = [[WebserviceCoreData instance] insertUserLock:userId];
     });
 
     return result;
