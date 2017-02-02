@@ -15,6 +15,28 @@
 
 #define kTimerInterval 30
 
+@interface NSString (JRStringAdditions)
+
+- (BOOL)containsString:(NSString *)string;
+- (BOOL)containsString:(NSString *)string
+               options:(NSStringCompareOptions)options;
+
+@end
+
+@implementation NSString (JRStringAdditions)
+
+- (BOOL)containsString:(NSString *)string
+               options:(NSStringCompareOptions)options {
+    NSRange rng = [self rangeOfString:string options:options];
+    return rng.location != NSNotFound;
+}
+
+- (BOOL)containsString:(NSString *)string {
+    return [self containsString:string options:0];
+}
+
+@end
+
 static WebserviceCoreData *instance;
 static Reachability* reach;
 static NSString* reachHostName = @"";
@@ -189,12 +211,29 @@ static NSString* reachHostName = @"";
                         [NSThread sleepForTimeInterval:0.5];
 
                         AppDelegate *appDelegate = AppDelegate.shareDelegate;
-                        if (appDelegate.loggedInUser && ![appDelegate acquireLock:appDelegate.loggedInUser]) {
-                            [Helper showAlert:@"Error"
-                                      message:@"User already logged in another device."];
+                        if (appDelegate.loggedInUser) {
+                            NSInteger result = [appDelegate acquireLock:appDelegate.loggedInUser];
+                            if (result == 0) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
 
-                            [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
-                            return;
+                                    [Helper showAlert:@"Error"
+                                              message:@"User already logged in another device."];
+                                });
+                                return;
+                            } else if (result == -1) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [[appDelegate.loggedInUser managedObjectContext] lock];
+                                    [[appDelegate.loggedInUser managedObjectContext] deleteObject:appDelegate.loggedInUser];
+                                    [[appDelegate.loggedInUser managedObjectContext] save:nil];
+                                    [[appDelegate.loggedInUser managedObjectContext] unlock];
+
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
+
+                                    [Helper showAlert:@"Error" message:@"User was removed from database."];
+                                });
+                                return;
+                            }
                         }
 
                         // sync to database
@@ -521,26 +560,40 @@ static NSString* reachHostName = @"";
     return newId;
 }
 
-- (BOOL)insertUserLock:(NSString *) userId {
+- (NSInteger)insertUserLock:(NSString *) userId {
     NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"DEVICE_UUID"];
     LBPersistedModelRepository *rep = [instance.adapter repositoryWithPersistedModelName:@"UserLocks"];
     LBPersistedModel *model = (LBPersistedModel *) [ rep modelWithDictionary:@{ @"userId" : userId, @"deviceId" : deviceUuid } ];
 
-    __block NSInteger result = -1;
+    __block NSInteger result = -2;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [model saveWithSuccess:^{
             result = 1;
         } failure:^(NSError *error) {
             NSLog(@"Error: %@", error);
+            NSError *err = nil;
+            NSString *string = [[error userInfo] objectForKey:@"NSLocalizedRecoverySuggestion"];
+            if (string.length > 0) {
+                NSDictionary *dictionary = [NSJSONSerialization JSONObjectWithData:[string dataUsingEncoding:NSUTF8StringEncoding]
+                                                                           options:NSJSONReadingMutableContainers error:&err];
+                NSDictionary *error = [dictionary objectForKey:@"error"];
+                if (error &&
+                    [[error objectForKey:@"routine"] isEqualToString:@"ri_ReportViolation"] &&
+                    [[error objectForKey:@"message"] containsString:@"user_user_lock_fk"]) {
+                    result = -1;
+                    return;
+                }
+            }
+
             result = 0;
         }];
     });
 
-    while (result < 0) {
+    while (result == -2) {
         [NSThread sleepForTimeInterval:0.5];
     }
 
-    return result == 1;
+    return result;
 }
 
 - (BOOL)removeUserLock {
