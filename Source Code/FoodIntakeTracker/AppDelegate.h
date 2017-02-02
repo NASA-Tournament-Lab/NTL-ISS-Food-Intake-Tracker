@@ -139,7 +139,7 @@ static dispatch_queue_t dataSyncUpdateQ;
  * @param user the user to set new lock.
  * @return true if lock was acquired or if user is already locked for this device, false otherwise.
  */
-- (BOOL)acquireLock:(User *)user;
+- (NSInteger)acquireLock:(User *)user;
 
 + (AppDelegate *) shareDelegate;
 

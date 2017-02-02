@@ -373,10 +373,31 @@
 
     self.loadingPanel.hidden = NO;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if (![appDelegate acquireLock:loggedInUser]) {
+        NSInteger result = [appDelegate acquireLock:loggedInUser];
+
+        if (result == 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.loadingPanel.hidden = YES;
-                [Helper showAlert:@"Error" message:@"User already logged in another device"];
+                [Helper showAlert:@"Error" message:@"User already logged in another device."];
+            });
+            return;
+        } else if (result == -1) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[userService managedObjectContext] lock];
+                [[userService managedObjectContext] deleteObject:loggedInUser];
+                [[userService managedObjectContext] save:nil];
+                [[userService managedObjectContext] unlock];
+
+                self.loadingLabel.text = @"Loading";
+
+                [self showLoginPanel:nil];
+                [self getSavedUsers];
+
+                self.loadingPanel.hidden = YES;
+                self.loadingLabel.hidden = NO;
+                self.progressView.hidden = YES;
+
+                [Helper showAlert:@"Error" message:@"User was removed from database."];
             });
             return;
         }

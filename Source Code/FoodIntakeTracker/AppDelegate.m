@@ -590,7 +590,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
  * @param user the user to set new lock.
  * @return true if lock was acquired or if user is already locked for this device, false otherwise.
  */
-- (BOOL)acquireLock:(User *)user {
+- (NSInteger)acquireLock:(User *)user {
     // check if current user has been lock by another device
     NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"DEVICE_UUID"];
     NSLog(@"Acquiring lock for user %@", [user fullName]);
