@@ -394,8 +394,11 @@
                 SynchronizableModel *object = [objects objectAtIndex:0];
                 if (isRemoved) {
                     if (!forceLogout) {
-                        forceLogout = [loggedInUser.objectID isEqual:object.objectID];
-                        loggedInUser.removed = @YES;
+                        if ([loggedInUser.objectID isEqual:object.objectID]) {
+                            loggedInUser.removed = @YES;
+                            object.removed = @YES;
+                            forceLogout = YES;
+                        }
                     }
                     [self.managedObjectContext deleteObject:object];
                 } else if (![self hasObjectInPostponed:postponedObjects object:object]) {
@@ -509,15 +512,13 @@
     if (forceLogout) {
         NSString *errorMsg = @"User was removed.";
         *error = [NSError errorWithDomain:@"LockDomain" code:UserRemovedErrorCode userInfo:@{NSUnderlyingErrorKey:errorMsg}];
-
         [Helper displayError:*error];
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
+            AppDelegate.shareDelegate.loggedInUser = nil;
+            [AppDelegate.shareDelegate removeUserLock];
 
-            NSDictionary *loadingEndParam = @{@"success": @YES};
-            [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingEndEvent
-                                                                object:loadingEndParam];
+            [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
         });
     }
 
