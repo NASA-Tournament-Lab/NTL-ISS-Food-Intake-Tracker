@@ -133,6 +133,9 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateProgress:)
                                                  name:InitialLoadingProgressEvent object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(forceLogout)
+                                                 name:ForceLogoutEvent object:nil];
 
     [self startLoading];
 
@@ -469,6 +472,20 @@
          "Don’t worry! You can still use the ISS FIT app and we will attempt to sync with the central food repository"
          " when it is available."];
     }
+}
+
+/*!
+ @discussion Called when the app forces a logout.
+ */
+- (void)forceLogout {
+    self.loadingLabel.text = @"Loading";
+
+    [self showLoginPanel:nil];
+    [self getSavedUsers];
+
+    self.loadingPanel.hidden = YES;
+    self.loadingLabel.hidden = NO;
+    self.progressView.hidden = YES;
 }
 
 /*!

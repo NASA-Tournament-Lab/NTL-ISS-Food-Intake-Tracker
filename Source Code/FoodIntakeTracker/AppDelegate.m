@@ -567,6 +567,10 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     // check if current user has been lock by another device
     NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"DEVICE_UUID"];
 
+    if (!user.id) {
+        return YES;
+    }
+
     NSLog(@"Checking lock for user %@", user.fullName);
 
     NSArray *userLocks = [[WebserviceCoreData instance] fetchUserLocks];
@@ -594,6 +598,10 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     // check if current user has been lock by another device
     NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"DEVICE_UUID"];
     NSLog(@"Acquiring lock for user %@", [user fullName]);
+
+    if (!user.id) {
+        return 1;
+    }
 
     __block NSInteger result;
     __block NSString *userId = [NSString stringWithString:user.id];
