@@ -128,7 +128,7 @@ class SendFiles:
             files['userFileImport'] = ('User.csv', open(self.userFile, 'r'), 'text/csv')
             # check for user image file
             if self.userImageFile is not None and os.path.exists(self.userImageFile):
-                files['userImageFileImport'] = ('UserImage.zip', open(self.userImageFile, 'r'), 'application/zip')
+                files['userImageFileImport'] = ('UserImage.zip', open(self.userImageFile, 'rb'), 'application/zip')
 
         if not files:
             print 'No files to import'
