@@ -155,6 +155,7 @@ var isEmpty = function(obj) {
 }
 
 var saveImageFromZip = function(zipFile, done) {
+    console.log('Zip file: ' + JSON.stringify(zipFile));
     if (zipFile && zipFile.length > 0) {
         var zip = zipFile[0].path;
         var tmpzipDir = '/tmp/image-' + new Date().getTime();
@@ -1355,8 +1356,12 @@ app.get('/delete/execute/:id', function(req, res) {
         if (profileImageId) {
           queryFunctions.push(function(callback) {
               Media.destroyById(profileImageId, function(err, mediaResult) {
-                  console.log('Deleted media with result: ' + JSON.stringify(mediaResult));
-                  callback(err);
+                  if (err) {
+                      console.log('Error deleting media: ' + JSON.stringify(err));
+                  } else {
+                      console.log('Deleted media with result: ' + JSON.stringify(mediaResult));
+                  }
+                  callback(); // ignore any error (might exist any user with this media)
               });
           });
         }
