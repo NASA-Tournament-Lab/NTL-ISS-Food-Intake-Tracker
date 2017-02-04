@@ -155,6 +155,7 @@ var isEmpty = function(obj) {
 }
 
 var saveImageFromZip = function(zipFile, done) {
+    console.log('Zip file: ' + JSON.stringify(zipFile));
     if (zipFile && zipFile.length > 0) {
         var zip = zipFile[0].path;
         var tmpzipDir = '/tmp/image-' + new Date().getTime();
