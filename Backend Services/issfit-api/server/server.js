@@ -1356,8 +1356,12 @@ app.get('/delete/execute/:id', function(req, res) {
         if (profileImageId) {
           queryFunctions.push(function(callback) {
               Media.destroyById(profileImageId, function(err, mediaResult) {
-                  console.log('Deleted media with result: ' + JSON.stringify(mediaResult));
-                  callback(err);
+                  if (err) {
+                      console.log('Error deleting media: ' + JSON.stringify(err));
+                  } else {
+                      console.log('Deleted media with result: ' + JSON.stringify(mediaResult));
+                  }
+                  callback(); // ignore any error (might exist any user with this media)
               });
           });
         }
