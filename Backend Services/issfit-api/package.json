@@ -30,9 +30,7 @@
     "path": "^0.12.7",
     "pg": "^6.1.2",
     "python-shell": "^0.4.0",
-    "serve-favicon": "^2.0.1",
-    "unzip": "^0.1.11",
-    "unzipper": "^0.8.3"
+    "serve-favicon": "^2.0.1"
   },
   "devDependencies": {
     "jshint": "^2.5.6",
