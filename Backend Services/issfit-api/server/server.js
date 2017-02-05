@@ -1265,12 +1265,12 @@ app.post('/import', function(req, res) {
                 if (isScript) {
                     if (err) {
                         console.log('Error: ' + err);
-                        res.status(500).send({success: false, error: err});
+                        res.status(500).send({success: false, error: 'Can\'t save images'});
                     } else {
                         saveImageFromZip(zipFile, function(err) {
                             if (err) {
                                 console.log('Error: ' + err);
-                                return res.status(500).send({success: false, error: err});
+                                return res.status(500).send({success: false, error: 'Can\'t save images'});
                             }
 
                             res.json({success: true})
