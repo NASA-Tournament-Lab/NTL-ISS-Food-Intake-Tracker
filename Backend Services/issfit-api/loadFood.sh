@@ -40,7 +40,7 @@ fi
 
 if [ "${DROP}" -eq "1" ]; then
 psql "${CONN_STR}" << EOF
-  UPDATE food_product SET removed = TRUE;
+  UPDATE food_product SET removed = TRUE, modified_date = current_timestamp, synchronized = TRUE;
 EOF
 fi
 psql "${CONN_STR}" -f loadFood.sql > /dev/null
