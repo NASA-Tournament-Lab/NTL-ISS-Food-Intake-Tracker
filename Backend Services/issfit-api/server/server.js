@@ -20,7 +20,7 @@ var config        = require('./config.js');
 var https         = require('https');
 var sslConfig     = require('./ssl-config');
 
-var unzip         = require('unzip');
+var unzip         = require('extract-zip');
 
 var child_process = require('child_process');
 
@@ -160,7 +160,12 @@ var saveImageFromZip = function(zipFile, done) {
         var zip = zipFile[0].path;
         var tmpzipDir = '/tmp/image-' + new Date().getTime();
         fs.mkdirSync(tmpzipDir);
-        fs.createReadStream(zip).pipe(unzip.Extract({ path: tmpzipDir })).on('close', function() {
+        unzip(zip, {dir: tmpzipDir}, function (err) {
+            if (err) {
+                knex.table('user_tmp_table').truncate().return('finished');
+                done(err);
+                return;
+            }
             var queryFunctions = [];
             var imageFiles = fs.readdirSync(tmpzipDir);
             imageFiles.forEach(function(file) {
@@ -215,7 +220,7 @@ var saveImageFromZip = function(zipFile, done) {
                        console.log('Error saving profile image: ' + JSON.stringify(err));
                     }
                     knex.table('user_tmp_table').truncate().return('finished');
-                    done();
+                    done(err);
                 });
         });
     } else {
@@ -1262,7 +1267,12 @@ app.post('/import', function(req, res) {
                         console.log('Error: ' + err);
                         res.status(500).send({success: false, error: err});
                     } else {
-                        saveImageFromZip(zipFile, function() {
+                        saveImageFromZip(zipFile, function(err) {
+                            if (err) {
+                                console.log('Error: ' + err);
+                                return res.status(500).send({success: false, error: err});
+                            }
+
                             res.json({success: true})
                         });
                     }
@@ -1272,7 +1282,13 @@ app.post('/import', function(req, res) {
                         req.flash('error', err);
                         res.redirect('/');
                     } else {
-                        saveImageFromZip(zipFile, function() {
+                        saveImageFromZip(zipFile, function(err) {
+                            if (err) {
+                                console.log('Error: ' + err);
+                                req.flash('error', err);
+                                return res.redirect('/');
+                            }
+
                             req.flash('message', 'Bulk Upload Successful');
                             res.redirect('/');
                         });
