@@ -9,6 +9,17 @@
       "table": "food_product"
     }
   },
+  "scope": {
+    "where": {
+      "user_uuid": { "neq": null }
+    },
+    "include": {
+      "relation": "consumptionRecord",
+      "scope" : {
+        "fields": [ "id" ]
+      }
+    }
+  },
   "properties": {
     "user": {
       "type": "string",
