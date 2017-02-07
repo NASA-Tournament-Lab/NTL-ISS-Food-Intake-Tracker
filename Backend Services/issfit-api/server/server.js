@@ -1434,13 +1434,13 @@ app.get('/delete/:id', function(req, res) {
             return;
         }
 
-        console.log('Before download');
+        console.log('Will download summary report');
         res.download(__dirname + '/../reports/summary.zip', 'summary.zip', function (err) {
             if (err) {
                 console.log('generateSummary.py error: ' + JSON.stringify(err));
                 req.session.downloadComplete = -1;
                 req.session.save(function(err) {
-                  res.status(err.status).end();
+                  res.status(err.status ? err.status : 500).end();
                 });
             } else {
                 req.session.downloadComplete = 2;
