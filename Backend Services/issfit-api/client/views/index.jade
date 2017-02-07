@@ -115,7 +115,6 @@ html
 									window.clearInterval( downloadTimer );
 									window.location.href = '/delete/execute/' + userId;
 									userId = null;
-									$('#dialog').dialog('close');
 									return;
 								} else if (data.downloadComplete == -1) {
 									userId = null;
