@@ -102,7 +102,7 @@ static NSString* reachHostName = @"";
         NSString *base64token = [WebserviceCoreData base64EncodedStringFromString:[NSString stringWithFormat:@"%@:%@", username, password]];
 
         instance = [[WebserviceCoreData alloc] init];
-        instance.adapter = [LBRESTAdapter adapterWithURL:[NSURL URLWithString:url]];
+        instance.adapter = [LBRESTAdapter adapterWithURL:[NSURL URLWithString:url] allowsInvalidSSLCertificate:YES];
         [instance.adapter setAccessToken:[NSString stringWithFormat:@"Basic %@", base64token]];
     }
 
@@ -307,7 +307,7 @@ static NSString* reachHostName = @"";
             [[NSUserDefaults standardUserDefaults] synchronize];
             result = 1;
         } failure:^(NSError *error) {
-            NSLog(@"Error: %@", error);
+            NSLog(@"Error at registerDevice: %@", error);
             result = 0;
         }];
     });
@@ -327,7 +327,7 @@ static NSString* reachHostName = @"";
         [rep findById:theId success:^(LBModel *model){
             result = 1;
         } failure:^(NSError *error){
-            NSLog(@"Error: %@", error);
+            NSLog(@"Error at checkId: %@", error);
             result = 0;
         }];
     });
@@ -355,7 +355,7 @@ static NSString* reachHostName = @"";
             }
             result = 0;
         } failure:^(NSError *error) {
-            NSLog(@"Error: %@", error);
+            NSLog(@"Error checkDeviceId: %@", error);
             result = 0;
         }];
     });
@@ -378,7 +378,7 @@ static NSString* reachHostName = @"";
     __block NSInteger result = -1;
 
     SLFailureBlock error = ^(NSError *error) {
-        NSLog(@"Error: %@", error);
+        NSLog(@"Error fetchAllObjects: %@", error);
         [array removeAllObjects];
         result = 0;
     };
@@ -425,7 +425,7 @@ static NSString* reachHostName = @"";
     __block NSInteger result = -1;
 
     SLFailureBlock error = ^(NSError *error) {
-        NSLog(@"Error: %@", error);
+        NSLog(@"Error fetchObjects: %@", error);
         [array removeAllObjects];
         result = 0;
     };
@@ -472,7 +472,7 @@ static NSString* reachHostName = @"";
             }
             result = 1;
         } failure:^(NSError *error) {
-            NSLog(@"Error: %@", error);
+            NSLog(@"Error fetchMedias: %@", error);
             [array removeAllObjects];
             result = 0;
         }];
@@ -501,7 +501,7 @@ static NSString* reachHostName = @"";
                             model = (LBPersistedModel * ) [mediaRep modelWithDictionary:value];
                             result = 1;
                         } failure:^(NSError *error) {
-                            NSLog(@"Error: %@", error);
+                            NSLog(@"Error insertMediaRecord: %@", error);
                             result = 0;
                         }];
     });
@@ -531,7 +531,7 @@ static NSString* reachHostName = @"";
                                 success:^(id values) {
                                     result = 1;
                                 } failure:^(NSError *error) {
-                                    NSLog(@"Error: %@", error);
+                                    NSLog(@"Error uploadMedia: %@", error);
                                     result = 0;
                                 }];
     });
@@ -570,7 +570,7 @@ static NSString* reachHostName = @"";
         [model saveWithSuccess:^{
             result = 1;
         } failure:^(NSError *error) {
-            NSLog(@"Error: %@", error);
+            NSLog(@"Error insertUserLock: %@", error);
             NSError *err = nil;
             NSString *string = [[error userInfo] objectForKey:@"NSLocalizedRecoverySuggestion"];
             if (string.length > 0) {
@@ -607,6 +607,7 @@ static NSString* reachHostName = @"";
                      parameters:@{ @"filter[where][deviceId]" : deviceUuid } success:^(id value) {
                          result = 1;
                      } failure:^(NSError *error) {
+                         NSLog(@"Error removeUserLock: %@", error);
                          result = 0;
                      }];
     });
@@ -633,6 +634,7 @@ static NSString* reachHostName = @"";
             }
             result = 1;
         } failure:^(NSError *error) {
+            NSLog(@"Error getModels: %@", error);
             [array removeAllObjects];
             result = 0;
         }];
@@ -672,7 +674,7 @@ static NSString* reachHostName = @"";
                 [array addObject:objMedia];
                 result = 1;
            } failure:^(NSError *error) {
-                NSLog(@"Error: %@", error);
+                NSLog(@"Error fetchNextMedia: %@", error);
                 [array removeAllObjects];
                 result = 0;
            }];
@@ -705,7 +707,7 @@ static NSString* reachHostName = @"";
 
                 result = 1;
             } failure:^(NSError *error) {
-                NSLog(@"Error: %@", error);
+                NSLog(@"Error fetchMediaCount: %@", error);
                 mediaArray = nil;
                 result = 0;
             }];
@@ -733,7 +735,7 @@ static NSString* reachHostName = @"";
     __block NSInteger result = -1;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         SLFailureBlock failure = ^(NSError *error) {
-            NSLog(@"Error: %@", error);
+            NSLog(@"Error at insertObject: %@", error);
             result = 0;
         };
 

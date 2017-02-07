@@ -281,7 +281,6 @@
                         if ([object isKindOfClass:[FoodConsumptionRecord class]]) {
                             NSMutableSet *allSet = [NSMutableSet set];
                             [allSet addObjectsFromArray: [[(FoodConsumptionRecord *) object voiceRecordings] allObjects]];
-                            // [allSet addObjectsFromArray: [[(FoodConsumptionRecord *) object images] allObjects]];
                             for (Media *mediaObject in allSet) {
                                 NSString *localPath = [[DataHelper getAbsoulteLocalDirectory:self.localFileSystemDirectory]
                                                        stringByAppendingPathComponent:mediaObject.filename];
@@ -401,7 +400,7 @@
                         }
                     }
                     [self.managedObjectContext deleteObject:object];
-                } else if (![self hasObjectInPostponed:postponedObjects object:object]) {
+                } else if (![self shouldIgnore:postponedObjects object:object]) {
                     if (![DataHelper updateObjectWithJSON:jsonDictionary object:object
                                      managegObjectContext:self.managedObjectContext]) {
                         e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
@@ -413,6 +412,8 @@
                         AppDelegate.shareDelegate.loggedInUser = (User *) object;
                         [[NSNotificationCenter defaultCenter] postNotificationName:CurrentUserUpdateEvent object:nil];
                     }
+                } else {
+                    [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Ignoring %@", name]];
                 }
             } else if (!isRemoved) {
                 if (![DataHelper convertJSONToObject:oId jsonValue:jsonDictionary name:name
@@ -525,6 +526,33 @@
     [LoggingHelper logMethodExit:methodName returnValue:@YES];
 
     return YES;
+}
+
+- (BOOL)shouldIgnore:(NSArray *) postponedObjects object:(SynchronizableModel *)object {
+    if ([object isKindOfClass:[AdhocFoodProduct class]]) {
+        for (SynchronizableModel *model in postponedObjects) {
+            if ([model isKindOfClass:[FoodConsumptionRecord class]]) {
+                FoodConsumptionRecord *record = (FoodConsumptionRecord *) model;
+                if ([record.foodProduct.objectID isEqual:object.objectID]) {
+                    return YES;
+                }
+            }
+        }
+    } else if ([object isKindOfClass:[User class]]) {
+        for (SynchronizableModel *model in postponedObjects) {
+            if ([model isKindOfClass:[FoodConsumptionRecord class]]) {
+                FoodConsumptionRecord *record = (FoodConsumptionRecord *) model;
+                if ([record.foodProduct isKindOfClass:[AdhocFoodProduct class]] &&
+                    [record.user.objectID isEqual:object.objectID]) {
+                    return YES;
+                }
+            }
+        }
+    } else {
+        return [self hasObjectInPostponed:postponedObjects object:object];
+    }
+
+    return NO;
 }
 
 - (BOOL)saveMedia:(SynchronizableModel *) object {
