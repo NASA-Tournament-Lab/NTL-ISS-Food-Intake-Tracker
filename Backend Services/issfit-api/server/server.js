@@ -1413,6 +1413,12 @@ app.get('/delete/refresh/:id', function(req, res) {
 });
 
 app.get('/delete/:id', function(req, res) {
+    if (req.session.deleteLock) {
+        return;
+    }
+
+    req.session.deleteLock = true;
+
     var args = ['--database=' + config.db.database,
                 '--user=' + config.db.username,
                 '--password=' + config.db.password,
@@ -1428,9 +1434,11 @@ app.get('/delete/:id', function(req, res) {
         pythonPath: '/usr/bin/python',
         scriptPath: __dirname + '/..'
     }, function (err, results) {
+        req.session.deleteLock = null;
+
         if (err) {
             console.log("Error: " + err.traceback);
-            res.status(err.status).end();
+            res.status(err.status ? err.status : 500).end();
             return;
         }
 
