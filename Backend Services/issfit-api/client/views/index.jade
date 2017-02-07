@@ -145,6 +145,7 @@ html
 							$('#message').text('Wait for operation to finish');
 							$('#dialog').dialog('option', 'title', 'Progress');
 							$('#dialog').dialog('option', 'closeOnEscape', false);
+							$('#dialog').dialog("option", "buttons", {});
 							$('#dialog').on('dialogopen', function(event, ui) {
 									$('.ui-dialog-titlebar-close', ui.dialog | ui).hide();
 							});
