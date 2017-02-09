@@ -195,7 +195,7 @@ var saveImageFromZip = function(zipFile, done) {
                                                 var newValue = JSON.parse(JSON.stringify(result));
                                                 newValue['profileImage'] = media.id;
                                                 NasaUser.upsert(newValue);
-                                                console.log('Updating profile image for user' + result.fullName);
+                                                console.log('Updating profile image for user: ' + result.fullName);
                                                 innerCallback();
                                             }
                                        });
@@ -1303,6 +1303,7 @@ app.post('/import', function(req, res) {
 
 // Delete user food records
 app.get('/delete/execute/:id', function(req, res) {
+    console.log('Will delete user with id: ' + req.params.id);
     NasaUser.findById(req.params.id, function(err, user) {
         if (!user) {
             req.flash('error', 'User not found for id: ' + req.params.id);
