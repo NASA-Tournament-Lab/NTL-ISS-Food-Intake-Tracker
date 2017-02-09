@@ -23,11 +23,13 @@ ALTER TABLE ONLY public.food_product_record DROP CONSTRAINT food_product_food_pr
 ALTER TABLE ONLY public.user_lock DROP CONSTRAINT devices_user_lock_fk;
 DROP INDEX public.user_full_name_key;
 DROP INDEX public.origin_value_key;
+DROP INDEX public.food_product_name_origin_idx;
 DROP INDEX public.category_value_key;
 ALTER TABLE ONLY public.user_tmp_table DROP CONSTRAINT user_tmp_table_pkey;
 ALTER TABLE ONLY public.user_lock DROP CONSTRAINT user_lock_pkey;
 ALTER TABLE ONLY public.origin DROP CONSTRAINT origin_pkey;
 ALTER TABLE ONLY public.nasa_user DROP CONSTRAINT nasa_user_pkey;
+ALTER TABLE ONLY public.nasa_user DROP CONSTRAINT nasa_user_full_name_key;
 ALTER TABLE ONLY public.media_record DROP CONSTRAINT media_record_pkey;
 ALTER TABLE ONLY public.media DROP CONSTRAINT media_pkey;
 ALTER TABLE ONLY public.food_tmp_table DROP CONSTRAINT food_tmp_table_pkey;
@@ -55,12 +57,12 @@ DROP TABLE public.food_product;
 DROP TABLE public.devices;
 DROP TABLE public.category;
 DROP FUNCTION public.trim_array(in_array text[]);
+DROP FUNCTION public.normalize(input text);
 DROP FUNCTION public.login(_username text, _pwd text, OUT _email text);
 DROP EXTENSION "uuid-ossp";
 DROP EXTENSION pgcrypto;
 DROP EXTENSION plpgsql;
 DROP SCHEMA public;
-DROP DATABASE pl_fit;
 --
 -- Name: public; Type: SCHEMA; Schema: -; Owner: pl_fit_db
 --
@@ -78,42 +80,42 @@ COMMENT ON SCHEMA public IS 'standard public schema';
 
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
 --
--- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner:
+-- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: 
 --
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 --
--- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner:
+-- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: 
 --
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
@@ -137,6 +139,18 @@ $$;
 
 
 ALTER FUNCTION public.login(_username text, _pwd text, OUT _email text) OWNER TO pl_fit_db;
+
+--
+-- Name: normalize(text); Type: FUNCTION; Schema: public; Owner: pl_fit_db
+--
+
+CREATE FUNCTION normalize(input text) RETURNS text
+    LANGUAGE sql IMMUTABLE
+    AS $$SELECT regexp_replace(lower(regexp_replace(regexp_replace(input, 'w/', 'with','gi'), '&', 'and', 'g')), '\s+', '', 'g') 
+$$;
+
+
+ALTER FUNCTION public.normalize(input text) OWNER TO pl_fit_db;
 
 --
 -- Name: trim_array(text[]); Type: FUNCTION; Schema: public; Owner: pl_fit_db
@@ -163,7 +177,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: category; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: category; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 CREATE TABLE category (
@@ -175,7 +189,7 @@ CREATE TABLE category (
 ALTER TABLE public.category OWNER TO pl_fit_db;
 
 --
--- Name: devices; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: devices; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 CREATE TABLE devices (
@@ -187,7 +201,7 @@ CREATE TABLE devices (
 ALTER TABLE public.devices OWNER TO pl_fit_db;
 
 --
--- Name: food_product; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: food_product; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 CREATE TABLE food_product (
@@ -216,30 +230,30 @@ CREATE TABLE food_product (
 ALTER TABLE public.food_product OWNER TO pl_fit_db;
 
 --
--- Name: food_product_filter; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: food_product_filter; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 CREATE TABLE food_product_filter (
     uuid character varying(36) NOT NULL,
-    name text NOT NULL,
+    name text,
     adhoc_only boolean,
     favorite integer,
     fetch_all boolean,
     sort_option integer,
     user_uuid character varying(36),
-    category_uuids text,
-    origin_uuids text,
-    removed boolean DEFAULT false NOT NULL,
-    synchronized boolean DEFAULT false NOT NULL,
+    modified_date timestamp with time zone NOT NULL,
     created_date timestamp with time zone NOT NULL,
-    modified_date timestamp with time zone NOT NULL
+    synchronized boolean DEFAULT false NOT NULL,
+    removed boolean DEFAULT false NOT NULL,
+    category_uuids text,
+    origin_uuids text
 );
 
 
 ALTER TABLE public.food_product_filter OWNER TO pl_fit_db;
 
 --
--- Name: food_product_record; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: food_product_record; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 CREATE TABLE food_product_record (
@@ -266,7 +280,7 @@ CREATE TABLE food_product_record (
 ALTER TABLE public.food_product_record OWNER TO pl_fit_db;
 
 --
--- Name: food_tmp_table; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: food_tmp_table; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 CREATE TABLE food_tmp_table (
@@ -311,7 +325,7 @@ ALTER SEQUENCE food_tmp_table_id_seq OWNED BY food_tmp_table.id;
 
 
 --
--- Name: origin; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: origin; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 CREATE TABLE origin (
@@ -327,30 +341,30 @@ ALTER TABLE public.origin OWNER TO pl_fit_db;
 --
 
 CREATE VIEW food_tmp_view AS
-    SELECT f.id, btrim(f.name) AS name, (('['::text || (SELECT string_agg((('"'::text || (category.uuid)::text) || '"'::text), ','::text) AS string_agg FROM category WHERE (category.value = ANY (trim_array(string_to_array(f.categories, ';'::text)))))) || ']'::text) AS categories, (SELECT origin.uuid FROM origin WHERE (origin.value = btrim(f.origin))) AS origin, btrim(f.barcode) AS barcode, f.fluid, f.energy, f.sodium, f.protein, f.carb, f.fat, f.deleted AS removed FROM food_tmp_table f;
+    SELECT f.id, btrim(f.name) AS name, (('['::text || (SELECT string_agg((('"'::text || (category.uuid)::text) || '"'::text), ','::text) AS string_agg FROM category WHERE (category.value = ANY (trim_array(string_to_array(f.categories, ';'::text)))))) || ']'::text) AS categories, (SELECT origin.uuid FROM origin WHERE (btrim(origin.value) = btrim(f.origin))) AS origin, btrim(f.barcode) AS barcode, f.fluid, f.energy, f.sodium, f.protein, f.carb, f.fat, f.deleted AS removed FROM food_tmp_table f;
 
 
 ALTER TABLE public.food_tmp_view OWNER TO pl_fit_db;
 
 --
--- Name: media; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: media; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 CREATE TABLE media (
     uuid character varying(36) NOT NULL,
     filename text NOT NULL,
     data bytea,
-    removed boolean DEFAULT false NOT NULL,
-    synchronized boolean DEFAULT false NOT NULL,
     created_date timestamp with time zone NOT NULL,
-    modified_date timestamp with time zone NOT NULL
+    modified_date timestamp with time zone NOT NULL,
+    removed boolean DEFAULT false NOT NULL,
+    synchronized boolean DEFAULT false NOT NULL
 );
 
 
 ALTER TABLE public.media OWNER TO pl_fit_db;
 
 --
--- Name: media_record; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: media_record; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 CREATE TABLE media_record (
@@ -363,7 +377,7 @@ CREATE TABLE media_record (
 ALTER TABLE public.media_record OWNER TO pl_fit_db;
 
 --
--- Name: nasa_user; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: nasa_user; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 CREATE TABLE nasa_user (
@@ -394,13 +408,13 @@ ALTER TABLE public.nasa_user OWNER TO pl_fit_db;
 --
 
 CREATE VIEW summary_view AS
-    SELECT nasa_user.full_name, nasa_user.uuid, food.name, sum(record.quantity) AS quantity, record."timestamp", regexp_replace(record.comments, '[\n\r]+'::text, ' '::text, 'g'::text) AS comments, string_agg((( SELECT media.uuid FROM media WHERE media.uuid::text = media_record.media_uuid::text AND media.filename ~~ '%.aac'::text))::text, ','::text) AS voicerecordings, string_agg((( SELECT media.uuid FROM media WHERE media.uuid::text = food.image_media_uuid::text AND media.filename ~~ '%.jpg'::text))::text, ','::text) AS images FROM food_product food, nasa_user, food_product_record record LEFT JOIN media_record ON media_record.food_record_uuid::text = record.uuid::text WHERE record.user_uuid::text = nasa_user.uuid::text AND record.food_product_uuid::text = food.uuid::text GROUP BY food.name, nasa_user.full_name, nasa_user.uuid, record."timestamp", record.comments ORDER BY record."timestamp";
+    SELECT nasa_user.full_name, nasa_user.uuid, food.name, food.carb, food.energy, food.fat, food.fluid, food.protein, food.sodium, sum(record.quantity) AS quantity, record."timestamp", regexp_replace(record.comments, '[\n\r]+'::text, ' '::text, 'g'::text) AS comments, string_agg(((SELECT media.uuid FROM media WHERE (((media.uuid)::text = (media_record.media_uuid)::text) AND (media.filename ~~ '%.aac'::text))))::text, ','::text) AS voicerecordings, string_agg(((SELECT media.uuid FROM media WHERE (((media.uuid)::text = (food.image_media_uuid)::text) AND (media.filename ~~ '%.jpg'::text))))::text, ','::text) AS images FROM food_product food, nasa_user, (food_product_record record LEFT JOIN media_record ON (((media_record.food_record_uuid)::text = (record.uuid)::text))) WHERE ((((record.user_uuid)::text = (nasa_user.uuid)::text) AND ((record.food_product_uuid)::text = (food.uuid)::text)) AND (record.removed = false)) GROUP BY food.name, food.carb, food.energy, food.fat, food.fluid, food.protein, food.sodium, nasa_user.full_name, nasa_user.uuid, record."timestamp", record.comments ORDER BY record."timestamp";
 
 
 ALTER TABLE public.summary_view OWNER TO pl_fit_db;
 
 --
--- Name: user_lock; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: user_lock; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 CREATE TABLE user_lock (
@@ -413,7 +427,7 @@ CREATE TABLE user_lock (
 ALTER TABLE public.user_lock OWNER TO pl_fit_db;
 
 --
--- Name: user_tmp_table; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: user_tmp_table; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 CREATE TABLE user_tmp_table (
@@ -471,7 +485,7 @@ ALTER TABLE ONLY user_tmp_table ALTER COLUMN id SET DEFAULT nextval('user_tmp_ta
 
 
 --
--- Name: category_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: category_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 ALTER TABLE ONLY category
@@ -479,7 +493,7 @@ ALTER TABLE ONLY category
 
 
 --
--- Name: devices_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: devices_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 ALTER TABLE ONLY devices
@@ -487,7 +501,7 @@ ALTER TABLE ONLY devices
 
 
 --
--- Name: food_product_filter_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: food_product_filter_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 ALTER TABLE ONLY food_product_filter
@@ -495,7 +509,7 @@ ALTER TABLE ONLY food_product_filter
 
 
 --
--- Name: food_product_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: food_product_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 ALTER TABLE ONLY food_product
@@ -503,7 +517,7 @@ ALTER TABLE ONLY food_product
 
 
 --
--- Name: food_product_record_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: food_product_record_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 ALTER TABLE ONLY food_product_record
@@ -511,7 +525,7 @@ ALTER TABLE ONLY food_product_record
 
 
 --
--- Name: food_tmp_table_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: food_tmp_table_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 ALTER TABLE ONLY food_tmp_table
@@ -519,7 +533,7 @@ ALTER TABLE ONLY food_tmp_table
 
 
 --
--- Name: media_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: media_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 ALTER TABLE ONLY media
@@ -527,7 +541,7 @@ ALTER TABLE ONLY media
 
 
 --
--- Name: media_record_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: media_record_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 ALTER TABLE ONLY media_record
@@ -535,7 +549,15 @@ ALTER TABLE ONLY media_record
 
 
 --
--- Name: nasa_user_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: nasa_user_full_name_key; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
+--
+
+ALTER TABLE ONLY nasa_user
+    ADD CONSTRAINT nasa_user_full_name_key UNIQUE (full_name);
+
+
+--
+-- Name: nasa_user_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 ALTER TABLE ONLY nasa_user
@@ -543,7 +565,7 @@ ALTER TABLE ONLY nasa_user
 
 
 --
--- Name: origin_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: origin_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 ALTER TABLE ONLY origin
@@ -551,7 +573,7 @@ ALTER TABLE ONLY origin
 
 
 --
--- Name: user_lock_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: user_lock_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 ALTER TABLE ONLY user_lock
@@ -559,7 +581,7 @@ ALTER TABLE ONLY user_lock
 
 
 --
--- Name: user_tmp_table_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: user_tmp_table_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 ALTER TABLE ONLY user_tmp_table
@@ -567,21 +589,28 @@ ALTER TABLE ONLY user_tmp_table
 
 
 --
--- Name: category_value_key; Type: INDEX; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: category_value_key; Type: INDEX; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 CREATE UNIQUE INDEX category_value_key ON category USING btree (value);
 
 
 --
--- Name: origin_value_key; Type: INDEX; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: food_product_name_origin_idx; Type: INDEX; Schema: public; Owner: pl_fit_db; Tablespace: 
+--
+
+CREATE UNIQUE INDEX food_product_name_origin_idx ON food_product USING btree (name, origin_uuid);
+
+
+--
+-- Name: origin_value_key; Type: INDEX; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 CREATE UNIQUE INDEX origin_value_key ON origin USING btree (value);
 
 
 --
--- Name: user_full_name_key; Type: INDEX; Schema: public; Owner: pl_fit_db; Tablespace:
+-- Name: user_full_name_key; Type: INDEX; Schema: public; Owner: pl_fit_db; Tablespace: 
 --
 
 CREATE UNIQUE INDEX user_full_name_key ON nasa_user USING btree (full_name);
@@ -692,6 +721,141 @@ REVOKE ALL ON FUNCTION login(_username text, _pwd text, OUT _email text) FROM PU
 REVOKE ALL ON FUNCTION login(_username text, _pwd text, OUT _email text) FROM pl_fit_db;
 GRANT ALL ON FUNCTION login(_username text, _pwd text, OUT _email text) TO pl_fit_db;
 GRANT ALL ON FUNCTION login(_username text, _pwd text, OUT _email text) TO PUBLIC;
+
+
+--
+-- Name: category; Type: ACL; Schema: public; Owner: pl_fit_db
+--
+
+REVOKE ALL ON TABLE category FROM PUBLIC;
+REVOKE ALL ON TABLE category FROM pl_fit_db;
+GRANT ALL ON TABLE category TO pl_fit_db;
+
+
+--
+-- Name: devices; Type: ACL; Schema: public; Owner: pl_fit_db
+--
+
+REVOKE ALL ON TABLE devices FROM PUBLIC;
+REVOKE ALL ON TABLE devices FROM pl_fit_db;
+GRANT ALL ON TABLE devices TO pl_fit_db;
+
+
+--
+-- Name: food_product; Type: ACL; Schema: public; Owner: pl_fit_db
+--
+
+REVOKE ALL ON TABLE food_product FROM PUBLIC;
+REVOKE ALL ON TABLE food_product FROM pl_fit_db;
+GRANT ALL ON TABLE food_product TO pl_fit_db;
+
+
+--
+-- Name: food_product_filter; Type: ACL; Schema: public; Owner: pl_fit_db
+--
+
+REVOKE ALL ON TABLE food_product_filter FROM PUBLIC;
+REVOKE ALL ON TABLE food_product_filter FROM pl_fit_db;
+GRANT ALL ON TABLE food_product_filter TO pl_fit_db;
+
+
+--
+-- Name: food_product_record; Type: ACL; Schema: public; Owner: pl_fit_db
+--
+
+REVOKE ALL ON TABLE food_product_record FROM PUBLIC;
+REVOKE ALL ON TABLE food_product_record FROM pl_fit_db;
+GRANT ALL ON TABLE food_product_record TO pl_fit_db;
+
+
+--
+-- Name: food_tmp_table; Type: ACL; Schema: public; Owner: pl_fit_db
+--
+
+REVOKE ALL ON TABLE food_tmp_table FROM PUBLIC;
+REVOKE ALL ON TABLE food_tmp_table FROM pl_fit_db;
+GRANT ALL ON TABLE food_tmp_table TO pl_fit_db;
+
+
+--
+-- Name: origin; Type: ACL; Schema: public; Owner: pl_fit_db
+--
+
+REVOKE ALL ON TABLE origin FROM PUBLIC;
+REVOKE ALL ON TABLE origin FROM pl_fit_db;
+GRANT ALL ON TABLE origin TO pl_fit_db;
+
+
+--
+-- Name: food_tmp_view; Type: ACL; Schema: public; Owner: pl_fit_db
+--
+
+REVOKE ALL ON TABLE food_tmp_view FROM PUBLIC;
+REVOKE ALL ON TABLE food_tmp_view FROM pl_fit_db;
+GRANT ALL ON TABLE food_tmp_view TO pl_fit_db;
+
+
+--
+-- Name: media; Type: ACL; Schema: public; Owner: pl_fit_db
+--
+
+REVOKE ALL ON TABLE media FROM PUBLIC;
+REVOKE ALL ON TABLE media FROM pl_fit_db;
+GRANT ALL ON TABLE media TO pl_fit_db;
+
+
+--
+-- Name: media_record; Type: ACL; Schema: public; Owner: pl_fit_db
+--
+
+REVOKE ALL ON TABLE media_record FROM PUBLIC;
+REVOKE ALL ON TABLE media_record FROM pl_fit_db;
+GRANT ALL ON TABLE media_record TO pl_fit_db;
+
+
+--
+-- Name: nasa_user; Type: ACL; Schema: public; Owner: pl_fit_db
+--
+
+REVOKE ALL ON TABLE nasa_user FROM PUBLIC;
+REVOKE ALL ON TABLE nasa_user FROM pl_fit_db;
+GRANT ALL ON TABLE nasa_user TO pl_fit_db;
+
+
+--
+-- Name: summary_view; Type: ACL; Schema: public; Owner: pl_fit_db
+--
+
+REVOKE ALL ON TABLE summary_view FROM PUBLIC;
+REVOKE ALL ON TABLE summary_view FROM pl_fit_db;
+GRANT ALL ON TABLE summary_view TO pl_fit_db;
+
+
+--
+-- Name: user_lock; Type: ACL; Schema: public; Owner: pl_fit_db
+--
+
+REVOKE ALL ON TABLE user_lock FROM PUBLIC;
+REVOKE ALL ON TABLE user_lock FROM pl_fit_db;
+GRANT ALL ON TABLE user_lock TO pl_fit_db;
+
+
+--
+-- Name: user_tmp_table; Type: ACL; Schema: public; Owner: pl_fit_db
+--
+
+REVOKE ALL ON TABLE user_tmp_table FROM PUBLIC;
+REVOKE ALL ON TABLE user_tmp_table FROM pl_fit_db;
+GRANT ALL ON TABLE user_tmp_table TO pl_fit_db;
+
+
+--
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: public; Owner: postgres
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON TABLES  FROM PUBLIC;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON TABLES  FROM postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES  TO pl_fit_db;
 
 
 --

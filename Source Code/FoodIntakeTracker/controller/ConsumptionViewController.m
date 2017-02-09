@@ -1925,55 +1925,38 @@
     
     NSString *name = @"Drinking Water";
     NSError *error = nil;
-    
-    FoodConsumptionRecord *record = [recordService buildFoodConsumptionRecord:&error];
-    if ([Helper displayError:error]) return;
-    
-    record.timestamp = [Helper convertDateTimeToDate:self.dateListView.currentDate time:[NSDate date]];
-    
+
     FoodProduct *foodProduct = [foodProductService getFoodProductByName:appDelegate.loggedInUser
                                                                    name:name
                                                                   error:&error];
     if (!foodProduct) {
-        error = nil;
-        AdhocFoodProduct *adhocFoodProduct = [foodProductService buildAdhocFoodProduct:&error];
-        if ([Helper displayError:error]) return;
-        
-        adhocFoodProduct.name = name;
-        adhocFoodProduct.quantity = @1.0;
-        adhocFoodProduct.fluid = @250;
-        
-        record.foodProduct = adhocFoodProduct;
-        record.quantity = @1.0;
-        record.fluid = @250;
-        
-        [foodProductService addAdhocFoodProduct:appDelegate.loggedInUser product:adhocFoodProduct error:&error];
-        if ([Helper displayError:error]) return;
-        
-        [recordService addFoodConsumptionRecord:appDelegate.loggedInUser record:record error:&error];
+        error = [NSError errorWithDomain:@"FoodService" code:IllegalArgumentErrorCode
+                                userInfo:@{NSUnderlyingErrorKey: @"no such food (Drinking Water)"}];
         if ([Helper displayError:error]) return;
     } else {
-        foodProduct.name = name;
-        foodProduct.quantity = @1.0;
-        
+        FoodConsumptionRecord *record = [recordService buildFoodConsumptionRecord:&error];
+        if ([Helper displayError:error]) return;
+
+        record.timestamp = [Helper convertDateTimeToDate:self.dateListView.currentDate time:[NSDate date]];
+        record.quantity = @1.0;
+        record.fluid = [foodProduct.fluid copy];
+
         [recordService addFoodConsumptionRecord:appDelegate.loggedInUser record:record error:&error];
         if ([Helper displayError:error]) return;
-        
-        record.quantity = @1.0;
+
         record.foodProduct = foodProduct;
-        record.fluid = foodProduct.fluid;
         
         [recordService saveFoodConsumptionRecord:record error:&error];
         if ([Helper displayError:error]) return;
-    }
-    
-    [self.foodConsumptionRecords addObject:record];
-    [self.foodTableView reloadData];
-    
-    NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
-    [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
+        [self.foodConsumptionRecords addObject:record];
+        [self.foodTableView reloadData];
+
+        NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
+        [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
+    }
 }
 
 #pragma mark - UIPopover Delegate Methods
@@ -1981,7 +1964,7 @@
  * UIPopoverDelegate methods. Called when popover is hidden.
  * @param popoverController the hidden Popover.
  */
-- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController{
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
     if ([popoverController.contentViewController isKindOfClass:[CalendarViewController class]]) {
         [self.btnMonth setSelected:NO];
     }

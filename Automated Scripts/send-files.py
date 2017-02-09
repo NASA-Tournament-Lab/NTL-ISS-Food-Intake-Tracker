@@ -140,6 +140,10 @@ class SendFiles:
                     verify=False,
                     auth=(username, password))
 
+        if r.status_code > 299:
+            print r.text
+            exit(1)
+
         resp = r.json()
 
         self.closeFiles(files)
