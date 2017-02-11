@@ -1703,6 +1703,12 @@
                 [recordService addFoodConsumptionRecord:appDelegate.loggedInUser record:record error:&error];
 
                 record.foodProduct = [record.managedObjectContext objectWithID:product.objectID];
+                if (!record.foodProduct) {
+                    NSString *msg = [NSString stringWithFormat:@"food %@ not found in managed context", product.name];
+                    error = [NSError errorWithDomain:@"FoodService" code:IllegalArgumentErrorCode
+                                            userInfo:@{NSUnderlyingErrorKey: msg}];
+                    if ([Helper displayError:error]) return;
+                }
                 
                 [recordService saveFoodConsumptionRecord:record error:&error];
                 
