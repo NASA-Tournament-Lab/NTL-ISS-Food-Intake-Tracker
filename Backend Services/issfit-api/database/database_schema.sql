@@ -80,42 +80,42 @@ COMMENT ON SCHEMA public IS 'standard public schema';
 
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
 --
--- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner: 
+-- Name: pgcrypto; Type: EXTENSION; Schema: -; Owner:
 --
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 --
--- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: 
+-- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner:
 --
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
@@ -146,7 +146,7 @@ ALTER FUNCTION public.login(_username text, _pwd text, OUT _email text) OWNER TO
 
 CREATE FUNCTION normalize(input text) RETURNS text
     LANGUAGE sql IMMUTABLE
-    AS $$SELECT regexp_replace(lower(regexp_replace(regexp_replace(input, 'w/', 'with','gi'), '&', 'and', 'g')), '\s+', '', 'g') 
+    AS $$SELECT regexp_replace(lower(regexp_replace(regexp_replace(input, 'w/', 'with','gi'), '&', 'and', 'g')), '\s+', '', 'g')
 $$;
 
 
@@ -177,7 +177,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: category; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: category; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE TABLE category (
@@ -189,7 +189,7 @@ CREATE TABLE category (
 ALTER TABLE public.category OWNER TO pl_fit_db;
 
 --
--- Name: devices; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: devices; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE TABLE devices (
@@ -201,7 +201,7 @@ CREATE TABLE devices (
 ALTER TABLE public.devices OWNER TO pl_fit_db;
 
 --
--- Name: food_product; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: food_product; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE TABLE food_product (
@@ -230,7 +230,7 @@ CREATE TABLE food_product (
 ALTER TABLE public.food_product OWNER TO pl_fit_db;
 
 --
--- Name: food_product_filter; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: food_product_filter; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE TABLE food_product_filter (
@@ -253,7 +253,7 @@ CREATE TABLE food_product_filter (
 ALTER TABLE public.food_product_filter OWNER TO pl_fit_db;
 
 --
--- Name: food_product_record; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: food_product_record; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE TABLE food_product_record (
@@ -268,7 +268,7 @@ CREATE TABLE food_product_record (
     quantity real DEFAULT 1 NOT NULL,
     comments text,
     "timestamp" timestamp with time zone NOT NULL,
-    food_product_uuid character varying(36) NOT NULL,
+    food_product_uuid character varying(36),
     user_uuid character varying(36) NOT NULL,
     removed boolean DEFAULT false NOT NULL,
     synchronized boolean DEFAULT false NOT NULL,
@@ -280,7 +280,7 @@ CREATE TABLE food_product_record (
 ALTER TABLE public.food_product_record OWNER TO pl_fit_db;
 
 --
--- Name: food_tmp_table; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: food_tmp_table; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE TABLE food_tmp_table (
@@ -325,7 +325,7 @@ ALTER SEQUENCE food_tmp_table_id_seq OWNED BY food_tmp_table.id;
 
 
 --
--- Name: origin; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: origin; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE TABLE origin (
@@ -347,7 +347,7 @@ CREATE VIEW food_tmp_view AS
 ALTER TABLE public.food_tmp_view OWNER TO pl_fit_db;
 
 --
--- Name: media; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: media; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE TABLE media (
@@ -364,7 +364,7 @@ CREATE TABLE media (
 ALTER TABLE public.media OWNER TO pl_fit_db;
 
 --
--- Name: media_record; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: media_record; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE TABLE media_record (
@@ -377,7 +377,7 @@ CREATE TABLE media_record (
 ALTER TABLE public.media_record OWNER TO pl_fit_db;
 
 --
--- Name: nasa_user; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: nasa_user; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE TABLE nasa_user (
@@ -414,7 +414,7 @@ CREATE VIEW summary_view AS
 ALTER TABLE public.summary_view OWNER TO pl_fit_db;
 
 --
--- Name: user_lock; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: user_lock; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE TABLE user_lock (
@@ -427,7 +427,7 @@ CREATE TABLE user_lock (
 ALTER TABLE public.user_lock OWNER TO pl_fit_db;
 
 --
--- Name: user_tmp_table; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: user_tmp_table; Type: TABLE; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE TABLE user_tmp_table (
@@ -485,7 +485,7 @@ ALTER TABLE ONLY user_tmp_table ALTER COLUMN id SET DEFAULT nextval('user_tmp_ta
 
 
 --
--- Name: category_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: category_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 ALTER TABLE ONLY category
@@ -493,7 +493,7 @@ ALTER TABLE ONLY category
 
 
 --
--- Name: devices_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: devices_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 ALTER TABLE ONLY devices
@@ -501,7 +501,7 @@ ALTER TABLE ONLY devices
 
 
 --
--- Name: food_product_filter_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: food_product_filter_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 ALTER TABLE ONLY food_product_filter
@@ -509,7 +509,7 @@ ALTER TABLE ONLY food_product_filter
 
 
 --
--- Name: food_product_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: food_product_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 ALTER TABLE ONLY food_product
@@ -517,7 +517,7 @@ ALTER TABLE ONLY food_product
 
 
 --
--- Name: food_product_record_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: food_product_record_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 ALTER TABLE ONLY food_product_record
@@ -525,7 +525,7 @@ ALTER TABLE ONLY food_product_record
 
 
 --
--- Name: food_tmp_table_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: food_tmp_table_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 ALTER TABLE ONLY food_tmp_table
@@ -533,7 +533,7 @@ ALTER TABLE ONLY food_tmp_table
 
 
 --
--- Name: media_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: media_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 ALTER TABLE ONLY media
@@ -541,7 +541,7 @@ ALTER TABLE ONLY media
 
 
 --
--- Name: media_record_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: media_record_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 ALTER TABLE ONLY media_record
@@ -549,7 +549,7 @@ ALTER TABLE ONLY media_record
 
 
 --
--- Name: nasa_user_full_name_key; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: nasa_user_full_name_key; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 ALTER TABLE ONLY nasa_user
@@ -557,7 +557,7 @@ ALTER TABLE ONLY nasa_user
 
 
 --
--- Name: nasa_user_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: nasa_user_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 ALTER TABLE ONLY nasa_user
@@ -565,7 +565,7 @@ ALTER TABLE ONLY nasa_user
 
 
 --
--- Name: origin_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: origin_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 ALTER TABLE ONLY origin
@@ -573,7 +573,7 @@ ALTER TABLE ONLY origin
 
 
 --
--- Name: user_lock_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: user_lock_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 ALTER TABLE ONLY user_lock
@@ -581,7 +581,7 @@ ALTER TABLE ONLY user_lock
 
 
 --
--- Name: user_tmp_table_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: user_tmp_table_pkey; Type: CONSTRAINT; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 ALTER TABLE ONLY user_tmp_table
@@ -589,28 +589,28 @@ ALTER TABLE ONLY user_tmp_table
 
 
 --
--- Name: category_value_key; Type: INDEX; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: category_value_key; Type: INDEX; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE UNIQUE INDEX category_value_key ON category USING btree (value);
 
 
 --
--- Name: food_product_name_origin_idx; Type: INDEX; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: food_product_name_origin_idx; Type: INDEX; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE UNIQUE INDEX food_product_name_origin_idx ON food_product USING btree (name, origin_uuid);
 
 
 --
--- Name: origin_value_key; Type: INDEX; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: origin_value_key; Type: INDEX; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE UNIQUE INDEX origin_value_key ON origin USING btree (value);
 
 
 --
--- Name: user_full_name_key; Type: INDEX; Schema: public; Owner: pl_fit_db; Tablespace: 
+-- Name: user_full_name_key; Type: INDEX; Schema: public; Owner: pl_fit_db; Tablespace:
 --
 
 CREATE UNIQUE INDEX user_full_name_key ON nasa_user USING btree (full_name);
@@ -861,4 +861,3 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES 
 --
 -- PostgreSQL database dump complete
 --
-

@@ -1703,6 +1703,12 @@
                 [recordService addFoodConsumptionRecord:appDelegate.loggedInUser record:record error:&error];
 
                 record.foodProduct = [record.managedObjectContext objectWithID:product.objectID];
+                if (!record.foodProduct) {
+                    NSString *msg = [NSString stringWithFormat:@"food %@ not found in managed context", product.name];
+                    error = [NSError errorWithDomain:@"FoodService" code:IllegalArgumentErrorCode
+                                            userInfo:@{NSUnderlyingErrorKey: msg}];
+                    if ([Helper displayError:error]) return;
+                }
                 
                 [recordService saveFoodConsumptionRecord:record error:&error];
                 
@@ -1939,6 +1945,11 @@
 
         record.timestamp = [Helper convertDateTimeToDate:self.dateListView.currentDate time:[NSDate date]];
         record.quantity = @1.0;
+        record.fat = [foodProduct.fat copy];
+        record.carb = [foodProduct.carb copy];
+        record.energy = [foodProduct.energy copy];
+        record.protein = [foodProduct.protein copy];
+        record.sodium = [foodProduct.sodium copy];
         record.fluid = [foodProduct.fluid copy];
 
         [recordService addFoodConsumptionRecord:appDelegate.loggedInUser record:record error:&error];
