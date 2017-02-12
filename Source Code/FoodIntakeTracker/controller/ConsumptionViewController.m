@@ -1411,17 +1411,16 @@
         // F2Finish change
         [contentOffset removeObjectForKey:record.objectID];
         
-        [self.foodConsumptionRecords removeObject:record];
+        // [self.foodConsumptionRecords removeObject:record];
         [recordService deleteFoodConsumptionRecord:record error:&error];
         if ([Helper displayError:error]) return;
     }
-    
-    if (selectedItems.count > 0) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
-    }
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
     
     //[self.foodTableView reloadData];
     //[self updateProgress];
+    [selectedItems removeAllObjects];
     [self hideDeletePop:nil];
 }
 
