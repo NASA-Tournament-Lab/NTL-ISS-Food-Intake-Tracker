@@ -665,6 +665,9 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateView)
                                                  name:NSManagedObjectContextDidSaveNotification object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateView)
+                                                 name:UpdateLastSync object:nil];
 }
 
 /**

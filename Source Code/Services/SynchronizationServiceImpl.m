@@ -80,9 +80,10 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSNumber *lastSyncTime = [defaults objectForKey:@"LastSynchronizedTime"];
     if (lastSyncTime != nil) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:UpdateLastSync
-                                                            object:[NSDate
-                                                                    dateWithTimeIntervalSince1970:lastSyncTime.doubleValue]];
+        dispatch_async(dispatch_get_main_queue(),^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:UpdateLastSync
+                                                                object:[NSDate dateWithTimeIntervalSince1970:lastSyncTime.doubleValue]];
+        });
         
         return lastSyncTime.doubleValue;
     }
@@ -96,9 +97,12 @@
     [defaults synchronize];
     
     NSLog(@"\tUpdated last sync to %@", [NSDate dateWithTimeIntervalSince1970:timestamp]);
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:UpdateLastSync
-                                                        object:[NSDate dateWithTimeIntervalSince1970:timestamp]];
+
+    dispatch_async(dispatch_get_main_queue(),^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:UpdateLastSync
+                                                            object:[NSDate dateWithTimeIntervalSince1970:timestamp]];
+    });
+
     return;
 }
 
