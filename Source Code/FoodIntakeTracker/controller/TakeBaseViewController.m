@@ -296,9 +296,8 @@
         [recordService saveFoodConsumptionRecord:record error:&error];
 
         if ([Helper displayError:error]) return;
-        [consumptionViewController.foodConsumptionRecords addObject:record];
-        
-        [consumptionViewController.foodTableView reloadData];
+        //[consumptionViewController.foodConsumptionRecords addObject:record];
+        //[consumptionViewController.foodTableView reloadData];
         
         NSInteger count = consumptionViewController.foodConsumptionRecords.count;
         NSIndexPath* ipath = [NSIndexPath indexPathForRow:count - 1 inSection:0];
@@ -312,7 +311,7 @@
     
     [selectFoods removeAllObjects];
     [resultFoods removeAllObjects];
-    [consumptionViewController updateProgress];
+    //[consumptionViewController updateProgress];
 }
 
 /**

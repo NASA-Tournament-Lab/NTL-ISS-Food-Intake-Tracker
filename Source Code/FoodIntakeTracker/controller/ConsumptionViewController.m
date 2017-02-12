@@ -197,12 +197,12 @@
     if(self.currentDate == nil){
         self.currentDate = [NSDate date];
     }
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     gregorian.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-    NSDateComponents *info = [gregorian components:(NSYearCalendarUnit |
-                                                    NSMonthCalendarUnit |
-                                                    NSDayCalendarUnit |
-                                                    NSWeekdayCalendarUnit)
+    NSDateComponents *info = [gregorian components:(NSCalendarUnitYear |
+                                                    NSCalendarUnitMonth |
+                                                    NSCalendarUnitDay |
+                                                    NSCalendarUnitWeekday)
                                           fromDate:self.currentDate];
     
     NSDate *startDate = [NSDate dateWithTimeInterval:(-1 * daySeconds * ((info.weekday + 7 - 1) % 7))
@@ -213,14 +213,14 @@
         UILabel *lblDay = (UILabel *)[self viewWithTag:(201 + i)];
         UILabel *lblDayName = (UILabel *)[self viewWithTag:(301 + i)];
         NSDate *date = [NSDate dateWithTimeInterval:(daySeconds * i) sinceDate:startDate];
-        NSDateComponents *tmp = [gregorian components:(NSYearCalendarUnit |
-                                                       NSMonthCalendarUnit |
-                                                       NSDayCalendarUnit |
-                                                       NSWeekdayCalendarUnit)
+        NSDateComponents *tmp = [gregorian components:(NSCalendarUnitYear |
+                                                       NSCalendarUnitMonth |
+                                                       NSCalendarUnitDay |
+                                                       NSCalendarUnitWeekday)
                                              fromDate:date];
         
-        NSUInteger dayOfYear = [gregorian ordinalityOfUnit:NSDayCalendarUnit
-                                                    inUnit:NSYearCalendarUnit
+        NSUInteger dayOfYear = [gregorian ordinalityOfUnit:NSCalendarUnitDay
+                                                    inUnit:NSCalendarUnitYear
                                                    forDate:date];
         
         lblDay.text = [NSString stringWithFormat:@"%.2lu", (unsigned long) dayOfYear];
@@ -534,6 +534,8 @@
         self.fluidProgress.lblTotal.text =
         [NSString stringWithFormat:@"| %@ mL", appDelegate.loggedInUser.dailyTargetFluid];
     }
+
+    [self updateProgress];
 }
 
 /**
@@ -606,12 +608,12 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(consumptionUpdated)
                                                  name:ConsumptionUpdatedEvent object:nil];
     
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     gregorian.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-    NSDateComponents *info = [gregorian components:(NSYearCalendarUnit |
-                                                    NSMonthCalendarUnit |
-                                                    NSDayCalendarUnit |
-                                                    NSWeekdayCalendarUnit)
+    NSDateComponents *info = [gregorian components:(NSCalendarUnitYear |
+                                                    NSCalendarUnitMonth |
+                                                    NSCalendarUnitDay |
+                                                    NSCalendarUnitWeekday)
                                           fromDate:[NSDate date]];
     
     self.lblMonth.text = [Helper monthName:(int)info.month];
@@ -663,6 +665,10 @@
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateView)
                                                  name:CurrentUserUpdateEvent object:nil];
+
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateView)
+                                                 name:NSManagedObjectContextDidSaveNotification object:nil];
 }
 
 /**
@@ -848,7 +854,7 @@
     
     NSInteger diffDays = [Helper daysFromToday:date];
     if (diffDays != 0) {
-        self.lblFooterTitle.text = [NSString stringWithFormat:@"GMT %+ld Nutrient Intake Total", diffDays];
+        self.lblFooterTitle.text = [NSString stringWithFormat:@"GMT %+ld Nutrient Intake Total", (long) diffDays];
     } else {
         self.lblFooterTitle.text = @"Today's Nutrient Intake Progress";
     }
@@ -969,11 +975,11 @@
         NSString *time = _addFood.timeLabel.text;
         NSCalendar *calendar = [NSCalendar currentCalendar];
         [calendar setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
-        NSDateComponents *components = [calendar components:(NSYearCalendarUnit |
-                                                             NSMonthCalendarUnit |
-                                                             NSDayCalendarUnit |
-                                                             NSHourCalendarUnit |
-                                                             NSMinuteCalendarUnit)
+        NSDateComponents *components = [calendar components:(NSCalendarUnitYear |
+                                                             NSCalendarUnitMonth |
+                                                             NSCalendarUnitDay |
+                                                             NSCalendarUnitHour |
+                                                             NSCalendarUnitMinute)
                                                    fromDate:self.dateListView.currentDate];
         [components setCalendar:calendar];
         components.hour = [[time substringToIndex:2] intValue];
@@ -1013,8 +1019,8 @@
         [recordService saveFoodConsumptionRecord:self.foodConsumptionRecordToAdd error:&error];
         if ([Helper displayError:error]) return;
 
-        [self.foodConsumptionRecords addObject:self.foodConsumptionRecordToAdd];
-        [self.foodTableView reloadData];
+        //[self.foodConsumptionRecords addObject:self.foodConsumptionRecordToAdd];
+        //[self.foodTableView reloadData];
         [_addFood.view removeFromSuperview];
         [clearCover removeFromSuperview];
         _addFood = nil;
@@ -1160,11 +1166,11 @@
     // set date
     NSCalendar *calendar = [NSCalendar currentCalendar];
     [calendar setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
-    NSDateComponents *components = [calendar components:(NSYearCalendarUnit |
-                                                         NSMonthCalendarUnit |
-                                                         NSDayCalendarUnit |
-                                                         NSHourCalendarUnit |
-                                                         NSMinuteCalendarUnit)
+    NSDateComponents *components = [calendar components:(NSCalendarUnitYear |
+                                                         NSCalendarUnitMonth |
+                                                         NSCalendarUnitDay |
+                                                         NSCalendarUnitHour |
+                                                         NSCalendarUnitMinute)
                                                fromDate:self.dateListView.currentDate];
     [components setCalendar:calendar];
     components.hour = [[timeString substringToIndex:2] intValue];
@@ -1189,8 +1195,8 @@
     [recordService saveFoodConsumptionRecord:foodDetail.foodConsumptionRecord error:&error];
     if ([Helper displayError:error]) return;
     
-    [self.foodTableView reloadData];
-    [self updateProgress];
+    //[self.foodTableView reloadData];
+    //[self updateProgress];
     [clearCover removeFromSuperview];
     clearCover = nil;
     [foodDetail.view removeFromSuperview];
@@ -1279,16 +1285,16 @@
     self.dateListView.currentDate = date;
     [self.dateListView setNeedsDisplay];
     
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     gregorian.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-    NSDateComponents *info = [gregorian components:(NSYearCalendarUnit |
-                                                    NSMonthCalendarUnit |
-                                                    NSDayCalendarUnit |
-                                                    NSWeekdayCalendarUnit)
+    NSDateComponents *info = [gregorian components:(NSCalendarUnitYear |
+                                                    NSCalendarUnitMonth |
+                                                    NSCalendarUnitDay |
+                                                    NSCalendarUnitWeekday)
                                           fromDate:self.dateListView.currentDate];
     
     self.lblMonth.text = [Helper monthName:info.month];
-    self.lblYear.text = [NSString stringWithFormat:@"GMT %ld", info.year];
+    self.lblYear.text = [NSString stringWithFormat:@"GMT %ld", (long) info.year];
     [self.btnMonth setSelected:NO];
     
     [self loadFoodItemsForDate:date];
@@ -1329,7 +1335,7 @@
     [copyItems removeAllObjects];
     [copyItems addObjectsFromArray:selectedItems];
     [selectedItems removeAllObjects];
-    [self.foodTableView reloadData];
+    //[self.foodTableView reloadData];
     [self.btnCopy setEnabled:NO];
     [self.btnDelete setEnabled:NO];
     [self.btnPaste setEnabled:YES];
@@ -1348,7 +1354,7 @@
                                                                            copyToDay:self.dateListView.currentDate
                                                                                error:&error];
         if ([Helper displayError:error]) return;
-        [self.foodConsumptionRecords addObject:copyRecord];
+        //[self.foodConsumptionRecords addObject:copyRecord];
     }
 
     if (copyItems.count > 0) {
@@ -1356,8 +1362,8 @@
     }
 
     [copyItems removeAllObjects];
-    [self.foodTableView reloadData];
-    [self updateProgress];
+    //[self.foodTableView reloadData];
+    //[self updateProgress];
     [self.btnPaste setEnabled:NO];
     [self hidePastePop:nil];
     
@@ -1419,8 +1425,8 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
     }
     
-    [self.foodTableView reloadData];
-    [self updateProgress];
+    //[self.foodTableView reloadData];
+    //[self updateProgress];
     [self hideDeletePop:nil];
 }
 
@@ -1507,8 +1513,8 @@
         
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
     }
-    [self.foodTableView reloadData];
-    [self updateProgress];
+    //[self.foodTableView reloadData];
+    //[self updateProgress];
 }
 
 #pragma mark - photo option
@@ -1618,8 +1624,8 @@
             [recordService saveFoodConsumptionRecord:record error:&error];
             
             if ([Helper displayError:error]) return;
-            [self.foodConsumptionRecords addObject:record];
-            [self.foodTableView reloadData];
+            //[self.foodConsumptionRecords addObject:record];
+            //[self.foodTableView reloadData];
             
             [recorderFilePath removeAllObjects];
             
@@ -1630,8 +1636,8 @@
         [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
         
         [voiceSearch.selectedFoodProducts removeAllObjects];
-        [self.foodTableView reloadData];
-        [self updateProgress];
+        //[self.foodTableView reloadData];
+        //[self updateProgress];
         [clearCover removeFromSuperview];
         clearCover = nil;
         
@@ -1713,14 +1719,14 @@
                 [recordService saveFoodConsumptionRecord:record error:&error];
                 
                 if ([Helper displayError:error]) return;
-                [self.foodConsumptionRecords addObject:record];
+                //[self.foodConsumptionRecords addObject:record];
             }
             
             [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
             
             [selectConsumption.selectFoods removeAllObjects];
-            [self.foodTableView reloadData];
-            [self updateProgress];
+            //[self.foodTableView reloadData];
+            //[self updateProgress];
             
             NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
             [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
@@ -1960,8 +1966,8 @@
         [recordService saveFoodConsumptionRecord:record error:&error];
         if ([Helper displayError:error]) return;
 
-        [self.foodConsumptionRecords addObject:record];
-        [self.foodTableView reloadData];
+        //[self.foodConsumptionRecords addObject:record];
+        //[self.foodTableView reloadData];
 
         NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
         [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
@@ -1990,11 +1996,10 @@
  */
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     [selectedItems removeAllObjects];
-    if(selectedItems.count == 0){
+    if (selectedItems.count == 0) {
         [self.btnCopy setEnabled:NO];
         [self.btnDelete setEnabled:NO];
-    }
-    else{
+    } else {
         [self.btnCopy setEnabled:YES];
         [self.btnDelete setEnabled:YES];
     }
@@ -2026,10 +2031,9 @@
     [cell.btnCheck addTarget:self action:@selector(foodSelect:) forControlEvents:UIControlEventTouchUpInside];
     FoodConsumptionRecord *item = [self.foodConsumptionRecords objectAtIndex:row];
     cell.foodConsumptionRecord = item;
-    if([selectedItems containsObject:item]){
+    if ([selectedItems containsObject:item]) {
         [cell.btnCheck setSelected:YES];
-    }
-    else{
+    } else {
         [cell.btnCheck setSelected:NO];
     }
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
@@ -2038,18 +2042,19 @@
     
     NSCalendar *calendar = [NSCalendar currentCalendar];
     [calendar setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
-    NSDateComponents *components = [calendar components:(NSHourCalendarUnit |
-                                                         NSMinuteCalendarUnit)
+    NSDateComponents *components = [calendar components:(NSCalendarUnitHour |
+                                                         NSCalendarUnitMinute)
                                                fromDate:item.timestamp];
     NSInteger hour = [components hour];
     NSInteger minute = [components minute];
     
-    cell.lblTime.text = [NSString stringWithFormat:@"%.2ld:%.2ld", hour, minute];
+    cell.lblTime.text = [NSString stringWithFormat:@"%.2ld:%.2ld", (long) hour, (long) minute];
     cell.lblName.text = item.foodProduct.name;
     cell.lblName.textColor = [UIColor colorWithRed:68.f/255.f green:68.f/255.f blue:68.f/255.f alpha:1];
     if ([item.foodProduct.removed boolValue] && ![item.foodProduct isKindOfClass:[AdhocFoodProduct class]]) {
         cell.lblName.textColor = [UIColor colorWithRed:192.f/255.f green:0 blue:0 alpha:1];
     }
+
     if(item.foodProduct.energy.intValue == 0 && item.foodProduct.sodium.intValue == 0 &&
        item.foodProduct.fluid.intValue == 0){
         cell.btnNonNutrient.hidden = NO;
@@ -2090,6 +2095,13 @@
     cell.caloriesAmount = [self.caloriesProgess.lblCurrent.text integerValue];
     cell.sodiumAmount = [self.sodiumProgress.lblCurrent.text integerValue];
 
+    cell.loadingView.hidden = item.synchronized.boolValue;
+    if (cell.loadingView.hidden) {
+        [(UIActivityIndicatorView *)[cell.loadingView viewWithTag:10] stopAnimating];
+    } else {
+        [(UIActivityIndicatorView *)[cell.loadingView viewWithTag:10] startAnimating];
+    }
+
     [cell setNeedsDisplay];
     return cell;
 }
@@ -2102,12 +2114,14 @@
  */
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     SummaryFoodTableCell *cell = (SummaryFoodTableCell *)[tableView cellForRowAtIndexPath:indexPath];
-    if(cell.editing){
+    if (cell.editing) {
         return;
     }
     int row = indexPath.row;
     FoodConsumptionRecord *item = [self.foodConsumptionRecords objectAtIndex:row];
-    [self showFoodDetails:item];
+    if (item.synchronized.boolValue) {
+        [self showFoodDetails:item];
+    }
 }
 
 /**
@@ -2117,7 +2131,9 @@
  * @return Always return YES here.
  */
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{
-    return YES;
+    int row = indexPath.row;
+    FoodConsumptionRecord *item = [self.foodConsumptionRecords objectAtIndex:row];
+    return item.synchronized.boolValue;
 }
 /**
  * update the cell editing value here. Always return UITableViewCellEditingStyleNone to 

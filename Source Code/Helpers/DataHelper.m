@@ -285,9 +285,6 @@
                 NSArray *extObjects = [dict objectForKey:newKey];
 
                 NSMutableSet *currentSet = [object mutableSetValueForKey:key];
-                if (!currentSet) {
-                    currentSet = [NSMutableSet set];
-                }
                 
                 for (id relatDic in extObjects) {
                     NSString *extId = [relatDic isKindOfClass:[NSDictionary class]] ? [relatDic objectForKey:@"id"] : relatDic;
@@ -297,6 +294,10 @@
                     
                     NSArray *objects = [managedObjectContext executeFetchRequest:request error:nil];
                     if (objects.count > 0) {
+                        if (!currentSet) {
+                            currentSet = [NSMutableSet set];
+                        }
+                        
                         [currentSet addObject:[objects objectAtIndex:0]];
                     }
                 }                

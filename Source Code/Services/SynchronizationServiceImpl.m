@@ -279,6 +279,8 @@
                 } else {
                     if ([object updateObjects]) {
                         if ([object isKindOfClass:[FoodConsumptionRecord class]]) {
+                            [LoggingHelper logDebug:@"synchronize" message:[NSString stringWithFormat:@"Will synchronize record, %@",
+                                                                            [[(FoodConsumptionRecord *)object voiceRecordings] allObjects]]];
                             NSMutableSet *allSet = [NSMutableSet set];
                             [allSet addObjectsFromArray: [[(FoodConsumptionRecord *) object voiceRecordings] allObjects]];
                             for (Media *mediaObject in allSet) {
