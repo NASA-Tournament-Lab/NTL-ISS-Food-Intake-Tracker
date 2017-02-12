@@ -431,9 +431,7 @@
 
 @end
 
-@interface ConsumptionViewController (){
-    /* the food items */
-    NSMutableArray *foodItems;
+@interface ConsumptionViewController () {
     /* the selected food items */
     NSMutableArray *selectedItems;
     /* the copied food items */
@@ -484,19 +482,18 @@
         [self performSelectorOnMainThread:@selector(updateView) withObject:nil waitUntilDone:NO];
         return;
     }
+
+    NSLog(@"Update view");
     
-    if(foodItems.count == 0){
-        NSDate *selectDate = self.dateListView.currentDate;
-        if (!selectDate) {
-            selectDate = [NSDate date];
-        }
-        [self loadFoodItemsForDate:selectDate];
+    NSDate *selectDate = self.dateListView.currentDate;
+    if (!selectDate) {
+        selectDate = [NSDate date];
     }
-    
+    [self loadFoodItemsForDate:selectDate];
+
     self.customTabBarController.tabView.hidden = NO;
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     NSMutableString *str = [NSMutableString string];
-    // [str appendString:@"SUMMARY    FOR"];
     if (appDelegate.loggedInUser.fullName.length > 0){
         NSArray *names = [appDelegate.loggedInUser.fullName componentsSeparatedByString:@" "];
         // F2Finish change - Display name
@@ -666,7 +663,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateView)
                                                  name:CurrentUserUpdateEvent object:nil];
 
-
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateView)
                                                  name:NSManagedObjectContextDidSaveNotification object:nil];
 }
@@ -717,7 +713,7 @@
 /**
  * update progress in the bottom info bar.
  */
-- (void)updateProgress{
+- (void)updateProgress {
     float caloriesTotal = 0;
     float sodiumTotal = 0;
     float fluidTotal = 0;
@@ -840,7 +836,7 @@
  * load food items by specify date.
  * @param date The date of foods want to load.
  */
-- (void)loadFoodItemsForDate:(NSDate *)date{
+- (void)loadFoodItemsForDate:(NSDate *)date {
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     if (!appDelegate.loggedInUser) {
         return;
@@ -866,7 +862,7 @@
  * action for check box button click. Add item to array or remove it. Update button status.
  * @param sender the check box button.
  */
-- (void)foodSelect:(id)sender{
+- (void)foodSelect:(id)sender {
     UIButton *btn = (UIButton *)sender;
     NSInteger row = btn.tag;
     FoodConsumptionRecord *item = [self.foodConsumptionRecords objectAtIndex:row];
@@ -1350,9 +1346,8 @@
     FoodConsumptionRecordServiceImpl *recordService = appDelegate.foodConsumptionRecordService;
     NSError *error;
     for (FoodConsumptionRecord *record in copyItems) {
-        FoodConsumptionRecord *copyRecord = [recordService copyFoodConsumptionRecord:record
-                                                                           copyToDay:self.dateListView.currentDate
-                                                                               error:&error];
+        [recordService copyFoodConsumptionRecord:record copyToDay:self.dateListView.currentDate
+                                           error:&error];
         if ([Helper displayError:error]) return;
         //[self.foodConsumptionRecords addObject:copyRecord];
     }

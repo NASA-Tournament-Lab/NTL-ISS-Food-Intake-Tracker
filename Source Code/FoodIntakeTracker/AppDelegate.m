@@ -25,7 +25,7 @@
 //  F2Finish - NASA iPad App Updates - Round 3
 //
 
-#import <HockeySDK/HockeySDK.h>;
+#import <HockeySDK/HockeySDK.h>
 
 #import "AppDelegate.h"
 #import "UserServiceImpl.h"

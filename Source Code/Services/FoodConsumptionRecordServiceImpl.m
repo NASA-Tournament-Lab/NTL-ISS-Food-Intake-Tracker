@@ -262,9 +262,9 @@
     [LoggingHelper logMethodEntrance:methodName paramNames:@[@"user", @"date"] params:@[user, date]];
     
     //Fetch records by user and date
-    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     [calendar setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
-    NSDateComponents *components = [calendar components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit ) fromDate:date];
+    NSDateComponents *components = [calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay ) fromDate:date];
     // calculate the first second of the day indicated by "date" parameter
     [components setHour:0];
     [components setMinute:0];
