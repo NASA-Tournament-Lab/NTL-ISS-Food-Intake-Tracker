@@ -482,8 +482,6 @@
         [self performSelectorOnMainThread:@selector(updateView) withObject:nil waitUntilDone:NO];
         return;
     }
-
-    NSLog(@"Update view");
     
     NSDate *selectDate = self.dateListView.currentDate;
     if (!selectDate) {
@@ -664,10 +662,7 @@
                                                  name:CurrentUserUpdateEvent object:nil];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateView)
-                                                 name:NSManagedObjectContextDidSaveNotification object:nil];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateView)
-                                                 name:UpdateLastSync object:nil];
+                                                 name:MergeDataEvent object:nil];
 }
 
 /**
@@ -845,6 +840,7 @@
         return;
     }
     FoodConsumptionRecordServiceImpl *recordService = appDelegate.foodConsumptionRecordService;
+    [recordService.managedObjectContext processPendingChanges];
 
     NSError *error;
     NSArray *records = [recordService getFoodConsumptionRecords:appDelegate.loggedInUser date:date error:&error];
@@ -1030,11 +1026,13 @@
         [recorderFilePath removeAllObjects];
         
         [self.btnAddFood setSelected:NO];
+
+        if (self.foodConsumptionRecords.count > 0) {
+            NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
+            [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        }
         
-        NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
-        [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
+        [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:self.dateListView.currentDate];
     }
     [self updateProgress];
     [self stopCommentDictation];
@@ -1202,7 +1200,7 @@
     foodDetail = nil;
     [recorderFilePath removeAllObjects];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
+    [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:self.dateListView.currentDate];
 }
 
 /**
@@ -1355,18 +1353,18 @@
         //[self.foodConsumptionRecords addObject:copyRecord];
     }
 
-    if (copyItems.count > 0) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
-    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:self.dateListView.currentDate];
 
     [copyItems removeAllObjects];
     //[self.foodTableView reloadData];
     //[self updateProgress];
     [self.btnPaste setEnabled:NO];
     [self hidePastePop:nil];
-    
-    NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
-    [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+
+    if (self.foodConsumptionRecords.count > 0) {
+        NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
+        [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    }
 }
 /**
  * handle action for delete button. Just pop over delete confirm dialog.
@@ -1419,7 +1417,7 @@
         if ([Helper displayError:error]) return;
     }
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
+    [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:self.dateListView.currentDate];
     
     //[self.foodTableView reloadData];
     //[self updateProgress];
@@ -1508,7 +1506,7 @@
         [recordService deleteFoodConsumptionRecord:cell.foodConsumptionRecord error:&error];
         if ([Helper displayError:error]) return;
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
+        [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:self.dateListView.currentDate];
     }
     //[self.foodTableView reloadData];
     //[self updateProgress];
@@ -1625,13 +1623,13 @@
             //[self.foodTableView reloadData];
             
             [recorderFilePath removeAllObjects];
-            
-            NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
-            [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+
+            if (self.foodConsumptionRecords.count > 0) {
+                NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
+                [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+            }
         }
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
-        
+
         [voiceSearch.selectedFoodProducts removeAllObjects];
         //[self.foodTableView reloadData];
         //[self updateProgress];
@@ -1640,6 +1638,8 @@
         
         [voiceSearch.view removeFromSuperview];
         voiceSearch = nil;
+
+        [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:self.dateListView.currentDate];
     } else {
         [clearCover removeFromSuperview];
         clearCover = nil;
@@ -1719,14 +1719,16 @@
                 //[self.foodConsumptionRecords addObject:record];
             }
             
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
+            [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:self.dateListView.currentDate];
             
             [selectConsumption.selectFoods removeAllObjects];
             //[self.foodTableView reloadData];
             //[self updateProgress];
-            
-            NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
-            [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+
+            if (self.foodConsumptionRecords.count > 0) {
+                NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
+                [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+            }
         }
         [self.navigationController popViewControllerAnimated:YES];
         [self.customTabBarController setConsumptionActive];
@@ -1966,10 +1968,12 @@
         //[self.foodConsumptionRecords addObject:record];
         //[self.foodTableView reloadData];
 
-        NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
-        [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        if (self.foodConsumptionRecords.count > 0) {
+            NSIndexPath *path = [NSIndexPath indexPathForRow:self.foodConsumptionRecords.count-1 inSection:0];
+            [self.foodTableView scrollToRowAtIndexPath:path atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        }
 
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.dateListView.currentDate];
+        [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:self.dateListView.currentDate];
     }
 }
 
@@ -2091,6 +2095,8 @@
     cell.fluidAmount = [self.fluidProgress.lblCurrent.text integerValue];
     cell.caloriesAmount = [self.caloriesProgess.lblCurrent.text integerValue];
     cell.sodiumAmount = [self.sodiumProgress.lblCurrent.text integerValue];
+
+    NSLog(@"Got record (%@) with name %@ at %@ with sync %@", item.id, item.foodProduct.name, item.timestamp, item.synchronized);
 
     cell.loadingView.hidden = item.synchronized.boolValue;
     if (cell.loadingView.hidden) {
@@ -2237,7 +2243,7 @@ forRowAtIndexPath:(NSIndexPath *)indexPath {
                                         product:product
                                           error:&error];
         [voiceSearch.selectedFoodProducts addObject:product];
-        
+
         [self hideVoice:nil];
     }
     

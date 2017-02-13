@@ -59,7 +59,7 @@
 +(void)logDebug:(NSString *)methodName message:(NSString *)message {
     if (DEBUG_LOGON) {
         if (message) {
-            NSLog(@"[Debug in method %@: %@]", methodName, message);
+            NSLog(@"[Debug for thread %@ in method %@: %@]", [[NSThread currentThread] name], methodName, message);
         }
     }
 }

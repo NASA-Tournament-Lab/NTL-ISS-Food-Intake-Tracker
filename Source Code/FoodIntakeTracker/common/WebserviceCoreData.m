@@ -237,7 +237,7 @@ static NSString* reachHostName = @"";
                         }
 
                         // sync to database
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:[NSDate date]];
 
                         retries--;
                     }

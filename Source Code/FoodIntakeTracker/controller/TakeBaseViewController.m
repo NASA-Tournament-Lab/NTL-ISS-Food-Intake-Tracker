@@ -306,7 +306,7 @@
     }
     
     if (selectFoods.count > 0) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:selectedDate];
+        [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:selectedDate];
     }
     
     [selectFoods removeAllObjects];

@@ -87,7 +87,7 @@
     [recordService saveFoodConsumptionRecord:self.foodConsumptionRecord error:&error];
     if ([Helper displayError:error]) return;
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.foodConsumptionRecord.timestamp];    
+    [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:self.foodConsumptionRecord.timestamp];
 }
 
 /**

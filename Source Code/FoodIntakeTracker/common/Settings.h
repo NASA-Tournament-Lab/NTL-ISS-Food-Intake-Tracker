@@ -32,6 +32,9 @@
 #define InitialLoadingEndEvent @"InitialLoadingEndEvent"
 #define InitialLoadingProgressEvent @"InitialLoadingProgressEvent"
 #define CurrentUserUpdateEvent @"CurrentUserUpdateEvent"
+#define MergeDataEvent @"MergeDataEvent"
+
+#define DataSyncUpdate @"DataSyncUpdate"
 
 #define UpdateLastSync @"UpdateLastSync"
 

@@ -139,7 +139,7 @@
 
     [self startLoading];
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:nil];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {

@@ -216,7 +216,12 @@
         NSDate *date1 = [obj1 createdDate];
         NSDate *date2 = [obj2 createdDate];
 
-        return [date1 compare:date2];
+        NSComparisonResult result = [date1 compare:date2];
+        if (result == NSOrderedSame) {
+            return [[obj1 id] compare:[obj2 id]];
+        } else {
+            return result;
+        }
     }];
 }
 
