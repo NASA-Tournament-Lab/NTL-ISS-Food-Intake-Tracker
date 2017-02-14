@@ -600,13 +600,21 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     NSLog(@"Acquiring lock for user %@", [user fullName]);
 
     if (!user.id) {
-        return 1;
+        return -2;
     }
 
     __block NSInteger result;
     __block NSString *userId = [NSString stringWithString:user.id];
     dispatch_sync(dataSyncUpdateQ, ^{
-        NSArray *userLocks = [[WebserviceCoreData instance] fetchUserLocks];
+        WebserviceCoreData *instance = [WebserviceCoreData instance];
+        BOOL connect = [instance connect];
+
+        if (!connect) {
+            result = 1;
+            return;
+        }
+
+        NSArray *userLocks = [instance fetchUserLocks];
         if (userLocks) {
             for (NSDictionary *dict in userLocks) {
                 NSString *uid = [dict objectForKey:@"userId"];
@@ -618,7 +626,8 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
             }
         }
 
-        result = [[WebserviceCoreData instance] insertUserLock:userId];
+        connect = [instance connect];
+        result = connect ? [instance insertUserLock:userId] : 1;
     });
 
     return result;
