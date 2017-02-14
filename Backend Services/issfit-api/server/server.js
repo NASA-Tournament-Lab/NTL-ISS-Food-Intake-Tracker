@@ -1203,10 +1203,11 @@ app.post('/import', function(req, res) {
             return file.fieldname != 'userImageFileImport';
         });
 
+        var csvMimeTypes = ['text/csv', 'application/csv', 'application/vnd.ms-excel'];
         for (var i = 0; i < files.length; i++) {
             var currentFile = files[i];
             console.log('Current file: ' + JSON.stringify(currentFile));
-            if (currentFile.fieldname == 'userFileImport' && currentFile.mimetype == 'text/csv') {
+            if (currentFile.fieldname == 'userFileImport' && csvMimeTypes.indexOf(currentFile.mimetype) != -1) {
                 var argsUser = [
                     config.db.host,
                     config.db.username,
@@ -1229,7 +1230,7 @@ app.post('/import', function(req, res) {
                     });
                 });
 
-            } else if (currentFile.fieldname == 'foodFileImport' && currentFile.mimetype == 'text/csv') {
+            } else if (currentFile.fieldname == 'foodFileImport' && csvMimeTypes.indexOf(currentFile.mimetype) != -1) {
                 var argsFood = [
                     config.db.host,
                     config.db.username,
@@ -1259,6 +1260,12 @@ app.post('/import', function(req, res) {
             }
         }
 
+        if (functions.length == 0) {
+            req.flash('message', 'No files were uploaded.');
+            res.redirect('/');
+            return;
+        }
+
         async.waterfall(
             functions,
             function (err, result) {
@@ -1270,7 +1277,7 @@ app.post('/import', function(req, res) {
                         saveImageFromZip(zipFile, function(err) {
                             if (err) {
                                 console.log('Error: ' + err);
-                                return res.status(500).send({success: false, error: 'Can\'t save user images'});
+                                return res.status(500).send({success: false, error: 'Can\'t save user images.'});
                             }
 
                             res.json({success: true})
@@ -1289,7 +1296,7 @@ app.post('/import', function(req, res) {
                                 return res.redirect('/');
                             }
 
-                            req.flash('message', 'Bulk Upload Successful');
+                            req.flash('message', 'Bulk Upload Successful.');
                             res.redirect('/');
                         });
                     }
