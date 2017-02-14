@@ -583,11 +583,6 @@ static NSString* reachHostName = @"";
                     result = -1;
                     return;
                 }
-            } else if (error) {
-                if ([error.domain isEqualToString:@"AFNetworkingErrorDomain"] && error.code == -1011) {
-                    result = -2;
-                    return;
-                }
             }
 
             result = 0;
