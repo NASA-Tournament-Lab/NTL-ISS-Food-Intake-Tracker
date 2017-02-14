@@ -384,9 +384,7 @@
             // Convert from JSON
             NSDictionary *jsonDictionary = [value copy];
 
-            if ([name isEqualToString:@"FoodConsumptionRecord"]) {
-                [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"JSON for %@ dict %@", name, jsonDictionary]];
-            }
+            [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"JSON for %@ dict %@", name, jsonDictionary]];
             
             // Check if object already exists
             __block NSArray *objects = nil;
@@ -409,14 +407,14 @@
             if (objects.count > 0) {
                 SynchronizableModel *object = [self.managedObjectContext objectWithID:[[objects objectAtIndex:0] objectID]];
                 if (isRemoved) {
-                    if (!forceLogout) {
-                        if ([loggedInUser.objectID isEqual:object.objectID]) {
-                            loggedInUser.removed = @YES;
-                            object.removed = @YES;
-                            forceLogout = YES;
-                        }
+                    BOOL loggedInUserDeleted = [loggedInUser.objectID isEqual:object.objectID];
+                    if (!forceLogout && loggedInUserDeleted) {
+                        loggedInUser.removed = @YES;
+                        loggedInUser.synchronized = @NO;
+                        forceLogout = YES;
                     }
-                    [self.managedObjectContext deleteObject:object];
+
+                    if (!loggedInUserDeleted) [self.managedObjectContext deleteObject:object];
                 } else if (![self shouldIgnore:postponedObjects object:object]) {
                     if (![DataHelper updateObjectWithJSON:jsonDictionary object:object
                                      managegObjectContext:self.managedObjectContext]) {
@@ -463,7 +461,7 @@
     [self updateProgress:@1.0];
 
     if (forceLogout) {
-        NSString *errorMsg = @"User was removed.";
+        NSString *errorMsg = @"User was marked as removed.";
         *error = [NSError errorWithDomain:@"LockDomain" code:UserRemovedErrorCode userInfo:@{NSUnderlyingErrorKey:errorMsg}];
         [Helper displayError:*error];
 
@@ -473,6 +471,10 @@
 
             [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
         });
+
+        [LoggingHelper logMethodExit:methodName returnValue:@NO];
+
+        return NO;
     }
 
     [LoggingHelper logMethodExit:methodName returnValue:@YES];

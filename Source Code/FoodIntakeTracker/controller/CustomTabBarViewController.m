@@ -115,10 +115,10 @@
     if (appDelegate.loggedInUser) {
         appDelegate.loggedInUser = nil;
         [appDelegate removeUserLock];
-
-        [self.navigationController popViewControllerAnimated:YES];
-        [[NSNotificationCenter defaultCenter] removeObserver:self];
     }
+
+    [self.navigationController popViewControllerAnimated:YES];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 /**
