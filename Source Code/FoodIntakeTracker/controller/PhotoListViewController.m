@@ -24,6 +24,7 @@
 
 #import "PhotoListViewController.h"
 #import "Helper.h"
+#import "Settings.h"
 #import "AppDelegate.h"
 #import "FoodProductServiceImpl.h"
 #import <QuartzCore/QuartzCore.h>
@@ -261,7 +262,7 @@
         [consumptionViewController.foodConsumptionRecords addObject:record];
     }
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[self.customTabBarController currentSelectedDate]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:[self.customTabBarController currentSelectedDate]];
 
     [selectFoods removeAllObjects];
     [consumptionViewController updateProgress];

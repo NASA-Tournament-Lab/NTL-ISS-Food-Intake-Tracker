@@ -26,6 +26,7 @@
 #import "DataHelper.h"
 #import "NSError+Extension.h"
 #import "AppDelegate.h"
+#import "Settings.h"
 
 @implementation DBHelper
 
@@ -139,11 +140,12 @@ static dispatch_once_t onceToken = 0;
         NSManagedObjectContext *mainThreadMoc = [mocs valueForKey:mainThreadName];
         
         if (mocThatSendNotification == mainThreadMoc) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:MergeDataEvent object:nil];
             return;
         }
         
         dispatch_async(dispatch_get_main_queue(), ^{
-#ifdef INFO_LOGON
+#ifdef MERGE_INFO
             NSLog(@"Merge changes back to main thread");
 #endif
             @try {
@@ -153,7 +155,7 @@ static dispatch_once_t onceToken = 0;
                 NSLog(@"****    [DbHelper mergeChanges:] exception: %@", exception);
             }
             @finally {
-                
+                [[NSNotificationCenter defaultCenter] postNotificationName:MergeDataEvent object:nil];
             }
         });
     });

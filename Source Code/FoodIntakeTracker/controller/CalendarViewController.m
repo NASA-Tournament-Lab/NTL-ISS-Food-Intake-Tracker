@@ -77,7 +77,7 @@
     info.day = [[curMonth objectAtIndex:index] intValue] - [[curMonth objectAtIndex:0] intValue] + 1;
     
     info.hour = info.minute = info.second = 0;
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     gregorian.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
     return [gregorian dateFromComponents:info];
 }
@@ -94,12 +94,12 @@
         self.month = [NSDate date];
     }
     int daySeconds = 24 * 60 * 60;
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     gregorian.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-    NSDateComponents *info = [gregorian components:(NSYearCalendarUnit |
-                                                    NSMonthCalendarUnit |
-                                                    NSDayCalendarUnit |
-                                                    NSWeekdayCalendarUnit)
+    NSDateComponents *info = [gregorian components:(NSCalendarUnitYear |
+                                                    NSCalendarUnitMonth |
+                                                    NSCalendarUnitDay |
+                                                    NSCalendarUnitWeekday)
                                           fromDate:self.month];
     if(monthInfo.month == info.month && monthInfo.year == info.year){
         return;
@@ -111,12 +111,13 @@
     // calculate  before selcted day
     for(int i = 0; ; i++){
         NSDate *prevDate = [NSDate dateWithTimeInterval:(i * -1 * daySeconds) sinceDate:self.month];
-        NSDateComponents *preInfo = [gregorian components:(NSYearCalendarUnit | NSMonthCalendarUnit
-                                                           | NSDayCalendarUnit | NSWeekdayCalendarUnit)
+        NSDateComponents *preInfo = [gregorian components:(NSCalendarUnitYear |
+                                                           NSCalendarUnitMonth |
+                                                           NSCalendarUnitDay |
+                                                           NSCalendarUnitWeekday)
                                                  fromDate:prevDate];
-        
-        NSUInteger dayOfYear = [gregorian ordinalityOfUnit:NSDayCalendarUnit
-                                                    inUnit:NSYearCalendarUnit
+        NSUInteger dayOfYear = [gregorian ordinalityOfUnit:NSCalendarUnitDay
+                                                    inUnit:NSCalendarUnitYear
                                                    forDate:prevDate];
         if(preInfo.month != info.month){
             if(preInfo.weekday == 7 && prevMonth.count > 0){
@@ -134,11 +135,13 @@
     // calulate day after selcted day
     for(int i = 1; ; i++){
         NSDate *prevDate = [NSDate dateWithTimeInterval:(i * daySeconds) sinceDate:self.month];
-        NSDateComponents *preInfo = [gregorian components:(NSYearCalendarUnit | NSMonthCalendarUnit
-                                                           | NSDayCalendarUnit | NSWeekdayCalendarUnit)
+        NSDateComponents *preInfo = [gregorian components:(NSCalendarUnitYear |
+                                                           NSCalendarUnitMonth |
+                                                           NSCalendarUnitDay |
+                                                           NSCalendarUnitWeekday)
                                                  fromDate:prevDate];
-        NSUInteger dayOfYear = [gregorian ordinalityOfUnit:NSDayCalendarUnit
-                                                    inUnit:NSYearCalendarUnit
+        NSUInteger dayOfYear = [gregorian ordinalityOfUnit:NSCalendarUnitDay
+                                                    inUnit:NSCalendarUnitYear
                                                    forDate:prevDate];
         if(preInfo.month != info.month){
             if(preInfo.weekday == 1){
@@ -162,12 +165,12 @@
  * @param rect the view frame size.
  */
 - (void)drawRect:(CGRect)rect{
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     gregorian.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-    NSDateComponents *info = [gregorian components:(NSYearCalendarUnit |
-                                                    NSMonthCalendarUnit |
-                                                    NSDayCalendarUnit |
-                                                    NSWeekdayCalendarUnit)
+    NSDateComponents *info = [gregorian components:(NSCalendarUnitYear |
+                                                    NSCalendarUnitMonth |
+                                                    NSCalendarUnitDay |
+                                                    NSCalendarUnitWeekday)
                                           fromDate:self.selectedDate];
     NSInteger pos = info.day + prevMonth.count - 1;
     NSInteger posX = pos % 7;
@@ -309,12 +312,12 @@
     self.btnToday.frame = CGRectMake(15, 143 + h, 336, 33);
     self.bgCalendar.frame = CGRectMake(-1, 15, 369, 178 + h);
     
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     gregorian.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-    NSDateComponents *info = [gregorian components:(NSYearCalendarUnit |
-                                                    NSMonthCalendarUnit |
-                                                    NSDayCalendarUnit |
-                                                    NSWeekdayCalendarUnit)
+    NSDateComponents *info = [gregorian components:(NSCalendarUnitYear |
+                                                    NSCalendarUnitMonth |
+                                                    NSCalendarUnitDay |
+                                                    NSCalendarUnitWeekday)
                                           fromDate:month];
     self.monthLabel.text = [NSString stringWithFormat:@"%@  %d", [Helper monthName:info.month], (int)info.year];
 }
@@ -324,12 +327,12 @@
  * @param sender the button.
  */
 - (IBAction)nextMonth:(id)sender{
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     gregorian.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-    NSDateComponents *info = [gregorian components:(NSYearCalendarUnit |
-                                                    NSMonthCalendarUnit |
-                                                    NSDayCalendarUnit |
-                                                    NSWeekdayCalendarUnit)
+    NSDateComponents *info = [gregorian components:(NSCalendarUnitYear |
+                                                    NSCalendarUnitMonth |
+                                                    NSCalendarUnitDay |
+                                                    NSCalendarUnitWeekday)
                                           fromDate:self.listView.month];
     NSInteger m = info.month +1;
     NSInteger y = info.year;
@@ -351,11 +354,11 @@
  */
 - (IBAction)prevMonth:(id)sender{
     
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
-    NSDateComponents *info = [gregorian components:(NSYearCalendarUnit |
-                                                    NSMonthCalendarUnit |
-                                                    NSDayCalendarUnit |
-                                                    NSWeekdayCalendarUnit)
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
+    NSDateComponents *info = [gregorian components:(NSCalendarUnitYear |
+                                                    NSCalendarUnitMonth |
+                                                    NSCalendarUnitDay |
+                                                    NSCalendarUnitWeekday)
                                           fromDate:self.listView.month];
     NSInteger m = info.month - 1;
     NSInteger y = info.year;

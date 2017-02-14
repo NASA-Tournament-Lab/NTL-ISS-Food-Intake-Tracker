@@ -133,7 +133,7 @@
         NSInteger seconds = timeElapsed % 60;
         NSInteger minutes = timeElapsed / 60;
 
-        self.lblSubTitle.text = [NSString stringWithFormat:@"Speak Now (%02ld:%2ld)", minutes, seconds];
+        self.lblSubTitle.text = [NSString stringWithFormat:@"Speak Now (%02ld:%2ld)", (long)minutes, (long)seconds];
     } else {
         [timer invalidate];
     }

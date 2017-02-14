@@ -49,14 +49,14 @@
         int hour = [[[val componentsSeparatedByString:@":"] objectAtIndex:0] intValue];
         int minute = [[[val componentsSeparatedByString:@":"] objectAtIndex:1] intValue];
         
-        NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+        NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
         gregorian.timeZone = [NSTimeZone timeZoneWithAbbreviation:@"GMT"];
-        NSDateComponents *info = [gregorian components:(NSYearCalendarUnit |
-                                                        NSMonthCalendarUnit |
-                                                        NSDayCalendarUnit |
-                                                        NSWeekdayCalendarUnit |
-                                                        NSHourCalendarUnit |
-                                                        NSMinuteCalendarUnit)
+        NSDateComponents *info = [gregorian components:(NSCalendarUnitYear |
+                                                        NSCalendarUnitMonth |
+                                                        NSCalendarUnitDay |
+                                                        NSCalendarUnitWeekday |
+                                                        NSCalendarUnitHour |
+                                                        NSCalendarUnitMinute)
                                               fromDate:self.foodConsumptionRecord.timestamp];
         [info setMinute:minute];
         [info setHour:hour];
@@ -87,7 +87,7 @@
     [recordService saveFoodConsumptionRecord:self.foodConsumptionRecord error:&error];
     if ([Helper displayError:error]) return;
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:self.foodConsumptionRecord.timestamp];    
+    [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:self.foodConsumptionRecord.timestamp];
 }
 
 /**

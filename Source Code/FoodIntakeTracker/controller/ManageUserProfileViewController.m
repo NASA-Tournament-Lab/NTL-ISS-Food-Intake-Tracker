@@ -219,7 +219,7 @@
     self.deletePopupView.hidden = YES;
     self.profileDeletedNoteView.hidden = NO;
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:[NSDate date]];
     
     [self performSelector:@selector(hideProfileDeletedNoteView) withObject:nil afterDelay:1];
 }
@@ -461,7 +461,7 @@
         [self reloadUsers];
         [self resetSelection:user.fullName];
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:[NSDate date]];
     }
     else if(self.btnTakePhoto.hidden) {
         [self showEditPhoto];
@@ -483,7 +483,7 @@
         [self showPhotoPreview];
         [self reloadUsers];
         
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:[NSDate date]];
     }
 }
 
@@ -760,7 +760,7 @@
     
     [self.popover dismissPopoverAnimated:YES];
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:[NSDate date]];
+    [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:[NSDate date]];
 }
 
 /*!

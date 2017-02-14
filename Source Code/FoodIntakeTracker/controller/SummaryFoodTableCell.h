@@ -75,6 +75,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *btnUndo;
 /* the done button */
 @property (weak, nonatomic) IBOutlet UIButton *btnDone;
+/* the loading view */
+@property (weak, nonatomic) IBOutlet UIView *loadingView;
 /* Represents the FoodConsumptionRecord in this view. */
 @property (weak, nonatomic) FoodConsumptionRecord *foodConsumptionRecord;
 /* Represents the current fluid amount */

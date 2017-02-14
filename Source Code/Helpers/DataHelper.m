@@ -216,7 +216,12 @@
         NSDate *date1 = [obj1 createdDate];
         NSDate *date2 = [obj2 createdDate];
 
-        return [date1 compare:date2];
+        NSComparisonResult result = [date1 compare:date2];
+        if (result == NSOrderedSame) {
+            return [[obj1 id] compare:[obj2 id]];
+        } else {
+            return result;
+        }
     }];
 }
 
@@ -285,9 +290,6 @@
                 NSArray *extObjects = [dict objectForKey:newKey];
 
                 NSMutableSet *currentSet = [object mutableSetValueForKey:key];
-                if (!currentSet) {
-                    currentSet = [NSMutableSet set];
-                }
                 
                 for (id relatDic in extObjects) {
                     NSString *extId = [relatDic isKindOfClass:[NSDictionary class]] ? [relatDic objectForKey:@"id"] : relatDic;
@@ -297,6 +299,10 @@
                     
                     NSArray *objects = [managedObjectContext executeFetchRequest:request error:nil];
                     if (objects.count > 0) {
+                        if (!currentSet) {
+                            currentSet = [NSMutableSet set];
+                        }
+                        
                         [currentSet addObject:[objects objectAtIndex:0]];
                     }
                 }                

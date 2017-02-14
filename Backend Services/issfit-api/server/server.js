@@ -1265,12 +1265,12 @@ app.post('/import', function(req, res) {
                 if (isScript) {
                     if (err) {
                         console.log('Error: ' + err);
-                        res.status(500).send({success: false, error: 'Can\'t save images'});
+                        res.status(500).send({success: false, error: 'Bulk upload failed.'});
                     } else {
                         saveImageFromZip(zipFile, function(err) {
                             if (err) {
                                 console.log('Error: ' + err);
-                                return res.status(500).send({success: false, error: 'Can\'t save images'});
+                                return res.status(500).send({success: false, error: 'Can\'t save user images'});
                             }
 
                             res.json({success: true})
@@ -1279,13 +1279,13 @@ app.post('/import', function(req, res) {
                 } else {
                     if (err) {
                         console.log('Error: ' + err);
-                        req.flash('error', err);
+                        req.flash('error', 'Bulk Upload Failed. Check logs for details.');
                         res.redirect('/');
                     } else {
                         saveImageFromZip(zipFile, function(err) {
                             if (err) {
                                 console.log('Error: ' + err);
-                                req.flash('error', err);
+                                req.flash('error', 'Can\'t save user images. Check logs for details.');
                                 return res.redirect('/');
                             }
 
@@ -1388,11 +1388,11 @@ app.get('/delete/execute/:id', function(req, res) {
             function (err, result) {
                 if (err) {
                     console.log('Error: ' + err);
-                    req.flash('error', 'User data was not removed');
+                    req.flash('error', 'User data was not removed. Check log for details.');
                     req.flash('currentSelectedTab', '4');
                     res.redirect('/');
                 } else {
-                    req.flash('message', 'User data was removed from database');
+                    req.flash('message', 'User data was removed from database.');
                     req.flash('currentSelectedTab', '4');
                     res.redirect('/');
                 }

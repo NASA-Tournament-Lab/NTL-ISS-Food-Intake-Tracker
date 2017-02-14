@@ -96,16 +96,16 @@
     copy.protein = record.protein;
     copy.carb = record.carb;
     copy.fat = record.fat;
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     [gregorian setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
-    NSDateComponents *copyToDayComponents =[gregorian components:(NSYearCalendarUnit
-                                                                  | NSMonthCalendarUnit
-                                                                  | NSDayCalendarUnit )
+    NSDateComponents *copyToDayComponents =[gregorian components:(NSCalendarUnitYear
+                                                                  | NSCalendarUnitMonth
+                                                                  | NSCalendarUnitDay )
                                                         fromDate:copyToDay];
     [copyToDayComponents setCalendar:gregorian];
-    NSDateComponents *sourceDayComponents =[gregorian components:(NSHourCalendarUnit
-                                                                  | NSMinuteCalendarUnit
-                                                                  | NSSecondCalendarUnit )
+    NSDateComponents *sourceDayComponents =[gregorian components:(NSCalendarUnitHour
+                                                                  | NSCalendarUnitMinute
+                                                                  | NSCalendarUnitSecond )
                                                         fromDate:[NSDate date]];
     [sourceDayComponents setCalendar:gregorian];
     [copyToDayComponents setHour:[sourceDayComponents hour]];
@@ -152,7 +152,7 @@
     }
     
     [LoggingHelper logMethodEntrance:methodName paramNames:@[@"user", @"record"] params:@[user, record]];
-    
+
     //Add food consumption record
     [self.managedObjectContext lock];
 
@@ -162,10 +162,10 @@
     user.synchronized = @NO;
 
     [self.managedObjectContext save:error];
-    
+
     [LoggingHelper logError:methodName error:*error];
     [self.managedObjectContext unlock];
-    
+
     [LoggingHelper logMethodExit:methodName returnValue:nil];
     return YES;
 }
@@ -198,13 +198,13 @@
         }
     } else {
         [self.managedObjectContext lock];
-        
+
         record.synchronized = @NO;
         record.foodProduct.synchronized = @NO;
-        
+
         [self.managedObjectContext save:error];
         [LoggingHelper logError:methodName error:*error];
-        
+
         [self.managedObjectContext unlock];
     }
 
@@ -229,6 +229,7 @@
     
     //Delete food consumption record
     [self.managedObjectContext lock];
+
     record.synchronized = @NO;
     record.removed = @YES;
     
@@ -261,9 +262,9 @@
     [LoggingHelper logMethodEntrance:methodName paramNames:@[@"user", @"date"] params:@[user, date]];
     
     //Fetch records by user and date
-    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+    NSCalendar *calendar = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
     [calendar setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
-    NSDateComponents *components = [calendar components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit ) fromDate:date];
+    NSDateComponents *components = [calendar components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay ) fromDate:date];
     // calculate the first second of the day indicated by "date" parameter
     [components setHour:0];
     [components setMinute:0];

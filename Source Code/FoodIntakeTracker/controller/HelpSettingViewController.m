@@ -534,6 +534,6 @@
     [userService saveUser:appDelegate.loggedInUser error:&error];
     if ([Helper displayError:error]) return;
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"DataSyncUpdate" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:DataSyncUpdate object:nil];
 }
 @end

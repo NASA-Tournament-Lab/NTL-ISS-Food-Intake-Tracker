@@ -299,16 +299,16 @@ static NSArray *monthNameArray = nil;
 +(NSDate *)convertDateTimeToDate:(NSDate *)date time:(NSDate *)time {
     NSCalendar *calendar = [NSCalendar currentCalendar];
     [calendar setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
-    NSDateComponents *components = [calendar components:(NSYearCalendarUnit |
-                                                         NSMonthCalendarUnit |
-                                                         NSDayCalendarUnit |
-                                                         NSHourCalendarUnit |
-                                                         NSMinuteCalendarUnit)
+    NSDateComponents *components = [calendar components:(NSCalendarUnitYear |
+                                                         NSCalendarUnitMonth |
+                                                         NSCalendarUnitDay |
+                                                         NSCalendarUnitHour |
+                                                         NSCalendarUnitMinute)
                                                fromDate:date];
     [components setCalendar:calendar];
     
-    NSDateComponents *currentDateComponents = [calendar components:(NSHourCalendarUnit |
-                                                                    NSMinuteCalendarUnit)
+    NSDateComponents *currentDateComponents = [calendar components:(NSCalendarUnitHour |
+                                                                    NSCalendarUnitMinute)
                                                           fromDate:time];
     components.hour = [currentDateComponents hour];
     components.minute = [currentDateComponents minute];
@@ -324,9 +324,9 @@ static NSArray *monthNameArray = nil;
     NSCalendar *calendar = [NSCalendar currentCalendar];
     [calendar setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
     
-    NSDateComponents *c = [calendar components:(NSYearCalendarUnit |
-                                                NSMonthCalendarUnit |
-                                                NSDayCalendarUnit)
+    NSDateComponents *c = [calendar components:(NSCalendarUnitYear |
+                                                NSCalendarUnitMonth |
+                                                NSCalendarUnitDay)
                                       fromDate:[NSDate date]];
     [c setCalendar:calendar];
     c.hour = 0;
@@ -334,9 +334,9 @@ static NSArray *monthNameArray = nil;
     c.second = 1;
     NSDate *f = [c date];
     
-    c = [calendar components:(NSYearCalendarUnit |
-                              NSMonthCalendarUnit |
-                              NSDayCalendarUnit)
+    c = [calendar components:(NSCalendarUnitYear |
+                              NSCalendarUnitMonth |
+                              NSCalendarUnitDay)
                     fromDate:date];
     [c setCalendar:calendar];
     c.hour = 0;
@@ -344,7 +344,7 @@ static NSArray *monthNameArray = nil;
     c.second = 1;
     NSDate *t = [c date];
     
-    NSDateComponents *difference = [calendar components:NSDayCalendarUnit
+    NSDateComponents *difference = [calendar components:NSCalendarUnitDay
                                                fromDate:f toDate:t options:0];
     return [difference day];
 }

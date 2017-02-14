@@ -2343,10 +2343,7 @@
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/library/LoopBack/**";
 				INFOPLIST_FILE = "FoodIntakeTracker/FoodIntakeTracker-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/library/Postgresql",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.topcoder.FoodIntakeTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2375,10 +2372,7 @@
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/library/LoopBack/**";
 				INFOPLIST_FILE = "FoodIntakeTracker/FoodIntakeTracker-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/library/Postgresql",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.topcoder.FoodIntakeTracker;
 				PRODUCT_NAME = "$(TARGET_NAME)";

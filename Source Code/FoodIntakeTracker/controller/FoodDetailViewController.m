@@ -73,8 +73,8 @@
     
     NSCalendar *calendar = [NSCalendar currentCalendar];
     [calendar setTimeZone:[NSTimeZone timeZoneWithAbbreviation:@"GMT"]];
-    NSDateComponents *components = [calendar components:(NSHourCalendarUnit |
-                                                         NSMinuteCalendarUnit)
+    NSDateComponents *components = [calendar components:(NSCalendarUnitHour |
+                                                         NSCalendarUnitMinute)
                                                fromDate:self.foodConsumptionRecord.timestamp];
     NSInteger hour = [components hour];
     NSInteger minute = [components minute];
