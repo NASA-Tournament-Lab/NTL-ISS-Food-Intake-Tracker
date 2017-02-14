@@ -403,6 +403,12 @@
                 [Helper showAlert:@"Error" message:@"User was removed from database."];
             });
             return;
+        } else if (result == -2) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.loadingPanel.hidden = YES;
+                [Helper showAlert:@"Error" message:@"Failed to acquire lock for user."];
+            });
+            return;
         }
 
         appDelegate.loggedInUser = loggedInUser;
