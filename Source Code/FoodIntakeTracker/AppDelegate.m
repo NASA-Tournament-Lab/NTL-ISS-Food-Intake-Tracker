@@ -305,6 +305,10 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                 return;
             }
 
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:InitialLoadingBeginEvent object:nil];
+            });
+            
             status = SyncStatusStarted;
 
             NSError *error = nil;

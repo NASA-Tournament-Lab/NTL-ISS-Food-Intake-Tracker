@@ -265,7 +265,8 @@
         });
         CHECK_ERROR_AND_RETURN(blkError, error, @"Cannot fetch request.", DataUpdateErrorCode, YES, NO);
 
-        for (SynchronizableModel *object in objects) {
+        for (SynchronizableModel *mainObject in objects) {
+            SynchronizableModel *object = [self.managedObjectContext objectWithID:mainObject.objectID];
             NSNumber *synced = object.synchronized;
             if (synced && ![synced boolValue]) {
                 [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Not synchronized %@", object]];
@@ -409,15 +410,17 @@
                 if (isRemoved) {
                     BOOL loggedInUserDeleted = [loggedInUser.objectID isEqual:object.objectID];
                     if (!forceLogout && loggedInUserDeleted) {
-                        loggedInUser.removed = @YES;
-                        loggedInUser.synchronized = @NO;
                         forceLogout = YES;
                     }
-
-                    if (!loggedInUserDeleted) [self.managedObjectContext deleteObject:object];
+                    if (loggedInUserDeleted || ([object isKindOfClass:[User class]] && [self hasObjectInPostponed:postponedObjects object:object])) {
+                        object.removed = @YES;
+                        object.synchronized = @NO;
+                    } else {
+                        [self.managedObjectContext deleteObject:object];
+                    }
                 } else if (![self shouldIgnore:postponedObjects object:object]) {
-                    if (![DataHelper updateObjectWithJSON:jsonDictionary object:object
-                                     managegObjectContext:self.managedObjectContext]) {
+                    [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Updating %@ with id %@", name, oId]];
+                    if (![DataHelper updateObjectWithJSON:jsonDictionary object:object managegObjectContext:self.managedObjectContext]) {
                         e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
                         CHECK_ERROR_AND_RETURN(e, error, @"Cannot update object.", DataUpdateErrorCode, YES, YES);
                     }
@@ -431,8 +434,8 @@
                     [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Ignoring %@", name]];
                 }
             } else if (!isRemoved) {
-                if (![DataHelper convertJSONToObject:oId jsonValue:jsonDictionary name:name
-                                managegObjectContext:self.managedObjectContext]) {
+                [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Inserting %@ with id %@", name, oId]];
+                if (![DataHelper convertJSONToObject:oId jsonValue:jsonDictionary name:name managegObjectContext:self.managedObjectContext]) {
                     e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
                     CHECK_ERROR_AND_RETURN(e, error, @"Cannot insert object.", DataUpdateErrorCode, YES, YES);
                 }

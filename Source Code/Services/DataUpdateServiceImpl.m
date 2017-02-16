@@ -111,7 +111,7 @@
         NSArray *allData = [coreData fetchAllObjects];
 
         NSError *e = nil;
-        float currentProgress = 0.05, progressDelta = 0.35, count = [coreData fetchMediaCount];
+        float currentProgress = 0.05, progressDelta = 0.65, count = [coreData fetchMediaCount];
 
         if (![coreData startFetchMedia]) {
             e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
@@ -163,7 +163,7 @@
             return NO;
         }
 
-        currentProgress = 0.4, progressDelta = 0.59, count = allData.count;
+        currentProgress = 0.7, progressDelta = 0.29, count = allData.count;
         if (allData && allData.count > 0) {
             // Calculate the the delta progress
             for (int i = 0; i < allData.count; i++) {
