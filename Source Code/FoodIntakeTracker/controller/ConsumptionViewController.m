@@ -2124,7 +2124,7 @@
     }
     int row = indexPath.row;
     FoodConsumptionRecord *item = [self.foodConsumptionRecords objectAtIndex:row];
-    if (item.synchronized.boolValue) {
+    if (item.synchronized.boolValue || ![[WebserviceCoreData instance] canConnect]) {
         [self showFoodDetails:item];
     }
 }
@@ -2138,7 +2138,7 @@
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath{
     int row = indexPath.row;
     FoodConsumptionRecord *item = [self.foodConsumptionRecords objectAtIndex:row];
-    return item.synchronized.boolValue;
+    return item.synchronized.boolValue || ![[WebserviceCoreData instance] canConnect];
 }
 /**
  * update the cell editing value here. Always return UITableViewCellEditingStyleNone to 
