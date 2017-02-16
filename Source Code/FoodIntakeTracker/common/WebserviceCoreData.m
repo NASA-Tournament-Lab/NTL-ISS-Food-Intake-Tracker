@@ -233,6 +233,14 @@ static NSString* reachHostName = @"";
                                     [Helper showAlert:@"Error" message:@"User was removed from database."];
                                 });
                                 return;
+                            } else if (result == -2) {
+                                dispatch_async(dispatch_get_main_queue(), ^{
+                                    [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
+
+                                    [Helper showAlert:@"Error"
+                                              message:@"Can't acquire lock."];
+                                });
+                                return;
                             }
                         }
 
@@ -283,6 +291,10 @@ static NSString* reachHostName = @"";
                                            repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:pingTimer forMode:NSDefaultRunLoopMode];
     }
+}
+
+- (BOOL)canConnect {
+    return canConnect;
 }
 
 - (BOOL)connect {
@@ -604,7 +616,7 @@ static NSString* reachHostName = @"";
     __block NSInteger result = -1;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [rep invokeStaticMethod:@"deleteAll"
-                     parameters:@{ @"filter[where][deviceId]" : deviceUuid } success:^(id value) {
+                     parameters:@{ @"[where][deviceId]" : deviceUuid } success:^(id value) {
                          result = 1;
                      } failure:^(NSError *error) {
                          NSLog(@"Error removeUserLock: %@", error);

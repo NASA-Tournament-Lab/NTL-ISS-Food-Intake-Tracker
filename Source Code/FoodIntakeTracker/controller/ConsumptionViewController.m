@@ -44,6 +44,8 @@
 
 #import "Media.h"
 
+#import "WebserviceCoreData.h"
+
 #define MAX_CALORIES 2800
 #define MAX_SODIUM 160
 #define MAX_FLUID 3000
@@ -2098,7 +2100,7 @@
 
     NSLog(@"Got record (%@) with name %@ at %@ with sync %@", item.id, item.foodProduct.name, item.timestamp, item.synchronized);
 
-    cell.loadingView.hidden = item.synchronized.boolValue;
+    cell.loadingView.hidden = item.synchronized.boolValue || ![[WebserviceCoreData instance] canConnect];
     if (cell.loadingView.hidden) {
         [(UIActivityIndicatorView *)[cell.loadingView viewWithTag:10] stopAnimating];
     } else {

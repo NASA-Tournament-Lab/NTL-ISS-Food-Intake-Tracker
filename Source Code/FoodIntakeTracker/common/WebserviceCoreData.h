@@ -15,6 +15,7 @@
 
 + (WebserviceCoreData *) instance;
 
+- (BOOL)canConnect;
 - (BOOL)connect;
 - (BOOL)registerDevice;
 - (BOOL)checkDeviceId;
