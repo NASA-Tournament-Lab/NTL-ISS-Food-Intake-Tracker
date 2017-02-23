@@ -472,6 +472,8 @@
  */
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:YES];
+
+    self.customTabBarController.tabView.hidden = NO;
     
     [self updateView];
 }
@@ -491,7 +493,6 @@
     }
     [self loadFoodItemsForDate:selectDate];
 
-    self.customTabBarController.tabView.hidden = NO;
     AppDelegate *appDelegate = (AppDelegate*) [[UIApplication sharedApplication] delegate];
     NSMutableString *str = [NSMutableString string];
     if (appDelegate.loggedInUser.fullName.length > 0){

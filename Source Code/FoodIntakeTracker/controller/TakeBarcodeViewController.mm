@@ -270,4 +270,8 @@
     [self.searchBar resignFirstResponder];
 }
 
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    [self take:nil];
+}
+
 @end
