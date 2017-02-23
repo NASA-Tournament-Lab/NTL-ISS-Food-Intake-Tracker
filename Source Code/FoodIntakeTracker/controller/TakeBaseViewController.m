@@ -300,9 +300,11 @@
         //[consumptionViewController.foodTableView reloadData];
         
         NSInteger count = consumptionViewController.foodConsumptionRecords.count;
-        NSIndexPath* ipath = [NSIndexPath indexPathForRow:count - 1 inSection:0];
-        [consumptionViewController.foodTableView scrollToRowAtIndexPath:ipath
-                                                       atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        if (count > 0) {
+            NSIndexPath* ipath = [NSIndexPath indexPathForRow:count - 1 inSection:0];
+            [consumptionViewController.foodTableView scrollToRowAtIndexPath:ipath
+                                                           atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+        }
     }
     
     if (selectFoods.count > 0) {
