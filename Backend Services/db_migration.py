@@ -61,8 +61,8 @@ def getCategories(cur1, cur2, categories_str):
 
     return ";".join(category_uuids) if category_uuids else ""
 
-def getVoiceFilename(cur1, voice_uuid):
-    cur1.execute("SELECT value FROM data WHERE name = 'StringWrapper' and id = %s", (voice_uuid,))
+def getVoiceFilename(cursor, voice_uuid):
+    cursor.execute("SELECT value FROM data WHERE name = 'StringWrapper' and id = %s", (voice_uuid,))
     data = cursor.fetchone()
     obj = json.loads(data[0])
     return obj.get(u"value", None)
