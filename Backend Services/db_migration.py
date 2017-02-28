@@ -61,6 +61,16 @@ def getCategories(cur1, cur2, categories_str):
 
     return ";".join(category_uuids) if category_uuids else ""
 
+def getVoiceFilename(cur1, voice_uuid):
+    cur1.execute("SELECT uuid, value FROM data WHERE name = 'StringWrapper' and id = %s", (voice_uuid,))
+    data = cursor.fetchone()
+
+    obj = json.loads(data[1])
+    iid = data[0].lower()
+
+    filename = obj[u"value"]
+    return filename
+
 #def checkFoodExists(cursor, name, origin_uuid):
 #    cursor.execute("SELECT uuid FROM food_product WHERE normalize(name) = normalize(%s) and origin_uuid = %s", (name, origin_uuid,))
 #    return cursor.fetchone() is not None
@@ -72,6 +82,10 @@ def checkFoodExists(cursor, food_uuid):
 def checkUserExists(cursor, fullName):
     cursor.execute("SELECT uuid FROM nasa_user WHERE full_name = %s", (fullName,))
     return cursor.fetchone() is not None
+
+def insertMediaRecord(cur2, food_record_uuid, media_uuid):
+    media_record_uuid = str(uuid.uuid4())
+    cur2.execute("INSERT INTO media_record VALUES(%s, %s, %s)", (media_record_uuid, media_uuid, food_record_uuid))
 
 def insertMedia(cur1, cur2, imageFilename):
     if imageFilename is None:
@@ -96,7 +110,7 @@ def insertFoodConsumptionRecord(cur1, cur2):
     for cur_record in foodArray:
         obj = json.loads(cur_record[1])
 
-        iid = cur_record[0]
+        iid = cur_record[0].lower()
         carb = obj[u"carb"]
         fat = obj[u"fat"]
         energy = obj[u"energy"]
@@ -116,6 +130,13 @@ def insertFoodConsumptionRecord(cur1, cur2):
             print "Inserting food record: " + iid
             cur2.execute("INSERT INTO food_product_record VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", (iid, carb, fat, energy, protein, sodium, fluid, adhoc_only, quantity, comments, timestamp, food_product_uuid, user_uuid, removed, synchronized,))
 
+            voiceRecordings = obj.get(u"voiceRecordings", None)
+            if voiceRecordings:
+                for voiceRecording in voiceRecordings.split(";"):
+                    filename = getVoiceFilename(cur1, voiceRecording)
+                    voice_uuid = insertMedia(cur1, cur2, filename)
+                    insertMediaRecord(cur2, iid, voice_uuid)
+
 
 def insertFood(cur1, cur2):
     cur1.execute("SELECT id, value FROM data WHERE name in ('AdhocFoodProduct','FoodProduct') ORDER BY name, modifieddate ASC")
@@ -124,7 +145,7 @@ def insertFood(cur1, cur2):
     for cur_record in foodArray:
         obj = json.loads(cur_record[1])
 
-        iid = cur_record[0]
+        iid = cur_record[0].lower()
         active = obj[u"active"] == 1
         barcode = obj[u"barcode"]
         carb = obj[u"carb"]
@@ -154,8 +175,8 @@ def insertUser(cur1, cur2):
 
     for cur_record in userArray:
         obj = json.loads(cur_record[1])
-        iid = cur_record[0]
 
+        iid = cur_record[0].lower()
         admin = obj[u"admin"] == 1
         carb = obj[u"dailyTargetCarb"]
         fat = obj[u"dailyTargetFat"]
