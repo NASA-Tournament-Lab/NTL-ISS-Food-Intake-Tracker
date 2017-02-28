@@ -857,6 +857,11 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON TABLES
 ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public REVOKE ALL ON TABLES  FROM postgres;
 ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES  TO pl_fit_db;
 
+---
+--- Name: GRANT ALL; Schema: public; Owner: postgres
+---
+
+GRANT ALL PRIVILEGES ON SCHEMA public TO pl_fit_db;
 
 --
 -- PostgreSQL database dump complete
