@@ -208,7 +208,6 @@ try:
 
     # Connect to an existing database
     conn2 = psycopg2.connect("dbname=pl_fit_new user=" + user + " password=" + password + " host=" + host+ " port=" + port + " sslmode=require")
-    conn2.autocommit = False
     # Open a cursor to perform database operations
     cur2 = conn2.cursor()
 
