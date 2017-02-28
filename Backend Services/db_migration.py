@@ -6,42 +6,6 @@ import zipfile, shutil, uuid
 from datetime import datetime, date, timedelta
 from uuid import UUID
 
-def is_valid_uuid(uuid_to_test, version=4):
-    """
-    Check if uuid_to_test is a valid UUID.
-
-    Parameters
-    ----------
-    uuid_to_test : str
-    version : {1, 2, 3, 4}
-
-    Returns
-    -------
-    `True` if uuid_to_test is a valid UUID, otherwise `False`.
-
-    Examples
-    --------
-    >>> is_valid_uuid('c9bf9e57-1685-4c89-bafb-ff5af830be8a')
-    True
-    >>> is_valid_uuid('c9bf9e58')
-    False
-    """
-    try:
-        uuid_obj = UUID(uuid_to_test, version=version)
-    except:
-        return False
-
-    return str(uuid_obj) == uuid_to_test
-
-def xstr(s):
-    return "" if s is None else s.encode('utf-8')
-
-def xarray(s):
-    if s is None:
-       return []
-    else:
-       return s.split(',')
-
 def getOrigin(cursor, origin):
     cursor.execute("SELECT uuid FROM origin WHERE value = %s", (origin,))
     data = cursor.fetchone()
@@ -66,10 +30,6 @@ def getVoiceFilename(cursor, voice_uuid):
     data = cursor.fetchone()
     obj = json.loads(data[0])
     return obj.get(u"value", None)
-
-#def checkFoodExists(cursor, name, origin_uuid):
-#    cursor.execute("SELECT uuid FROM food_product WHERE normalize(name) = normalize(%s) and origin_uuid = %s", (name, origin_uuid,))
-#    return cursor.fetchone() is not None
 
 def checkFoodExists(cursor, food_uuid):
     cursor.execute("SELECT uuid FROM food_product WHERE uuid = %s", (food_uuid,))
