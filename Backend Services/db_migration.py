@@ -93,7 +93,6 @@ def insertFoodConsumptionRecord(cur1, cur2):
                     voice_uuid = insertMedia(cur1, cur2, filename)
                     insertMediaRecord(cur2, iid, voice_uuid)
 
-
 def insertFood(cur1, cur2):
     cur1.execute("SELECT id, value FROM data WHERE name in ('AdhocFoodProduct','FoodProduct') ORDER BY name, modifieddate ASC")
     foodArray = cur1.fetchall()
@@ -123,7 +122,6 @@ def insertFood(cur1, cur2):
         origin = obj.get(u"origin", "None")
         print "Inserting food: " + name + " with origin " + (origin if origin else "None")
         cur2.execute("INSERT INTO food_product VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", (iid, active, barcode, carb, energy, fat, fluid, protein, sodium, name, quantity, user_uuid, origin_uuid, image_media_uuid, category_uuids, removed, synchronized,))
-
 
 def insertUser(cur1, cur2):
     cur1.execute("SELECT id, value FROM data WHERE name = 'User' ORDER BY modifieddate ASC")
