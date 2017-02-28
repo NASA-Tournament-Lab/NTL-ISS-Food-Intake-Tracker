@@ -23,7 +23,7 @@ def getCategories(cur1, cur2, categories_str):
         data = cur2.fetchone()
         category_uuids.append(data[0])
 
-    return ";".join(category_uuids) if category_uuids else ""
+    return "[" + ",".join("\"" + category_uuids + "\"") + "]" if category_uuids else ""
 
 def getVoiceFilename(cursor, voice_uuid):
     cursor.execute("SELECT value FROM data WHERE name = 'StringWrapper' and id = %s", (voice_uuid,))
