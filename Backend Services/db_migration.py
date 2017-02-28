@@ -62,14 +62,10 @@ def getCategories(cur1, cur2, categories_str):
     return ";".join(category_uuids) if category_uuids else ""
 
 def getVoiceFilename(cur1, voice_uuid):
-    cur1.execute("SELECT uuid, value FROM data WHERE name = 'StringWrapper' and id = %s", (voice_uuid,))
+    cur1.execute("SELECT value FROM data WHERE name = 'StringWrapper' and id = %s", (voice_uuid,))
     data = cursor.fetchone()
-
-    obj = json.loads(data[1])
-    iid = data[0].lower()
-
-    filename = obj[u"value"]
-    return filename
+    obj = json.loads(data[0])
+    return obj.get(u"value", None)
 
 #def checkFoodExists(cursor, name, origin_uuid):
 #    cursor.execute("SELECT uuid FROM food_product WHERE normalize(name) = normalize(%s) and origin_uuid = %s", (name, origin_uuid,))
