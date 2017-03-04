@@ -67,8 +67,6 @@
 	<integer>3500</integer>
 	<key>DailyTargetSodium</key>
 	<integer>3500</integer>
-	<key>New item</key>
-	<string></string>
 	<key>DailyTargetFluid</key>
 	<integer>2500</integer>
 	<key>DailyTargetProtein</key>
@@ -114,5 +112,9 @@
 		<key>Vitamins / Supplements</key>
 		<string>icon_vitamins.png</string>
 	</dict>
+	<key>HockeyAppKey</key>
+	<string>c855ecd9723742fda8ec4e71c2228b8a</string>
+	<key>BugfenderKey</key>
+	<string>WCkxDP5HcezQqv6Jf18upHPGtGKQWqdD</string>
 </dict>
 </plist>

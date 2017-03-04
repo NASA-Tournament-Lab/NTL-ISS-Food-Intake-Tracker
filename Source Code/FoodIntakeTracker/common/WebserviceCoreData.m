@@ -9,6 +9,7 @@
 #import "WebserviceCoreData.h"
 #import "Reachability.h"
 #import "Helper.h"
+#import "LoggingHelper.h"
 #import "Settings.h"
 #import "AppDelegate.h"
 #import "SLStreamParam.h"
@@ -139,14 +140,15 @@ static NSString* reachHostName = @"";
     [NSURLRequest setAllowsAnyHTTPSCertificate:YES forHost:[[NSURL URLWithString:url] host]];
     [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
     if (error) {
-        NSLog(@"Connect error: %@", error);
+        [LoggingHelper logError:@"connect_url" error:error];
     }
     return error == nil;
 }
 
 - (void)testPing {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSLog(@"Test ping");
+        //[LoggingHelper logDebug:@"testPing" message:@"Test ping"];
+
         if ([self connect_url]) {
             @synchronized(self) {
                 if (!canConnect) {
@@ -202,7 +204,7 @@ static NSString* reachHostName = @"";
                 }
 
                 canConnect = YES;
-                NSLog(@"This iPad now has a network connection.");
+                [LoggingHelper logDebug:@"reachableBlock" message:@"This iPad now has a network connection."];
 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                     int retries = 3;
@@ -217,8 +219,7 @@ static NSString* reachHostName = @"";
                                 dispatch_async(dispatch_get_main_queue(), ^{
                                     [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
 
-                                    [Helper showAlert:@"Error"
-                                              message:@"User already logged in another device."];
+                                    [Helper showAlert:@"Error" message:@"User already logged in another device."];
                                 });
                                 return;
                             } else if (result == -1) {
@@ -237,8 +238,7 @@ static NSString* reachHostName = @"";
                                 dispatch_async(dispatch_get_main_queue(), ^{
                                     [[NSNotificationCenter defaultCenter] postNotificationName:ForceLogoutEvent object:nil];
 
-                                    [Helper showAlert:@"Error"
-                                              message:@"Can't acquire lock."];
+                                    [Helper showAlert:@"Error" message:@"Can't acquire lock."];
                                 });
                                 return;
                             }
@@ -267,7 +267,7 @@ static NSString* reachHostName = @"";
                 }
 
                 canConnect = NO;
-                NSLog(@"This iPad has lost its network connection.");
+                [LoggingHelper logDebug:@"unreachableBlock" message:@"This iPad has lost its network connection."];
 
                 [self closeAllAlerts];
                 popupAlertView = [Helper showAlert:@"Network Connection Error"
@@ -302,7 +302,7 @@ static NSString* reachHostName = @"";
         [self closeAllAlerts];
         canConnect = [self connect_url];
     } else {
-        NSLog(@"Unreachable");
+        [LoggingHelper logDebug:@"connect" message:@"Unreachable"];
     }
     return canConnect;
 }
@@ -319,7 +319,7 @@ static NSString* reachHostName = @"";
             [[NSUserDefaults standardUserDefaults] synchronize];
             result = 1;
         } failure:^(NSError *error) {
-            NSLog(@"Error at registerDevice: %@", error);
+            [LoggingHelper logError:@"registerDevice" error:error];
             result = 0;
         }];
     });
@@ -339,7 +339,7 @@ static NSString* reachHostName = @"";
         [rep findById:theId success:^(LBModel *model){
             result = 1;
         } failure:^(NSError *error){
-            NSLog(@"Error at checkId: %@", error);
+            [LoggingHelper logError:@"checkId" error:error];
             result = 0;
         }];
     });
@@ -367,7 +367,7 @@ static NSString* reachHostName = @"";
             }
             result = 0;
         } failure:^(NSError *error) {
-            NSLog(@"Error checkDeviceId: %@", error);
+            [LoggingHelper logError:@"checkDeviceId" error:error];
             result = 0;
         }];
     });
@@ -390,7 +390,7 @@ static NSString* reachHostName = @"";
     __block NSInteger result = -1;
 
     SLFailureBlock error = ^(NSError *error) {
-        NSLog(@"Error fetchAllObjects: %@", error);
+        [LoggingHelper logError:@"fetchAllObjects" error:error];
         [array removeAllObjects];
         result = 0;
     };
@@ -437,7 +437,7 @@ static NSString* reachHostName = @"";
     __block NSInteger result = -1;
 
     SLFailureBlock error = ^(NSError *error) {
-        NSLog(@"Error fetchObjects: %@", error);
+        [LoggingHelper logError:@"fetchObjects" error:error];
         [array removeAllObjects];
         result = 0;
     };
@@ -484,7 +484,7 @@ static NSString* reachHostName = @"";
             }
             result = 1;
         } failure:^(NSError *error) {
-            NSLog(@"Error fetchMedias: %@", error);
+            [LoggingHelper logError:@"fetchMedias" error:error];
             [array removeAllObjects];
             result = 0;
         }];
@@ -513,7 +513,7 @@ static NSString* reachHostName = @"";
                             model = (LBPersistedModel * ) [mediaRep modelWithDictionary:value];
                             result = 1;
                         } failure:^(NSError *error) {
-                            NSLog(@"Error insertMediaRecord: %@", error);
+                            [LoggingHelper logError:@"insertMediaRecord" error:error];
                             result = 0;
                         }];
     });
@@ -543,7 +543,7 @@ static NSString* reachHostName = @"";
                                 success:^(id values) {
                                     result = 1;
                                 } failure:^(NSError *error) {
-                                    NSLog(@"Error uploadMedia: %@", error);
+                                    [LoggingHelper logError:@"uploadMedia" error:error];
                                     result = 0;
                                 }];
     });
@@ -582,7 +582,7 @@ static NSString* reachHostName = @"";
         [model saveWithSuccess:^{
             result = 1;
         } failure:^(NSError *error) {
-            NSLog(@"Error insertUserLock: %@", error);
+            [LoggingHelper logError:@"insertUserLock" error:error];
             NSError *err = nil;
             NSString *string = [[error userInfo] objectForKey:@"NSLocalizedRecoverySuggestion"];
             if (string.length > 0) {
@@ -619,7 +619,7 @@ static NSString* reachHostName = @"";
                      parameters:@{ @"[where][deviceId]" : deviceUuid } success:^(id value) {
                          result = 1;
                      } failure:^(NSError *error) {
-                         NSLog(@"Error removeUserLock: %@", error);
+                         [LoggingHelper logError:@"removeUserLock" error:error];
                          result = 0;
                      }];
     });
@@ -646,7 +646,7 @@ static NSString* reachHostName = @"";
             }
             result = 1;
         } failure:^(NSError *error) {
-            NSLog(@"Error getModels: %@", error);
+            [LoggingHelper logError:@"getModels" error:error];
             [array removeAllObjects];
             result = 0;
         }];
@@ -686,7 +686,7 @@ static NSString* reachHostName = @"";
                 [array addObject:objMedia];
                 result = 1;
            } failure:^(NSError *error) {
-                NSLog(@"Error fetchNextMedia: %@", error);
+                [LoggingHelper logError:@"fetchNextMedia" error:error];
                 [array removeAllObjects];
                 result = 0;
            }];
@@ -719,7 +719,7 @@ static NSString* reachHostName = @"";
 
                 result = 1;
             } failure:^(NSError *error) {
-                NSLog(@"Error fetchMediaCount: %@", error);
+                [LoggingHelper logError:@"fetchMediaCount" error:error];
                 mediaArray = nil;
                 result = 0;
             }];
@@ -747,7 +747,7 @@ static NSString* reachHostName = @"";
     __block NSInteger result = -1;
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         SLFailureBlock failure = ^(NSError *error) {
-            NSLog(@"Error at insertObject: %@", error);
+            [LoggingHelper logError:@"insertObject" error:error];
             result = 0;
         };
 

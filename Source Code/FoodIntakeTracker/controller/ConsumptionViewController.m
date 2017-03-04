@@ -35,6 +35,7 @@
 #import "VoiceSearchViewController.h"
 #import "SelectConsumptionViewController.h"
 #import "Helper.h"
+#import "LoggingHelper.h"
 #import "AppDelegate.h"
 #import "FoodConsumptionRecordServiceImpl.h"
 #import "FoodProductServiceImpl.h"
@@ -1809,7 +1810,7 @@
         NSError *err = nil;
         recorder = [[ AVAudioRecorder alloc] initWithURL:url settings:recordSetting error:&err];
         if(!recorder){
-            NSLog(@"recorder: %@ %d %@", [err domain], (int) [err code], [[err userInfo] description]);
+            [LoggingHelper logError:@"startCommentDictation" error:err];
             UIAlertView *alert =
             [[UIAlertView alloc] initWithTitle: @"Warning"
                                        message: [err localizedDescription]
@@ -2098,8 +2099,6 @@
     cell.fluidAmount = [self.fluidProgress.lblCurrent.text integerValue];
     cell.caloriesAmount = [self.caloriesProgess.lblCurrent.text integerValue];
     cell.sodiumAmount = [self.sodiumProgress.lblCurrent.text integerValue];
-
-    NSLog(@"Got record (%@) with name %@ at %@ with sync %@", item.id, item.foodProduct.name, item.timestamp, item.synchronized);
 
     cell.loadingView.hidden = item.synchronized.boolValue || ![[WebserviceCoreData instance] canConnect];
     if (cell.loadingView.hidden) {

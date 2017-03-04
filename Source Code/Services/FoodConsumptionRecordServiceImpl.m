@@ -234,7 +234,7 @@
     record.removed = @YES;
     
     record.foodProduct.synchronized = @NO;
-    record.foodProduct = nil;
+    // record.foodProduct = nil;
     
     [self.managedObjectContext save:error];
     

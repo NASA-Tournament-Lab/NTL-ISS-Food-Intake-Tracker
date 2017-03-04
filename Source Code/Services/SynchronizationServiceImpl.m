@@ -251,7 +251,6 @@
             [description.name isEqualToString:@"FoodProduct"]) {
             continue;
         }
-        [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Will execute fetch for %@", description.name]];
 
         __block NSArray *objects = nil;
         __block NSError *blkError = nil;
@@ -270,6 +269,7 @@
             NSNumber *synced = object.synchronized;
             if (synced && ![synced boolValue]) {
                 [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Not synchronized %@", object]];
+
                 if (hasData && [self hasObject:allData object:object]) {
                     [postponedObjects addObject:object];
                 }
@@ -289,7 +289,6 @@
                 } else {
                     if ([object updateObjects]) {
                         if ([object isKindOfClass:[FoodConsumptionRecord class]]) {
-                            [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Will synchronize record, %@", object]];
                             NSMutableSet *allSet = [NSMutableSet set];
                             [allSet addObjectsFromArray: [[(FoodConsumptionRecord *) object voiceRecordings] allObjects]];
                             for (Media *mediaObject in allSet) {
@@ -327,8 +326,6 @@
                         if (![self.managedObjectContext save:&e]) {
                             CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);
                         }
-
-                        [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Set synchronize to %@", [object synchronized]]];
 
                         totalChange++;
                     } else {
@@ -385,7 +382,7 @@
             // Convert from JSON
             NSDictionary *jsonDictionary = [value copy];
 
-            [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"JSON for %@ dict %@", name, jsonDictionary]];
+            // [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"JSON for %@ dict %@", name, jsonDictionary]];
             
             // Check if object already exists
             __block NSArray *objects = nil;
@@ -419,7 +416,7 @@
                         [self.managedObjectContext deleteObject:object];
                     }
                 } else if (![self shouldIgnore:postponedObjects object:object]) {
-                    [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Updating %@ with id %@", name, oId]];
+                    // [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Updating %@ with id %@", name, oId]];
                     if (![DataHelper updateObjectWithJSON:jsonDictionary object:object managegObjectContext:self.managedObjectContext]) {
                         e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
                         CHECK_ERROR_AND_RETURN(e, error, @"Cannot update object.", DataUpdateErrorCode, YES, YES);
@@ -434,7 +431,7 @@
                     [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Ignoring %@", name]];
                 }
             } else if (!isRemoved) {
-                [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Inserting %@ with id %@", name, oId]];
+                //[LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Inserting %@ with id %@", name, oId]];
                 if (![DataHelper convertJSONToObject:oId jsonValue:jsonDictionary name:name managegObjectContext:self.managedObjectContext]) {
                     e = [NSError errorWithDomain:@"Domain" code:DataUpdateErrorCode userInfo:nil];
                     CHECK_ERROR_AND_RETURN(e, error, @"Cannot insert object.", DataUpdateErrorCode, YES, YES);
@@ -451,7 +448,6 @@
     }
 
     // Save any pending data
-    [LoggingHelper logDebug:methodName message:@"Process Pending Changes"];
     [[self managedObjectContext] processPendingChanges];
     if (![self.managedObjectContext save:&e]) {
         CHECK_ERROR_AND_RETURN(e, error, @"Cannot save managed object context.", DataUpdateErrorCode, YES, NO);

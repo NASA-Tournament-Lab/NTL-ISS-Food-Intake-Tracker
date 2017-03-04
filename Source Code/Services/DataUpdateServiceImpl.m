@@ -124,7 +124,7 @@
         }
 
         for (int i = 0; i < count; i++) {
-            [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Getting image %d", (i+1)]];
+            [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"Getting media %d", (i+1)]];
 
             NSArray *medias = [coreData fetchNextMedia];
             if (medias != nil) {

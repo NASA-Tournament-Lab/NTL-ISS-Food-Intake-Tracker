@@ -30,7 +30,7 @@
 
 +(void)logMethodEntrance:(NSString *)methodName paramNames:(NSArray *)paramNames params:(NSArray *)params {
     if (INFO_LOGON) {
-        NSLog(@"[Entering method %@]", methodName);
+        BFLog(@"[Entering method %@]", methodName);
         if (paramNames && paramNames.count > 0) {
             NSMutableString *log = [NSMutableString stringWithString:@"[Input parameters ["];
             for (unsigned int i = 0; i < paramNames.count; i++) {
@@ -41,16 +41,16 @@
                     [log appendString:@","];
                 }
             }
-            NSLog(@"%@]]", log);
+            BFLog(@"%@]]", log);
         }
     }
 }
 
 +(void)logMethodExit:(NSString *)methodName returnValue:(id)value {
     if (INFO_LOGON) {
-        NSLog(@"[Exiting method %@]", methodName);
+        BFLog(@"[Exiting method %@]", methodName);
         if (value) {
-            NSLog(@"[Output parameter %@]", value);
+            BFLog(@"[Output parameter %@]", value);
         }
     }
 }
@@ -59,7 +59,7 @@
 +(void)logDebug:(NSString *)methodName message:(NSString *)message {
     if (DEBUG_LOGON) {
         if (message) {
-            NSLog(@"[Debug for thread %@ in method %@: %@]", [[NSThread currentThread] name], methodName, message);
+            BFLog(@"[Debug for thread %@ in method %@: %@]", [[NSThread currentThread] name], methodName, message);
         }
     }
 }
@@ -67,7 +67,7 @@
 +(void)logError:(NSString *)methodName error:(NSError *)error {
     if (ERROR_LOGON) {
         if (error) {
-            NSLog(@"[Error in method %@: Details %@]", methodName, error.userInfo);
+            BFLogErr(@"[Error in method %@: Details %@]", methodName, error.userInfo);
         }
     }
 }
@@ -75,7 +75,7 @@
 +(void)logException:(NSString *)methodName error:(NSException *)exception {
     if (ERROR_LOGON) {
         if (exception) {
-            NSLog(@"[Error in method %@: Details %@]", methodName, exception.reason);
+            BFLogErr(@"[Error in method %@: Details %@]", methodName, exception.reason);
         }
     }
 }
