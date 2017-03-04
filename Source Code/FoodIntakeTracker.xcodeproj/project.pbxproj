@@ -141,6 +141,7 @@
 		4BE639761AAF620C0019B988 /* icon_protein_pie.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BE639731AAF620C0019B988 /* icon_protein_pie.png */; };
 		4BE639771AAF620C0019B988 /* icon_fat_pie.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BE639741AAF620C0019B988 /* icon_fat_pie.png */; };
 		4BE639781AAF620C0019B988 /* icon_carb_pie.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BE639751AAF620C0019B988 /* icon_carb_pie.png */; };
+		4BF655351E5F69B6000E5F96 /* BugfenderSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BF6552F1E5F69B6000E5F96 /* BugfenderSDK.framework */; };
 		4BF6BA961AC10AEB00DDE1AE /* bg_protein_bar.png in Resources */ = {isa = PBXBuildFile; fileRef = 4BF6BA951AC10AEB00DDE1AE /* bg_protein_bar.png */; };
 		4BF7B7291AF1BEA700DCC514 /* MTBBarcodeScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BF7B7281AF1BEA700DCC514 /* MTBBarcodeScanner.m */; };
 		4D4884B317C3CC7C006851A9 /* CustomTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4D4884B217C3CC7B006851A9 /* CustomTableViewController.m */; };
@@ -628,6 +629,7 @@
 		4BE639731AAF620C0019B988 /* icon_protein_pie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_protein_pie.png; sourceTree = "<group>"; };
 		4BE639741AAF620C0019B988 /* icon_fat_pie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_fat_pie.png; sourceTree = "<group>"; };
 		4BE639751AAF620C0019B988 /* icon_carb_pie.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_carb_pie.png; sourceTree = "<group>"; };
+		4BF6552F1E5F69B6000E5F96 /* BugfenderSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = BugfenderSDK.framework; sourceTree = "<group>"; };
 		4BF6BA951AC10AEB00DDE1AE /* bg_protein_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bg_protein_bar.png; sourceTree = "<group>"; };
 		4BF7B7271AF1BEA700DCC514 /* MTBBarcodeScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MTBBarcodeScanner.h; sourceTree = "<group>"; };
 		4BF7B7281AF1BEA700DCC514 /* MTBBarcodeScanner.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTBBarcodeScanner.m; sourceTree = "<group>"; };
@@ -990,6 +992,7 @@
 				4DF167FE17BD218900D3633F /* libresolv.dylib in Frameworks */,
 				4DF167FC17BD218000D3633F /* libiconv.dylib in Frameworks */,
 				4DF167FA17BD217700D3633F /* libz.dylib in Frameworks */,
+				4BF655351E5F69B6000E5F96 /* BugfenderSDK.framework in Frameworks */,
 				4B3DA5B81DD3FEFE00B0F2FE /* HockeySDK.framework in Frameworks */,
 				4B2654C11D07DE61009025DE /* MobileCoreServices.framework in Frameworks */,
 				4B2654B91D07DB6A009025DE /* CoreLocation.framework in Frameworks */,
@@ -1058,6 +1061,14 @@
 				4B480FFE1CFFF377003C18C7 /* LoopBackOSXTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		4BF6552B1E5F69B6000E5F96 /* BugfenderSDK-iOS */ = {
+			isa = PBXGroup;
+			children = (
+				4BF6552F1E5F69B6000E5F96 /* BugfenderSDK.framework */,
+			);
+			path = "BugfenderSDK-iOS";
 			sourceTree = "<group>";
 		};
 		4BF7B7261AF1BEA700DCC514 /* MTBBarcodeScanner */ = {
@@ -1241,6 +1252,7 @@
 		4DF1676A17BD20D500D3633F /* Third Party Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				4BF6552B1E5F69B6000E5F96 /* BugfenderSDK-iOS */,
 				4B3DA5B41DD3FEFE00B0F2FE /* HockeyappSDK */,
 				4B480FEA1CFFF35A003C18C7 /* LoopBack */,
 				4B08FF021B15606F00015C6B /* CustomBadge */,
@@ -2336,6 +2348,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/library/LoopBack",
 					"$(PROJECT_DIR)/library/HockeyappSDK/HockeySDK.embeddedframework",
+					"$(PROJECT_DIR)/library/BugfenderSDK-iOS",
 				);
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2365,6 +2378,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/library/LoopBack",
 					"$(PROJECT_DIR)/library/HockeyappSDK/HockeySDK.embeddedframework",
+					"$(PROJECT_DIR)/library/BugfenderSDK-iOS",
 				);
 				GCC_C_LANGUAGE_STANDARD = "compiler-default";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

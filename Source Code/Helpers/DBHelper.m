@@ -24,6 +24,7 @@
 
 #import "DBHelper.h"
 #import "DataHelper.h"
+#import "LoggingHelper.h"
 #import "NSError+Extension.h"
 #import "AppDelegate.h"
 #import "Settings.h"
@@ -70,7 +71,6 @@ static dispatch_once_t onceToken = 0;
         [threadDictionary setValue:moc forKey:key];
     } else {
         if (existMoc.persistentStoreCoordinator != [self persistentStoreCoordinator]) {
-            // NSLog(@"Recreate");
             NSManagedObjectContext *moc = [self createNewMoc];
             [threadDictionary setValue:moc forKey:key];
             existMoc = nil;
@@ -152,7 +152,8 @@ static dispatch_once_t onceToken = 0;
                 [mainThreadMoc mergeChangesFromContextDidSaveNotification:notif];
             }
             @catch (NSException *exception) {
-                NSLog(@"****    [DbHelper mergeChanges:] exception: %@", exception);
+                // NSLog(@"****    [DbHelper mergeChanges:] exception: %@", exception);
+                [LoggingHelper logException:@"mergeChanges" error:exception];
             }
             @finally {
                 [[NSNotificationCenter defaultCenter] postNotificationName:MergeDataEvent object:nil];
@@ -207,9 +208,7 @@ static dispatch_once_t onceToken = 0;
                                                        options:options
                                                          error:&error];
         if (persistentStore == nil) {
-            NSLog(@"Store Configuration Failure\n%@",
-                  ([error localizedDescription] != nil) ?
-                  [error localizedDescription] : @"Unknown Error");
+            [LoggingHelper logError:@"persistentStoreCoordinator" error:error];
         }
     });
 	
@@ -239,14 +238,14 @@ static dispatch_once_t onceToken = 0;
     NSPersistentStore *store = [[persistentStoreCoordinator_ persistentStores] lastObject];
     
     if (![persistentStoreCoordinator_ removePersistentStore:store error:&error]) {
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        [LoggingHelper logError:@"resetPersistentStore" error:error];
         abort();
     }
     
     // Delete file
     if ([[NSFileManager defaultManager] fileExistsAtPath:store.URL.path]) {
         if (![[NSFileManager defaultManager] removeItemAtPath:store.URL.path error:&error]) {
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            [LoggingHelper logError:@"resetPersistentStore" error:error];
             abort();
         }
     }

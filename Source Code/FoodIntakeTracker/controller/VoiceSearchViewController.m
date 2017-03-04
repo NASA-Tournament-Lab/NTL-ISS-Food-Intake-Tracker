@@ -101,7 +101,6 @@
     NSError *err = nil;
     recorder = [[ AVAudioRecorder alloc] initWithURL:url settings:recordSetting error:&err];
     if(!recorder){
-        NSLog(@"recorder: %@ %d %@", [err domain], (int) [err code], [[err userInfo] description]);
         UIAlertView *alert =
         [[UIAlertView alloc] initWithTitle: @"Warning"
                                    message: [err localizedDescription]

@@ -20,6 +20,7 @@
 //
 
 #import "NSError+Extension.h"
+#import "LoggingHelper.h"
 
 @implementation NSError (Extension)
 
@@ -27,11 +28,11 @@
 	NSArray* detailedErrors = [[self userInfo] objectForKey:NSDetailedErrorsKey];
 	if(detailedErrors != nil && [detailedErrors count] > 0) {
 		for(NSError* detailedError in detailedErrors) {
-			NSLog(@" DetailedError: %@", [detailedError userInfo]);
+            [LoggingHelper logError:@"showAllDetails" error:detailedError];
 		}
 	}
 	else {
-		NSLog(@"%@", [self localizedDescription]);
+        [LoggingHelper logError:@"showAllDetails" error:self];
 	}
 }
 

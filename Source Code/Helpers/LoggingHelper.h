@@ -23,6 +23,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <BugfenderSDK/BugfenderSDK.h>
 
 //INFO_LOGON, 1 means turn on logger for info (method entrance and exit), 0 means turn off
 #ifndef INFO_LOGON

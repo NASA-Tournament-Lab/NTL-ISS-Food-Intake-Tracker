@@ -23,6 +23,7 @@
 #import "TakePhotoViewController.h"
 #import "Helper.h"
 #import "DataHelper.h"
+#import "LoggingHelper.h"
 #import "AppDelegate.h"
 #import "FoodProductServiceImpl.h"
 
@@ -130,12 +131,12 @@
                 AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
                 FoodProductServiceImpl *foodProductService = appDelegate.foodProductService;
                 NSError *error;
-                
-                NSLog(@"Barcode scan results: %@", result);
-                
+
                 FoodProduct* foodProduct = [foodProductService getFoodProductByBarcode:appDelegate.loggedInUser
                                                                                barcode:result
                                                                                  error:&error];
+
+                [LoggingHelper logDebug:@"startScan" message:[NSString stringWithFormat:@"Barcode scan results: %@", result]];
 
                 self.resultView.hidden = YES;
                 if (error) {
@@ -147,6 +148,7 @@
                         [Helper showAlert:@"Error" message:error.userInfo[NSLocalizedDescriptionKey]
                                  delegate:self];
                     }
+                    [LoggingHelper logError:@"startScan" error:error];
                 } else {
                     [resultFoods addObject:foodProduct];
                     

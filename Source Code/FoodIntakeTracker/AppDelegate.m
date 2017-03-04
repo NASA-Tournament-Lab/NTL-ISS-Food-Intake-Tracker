@@ -26,6 +26,7 @@
 //
 
 #import <HockeySDK/HockeySDK.h>
+#import <BugfenderSDK/BugfenderSDK.h>
 
 #import "AppDelegate.h"
 #import "UserServiceImpl.h"
@@ -114,10 +115,6 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     lock = [[NSLock alloc] init];
     [lock setName:@"UpdateLock"];
 
-    [[BITHockeyManager sharedHockeyManager] configureWithIdentifier:@"c855ecd9723742fda8ec4e71c2228b8a"];
-    [[BITHockeyManager sharedHockeyManager] startManager];
-    [[BITHockeyManager sharedHockeyManager].authenticator authenticateInstallation];
-    
     //http://stackoverflow.com/questions/17678881/how-to-change-status-bar-text-color-in-ios-7
     [application setStatusBarStyle:UIStatusBarStyleLightContent];
     
@@ -137,7 +134,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSettingsChange:)
                                                  name:NSUserDefaultsDidChangeNotification object:nil];
-    
+
     // Load configurations and create services
     NSString *configBundle = [[NSBundle mainBundle] pathForResource:@"Configuration" ofType:@"plist"];
     if (configBundle) {
@@ -152,6 +149,18 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                 [self modifyCurrentConfiguration];
                 [self doServerChange];
             }
+        }
+
+
+        if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"enable_remote_log"] boolValue]) {
+            NSString *hockeyAppKey = [self.configuration valueForKey:@"HockeyAppKey"];
+            NSString *bugfenderKey = [self.configuration valueForKey:@"BugfenderKey"];
+
+            [[BITHockeyManager sharedHockeyManager] configureWithIdentifier:hockeyAppKey];
+            [[BITHockeyManager sharedHockeyManager] startManager];
+            [[BITHockeyManager sharedHockeyManager].authenticator authenticateInstallation];
+
+            [Bugfender activateLogger:bugfenderKey];
         }
 
         self.shouldAutoLogout = NO;
@@ -219,7 +228,9 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
             // Do the work associated with the task, preferably in chunks.
             while (status == SyncStatusStarted) {
                 [NSThread sleepForTimeInterval:1];
-                NSLog(@"Waiting for synchronization: %f", application.backgroundTimeRemaining);
+                [LoggingHelper logDebug:@"applicationDidEnterBackground"
+                                message:[NSString stringWithFormat:@"Waiting for synchronization: %f",
+                                         application.backgroundTimeRemaining]];
             }
             
             [application endBackgroundTask:backgroundTask];
@@ -313,7 +324,8 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
 
             NSError *error = nil;
 
-            NSLog(@"Start sync at   : %@", [NSDate date]);
+            //[LoggingHelper logDebug:@"doSyncUpdateWithBlock"
+            //                message:[NSString stringWithFormat:@"Start sync at   : %@", [NSDate date]]];
 
             BOOL result = [self.synchronizationService synchronize:&error];
 
@@ -321,7 +333,8 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                 error.code == UserRemovedErrorCode) {
                 status = SyncStatusFinished;
                 dataUpdateCount--;
-                NSLog(@"Sync interrupted at: %@", [NSDate date]);
+                [LoggingHelper logDebug:@"doSyncUpdateWithBlock"
+                                message:[NSString stringWithFormat:@"Sync interrupted at: %@", [NSDate date]]];
                 return;
             }
 
@@ -332,7 +345,8 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
 
             status = SyncStatusFinished;
 
-            NSLog(@"Finished sync at: %@", [NSDate date]);
+            [LoggingHelper logDebug:@"doSyncUpdateWithBlock"
+                            message:[NSString stringWithFormat:@"Finished sync at: %@", [NSDate date]]];
 
             if (backgroundTask != UIBackgroundTaskInvalid) {
                 [[UIApplication sharedApplication] endBackgroundTask:backgroundTask];
@@ -380,13 +394,18 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     // dispatch_queue_t initialLoadQ = dispatch_queue_create("InitialLoad", NULL);
     dispatch_async(dataSyncUpdateQ, ^{
         @autoreleasepool {
-            NSLog(@"Initial load at: %@", [NSDate date]);
+            [LoggingHelper logDebug:@"initialLoad"
+                            message:[NSString stringWithFormat:@"Initial load at: %@", [NSDate date]]];
             
             [lock lock];
             @try {
                 NSError *error = nil;
                 syncSuccessful = [self.dataUpdateService update:&error force:YES];
-                [LoggingHelper logError:@"initialLoad" error:error];
+
+                if (error) {
+                    [LoggingHelper logError:@"initialLoad" error:error];
+                }
+
                 syncSuccessful &= [[WebserviceCoreData instance] registerDevice];
                 if (syncSuccessful) {
                     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasLaunchedOnce"];
@@ -422,7 +441,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     // this function writes default settings as settings
     NSString *settingsBundle = [[NSBundle mainBundle] pathForResource:@"Settings" ofType:@"bundle"];
     if(!settingsBundle) {
-        NSLog(@"Could not find Settings.bundle");
+        [LoggingHelper logDebug:@"registerDefaultsFromSettingsBundle" message:@"Could not find Settings.bundle"];
         return;
     }
     
@@ -434,7 +453,6 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         NSString *key = [prefSpecification objectForKey:@"Key"];
         if(key) {
             [defaultsToRegister setObject:[prefSpecification objectForKey:@"DefaultValue"] forKey:key];
-            // NSLog(@"writing as default %@ to the key %@",[prefSpecification objectForKey:@"DefaultValue"],key);
         }
     }
     
@@ -462,7 +480,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
  */
 - (void)resetData {
     // reset stored data
-    NSLog(@"Resetting data.");
+    [LoggingHelper logDebug:@"resetData" message:@"Resetting data."];
 
     [lock lock];
     [DBHelper resetPersistentStore];
@@ -501,7 +519,7 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
                               otherButtonTitles:@"YES", nil] show];
         });
     } else {*/
-    NSLog(@"Settings changed.");
+    [LoggingHelper logDebug:@"doServerChange" message:@"Settings changed."];
 
     [self.tabBarViewController logout];
 
@@ -575,7 +593,8 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         return YES;
     }
 
-    NSLog(@"Checking lock for user %@", user.fullName);
+    [LoggingHelper logDebug:@"checkLock"
+                    message:[NSString stringWithFormat:@"Checking lock for user %@", user.fullName]];
 
     NSArray *userLocks = [[WebserviceCoreData instance] fetchUserLocks];
     if (userLocks) {
@@ -588,7 +607,9 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
         }
     }
 
-    NSLog(@"Failed to find lock for user %@ (%@) in %@", user.fullName, user.id, userLocks);
+    [LoggingHelper logDebug:@"checkLock"
+                    message:[NSString stringWithFormat:@"Failed to find lock for user %@ (%@) in %@",
+                             user.fullName, user.id, userLocks]];
 
     return NO;
 }
@@ -601,7 +622,8 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
 - (NSInteger)acquireLock:(User *)user {
     // check if current user has been lock by another device
     NSString *deviceUuid = [[NSUserDefaults standardUserDefaults] stringForKey:@"DEVICE_UUID"];
-    NSLog(@"Acquiring lock for user %@", [user fullName]);
+    [LoggingHelper logDebug:@"acquireLock"
+                    message:[NSString stringWithFormat:@"Acquiring lock for user %@", [user fullName]]];
 
     if (!user.id) {
         return -2;
