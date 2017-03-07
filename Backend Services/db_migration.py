@@ -11,8 +11,11 @@ def getOrigin(cursor, origin):
     data = cursor.fetchone()
     return data[0] if data else None
 
-def getUserId(user, userMap):
-    return userMap[user] if user else None
+def getUserId(userId, userMap):
+    if user:
+        print 'Returing id ' + userMap[userId] + ' for user id ' + userId
+        return userMap[userId]
+    return None
 
 def getCategories(cur1, cur2, categories_str):
     category_uuids = []
@@ -156,7 +159,7 @@ def insertUser(cur1, cur2):
         if checkUser is not None:
             checkUserUUID = checkUser[0]
             userMap[iid] = checkUserUUID
-        else
+        else:
             cur2.execute("INSERT INTO nasa_user VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", (iid, admin, carb, fat, energy, protein, sodium, fluid, full_name, packets_per_day, use_last_filter, weight, image_media_uuid, removed, synchronized,))
             userMap[iid] = iid
 
