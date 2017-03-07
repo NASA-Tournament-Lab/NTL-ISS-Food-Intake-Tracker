@@ -12,8 +12,9 @@ def getOrigin(cursor, origin):
     return data[0] if data else None
 
 def getUserId(userId, userMap):
-    if user:
-        print 'Returing id ' + userMap[userId] + ' for user id ' + userId
+    if userId is not None:
+        if userMap[userId] != userId:
+            print 'Changig id to ' + userMap[userId] + ' for id ' + userId
         return userMap[userId]
     return None
 
@@ -98,6 +99,8 @@ def insertFoodConsumptionRecord(cur1, cur2, userMap):
                     filename = getVoiceFilename(cur1, voiceRecording)
                     voice_uuid = insertMedia(cur1, cur2, filename)
                     insertMediaRecord(cur2, iid, voice_uuid)
+        else:
+            print "Ignoring food record with id: " + iid
 
 def insertFood(cur1, cur2, userMap):
     cur1.execute("SELECT id, value FROM data WHERE name in ('AdhocFoodProduct','FoodProduct') ORDER BY name, modifieddate ASC")
