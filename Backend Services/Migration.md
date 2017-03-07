@@ -23,8 +23,6 @@ $ psql -d pl_fit_new
 
 pl_fit_new=# DROP INDEX public.food_product_name_origin_idx;
 pl_fit_new=# \q
-
-$ exit
 ```
 
 4- Execute migration script
@@ -46,3 +44,11 @@ postgres=# ALTER DATABASE pl_fit RENAME TO pl_fit_old;
 postgres=# ALTER DATABASE pl_fit_new RENAME TO pl_fit;
 postgres=# \q
 ```
+
+# iPad Deployment
+
+**Very important**
+
+Remove the current application from the iPad devices before installing the new version.
+
+Please check Deployment Guide and User Guide on how to use the iPad application.
