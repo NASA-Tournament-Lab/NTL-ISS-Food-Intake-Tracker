@@ -2,8 +2,10 @@
 
 1- Backup the database
 
+Change the **host** and **port** to match test and production environments (the example below if for Topcoder's VM).
+
 ```bash
-$ pg_dump -h $IP -p 56283 -U pl_fit_db -W -Fc -f pl_fit.bak pl_fit 
+$ pg_dump -h 172.31.29.196 -p 56283 -U pl_fit_db -W -Fc -f pl_fit.bak pl_fit 
 ```
 
 2- Copy database files to `/tmp`
