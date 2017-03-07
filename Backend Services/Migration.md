@@ -1,10 +1,16 @@
 # Instructions
 
-1- Copy database files to `/tmp`
+1- Backup the database
+
+```bash
+$ pg_dump -h $IP -p 56283 -U pl_fit_db -W -Fc -f pl_fit.bak pl_fit 
+```
+
+2- Copy database files to `/tmp`
 
 $ cp "NTL-ISS-Food-Intake-Tracker-master/Backend Services/issfit-api/database"/* /tmp
 
-2- Create new Database
+3- Create new Database
 
 ```bash
 $ sudo su - postgres
@@ -19,7 +25,7 @@ pl_fit_new=# \q
 $ exit
 ```
 
-3- Execute migration script
+4- Execute migration script
 
 Change the **host**, **port** and **password** to match test and production environments (the example below if for Topcoder's VM).
 
@@ -28,7 +34,7 @@ $ cd "NTL-ISS-Food-Intake-Tracker-master/Backend Services"
 $ ./db_migration.py --database=pl_fit --host=172.31.29.196 --port=56283 --user=pl_fit_db --password=CHANGEME
 ```
 
-4- Rename databases
+5- Rename databases
 
 ```bash
 $ sudo su - postgres
