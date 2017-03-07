@@ -38,13 +38,9 @@ $ ./db_migration.py --database=pl_fit --host=172.31.29.196 --port=56283 --user=p
 
 ```bash
 $ sudo su - postgres
-$ psql -d pl_fit
+$ psql
 
-pl_fit=# ALTER DATABASE pl_fit RENAME TO pl_fit_old;
-pl_fit=# \q
-
-$ psql -d pl_fit_new
-
-pl_fit_new=# ALTER DATABASE pl_fit_new RENAME TO pl_fit;
-pl_fit_new=# \q
+postgres=# ALTER DATABASE pl_fit RENAME TO pl_fit_old;
+postgres=# ALTER DATABASE pl_fit_new RENAME TO pl_fit;
+postgres=# \q
 ```
