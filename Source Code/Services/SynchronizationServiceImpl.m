@@ -229,8 +229,8 @@
         NSEntityDescription *v2 = (NSEntityDescription *) obj2;
         NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
                               @1, @"Media",
-                              @2, @"FoodProductFilter",
-                              @3, @"User",
+                              @2, @"User",
+                              @3, @"FoodProductFilter",
                               @4, @"FoodProduct",
                               @5, @"AdhocFoodProduct",
                               @6, @"FoodConsumptionProduct", nil];
@@ -382,8 +382,6 @@
             // Convert from JSON
             NSDictionary *jsonDictionary = [value copy];
 
-            // [LoggingHelper logDebug:methodName message:[NSString stringWithFormat:@"JSON for %@ dict %@", name, jsonDictionary]];
-            
             // Check if object already exists
             __block NSArray *objects = nil;
             __block NSError *blkError = nil;
@@ -512,9 +510,9 @@
     NSString *value = @"";
     Media *mediaObject = nil;
 
-    if (object.id) {
+    /*if (object.id) {
         return YES;
-    }
+    }*/
 
     if ([object isKindOfClass:[Media class]]) {
         mediaObject = (Media *) object;

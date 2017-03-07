@@ -625,18 +625,19 @@ typedef NS_ENUM(NSInteger, SyncStatus) {
     [LoggingHelper logDebug:@"acquireLock"
                     message:[NSString stringWithFormat:@"Acquiring lock for user %@", [user fullName]]];
 
-    if (!user.id) {
-        return -2;
-    }
-
     __block NSInteger result;
-    __block NSString *userId = [NSString stringWithString:user.id];
+    __block NSString *userId = user.id ? [NSString stringWithString:user.id] : nil;
     dispatch_sync(dataSyncUpdateQ, ^{
         WebserviceCoreData *instance = [WebserviceCoreData instance];
         BOOL connect = [instance connect];
 
         if (!connect) {
             result = 1;
+            return;
+        }
+
+        if (!userId) {
+            result = -2;
             return;
         }
 
