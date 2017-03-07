@@ -11,6 +11,13 @@ def getOrigin(cursor, origin):
     data = cursor.fetchone()
     return data[0] if data else None
 
+def getUserId(userId, userMap):
+    if userId is not None:
+        if userMap[userId] != userId:
+            print 'Changig id to ' + userMap[userId] + ' for id ' + userId
+        return userMap[userId]
+    return None
+
 def getCategories(cur1, cur2, categories_str):
     category_uuids = []
     categories = categories_str.split(";") if categories_str else []
@@ -37,7 +44,7 @@ def checkFoodExists(cursor, food_uuid):
 
 def checkUserExists(cursor, fullName):
     cursor.execute("SELECT uuid FROM nasa_user WHERE full_name = %s", (fullName,))
-    return cursor.fetchone() is not None
+    return cursor.fetchone()
 
 def insertMediaRecord(cur2, food_record_uuid, media_uuid):
     media_record_uuid = str(uuid.uuid4())
@@ -59,7 +66,7 @@ def insertMedia(cur1, cur2, imageFilename):
 
     return image_media_uuid
 
-def insertFoodConsumptionRecord(cur1, cur2):
+def insertFoodConsumptionRecord(cur1, cur2, userMap):
     cur1.execute("SELECT id, value FROM data WHERE name = 'FoodConsumptionRecord' ORDER BY modifieddate ASC")
     foodArray = cur1.fetchall()
 
@@ -78,7 +85,7 @@ def insertFoodConsumptionRecord(cur1, cur2):
         comments = obj[u"comment"]
         timestamp = obj[u"timestamp"]
         food_product_uuid = obj.get(u"foodProduct", None)
-        user_uuid = obj.get(u"user", None)
+        user_uuid = getUserId(obj.get(u"user", None), userMap)
         removed = obj[u"removed"] == 1
         synchronized = True
 
@@ -92,8 +99,10 @@ def insertFoodConsumptionRecord(cur1, cur2):
                     filename = getVoiceFilename(cur1, voiceRecording)
                     voice_uuid = insertMedia(cur1, cur2, filename)
                     insertMediaRecord(cur2, iid, voice_uuid)
+        else:
+            print "Ignoring food record with id: " + iid
 
-def insertFood(cur1, cur2):
+def insertFood(cur1, cur2, userMap):
     cur1.execute("SELECT id, value FROM data WHERE name in ('AdhocFoodProduct','FoodProduct') ORDER BY name, modifieddate ASC")
     foodArray = cur1.fetchall()
 
@@ -111,7 +120,7 @@ def insertFood(cur1, cur2):
         sodium = obj[u"sodium"]
         name = obj[u"name"]
         quantity = 1
-        user_uuid = obj.get(u"user", None)
+        user_uuid = getUserId(obj.get(u"user", None), userMap)
         origin_uuid = getOrigin(cur2, obj.get(u"origin", None))
         category_uuids = getCategories(cur1, cur2, obj.get(u"categories", None))
         removed = obj[u"removed"] == 1
@@ -149,10 +158,13 @@ def insertUser(cur1, cur2):
 
         image_media_uuid = insertMedia(cur1, cur2, obj[u"profileImage"])
 
-        if checkUserExists(cur2, full_name):
-            full_name = full_name + ' dup'
-
-        cur2.execute("INSERT INTO nasa_user VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", (iid, admin, carb, fat, energy, protein, sodium, fluid, full_name, packets_per_day, use_last_filter, weight, image_media_uuid, removed, synchronized,))
+        checkUser = checkUserExists(cur2, full_name)
+        if checkUser is not None:
+            checkUserUUID = checkUser[0]
+            userMap[iid] = checkUserUUID
+        else:
+            cur2.execute("INSERT INTO nasa_user VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)", (iid, admin, carb, fat, energy, protein, sodium, fluid, full_name, packets_per_day, use_last_filter, weight, image_media_uuid, removed, synchronized,))
+            userMap[iid] = iid
 
 try:
     optlist, args = getopt.getopt(sys.argv[1:], 'u:d:p:h:t', ["user=", "database=", "password=", "host=", "port="])
@@ -186,6 +198,8 @@ try:
     # Open a cursor to perform database operations
     cur2 = conn2.cursor()
 
+    userMap = {}
+
     try:
         cur2.execute("TRUNCATE TABLE food_product_record CASCADE;")
         cur2.execute("TRUNCATE TABLE media_record CASCADE;")
@@ -197,9 +211,9 @@ try:
         # insert nasa users
         insertUser(cur1, cur2)
         # insert food products
-        insertFood(cur1, cur2)
+        insertFood(cur1, cur2, userMap)
         # insert food consumption records
-        insertFoodConsumptionRecord(cur1, cur2)
+        insertFoodConsumptionRecord(cur1, cur2, userMap)
 
         conn2.commit()
     except psycopg2.Error as e:

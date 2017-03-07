@@ -468,18 +468,22 @@
     }
     else {
         NSString *imagePath = [Helper saveImage2:self.imgProfilePhoto.image];
-        if (!user.profileImage) {
-            NSEntityDescription *entity = [NSEntityDescription entityForName:@"Media"
-                                                      inManagedObjectContext:[user managedObjectContext]];
-            user.profileImage = [[Media alloc] initWithEntity:entity insertIntoManagedObjectContext:[user managedObjectContext]];
-            user.profileImage.removed = @NO;
-            user.profileImage.synchronized = @NO;
-        }
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Media"
+                                                  inManagedObjectContext:[user managedObjectContext]];
+
+        user.profileImage = [[Media alloc] initWithEntity:entity insertIntoManagedObjectContext:[user managedObjectContext]];
+        user.profileImage.removed = @NO;
         user.profileImage.filename = imagePath;
+        user.profileImage.data = UIImageJPEGRepresentation(self.imgProfilePhoto.image, 0.9);
         user.profileImage.synchronized = @NO;
         user.synchronized = @NO;
         [userService saveUser:user error:&error];
         if ([Helper displayError:error]) return;
+
+        if ([appDelegate.loggedInUser.objectID isEqual:user.objectID]) {
+            appDelegate.loggedInUser = user;
+        }
+
         [self showPhotoPreview];
         [self reloadUsers];
         
@@ -626,10 +630,8 @@
     self.lblSelectedUserName.numberOfLines = 4;
     self.lblSelectedUserName.text = appDelegate.loggedInUser.fullName;
     [self.lblSelectedUserName sizeToFit];
-    self.imgProfilePhoto.image = self.imgSelectedUserPhoto.image =
-    [Helper loadImage:appDelegate.loggedInUser.profileImage.filename];
+    self.imgProfilePhoto.image = self.imgSelectedUserPhoto.image = [Helper loadImage:appDelegate.loggedInUser.profileImage.filename];
 
-    
     [self updateDetailsView];
 }
 
