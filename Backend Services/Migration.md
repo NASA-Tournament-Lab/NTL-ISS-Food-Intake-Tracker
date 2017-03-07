@@ -47,8 +47,6 @@ postgres=# \q
 
 # iPad Deployment
 
-**Very important**
-
-Remove the current application from the iPad devices before installing the new version.
+**Very important:** Remove the current application from the iPad devices before installing the new version.
 
 Please check Deployment Guide and User Guide on how to use the iPad application.
