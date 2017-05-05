@@ -47,4 +47,3 @@ AND (EXTRACT(epoch FROM fp.modified_date) + (('x'||replace(fp.uuid,'-',''))::bit
 
 TRUNCATE TABLE food_tmp_table;
  
-COMMIT;

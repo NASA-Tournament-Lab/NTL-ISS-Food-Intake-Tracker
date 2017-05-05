@@ -37,4 +37,3 @@ UPDATE nasa_user fp
 FROM (SELECT up_ft.* FROM user_tmp_table up_ft order by up_ft.id desc) AS f
 WHERE f.id in (SELECT id FROM selected) and normalize(f.full_name) = normalize(fp.full_name);
 
-COMMIT;
