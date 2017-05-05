@@ -20,7 +20,7 @@ PORT=$4
 PASSWORD=$5
 FILE_NAME=$6
 
-PSQL_ARGS="-X --set AUTOCOMMIT=off --set ON_ERROR_STOP=on --single-transaction"
+PSQL_ARGS="-X --set ON_ERROR_STOP=on --single-transaction"
 
 if [ "$#" -eq 7 ]; then
   DROP=$7

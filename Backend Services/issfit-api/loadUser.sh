@@ -14,7 +14,7 @@ if [ ! -f "$6" ]
     exit 1
 fi
 
-PSQL_ARGS="-X --set AUTOCOMMIT=off --set ON_ERROR_STOP=on --single-transaction"
+PSQL_ARGS="-X --set ON_ERROR_STOP=on --single-transaction"
 
 HOST=$1
 USER=$2
