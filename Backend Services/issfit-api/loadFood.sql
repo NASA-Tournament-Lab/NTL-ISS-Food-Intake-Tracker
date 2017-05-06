@@ -46,3 +46,4 @@ AND (EXTRACT(epoch FROM fp.modified_date) + (('x'||replace(fp.uuid,'-',''))::bit
                GROUP BY normalize(fpp.name), fpp.origin_uuid);
 
 TRUNCATE TABLE food_tmp_table;
+ 
