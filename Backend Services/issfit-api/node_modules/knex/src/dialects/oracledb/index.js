@@ -13,6 +13,7 @@ const helpers = require('../../helpers');
 const Transaction = require('./transaction');
 const Client_Oracle = require('../oracle');
 const Oracle_Formatter = require('../oracle/formatter');
+const Buffer = require('safe-buffer').Buffer;
 
 function Client_Oracledb() {
   Client_Oracle.apply(this, arguments);
@@ -64,15 +65,27 @@ Client_Oracledb.prototype.acquireRawConnection = function() {
   const client = this;
   const asyncConnection = new Promise(function(resolver, rejecter) {
 
-    const oracleDbConfig = {
-      user: client.connectionSettings.user,
-      password: client.connectionSettings.password,
-      connectString: client.connectionSettings.connectString ||
-        (client.connectionSettings.host + '/' + client.connectionSettings.database)
-    }
+    // If external authentication dont have to worry about username/password and
+    // if not need to set the username and password
+    const oracleDbConfig = client.connectionSettings.externalAuth ?
+      { externalAuth : client.connectionSettings.externalAuth } :
+      {
+        user : client.connectionSettings.user,
+        password : client.connectionSettings.password
+      }
+
+    // In the case of external authentication connection string will be given
+    oracleDbConfig.connectString =  client.connectionSettings.connectString ||
+        (client.connectionSettings.host + '/' + client.connectionSettings.database);
+
     if (client.connectionSettings.prefetchRowCount) {
       oracleDbConfig.prefetchRows = client.connectionSettings.prefetchRowCount
     }
+
+    if (!_.isUndefined(client.connectionSettings.stmtCacheSize)) {
+      oracleDbConfig.stmtCacheSize = client.connectionSettings.stmtCacheSize;
+    }
+
     client.driver.getConnection(oracleDbConfig, function(err, connection) {
       if (err) {
         return rejecter(err);
@@ -301,7 +314,7 @@ function readStream(stream, cb) {
   if (stream.iLob.type === oracledb.CLOB) {
     stream.setEncoding('utf-8');
   } else {
-    data = new Buffer(0);
+    data = Buffer.alloc(0);
   }
   stream.on('error', function(err) {
     cb(err);
@@ -330,14 +343,15 @@ Client_Oracledb.prototype.processResponse = function(obj, runner) {
     case 'pluck':
     case 'first':
       response = helpers.skim(response);
-      if (obj.method === 'pluck')
-        response = _.pluck(response, obj.pluck);
+      if (obj.method === 'pluck') {
+        response = _.map(response, obj.pluck);
+      }
       return obj.method === 'first' ? response[0] : response;
     case 'insert':
     case 'del':
     case 'update':
     case 'counter':
-      if (obj.returning) {
+      if (obj.returning && !_.isEmpty(obj.returning)) {
         if (obj.returning.length === 1 && obj.returning[0] !== '*') {
           return _.flatten(_.map(response, _.values));
         }

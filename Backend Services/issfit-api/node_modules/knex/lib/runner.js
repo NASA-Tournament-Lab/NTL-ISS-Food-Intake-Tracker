@@ -2,6 +2,10 @@
 
 exports.__esModule = true;
 
+var _noop2 = require('lodash/noop');
+
+var _noop3 = _interopRequireDefault(_noop2);
+
 var _isArray2 = require('lodash/isArray');
 
 var _isArray3 = _interopRequireDefault(_isArray2);
@@ -117,6 +121,10 @@ function Runner(client, builder) {
       handler(stream);
       return promise;
     }
+
+    // This promise is unreachable since no handler was given, so noop any
+    // exceptions. Errors should be handled in the stream's 'error' event.
+    promise.catch(_noop3.default);
     return stream;
   },
 

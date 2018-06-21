@@ -2,6 +2,7 @@
 // Node module: loopback-datasource-juggler
 // This file is licensed under the MIT License.
 // License text available at https://opensource.org/licenses/MIT
+'use strict';
 
 /*eslint-disable camelcase*/
 
@@ -11,6 +12,8 @@ var defineCachedRelations = utils.defineCachedRelations;
 var setScopeValuesFromWhere = utils.setScopeValuesFromWhere;
 var mergeQuery = utils.mergeQuery;
 var DefaultModelBaseClass = require('./model.js');
+var collectTargetIds = utils.collectTargetIds;
+var idName = utils.idName;
 
 /**
  * Module exports
@@ -85,14 +88,52 @@ ScopeDefinition.prototype.related = function(receiver, scopeParams, condOrRefres
   if (!self.__cachedRelations || self.__cachedRelations[name] === undefined ||
       actualRefresh) {
     // It either doesn't hit the cache or refresh is required
-    var params = mergeQuery(actualCond, scopeParams, { nestedInclude: true });
+    var params = mergeQuery(actualCond, scopeParams, {nestedInclude: true});
     var targetModel = this.targetModel(receiver);
+
+    // If there is a through model
+    // run another query to apply filter on relatedModel(targetModel)
+    // see github.com/strongloop/loopback-datasource-juggler/issues/166
+    var scopeOnRelatedModel = params.collect &&
+        params.include.scope !== null &&
+        typeof params.include.scope === 'object';
+    if (scopeOnRelatedModel) {
+      var filter = params.include;
+      // The filter applied on relatedModel
+      var queryRelated = filter.scope;
+      delete params.include.scope;
+    };
+
     targetModel.find(params, options, function(err, data) {
       if (!err && saveOnCache) {
         defineCachedRelations(self);
         self.__cachedRelations[name] = data;
       }
-      cb(err, data);
+
+      if (scopeOnRelatedModel === true) {
+        var relatedModel = targetModel.relations[filter.relation].modelTo;
+        var IdKey = idName(relatedModel);
+
+        // Merge queryRelated filter and targetId filter
+        var buildWhere = function() {
+          var IdKeyCondition = {};
+          IdKeyCondition[IdKey] = collectTargetIds(data, IdKey);
+          var mergedWhere = {
+            and: [IdKeyCondition, queryRelated.where],
+          };
+          return mergedWhere;
+        };
+        if (queryRelated.where !== undefined) {
+          queryRelated.where = buildWhere();
+        } else {
+          queryRelated.where = {};
+          queryRelated.where[IdKey] = collectTargetIds(data, IdKey);
+        }
+
+        relatedModel.find(queryRelated, cb);
+      } else {
+        cb(err, data);
+      }
     });
   } else {
     // Return from cache
@@ -199,15 +240,6 @@ function defineScope(cls, targetClass, name, params, methods, options) {
           // see https://github.com/strongloop/loopback/issues/1076
           if (f._scope.collect &&
             condOrRefresh !== null && typeof condOrRefresh === 'object') {
-            //extract the paging filters to the through model
-            ['limit', 'offset', 'skip', 'order'].forEach(function(pagerFilter) {
-              if (typeof(condOrRefresh[pagerFilter]) !== 'undefined') {
-                f._scope[pagerFilter] = condOrRefresh[pagerFilter];
-                delete condOrRefresh[pagerFilter];
-              }
-            });
-            // Adjust the include so that the condition will be applied to
-            // the target model
             f._scope.include = {
               relation: f._scope.collect,
               scope: condOrRefresh,
@@ -371,7 +403,7 @@ function defineScope(cls, targetClass, name, params, methods, options) {
 
     var targetModel = definition.targetModel(this._receiver);
     var scoped = (this._scope && this._scope.where) || {};
-    var filter = mergeQuery({ where: scoped }, { where: where || {}});
+    var filter = mergeQuery({where: scoped}, {where: where || {}});
     return targetModel.destroyAll(filter.where, options, cb);
   }
 
@@ -391,7 +423,7 @@ function defineScope(cls, targetClass, name, params, methods, options) {
     options = options || {};
     var targetModel = definition.targetModel(this._receiver);
     var scoped = (this._scope && this._scope.where) || {};
-    var filter = mergeQuery({ where: scoped }, { where: where || {}});
+    var filter = mergeQuery({where: scoped}, {where: where || {}});
     return targetModel.updateAll(filter.where, data, options, cb);
   }
 
@@ -419,7 +451,7 @@ function defineScope(cls, targetClass, name, params, methods, options) {
     filter = filter || {};
     var targetModel = definition.targetModel(this._receiver);
     var idName = targetModel.definition.idName();
-    var query = { where: {}};
+    var query = {where: {}};
     query.where[idName] = id;
     query = mergeQuery(query, filter);
     return this.findOne(query, options, cb);
@@ -439,7 +471,7 @@ function defineScope(cls, targetClass, name, params, methods, options) {
     options = options || {};
     var targetModel = definition.targetModel(this._receiver);
     var scoped = (this._scope && this._scope.where) || {};
-    filter = mergeQuery({ where: scoped }, filter || {});
+    filter = mergeQuery({where: scoped}, filter || {});
     return targetModel.findOne(filter, options, cb);
   }
 
@@ -457,7 +489,7 @@ function defineScope(cls, targetClass, name, params, methods, options) {
 
     var targetModel = definition.targetModel(this._receiver);
     var scoped = (this._scope && this._scope.where) || {};
-    var filter = mergeQuery({ where: scoped }, { where: where || {}});
+    var filter = mergeQuery({where: scoped}, {where: where || {}});
     return targetModel.count(filter.where, options, cb);
   }
 
