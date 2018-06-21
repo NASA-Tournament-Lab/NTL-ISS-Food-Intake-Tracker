@@ -1,3 +1,41 @@
+2016-10-12, Version 2.7.0
+=========================
+
+ * Update translation files - round#2 (Candy)
+
+ * Add translated files (gunjpan)
+
+ * Use new api for disabling a remote method. (Richard Pringle)
+
+ * Fix tests to not depend on exact EOL chars (Miroslav Bajtoš)
+
+ * Update deps to loopback 3.0.0 RC (Miroslav Bajtoš)
+
+ * Deprecate built-in CORS middleware (Miroslav Bajtoš)
+
+ * Use loopback@3.0.0-alpha for running the tests. (Miroslav Bajtoš)
+
+
+2016-09-05, Version 2.6.0
+=========================
+
+ * Add globalization (Simon Ho)
+
+ * Update URLs in CONTRIBUTING.md (#169) (Ryan Graham)
+
+ * Redirect get http 301 instead of 303 (jannyHou)
+
+ * Add blank lines to separate error-checking and done logic from other logic (Supasate Choochaisri)
+
+ * Ignore copyright in dummy swagger-ui test (Supasate Choochaisri)
+
+ * Upgrade loopback devDependency (Supasate Choochaisri)
+
+ * update copyright notices and license (Ryan Graham)
+
+ * examples launch fix (Alexander Ryzhikov)
+
+
 2016-05-02, Version 2.5.0
 =========================
 

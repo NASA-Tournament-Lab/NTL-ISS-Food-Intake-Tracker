@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server/server.js",
   "scripts": {
-    "start": "node .",
+    "start": "node server/server",
     "pretest": "jshint .",
     "posttest": "nsp check"
   },
@@ -24,7 +24,7 @@
     "loopback-component-explorer": "^2.4.0",
     "loopback-connector-postgresql": "^2.4.1",
     "loopback-datasource-juggler": "^2.39.0",
-    "lwip": "0.0.9",
+    "pajk-lwip": "^0.2.0",
     "multer": "^1.1.0",
     "node-uuid": "^1.4.7",
     "path": "^0.12.7",

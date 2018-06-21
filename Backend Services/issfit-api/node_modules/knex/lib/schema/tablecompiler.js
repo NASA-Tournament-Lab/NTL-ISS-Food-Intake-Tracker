@@ -2,9 +2,13 @@
 
 exports.__esModule = true;
 
-var _isArray2 = require('lodash/isArray');
+var _getIterator2 = require('babel-runtime/core-js/get-iterator');
 
-var _isArray3 = _interopRequireDefault(_isArray2);
+var _getIterator3 = _interopRequireDefault(_getIterator2);
+
+var _isArray3 = require('lodash/isArray');
+
+var _isArray4 = _interopRequireDefault(_isArray3);
 
 var _indexOf2 = require('lodash/indexOf');
 
@@ -80,7 +84,10 @@ TableCompiler.prototype.lowerCase = true;
 // and then run through anything else and push it to the query sequence.
 TableCompiler.prototype.createAlterTableMethods = null;
 TableCompiler.prototype.create = function (ifNot) {
-  var columns = this.getColumns();
+  var columnBuilders = this.getColumns();
+  var columns = columnBuilders.map(function (col) {
+    return col.toSQL();
+  });
   var columnTypes = this.getColumnTypes(columns);
   if (this.createAlterTableMethods) {
     this.alterTableForCreate(columnTypes);
@@ -100,16 +107,27 @@ TableCompiler.prototype.createIfNot = function () {
 // go through and handle each of the queries associated
 // with altering the table's schema.
 TableCompiler.prototype.alter = function () {
-  var columns = this.getColumns();
-  var columnTypes = this.getColumnTypes(columns);
-  this.addColumns(columnTypes);
-  this.columnQueries(columns);
+  var addColBuilders = this.getColumns();
+  var addColumns = addColBuilders.map(function (col) {
+    return col.toSQL();
+  });
+  var alterColBuilders = this.getColumns('alter');
+  var alterColumns = alterColBuilders.map(function (col) {
+    return col.toSQL();
+  });
+  var addColumnTypes = this.getColumnTypes(addColumns);
+  var alterColumnTypes = this.getColumnTypes(alterColumns);
+
+  this.addColumns(addColumnTypes);
+  this.alterColumns(alterColumnTypes, alterColBuilders);
+  this.columnQueries(addColumns);
+  this.columnQueries(alterColumns);
   this.alterTable();
 };
 
 TableCompiler.prototype.foreign = function (foreignData) {
   if (foreignData.inTable && foreignData.references) {
-    var keyName = this._indexCommand('foreign', this.tableNameRaw, foreignData.column);
+    var keyName = foreignData.keyName ? this.formatter.wrap(foreignData.keyName) : this._indexCommand('foreign', this.tableNameRaw, foreignData.column);
     var column = this.formatter.columnize(foreignData.column);
     var references = this.formatter.columnize(foreignData.references);
     var inTable = this.formatter.wrap(foreignData.inTable);
@@ -138,8 +156,21 @@ TableCompiler.prototype.columnQueries = function (columns) {
     if (!(0, _isEmpty3.default)(column)) return memo.concat(column);
     return memo;
   }, []);
-  for (var i = 0, l = queries.length; i < l; i++) {
-    this.pushQuery(queries[i]);
+  for (var _iterator = queries, _isArray2 = Array.isArray(_iterator), _i = 0, _iterator = _isArray2 ? _iterator : (0, _getIterator3.default)(_iterator);;) {
+    var _ref;
+
+    if (_isArray2) {
+      if (_i >= _iterator.length) break;
+      _ref = _iterator[_i++];
+    } else {
+      _i = _iterator.next();
+      if (_i.done) break;
+      _ref = _i.value;
+    }
+
+    var q = _ref;
+
+    this.pushQuery(q);
   }
 };
 
@@ -147,12 +178,12 @@ TableCompiler.prototype.columnQueries = function (columns) {
 TableCompiler.prototype.addColumnsPrefix = 'add column ';
 
 // All of the columns to "add" for the query
-TableCompiler.prototype.addColumns = function (columns) {
-  var _this = this;
+TableCompiler.prototype.addColumns = function (columns, prefix) {
+  prefix = prefix || this.addColumnsPrefix;
 
   if (columns.sql.length > 0) {
     var columnSql = (0, _map3.default)(columns.sql, function (column) {
-      return _this.addColumnsPrefix + column;
+      return prefix + column;
     });
     this.pushQuery({
       sql: (this.lowerCase ? 'alter table ' : 'ALTER TABLE ') + this.tableName() + ' ' + columnSql.join(', '),
@@ -161,13 +192,26 @@ TableCompiler.prototype.addColumns = function (columns) {
   }
 };
 
+// Alter column
+TableCompiler.prototype.alterColumnsPrefix = 'alter column ';
+
+TableCompiler.prototype.alterColumns = function (columns, colBuilders) {
+  if (columns.sql.length > 0) {
+    this.addColumns(columns, this.alterColumnsPrefix, colBuilders);
+  }
+};
+
 // Compile the columns as needed for the current create or alter table
-TableCompiler.prototype.getColumns = function () {
-  var _this2 = this;
+TableCompiler.prototype.getColumns = function (method) {
+  var _this = this;
 
   var columns = this.grouped.columns || [];
-  return columns.map(function (column) {
-    return _this2.client.columnCompiler(_this2, column.builder).toSQL();
+  method = method || 'add';
+
+  return columns.filter(function (column) {
+    return column.builder._method === method;
+  }).map(function (column) {
+    return _this.client.columnCompiler(_this, column.builder);
   });
 };
 
@@ -228,11 +272,11 @@ TableCompiler.prototype.dropUnique = TableCompiler.prototype.dropForeign = funct
 
 TableCompiler.prototype.dropColumnPrefix = 'drop column ';
 TableCompiler.prototype.dropColumn = function () {
-  var _this3 = this;
+  var _this2 = this;
 
   var columns = helpers.normalizeArr.apply(null, arguments);
-  var drops = (0, _map3.default)((0, _isArray3.default)(columns) ? columns : [columns], function (column) {
-    return _this3.dropColumnPrefix + _this3.formatter.wrap(column);
+  var drops = (0, _map3.default)((0, _isArray4.default)(columns) ? columns : [columns], function (column) {
+    return _this2.dropColumnPrefix + _this2.formatter.wrap(column);
   });
   this.pushQuery((this.lowerCase ? 'alter table ' : 'ALTER TABLE ') + this.tableName() + ' ' + drops.join(', '));
 };
@@ -241,7 +285,7 @@ TableCompiler.prototype.dropColumn = function () {
 // convention of the table name, followed by the columns, followed by an
 // index type, such as primary or index, which makes the index unique.
 TableCompiler.prototype._indexCommand = function (type, tableName, columns) {
-  if (!(0, _isArray3.default)(columns)) columns = columns ? [columns] : [];
+  if (!(0, _isArray4.default)(columns)) columns = columns ? [columns] : [];
   var table = tableName.replace(/\.|-/g, '_');
   var indexName = (table + '_' + columns.join('_') + '_' + type).toLowerCase();
   return this.formatter.wrap(indexName);

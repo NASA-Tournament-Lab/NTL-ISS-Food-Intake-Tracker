@@ -72,6 +72,8 @@ function TableCompiler_MySQL() {
 
   addColumnsPrefix: 'add ',
 
+  alterColumnsPrefix: 'modify ',
+
   dropColumnPrefix: 'drop ',
 
   // Compiles the comment on the table.

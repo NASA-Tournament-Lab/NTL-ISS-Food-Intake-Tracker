@@ -13,7 +13,7 @@ var uuid          = require('node-uuid');
 
 var async         = require('async');
 var PythonShell   = require('python-shell');
-var lwip          = require('lwip');
+var lwip          = require('pajk-lwip');
 var fs            = require('fs');
 var config        = require('./config.js');
 

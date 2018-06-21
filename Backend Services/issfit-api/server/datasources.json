@@ -1,6 +1,6 @@
 {
   "pl_fit_db": {
-    "host": "35.162.3.86",
+    "host": "CHANGEHOST",
     "port": 56283,
     "database": "pl_fit",
     "password": "CHANGEME",

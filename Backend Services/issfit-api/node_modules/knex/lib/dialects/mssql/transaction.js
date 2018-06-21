@@ -69,6 +69,9 @@ var Transaction_MSSQL = function (_Transaction) {
     debug('%s: rolling back', this.txid);
     return conn.tx_.rollback().then(function () {
       return _this4._rejecter(error);
+    }, function (err) {
+      if (error) err.originalError = error;
+      return _this4._rejecter(err);
     });
   };
 
